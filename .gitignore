@@ -4,3 +4,9 @@
 .Ruserdata
 *.env
 *.DS_Store
+/.quarto/
+.Rdata
+.httr-oauth
+.DS_Store
+.quarto
+_site/
