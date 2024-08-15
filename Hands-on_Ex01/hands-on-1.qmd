@@ -1,19 +1,51 @@
 ---
-title: "Hands-On Exercise 1"
-subtitle: "Geospatial Data Science with R"
+title: "H1: Geospatial Data Science with R"
+subtitle: "Hands-On Exercise 1"
 date: "2024-08-17"         # Published date
 last-modified: "2024-08-17" # Modified date
 ---
 
-### 1 Overview
+# H1.1 Overview
 
-Adapted from the [course website](https://r4gdsa.netlify.app/chap01learning-outcome)
+As adapted from the [course website](https://r4gdsa.netlify.app/chap01learning-outcome):
 
+Geospatial Data Science is a process of importing, wrangling, integrating, and processing geographically referenced data sets. In this hands-on exercise, you will learn how to perform geospatial data science tasks in R by using **sf** package.
 
-### 1.1 Data acquisition
+By the end of this hands-on exercise, you should acquire the following competencies:
+
+-   installing and loading [sf](https://r-spatial.github.io/sf/) and [tidyverse](https://www.tidyverse.org/) packages into R environment,
+
+-   importing geospatial data by using appropriate functions of **sf** package,
+
+-   importing aspatial data by using appropriate function of **readr** package,
+
+-   exploring the content of simple feature data frame by using appropriate **Base R** and **sf** functions,
+
+-   assigning or transforming coordinate systems by using using appropriate *sf* functions,
+
+-   converting an aspatial data into a sf data frame by using appropriate function of **sf** package,
+
+-   performing geoprocessing tasks by using appropriate functions of **sf** package,
+
+-   performing data wrangling tasks by using appropriate functions of **dplyr** package and
+
+-   performing Exploratory Data Analysis (EDA) by using appropriate functions from **ggplot2** package.
+
+> Note: Students are encouraged to read the reference guide of each function, especially the input data requirements, syntaxt and argument option before using them.
+
+# H1.2 Data acquisition
 
 To complete this exercise, the following datasets were downloaded and extracted:
 
-* Master Plan 2014 Subzone Boundary (Web) from [data.gov.sg](https://data.gov.sg)
+-   Master Plan 2014 Subzone Boundary (Web) from [data.gov.sg](https://data.gov.sg/)
+-   Pre-Schools Location from [data.gov.sg](https://data.gov.sg/)
+-   Cycling Path from [LTADataMall](https://www.mytransport.sg/content/mytransport/home/dataMall.html)
+-   Latest version of Singapore Airbnb listing data from [Inside Airbnb](http://insideairbnb.com/get-the-data.html)
 
-### 1.2 
+# H1.3 Getting Started
+
+In this hands-on exercise, two R packages were used. They are:
+
+-   **sf** for importing, managing, and processing geospatial data, and
+
+-   **tidyverse** for performing data science tasks such as importing, wrangling and visualising data.

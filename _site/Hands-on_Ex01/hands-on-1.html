@@ -8,7 +8,7 @@
 
 <meta name="dcterms.date" content="2024-08-17">
 
-<title>IS415 Geospatial Analytics and Applications - Hands-On Exercise 1</title>
+<title>IS415 Geospatial Analytics and Applications - H1: Geospatial Data Science with R</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -108,7 +108,7 @@ ul.task-list li input[type="checkbox"] {
     <ul class="dropdown-menu" aria-labelledby="nav-menu-hands-on-exercises">    
         <li>
     <a class="dropdown-item" href="../Hands-on_Ex01/hands-on-1.html">
- <span class="dropdown-text">Hands-On Exercise 1</span></a>
+ <span class="dropdown-text">H1: Geospatial Data Science with R</span></a>
   </li>  
     </ul>
   </li>
@@ -136,9 +136,9 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview">1 Overview</a></li>
-  <li><a href="#data-acquisition" id="toc-data-acquisition" class="nav-link" data-scroll-target="#data-acquisition">1.1 Data acquisition</a></li>
-  <li><a href="#section" id="toc-section" class="nav-link" data-scroll-target="#section">1.2</a></li>
+  <li><a href="#h1.1-overview" id="toc-h1.1-overview" class="nav-link active" data-scroll-target="#h1.1-overview">H1.1 Overview</a></li>
+  <li><a href="#h1.2-data-acquisition" id="toc-h1.2-data-acquisition" class="nav-link" data-scroll-target="#h1.2-data-acquisition">H1.2 Data acquisition</a></li>
+  <li><a href="#h1.3-getting-started" id="toc-h1.3-getting-started" class="nav-link" data-scroll-target="#h1.3-getting-started">H1.3 Getting Started</a></li>
   </ul>
 </nav>
     </div>
@@ -147,8 +147,8 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Hands-On Exercise 1</h1>
-<p class="subtitle lead">Geospatial Data Science with R</p>
+<h1 class="title">H1: Geospatial Data Science with R</h1>
+<p class="subtitle lead">Hands-On Exercise 1</p>
 </div>
 
 
@@ -171,19 +171,43 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="overview" class="level3">
-<h3 class="anchored" data-anchor-id="overview">1 Overview</h3>
-<p>Adapted from the <a href="https://r4gdsa.netlify.app/chap01learning-outcome">course website</a></p>
+<section id="h1.1-overview" class="level1">
+<h1>H1.1 Overview</h1>
+<p>As adapted from the <a href="https://r4gdsa.netlify.app/chap01learning-outcome">course website</a>:</p>
+<p>Geospatial Data Science is a process of importing, wrangling, integrating, and processing geographically referenced data sets. In this hands-on exercise, you will learn how to perform geospatial data science tasks in R by using <strong>sf</strong> package.</p>
+<p>By the end of this hands-on exercise, you should acquire the following competencies:</p>
+<ul>
+<li><p>installing and loading <a href="https://r-spatial.github.io/sf/">sf</a> and <a href="https://www.tidyverse.org/">tidyverse</a> packages into R environment,</p></li>
+<li><p>importing geospatial data by using appropriate functions of <strong>sf</strong> package,</p></li>
+<li><p>importing aspatial data by using appropriate function of <strong>readr</strong> package,</p></li>
+<li><p>exploring the content of simple feature data frame by using appropriate <strong>Base R</strong> and <strong>sf</strong> functions,</p></li>
+<li><p>assigning or transforming coordinate systems by using using appropriate <em>sf</em> functions,</p></li>
+<li><p>converting an aspatial data into a sf data frame by using appropriate function of <strong>sf</strong> package,</p></li>
+<li><p>performing geoprocessing tasks by using appropriate functions of <strong>sf</strong> package,</p></li>
+<li><p>performing data wrangling tasks by using appropriate functions of <strong>dplyr</strong> package and</p></li>
+<li><p>performing Exploratory Data Analysis (EDA) by using appropriate functions from <strong>ggplot2</strong> package.</p></li>
+</ul>
+<blockquote class="blockquote">
+<p>Note: Students are encouraged to read the reference guide of each function, especially the input data requirements, syntaxt and argument option before using them.</p>
+</blockquote>
 </section>
-<section id="data-acquisition" class="level3">
-<h3 class="anchored" data-anchor-id="data-acquisition">1.1 Data acquisition</h3>
+<section id="h1.2-data-acquisition" class="level1">
+<h1>H1.2 Data acquisition</h1>
 <p>To complete this exercise, the following datasets were downloaded and extracted:</p>
 <ul>
-<li>Master Plan 2014 Subzone Boundary (Web) from <a href="https://data.gov.sg">data.gov.sg</a></li>
+<li>Master Plan 2014 Subzone Boundary (Web) from <a href="https://data.gov.sg/">data.gov.sg</a></li>
+<li>Pre-Schools Location from <a href="https://data.gov.sg/">data.gov.sg</a></li>
+<li>Cycling Path from <a href="https://www.mytransport.sg/content/mytransport/home/dataMall.html">LTADataMall</a></li>
+<li>Latest version of Singapore Airbnb listing data from <a href="http://insideairbnb.com/get-the-data.html">Inside Airbnb</a></li>
 </ul>
 </section>
-<section id="section" class="level3">
-<h3 class="anchored" data-anchor-id="section">1.2</h3>
+<section id="h1.3-getting-started" class="level1">
+<h1>H1.3 Getting Started</h1>
+<p>In this hands-on exercise, two R packages were used. They are:</p>
+<ul>
+<li><p><strong>sf</strong> for importing, managing, and processing geospatial data, and</p></li>
+<li><p><strong>tidyverse</strong> for performing data science tasks such as importing, wrangling and visualising data.</p></li>
+</ul>
 
 
 </section>
