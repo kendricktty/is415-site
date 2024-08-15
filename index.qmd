@@ -1,11 +1,13 @@
 ---
-title: "is442-quarto"
+title: "IS415: Geospatial Analytics and Applications"
+subtitle: "Student portfolio website"
 ---
 
-This is a Quarto website.
-
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
+I'm **Kendrick Teo**, a final-year student of **Singapore Management University** (SMU). Welcome to my website!
 
 ```{r}
-1 + 1
+hello_world <- "hello world!"
+print(hello_world)
 ```
+
+The purpose of this website is to document my learning journey in the course: **IS415: Geospatial Analytics and Applications** under professor **Kam Tin Seong**. Below is my coursework and other musings 
