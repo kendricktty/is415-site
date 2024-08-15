@@ -4,13 +4,13 @@
     "href": "about.html",
     "title": "About",
     "section": "",
-    "text": "About this site\n\n1 + 1\n\n[1] 2"
+    "text": "Hi there! My name is Kendrick Teo, and I’m a final-year student of Singapore Management University (SMU).\nThe purpose of this website is to document my learning journey in the course: IS415: Geospatial Analytics and Applications under professor Kam Tin Seong. Follow along with my coursework below as I explore the vast world of data analytics, geospatial analytics and urban planning.\nIf you’re liking this site so far, I would most appreciate it if you could connect with me on LinkedIn!"
   },
   {
     "objectID": "index.html",
     "href": "index.html",
     "title": "IS415: Geospatial Analytics and Applications",
     "section": "",
-    "text": "I’m Kendrick, a final-year student of Singapore Management University (SMU). Welcome to my website!\nThe purpose of this website is to document my learning journey in the course: ’‘’IS415: Geospatial Analytics and Applications’’’ under\n\n1 + 1\n\n[1] 2"
+    "text": "Welcome, and thanks for stopping by! My name is Kendrick, and you’ve reached my portfolio website for IS415: Geospatial Analytics and Applications.\n\nhello_world &lt;- \"hello world!\"\nprint(hello_world)\n\n[1] \"hello world!\""
   }
 ]

@@ -3,11 +3,9 @@ title: "IS415: Geospatial Analytics and Applications"
 subtitle: "Student portfolio website"
 ---
 
-I'm **Kendrick Teo**, a final-year student of **Singapore Management University** (SMU). Welcome to my website!
+Welcome, and thanks for stopping by! My name is Kendrick, and you've reached my portfolio website for **IS415: Geospatial Analytics and Applications**.
 
 ```{r}
 hello_world <- "hello world!"
 print(hello_world)
 ```
-
-The purpose of this website is to document my learning journey in the course: **IS415: Geospatial Analytics and Applications** under professor **Kam Tin Seong**. Below is my coursework and other musings 

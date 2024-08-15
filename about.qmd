@@ -1,9 +1,9 @@
 ---
-title: "About"
+title: "About me"
 ---
 
-About this site
+Hi there! My name is **Kendrick Teo**, and I'm a final-year student of **Singapore Management University** (SMU).
 
-```{r}
-1 + 1
-```
+The purpose of this website is to document my learning journey in the course: **IS415: Geospatial Analytics and Applications** under professor **Kam Tin Seong**. Follow along with my coursework below as I explore the vast world of data analytics, geospatial analytics and urban planning.
+
+If you're liking this site so far, I would most appreciate it if you could connect with me on [LinkedIn](https://www.linkedin.com/in/kendricktty/)!

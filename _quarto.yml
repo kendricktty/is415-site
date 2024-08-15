@@ -2,12 +2,11 @@ project:
   type: website
 
 website:
-  title: "Welcome to Kendrick's IS415 Website"
+  title: "IS415 Geospatial Analytics and Applications"
   navbar:
     left:
-      - href: index.qmd
-        text: Home
       - about.qmd
+      - 
 
 format:
   html:
@@ -15,5 +14,5 @@ format:
     css: styles.css
     toc: true
 
-editor: visual
+editor: source
 
