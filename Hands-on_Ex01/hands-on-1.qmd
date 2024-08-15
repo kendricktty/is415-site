@@ -93,3 +93,24 @@ Using the same method as above, we now import the `CyclingPath` shapefile into R
 ```{r}
 cycling_paths = st_read(dsn="data/geospatial/CyclingPath_Jul2024", layer="CyclingPathGazette")
 ```
+
+## H1.4.3 Importing GIS data in kml format
+
+```{r}
+preschool_data = st_read("data/geospatial/PreSchoolsLocation.kml")
+```
+
+# H1.5 Checking the Content of a Simple Feature DataFrame
+
+## 1.5.1 Working with *st_geometry()*
+
+```{r}
+st_geometry(mp_subzone)
+```
+
+## 1.5.2 Working with *glimpse()*
+
+```{r}
+glimpse(mp_subzone)
+```
+
