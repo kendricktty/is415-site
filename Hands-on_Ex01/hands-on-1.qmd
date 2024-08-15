@@ -102,15 +102,27 @@ preschool_data = st_read("data/geospatial/PreSchoolsLocation.kml")
 
 # H1.5 Checking the Content of a Simple Feature DataFrame
 
-## 1.5.1 Working with *st_geometry()*
+## H1.5.1 Working with *st_geometry()*
 
 ```{r}
 st_geometry(mp_subzone)
 ```
 
-## 1.5.2 Working with *glimpse()*
+## H1.5.2 Working with *glimpse()*
 
 ```{r}
 glimpse(mp_subzone)
 ```
 
+## H1.5.3 Working with *head()*
+
+```{r}
+head(mp_subzone, n=10)
+```
+
+# H1.6 Plotting the Geospatial Data
+
+```{r}
+max.plot = 15
+plot(mp_subzone)
+```
