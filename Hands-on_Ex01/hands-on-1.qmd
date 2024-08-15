@@ -1,5 +1,5 @@
 ---
-title: "H1: Geospatial Data Science with R"
+title: "H1: Geospatial Data Wrangling with R"
 subtitle: "Hands-On Exercise 1"
 date: "2024-08-17"         # Published date
 last-modified: "2024-08-17" # Modified date
@@ -35,7 +35,7 @@ By the end of this hands-on exercise, you should acquire the following competenc
 
 # H1.2 Data acquisition
 
-To complete this exercise, the following datasets were downloaded and extracted:
+To complete this exercise, the following datasets were downloaded and extracted into `Hands-on_Ex01/data/`:
 
 -   Master Plan 2014 Subzone Boundary (Web) from [data.gov.sg](https://data.gov.sg/)
 -   Pre-Schools Location from [data.gov.sg](https://data.gov.sg/)
@@ -49,3 +49,47 @@ In this hands-on exercise, two R packages were used. They are:
 -   **sf** for importing, managing, and processing geospatial data, and
 
 -   **tidyverse** for performing data science tasks such as importing, wrangling and visualising data.
+
+Tidyverse consists of a family of R packages. In this hands-on exercise, the following packages have been used:
+
+-   **readr** for importing csv data,
+
+-   **readxl** for importing Excel worksheet,
+
+-   **tidyr** for manipulating data,
+
+-   **dplyr** for transforming data, and
+
+-   **ggplot2** for visualising data
+
+    ```{r}
+    pacman::p_load(sf, tidyverse)
+    ```
+
+# H1.4 Importing Geospatial Data
+
+Geospatial data was imported into R using [*st_read()*](https://r-spatial.github.io/sf/reference/st_read.html) of **sf** package:
+
+-   `MP14_SUBZONE_WEB_PL`, a polygon feature layer in ESRI shapefile format,
+
+-   `CyclingPath`, a line feature layer in ESRI shapefile format, and
+
+-   `PreSchool`, a point feature layer in kml file format.
+
+## H1.4.1 Importing polygon feature data in shapefile format
+
+The code chunk below uses *st_read()* function of **sf** package to import the `MP14_SUBZONE_WEB_PL` shapefile into R as a polygon feature data frame.
+
+```{r}
+mp_subzone = st_read(dsn="data/geospatial/MasterPlan2014SubzoneBoundaryWebSHP", layer="MP14_SUBZONE_WEB_PL")
+```
+
+There are a total of 323 multipolygon features and 15 fields in `mpsz` simple feature data frame. `mpsz` is in **svy21** projected coordinates systems. The bounding box provides the x extend and y extend of the data.
+
+## H1.4.2 Importing polyline feature data in shapefile form
+
+Using the same method as above, we now import the `CyclingPath` shapefile into R as a line feature data frame.
+
+```{r}
+cycling_paths = st_read(dsn="data/geospatial/CyclingPath_Jul2024", layer="CyclingPathGazette")
+```

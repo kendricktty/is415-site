@@ -8,7 +8,7 @@
 
 <meta name="dcterms.date" content="2024-08-17">
 
-<title>IS415 Geospatial Analytics and Applications - H1: Geospatial Data Science with R</title>
+<title>IS415 Geospatial Analytics and Applications - H1: Geospatial Data Wrangling with R</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,6 +20,40 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -108,7 +142,7 @@ ul.task-list li input[type="checkbox"] {
     <ul class="dropdown-menu" aria-labelledby="nav-menu-hands-on-exercises">    
         <li>
     <a class="dropdown-item" href="../Hands-on_Ex01/hands-on-1.html">
- <span class="dropdown-text">H1: Geospatial Data Science with R</span></a>
+ <span class="dropdown-text">H1: Geospatial Data Wrangling with R</span></a>
   </li>  
     </ul>
   </li>
@@ -139,6 +173,11 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#h1.1-overview" id="toc-h1.1-overview" class="nav-link active" data-scroll-target="#h1.1-overview">H1.1 Overview</a></li>
   <li><a href="#h1.2-data-acquisition" id="toc-h1.2-data-acquisition" class="nav-link" data-scroll-target="#h1.2-data-acquisition">H1.2 Data acquisition</a></li>
   <li><a href="#h1.3-getting-started" id="toc-h1.3-getting-started" class="nav-link" data-scroll-target="#h1.3-getting-started">H1.3 Getting Started</a></li>
+  <li><a href="#h1.4-importing-geospatial-data" id="toc-h1.4-importing-geospatial-data" class="nav-link" data-scroll-target="#h1.4-importing-geospatial-data">H1.4 Importing Geospatial Data</a>
+  <ul class="collapse">
+  <li><a href="#h1.4.1-importing-polygon-feature-data-in-shapefile-format" id="toc-h1.4.1-importing-polygon-feature-data-in-shapefile-format" class="nav-link" data-scroll-target="#h1.4.1-importing-polygon-feature-data-in-shapefile-format">H1.4.1 Importing polygon feature data in shapefile format</a></li>
+  <li><a href="#h1.4.2-importing-polyline-feature-data-in-shapefile-form" id="toc-h1.4.2-importing-polyline-feature-data-in-shapefile-form" class="nav-link" data-scroll-target="#h1.4.2-importing-polyline-feature-data-in-shapefile-form">H1.4.2 Importing polyline feature data in shapefile form</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -147,7 +186,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">H1: Geospatial Data Science with R</h1>
+<h1 class="title">H1: Geospatial Data Wrangling with R</h1>
 <p class="subtitle lead">Hands-On Exercise 1</p>
 </div>
 
@@ -193,7 +232,7 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="h1.2-data-acquisition" class="level1">
 <h1>H1.2 Data acquisition</h1>
-<p>To complete this exercise, the following datasets were downloaded and extracted:</p>
+<p>To complete this exercise, the following datasets were downloaded and extracted into <code>Hands-on_Ex01/data/</code>:</p>
 <ul>
 <li>Master Plan 2014 Subzone Boundary (Web) from <a href="https://data.gov.sg/">data.gov.sg</a></li>
 <li>Pre-Schools Location from <a href="https://data.gov.sg/">data.gov.sg</a></li>
@@ -208,8 +247,63 @@ ul.task-list li input[type="checkbox"] {
 <li><p><strong>sf</strong> for importing, managing, and processing geospatial data, and</p></li>
 <li><p><strong>tidyverse</strong> for performing data science tasks such as importing, wrangling and visualising data.</p></li>
 </ul>
+<p>Tidyverse consists of a family of R packages. In this hands-on exercise, the following packages have been used:</p>
+<ul>
+<li><p><strong>readr</strong> for importing csv data,</p></li>
+<li><p><strong>readxl</strong> for importing Excel worksheet,</p></li>
+<li><p><strong>tidyr</strong> for manipulating data,</p></li>
+<li><p><strong>dplyr</strong> for transforming data, and</p></li>
+<li><p><strong>ggplot2</strong> for visualising data</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sf, tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></li>
+</ul>
+</section>
+<section id="h1.4-importing-geospatial-data" class="level1">
+<h1>H1.4 Importing Geospatial Data</h1>
+<p>Geospatial data was imported into R using <a href="https://r-spatial.github.io/sf/reference/st_read.html"><em>st_read()</em></a> of <strong>sf</strong> package:</p>
+<ul>
+<li><p><code>MP14_SUBZONE_WEB_PL</code>, a polygon feature layer in ESRI shapefile format,</p></li>
+<li><p><code>CyclingPath</code>, a line feature layer in ESRI shapefile format, and</p></li>
+<li><p><code>PreSchool</code>, a point feature layer in kml file format.</p></li>
+</ul>
+<section id="h1.4.1-importing-polygon-feature-data-in-shapefile-format" class="level2">
+<h2 class="anchored" data-anchor-id="h1.4.1-importing-polygon-feature-data-in-shapefile-format">H1.4.1 Importing polygon feature data in shapefile format</h2>
+<p>The code chunk below uses <em>st_read()</em> function of <strong>sf</strong> package to import the <code>MP14_SUBZONE_WEB_PL</code> shapefile into R as a polygon feature data frame.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>mp_subzone <span class="ot">=</span> <span class="fu">st_read</span>(<span class="at">dsn=</span><span class="st">"data/geospatial/MasterPlan2014SubzoneBoundaryWebSHP"</span>, <span class="at">layer=</span><span class="st">"MP14_SUBZONE_WEB_PL"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Reading layer `MP14_SUBZONE_WEB_PL' from data source 
+  `/Users/kendricktty/Gits/smu_cs/is442-site/Hands-on_Ex01/data/geospatial/MasterPlan2014SubzoneBoundaryWebSHP' 
+  using driver `ESRI Shapefile'
+Simple feature collection with 323 features and 15 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: 2667.538 ymin: 15748.72 xmax: 56396.44 ymax: 50256.33
+Projected CRS: SVY21</code></pre>
+</div>
+</div>
+<p>There are a total of 323 multipolygon features and 15 fields in <code>mpsz</code> simple feature data frame. <code>mpsz</code> is in <strong>svy21</strong> projected coordinates systems. The bounding box provides the x extend and y extend of the data.</p>
+</section>
+<section id="h1.4.2-importing-polyline-feature-data-in-shapefile-form" class="level2">
+<h2 class="anchored" data-anchor-id="h1.4.2-importing-polyline-feature-data-in-shapefile-form">H1.4.2 Importing polyline feature data in shapefile form</h2>
+<p>Using the same method as above, we now import the <code>CyclingPath</code> shapefile into R as a line feature data frame.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>cycling_paths <span class="ot">=</span> <span class="fu">st_read</span>(<span class="at">dsn=</span><span class="st">"data/geospatial/CyclingPath_Jul2024"</span>, <span class="at">layer=</span><span class="st">"CyclingPathGazette"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Reading layer `CyclingPathGazette' from data source 
+  `/Users/kendricktty/Gits/smu_cs/is442-site/Hands-on_Ex01/data/geospatial/CyclingPath_Jul2024' 
+  using driver `ESRI Shapefile'
+Simple feature collection with 3138 features and 2 fields
+Geometry type: MULTILINESTRING
+Dimension:     XY
+Bounding box:  xmin: 11854.32 ymin: 28347.98 xmax: 42644.17 ymax: 48948.15
+Projected CRS: SVY21</code></pre>
+</div>
+</div>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
