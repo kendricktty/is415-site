@@ -6,7 +6,15 @@ website:
   navbar:
     left:
       - about.qmd
-      - 
+      - text: "In-Class Exercises"
+        menu:
+        - text: "To be updated"
+      - text: "Hands-On Exercises"
+        menu:
+        - href: "Hands-on_Ex01/hands-on-1.qmd"
+      - text: "Take-home Exercises"
+        menu:
+        - text: "To be updated" 
 
 format:
   html:

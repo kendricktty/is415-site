@@ -2,7 +2,7 @@
   {
     "objectID": "about.html",
     "href": "about.html",
-    "title": "About",
+    "title": "About me",
     "section": "",
     "text": "Hi there! My name is Kendrick Teo, and I’m a final-year student of Singapore Management University (SMU).\nThe purpose of this website is to document my learning journey in the course: IS415: Geospatial Analytics and Applications under professor Kam Tin Seong. Follow along with my coursework below as I explore the vast world of data analytics, geospatial analytics and urban planning.\nIf you’re liking this site so far, I would most appreciate it if you could connect with me on LinkedIn!"
   },
@@ -12,5 +12,12 @@
     "title": "IS415: Geospatial Analytics and Applications",
     "section": "",
     "text": "Welcome, and thanks for stopping by! My name is Kendrick, and you’ve reached my portfolio website for IS415: Geospatial Analytics and Applications.\n\nhello_world &lt;- \"hello world!\"\nprint(hello_world)\n\n[1] \"hello world!\""
+  },
+  {
+    "objectID": "Hands-on_Ex01/hands-on-1.html",
+    "href": "Hands-on_Ex01/hands-on-1.html",
+    "title": "Hands-On Exercise 1",
+    "section": "",
+    "text": "1 Overview\nAdapted from the course website\n\n\n1.1 Data acquisition\nTo complete this exercise, the following datasets were downloaded and extracted:\n\nMaster Plan 2014 Subzone Boundary (Web) from data.gov.sg\n\n\n\n1.2"
   }
 ]

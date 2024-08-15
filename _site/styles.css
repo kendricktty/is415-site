@@ -1,10 +1,5 @@
 /* css styles */
 /* Change the background color of the navigation bar */
 .navbar {
-  background-color: #3e83b0;  /* Change this to your desired color */
-}
-
-/* Optional: Change the text color of the menu links */
-.navbar a {
-  color: #ffffff;  /* Change the text color */
+  background-color: #74c7fc;  /* Change this to your desired color */
 }

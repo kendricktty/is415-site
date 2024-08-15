@@ -1,0 +1,19 @@
+---
+title: "Hands-On Exercise 1"
+subtitle: "Geospatial Data Science with R"
+date: "2024-08-17"         # Published date
+last-modified: "2024-08-17" # Modified date
+---
+
+### 1 Overview
+
+Adapted from the [course website](https://r4gdsa.netlify.app/chap01learning-outcome)
+
+
+### 1.1 Data acquisition
+
+To complete this exercise, the following datasets were downloaded and extracted:
+
+* Master Plan 2014 Subzone Boundary (Web) from [data.gov.sg](https://data.gov.sg)
+
+### 1.2 
