@@ -122,7 +122,56 @@ head(mp_subzone, n=10)
 
 # H1.6 Plotting the Geospatial Data
 
+Visualising geospatial features in the Master Plan Subzone Boundary dataset:
+
 ```{r}
 max.plot = 15
 plot(mp_subzone)
+```
+
+Plotting only the geometry:
+```{r}
+plot(st_geometry(mp_subzone))
+```
+
+Plotting only one attribute:
+
+```{r}
+plot(mp_subzone["CA_IND"])
+```
+
+# H1.7 Working with Projection
+## H1.7.1 Assigning EPSG code to a simple feature data frame
+
+A common issue that can happen when impmorting geospatial data into R is a missing or wrongly assigned coordinate system. For example:
+
+```{r}
+st_crs(mp_subzone)
+```
+
+At the end of the output, the EPSG code is displayed, and it reads 9001 (world). The correct EPSG code for the Singapore Plane Coordinate System (SVY21) should be 3414 (Singapore). As such, we need to assign the correct EPSG code using the following code chunk:
+
+```{r}
+mpsz_3414 <- st_set_crs(mp_subzone, 3414)
+
+st_crs(mpsz_3414)
+```
+
+## H1.7.2 Transforming the projection of preschool from wgs84 to svy21
+
+As noted in the above warning message upon applying `st_set_crs()`, simply replacing the EPSG code does not reproject the data.
+
+As adapted from the course website:
+
+> In geospatial analytics, it is very common for us to transform the original data from geographic coordinate system to projected coordinate system. This is because geographic coordinate system is not appropriate if the analysis need to use distance or/and area measurements.
+
+```{r}
+st_geometry(preschool_data)
+```
+
+Running the above code reveals the `preschool` featureset uses the wrong `wgs84` coordinate system. To fix this, instead of running `st_set_crs()`, we have to run `st_transform()` to reproject `preschool` from one coordinate system to another.
+
+```{r}
+preschool_3414 <- st_transform(preschool_data, crs=3414)
+st_geometry(preschool_3414)
 ```
