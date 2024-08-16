@@ -284,4 +284,37 @@ mpsz_3414 <- mpsz_3414 %>%
 
 As is the case in machine learning tasks, before performing geospatial analytics we need to perform some rounds of exploratory data analysis (EDA).
 
-Since we're using R and Quarto, we need to plot graphs using the `ggplot2` library, and any histograms with R's built-in `histogram` library.
+Since we're using R and Quarto, we need to plot graphs using the `ggplot2` library, and any heatmaps with R's built-in `heatmap` library.
+
+## H1.10.1 Plotting the distribution of `PreSch Density`
+
+```{r}
+hist(mpsz_3414$`PreSch Density`)
+```
+
+```{r}
+ggplot(data=mpsz_3414, 
+       aes(x= as.numeric(`PreSch Density`)))+
+  geom_histogram(bins=20, 
+                 color="black", 
+                 fill="orange") +
+  labs(title = "Are preschools evenly distributed in Singapore?",
+       subtitle= "There are many planning sub-zones with a single preschool. On the other hand, \nthere are two planning sub-zones with at least 20 preschools!",
+      x = "Pre-school density (per km^2)",
+      y = "Frequency")
+```
+
+# H1.10.2 Plotting the relationship between preschool density and preschool count
+
+```{r}
+ggplot(data=mpsz_3414, 
+       aes(y = `PreSch Count`, 
+           x= as.numeric(`PreSch Density`)))+
+  geom_point(color="black", 
+             fill="light blue") +
+  xlim(0, 40) +
+  ylim(0, 40) +
+  labs(title = "",
+      x = "Pre-school density (per km sq)",
+      y = "Pre-school count")
+```
