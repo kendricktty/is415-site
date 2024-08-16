@@ -201,6 +201,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#h1.9.1-buffering" id="toc-h1.9.1-buffering" class="nav-link" data-scroll-target="#h1.9.1-buffering">H1.9.1 Buffering</a></li>
   <li><a href="#h1.9.2-point-in-polygon-count" id="toc-h1.9.2-point-in-polygon-count" class="nav-link" data-scroll-target="#h1.9.2-point-in-polygon-count">H1.9.2 Point-in-polygon count</a></li>
   </ul></li>
+  <li><a href="#h1.10-exploratory-data-analysis" id="toc-h1.10-exploratory-data-analysis" class="nav-link" data-scroll-target="#h1.10-exploratory-data-analysis">H1.10 Exploratory Data Analysis</a></li>
   </ul>
 </nav>
     </div>
@@ -807,9 +808,14 @@ Projected CRS: SVY21 / Singapore TM
 <div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>mpsz_3414 <span class="ot">&lt;-</span> mpsz_3414 <span class="sc">%&gt;%</span></span>
 <span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">PreSch Density</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">PreSch Count</span><span class="st">`</span><span class="sc">/</span>Area <span class="sc">*</span> <span class="dv">1000000</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-
-
 </section>
+</section>
+<section id="h1.10-exploratory-data-analysis" class="level1">
+<h1>H1.10 Exploratory Data Analysis</h1>
+<p>As is the case in machine learning tasks, before performing geospatial analytics we need to perform some rounds of exploratory data analysis (EDA).</p>
+<p>Since we’re using R and Quarto, we need to plot graphs using the <code>ggplot2</code> library, and any histograms with R’s built-in <code>histogram</code> library.</p>
+
+
 </section>
 
 </main> <!-- /main -->
