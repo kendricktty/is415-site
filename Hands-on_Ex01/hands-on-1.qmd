@@ -62,9 +62,9 @@ Tidyverse consists of a family of R packages. In this hands-on exercise, the fol
 
 -   **ggplot2** for visualising data
 
-    ```{r}
-    pacman::p_load(sf, tidyverse)
-    ```
+```{r}
+pacman::p_load(sf, tidyverse)
+```
 
 # H1.4 Importing Geospatial Data
 
@@ -130,6 +130,7 @@ plot(mp_subzone)
 ```
 
 Plotting only the geometry:
+
 ```{r}
 plot(st_geometry(mp_subzone))
 ```
@@ -141,6 +142,7 @@ plot(mp_subzone["CA_IND"])
 ```
 
 # H1.7 Working with Projection
+
 ## H1.7.1 Assigning EPSG code to a simple feature data frame
 
 A common issue that can happen when impmorting geospatial data into R is a missing or wrongly assigned coordinate system. For example:
@@ -175,3 +177,73 @@ Running the above code reveals the `preschool` featureset uses the wrong `wgs84`
 preschool_3414 <- st_transform(preschool_data, crs=3414)
 st_geometry(preschool_3414)
 ```
+
+# H1.8 Importing and Converting Aspatial Data
+
+## H1.8.1 Importing aspatial Airbnb data
+
+Just like importing and reading data in Python's `pandas`, importing aspatial data into the R/quarto environment is as easy as calling `read_csv()`.
+
+```{r}
+listings <- read_csv("data/aspatial/listings.csv")
+list(listings)
+```
+
+## H1.8.2 Creating a simple feature data frame from an aspatial data frame
+
+```{r}
+listings_sf \<- st_as_sf(listings, coords = c("longitude", "latitude"), crs=4326) %\>%
+    st_transform(crs=3414)
+```
+
+Things to learn from the arguments above:
+
+-   `coords` argument requires you to provide the column name of the x-coordinates first then followed by the column name of the y-coordinates.
+
+-   `crs` argument requires you to provide the coordinates system in epsg format. [EPSG: 4326](https://epsg.io/4326) is wgs84 Geographic Coordinate System and [EPSG: 3414](https://epsg.io/3414) is Singapore's SVY21 Projected Coordinate System. You can search for other country’s epsg code by referring to [epsg.io](https://epsg.io/).
+
+-   `%\>%` is used to nest *st_transform()* to transform the newly created simple feature data frame into the svy21 projected coordinates system.
+
+```{r}
+glimpse(listings_sf)
+```
+
+# H1.9 Geoprocessing with sf package
+
+Besides providing functions to handling (i.e. importing, exporting, assigning projection, transforming projection etc) geospatial data, **sf** package also offers a wide range of geoprocessing (also known as GIS analysis) functions.
+
+## H1.9.1 Buffering
+
+The scenario:
+
+The authority is planning to upgrade the exiting cycling path. To do so, they need to acquire 5 metres of reserved land on the both sides of the current cycling path. You are tasked to determine the extend of the land need to be acquired and their total area.
+
+The solution:
+
+Firstly, st_buffer() of *sf* package is used to compute the 5-meter buffers around cycling paths.
+
+```{r}
+buffer_cycling <- st_buffer(cycling_paths, dist=5, nQuadSegs=30)
+```
+
+Then, we calculate the area of the buffers:
+
+```{r}
+buffer_cycling$AREA <- st_area(buffer_cycling)
+```
+
+...and take the sum of Base R to derive the total land needed.
+
+```{r}
+sum(buffer_cycling$AREA)
+```
+
+## H1.9.2 Point-in-polygon count
+
+The scenario:
+
+A pre-school service group want to find out the numbers of pre-schools in each Planning Subzone.
+
+The solution:
+
+The code chunk below performs two operations at one go. Firstly, identify pre-schools located inside each Planning Subzone by using st_intersects(). Next, length() of Base R is used to calculate numbers of pre-schools that fall inside each planning subzone.
