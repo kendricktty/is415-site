@@ -279,3 +279,5 @@ Next, [*mutate()*](https://dplyr.tidyverse.org/reference/mutate.html) of the [**
 mpsz_3414 <- mpsz_3414 %>%
   mutate(`PreSch Density` = `PreSch Count`/Area * 1000000)
 ```
+
+# H1.10 Exploratory Data Analysis
