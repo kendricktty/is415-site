@@ -256,3 +256,26 @@ summary(mpsz_3414$`PreSch Count`)
 
 > **Warning**: Not to be confused by `st_intersection()`.
 
+`top_n()` from the **dplyr** package, for `n = 1`, is used to find the planning subzone with the greatest number of preschools:
+
+```{r}
+top_n(mpsz_3414, 1, `PreSch Count`)
+```
+
+> **DIY: Calculate the density of pre-school by planning subzone.**
+
+The solution:
+
+First, use [*st_area()*](https://r-spatial.github.io/sf/reference/geos_measures.html) of the **sf** package to derive the area of each planning subzone:
+
+```{r}
+mpsz_3414$Area <- mpsz_3414 %>%
+  st_area()
+```
+
+Next, [*mutate()*](https://dplyr.tidyverse.org/reference/mutate.html) of the [**dplyr**](https://dplyr.tidyverse.org/) package is used to compute the density by using the code chunk below.
+
+```{r}
+mpsz_3414 <- mpsz_3414 %>%
+  mutate(`PreSch Density` = `PreSch Count`/Area * 1000000)
+```
