@@ -284,7 +284,7 @@ mpsz_3414 <- mpsz_3414 %>%
 
 As is the case in machine learning tasks, before performing geospatial analytics we need to perform some rounds of exploratory data analysis (EDA).
 
-Since we're using R and Quarto, we need to plot graphs using the `ggplot2` library, and any heatmaps with R's built-in `heatmap` library.
+Since we're using R and Quarto, we need to plot graphs using the `ggplot2` library.
 
 ## H1.10.1 Plotting the distribution of `PreSch Density`
 
