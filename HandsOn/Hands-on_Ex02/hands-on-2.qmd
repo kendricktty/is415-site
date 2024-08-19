@@ -1,6 +1,7 @@
 ---
 title: "H2: Thematic Mapping and GeoVisualisation with R"
 subtitle: "Hands-On Exercise 2"
+author: "Kendrick Teo"
 date: "2024-08-19"
 date-modified: "last-modified"
 

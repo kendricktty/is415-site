@@ -271,5 +271,12 @@
     "title": "IS415 - Kendrick",
     "section": "",
     "text": "&lt;!DOCTYPE qgis PUBLIC ‘http://mrcc.com/qgis.dtd’ ‘SYSTEM’&gt;     dataset\n\n\n        0 0     false"
+  },
+  {
+    "objectID": "HandsOn/Hands-on_Ex02/hands-on-2.html",
+    "href": "HandsOn/Hands-on_Ex02/hands-on-2.html",
+    "title": "H2: Thematic Mapping and GeoVisualisation with R",
+    "section": "",
+    "text": "TBA"
   }
 ]

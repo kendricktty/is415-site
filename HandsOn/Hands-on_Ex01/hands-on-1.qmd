@@ -1,6 +1,7 @@
 ---
 title: "H1: Geospatial Data Wrangling with R"
 subtitle: "Hands-On Exercise 1"
+author: "Kendrick Teo"
 date: "2024-08-15"
 date-modified: "last-modified"
 
