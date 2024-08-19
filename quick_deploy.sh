@@ -1,0 +1,1 @@
+git checkout deploy && git merge main && git checkout main && git push -u origin deploy

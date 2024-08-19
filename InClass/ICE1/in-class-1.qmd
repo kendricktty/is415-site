@@ -1,0 +1,6 @@
+---
+title: "ICE-1: "
+subtitle: "In-Class Exercise 1"
+date: "2024-08-19"         # Published date
+last-modified: "2024-08-17" # Modified date
+---
