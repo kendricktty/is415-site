@@ -250,5 +250,26 @@
     "title": "H1: Geospatial Data Wrangling with R",
     "section": "H1.10.1 Plotting the distribution of PreSch Density",
     "text": "H1.10.1 Plotting the distribution of PreSch Density\n\nhist(mpsz_3414$`PreSch Density`)\n\n\n\n\n\n\n\n\n\nggplot(data=mpsz_3414, \n       aes(x= as.numeric(`PreSch Density`)))+\n  geom_histogram(bins=20, \n                 color=\"black\", \n                 fill=\"orange\") +\n  labs(title = \"Are preschools evenly distributed in Singapore?\",\n       subtitle= \"There are many planning sub-zones with a single preschool. On the other hand, \\nthere are two planning sub-zones with at least 20 preschools!\",\n      x = \"Pre-school density (per km^2)\",\n      y = \"Frequency\")"
+  },
+  {
+    "objectID": "InClass/ICE1/MPSZ-2019/MPSZ-2019.html",
+    "href": "InClass/ICE1/MPSZ-2019/MPSZ-2019.html",
+    "title": "IS415 - Kendrick",
+    "section": "",
+    "text": "&lt;!DOCTYPE qgis PUBLIC ‘http://mrcc.com/qgis.dtd’ ‘SYSTEM’&gt;     dataset\n\n\n        0 0     false"
+  },
+  {
+    "objectID": "InClass/ICE1/in-class-1.html",
+    "href": "InClass/ICE1/in-class-1.html",
+    "title": "CE1: Geospatial Data Science",
+    "section": "",
+    "text": "CE1 Overview\nThe aim of this exercise is to practise loading simple featuresets (point, line, polygon, etc) with R.\n\n\nCE1.1"
+  },
+  {
+    "objectID": "InClass/ICE1/data/MPSZ-2019.html",
+    "href": "InClass/ICE1/data/MPSZ-2019.html",
+    "title": "IS415 - Kendrick",
+    "section": "",
+    "text": "&lt;!DOCTYPE qgis PUBLIC ‘http://mrcc.com/qgis.dtd’ ‘SYSTEM’&gt;     dataset\n\n\n        0 0     false"
   }
 ]

@@ -1,6 +1,18 @@
 ---
-title: "ICE-1: "
+title: "CE1: Geospatial Data Science"
 subtitle: "In-Class Exercise 1"
-date: "2024-08-19"         # Published date
-last-modified: "2024-08-17" # Modified date
+author: "Kendrick Teo"
+date: "2024-08-18"
+date-modified: "last-modified"
+ 
+execute: 
+  eval: true
+  echo: true
+  freeze: true
 ---
+
+# CE1 Overview
+
+The aim of this exercise is to practise loading simple featuresets (point, line, polygon, etc) with R.
+
+# CE1.1

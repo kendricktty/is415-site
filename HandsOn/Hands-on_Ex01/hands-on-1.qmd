@@ -3,6 +3,11 @@ title: "H1: Geospatial Data Wrangling with R"
 subtitle: "Hands-On Exercise 1"
 date: "2024-08-17"         # Published date
 last-modified: "2024-08-17" # Modified date
+
+execute: 
+  eval: true
+  echo: true
+  freeze: true
 ---
 
 # H1.1 Overview
