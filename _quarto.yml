@@ -8,11 +8,11 @@ website:
       - about.qmd
       - text: "In-Class Exercises"
         menu:
-        # - text: "To be updated"
         - href: "InClass/ICE1/in-class-1.qmd"
       - text: "Hands-On Exercises"
         menu:
         - href: "HandsOn/Hands-on_Ex01/hands-on-1.qmd"
+        - href: "HandsOn/Hands-on_Ex02/hands-on-2.qmd"
       - text: "Take-home Exercises"
         menu:
         - text: "To be updated" 

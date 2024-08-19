@@ -2,7 +2,7 @@
 title: "CE1: Geospatial Data Science"
 subtitle: "In-Class Exercise 1"
 author: "Kendrick Teo"
-date: "2024-08-18"
+date: "2024-08-19"
 date-modified: "last-modified"
  
 execute: 

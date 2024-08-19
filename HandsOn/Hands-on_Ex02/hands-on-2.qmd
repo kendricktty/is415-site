@@ -1,0 +1,11 @@
+---
+title: "H2: Thematic Mapping and GeoVisualisation with R"
+subtitle: "Hands-On Exercise 2"
+date: "2024-08-19"
+date-modified: "last-modified"
+
+execute: 
+  eval: true
+  echo: true
+  freeze: true
+---
