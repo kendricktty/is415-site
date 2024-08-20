@@ -277,6 +277,6 @@
     "href": "HandsOn/Hands-on_Ex02/hands-on-2.html",
     "title": "H2: Thematic Mapping and GeoVisualisation with R",
     "section": "",
-    "text": "TBA"
+    "text": "H2.1 Overview\nWhile thematic mapping uses map symbols to visualise geographic properties such as population and temperature, geovisualisation is a subset of thematic mapping, where a pseudocolour is used to correspond with these geographic properties.\n\n\nH2.2 Getting Started\ntmap contains the packages needed to perform geovisualisation, so we need to import that along with the usual packages we use.\n\npacman::p_load(sf, tmap, tidyverse)\n\nalso installing the dependencies 'terra', 'geometries', 'jsonify', 'rapidjsonr', 'sfheaders', 'lwgeom', 'dichromat', 'XML', 'crosstalk', 'leaflet.providers', 'png', 'raster', 'sp', 'geojsonsf', 'tmaptools', 'stars', 'widgetframe', 'leaflet', 'leafsync', 'leafem', 'abind'\n\n\n\nThe downloaded binary packages are in\n    /var/folders/vr/0hgfmmp145324r9mrj0dm6gr0000gn/T//RtmplBu8et/downloaded_packages\n\n\n\ntmap installed"
   }
 ]

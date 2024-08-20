@@ -13,4 +13,12 @@ execute:
 
 # H2.1 Overview
 
-While thematic mapping uses map symbols to visualise geographic properties such as population and temperature, geovisualisation is a subset of thematic mapping, where a pseudocolour is used to correspond with 
+While thematic mapping uses map symbols to visualise geographic properties such as population and temperature, geovisualisation is a subset of thematic mapping, where a pseudocolour is used to correspond with these geographic properties.
+
+# H2.2 Getting Started
+
+`tmap` contains the packages needed to perform geovisualisation, so we need to import that along with the usual packages we use.
+
+```{r}
+pacman::p_load(sf, tmap, tidyverse)
+```

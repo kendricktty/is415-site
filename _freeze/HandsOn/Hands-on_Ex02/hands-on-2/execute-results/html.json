@@ -1,0 +1,15 @@
+{
+  "hash": "e79152a3f2d1c9bae15405915c66d55d",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"H2: Thematic Mapping and GeoVisualisation with R\"\nsubtitle: \"Hands-On Exercise 2\"\nauthor: \"Kendrick Teo\"\ndate: \"2024-08-19\"\ndate-modified: \"last-modified\"\n\nexecute: \n  eval: true\n  echo: true\n  freeze: true\n---\n\n\n\n\n\n# H2.1 Overview\n\nWhile thematic mapping uses map symbols to visualise geographic properties such as population and temperature, geovisualisation is a subset of thematic mapping, where a pseudocolour is used to correspond with these geographic properties.\n\n# H2.2 Getting Started\n\n`tmap` contains the packages needed to perform geovisualisation, so we need to import that along with the usual packages we use.\n\n\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\npacman::p_load(sf, tmap, tidyverse)\n```\n\n::: {.cell-output .cell-output-stderr}\n\n```\nalso installing the dependencies 'terra', 'geometries', 'jsonify', 'rapidjsonr', 'sfheaders', 'lwgeom', 'dichromat', 'XML', 'crosstalk', 'leaflet.providers', 'png', 'raster', 'sp', 'geojsonsf', 'tmaptools', 'stars', 'widgetframe', 'leaflet', 'leafsync', 'leafem', 'abind'\n```\n\n\n:::\n\n::: {.cell-output .cell-output-stdout}\n\n```\n\nThe downloaded binary packages are in\n\t/var/folders/vr/0hgfmmp145324r9mrj0dm6gr0000gn/T//RtmplBu8et/downloaded_packages\n```\n\n\n:::\n\n::: {.cell-output .cell-output-stderr}\n\n```\n\ntmap installed\n```\n\n\n:::\n:::",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
