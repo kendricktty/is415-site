@@ -11,4 +11,6 @@ execute:
   freeze: true
 ---
 
-TBA
+# H2.1 Overview
+
+While thematic mapping uses map symbols to visualise geographic properties such as population and temperature, geovisualisation is a subset of thematic mapping, where a pseudocolour is used to correspond with 
