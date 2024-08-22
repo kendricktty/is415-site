@@ -247,7 +247,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">August 19, 2024</p>
+      <p class="date-modified">August 22, 2024</p>
     </div>
   </div>
     
@@ -319,10 +319,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="h1.4.1-importing-polygon-feature-data-in-shapefile-format">H1.4.1 Importing polygon feature data in shapefile format</h2>
 <p>The code chunk below uses <em>st_read()</em> function of <strong>sf</strong> package to import the <code>MP14_SUBZONE_WEB_PL</code> shapefile into R as a polygon feature data frame.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>mp_subzone <span class="ot">=</span> <span class="fu">st_read</span>(<span class="at">dsn=</span><span class="st">"data/geospatial/MasterPlan2014SubzoneBoundaryWebSHP"</span>, <span class="at">layer=</span><span class="st">"MP14_SUBZONE_WEB_PL"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>mp_subzone <span class="ot">=</span> <span class="fu">st_read</span>(<span class="at">dsn=</span><span class="st">"../data/geospatial/MasterPlan2014SubzoneBoundaryWebSHP"</span>, <span class="at">layer=</span><span class="st">"MP14_SUBZONE_WEB_PL"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Reading layer `MP14_SUBZONE_WEB_PL' from data source 
-  `/Users/kendricktty/Gits/smu_cs/is415-site/HandsOn/Hands-on_Ex01/data/geospatial/MasterPlan2014SubzoneBoundaryWebSHP' 
+  `/Users/kendricktty/Gits/smu_cs/is415-site/HandsOn/data/geospatial/MasterPlan2014SubzoneBoundaryWebSHP' 
   using driver `ESRI Shapefile'
 Simple feature collection with 323 features and 15 fields
 Geometry type: MULTIPOLYGON
@@ -337,10 +337,10 @@ Projected CRS: SVY21</code></pre>
 <h2 class="anchored" data-anchor-id="h1.4.2-importing-polyline-feature-data-in-shapefile-form">H1.4.2 Importing polyline feature data in shapefile form</h2>
 <p>Using the same method as above, we now import the <code>CyclingPath</code> shapefile into R as a line feature data frame.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>cycling_paths <span class="ot">=</span> <span class="fu">st_read</span>(<span class="at">dsn=</span><span class="st">"data/geospatial/CyclingPath_Jul2024"</span>, <span class="at">layer=</span><span class="st">"CyclingPathGazette"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>cycling_paths <span class="ot">=</span> <span class="fu">st_read</span>(<span class="at">dsn=</span><span class="st">"../data/geospatial/CyclingPath_Jul2024"</span>, <span class="at">layer=</span><span class="st">"CyclingPathGazette"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Reading layer `CyclingPathGazette' from data source 
-  `/Users/kendricktty/Gits/smu_cs/is415-site/HandsOn/Hands-on_Ex01/data/geospatial/CyclingPath_Jul2024' 
+  `/Users/kendricktty/Gits/smu_cs/is415-site/HandsOn/data/geospatial/CyclingPath_Jul2024' 
   using driver `ESRI Shapefile'
 Simple feature collection with 3138 features and 2 fields
 Geometry type: MULTILINESTRING
@@ -353,10 +353,10 @@ Projected CRS: SVY21</code></pre>
 <section id="h1.4.3-importing-gis-data-in-kml-format" class="level2">
 <h2 class="anchored" data-anchor-id="h1.4.3-importing-gis-data-in-kml-format">H1.4.3 Importing GIS data in kml format</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>preschool_data <span class="ot">=</span> <span class="fu">st_read</span>(<span class="st">"data/geospatial/PreSchoolsLocation.kml"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>preschool_data <span class="ot">=</span> <span class="fu">st_read</span>(<span class="st">"../data/geospatial/PreSchoolsLocation.kml"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Reading layer `PRESCHOOLS_LOCATION' from data source 
-  `/Users/kendricktty/Gits/smu_cs/is415-site/HandsOn/Hands-on_Ex01/data/geospatial/PreSchoolsLocation.kml' 
+  `/Users/kendricktty/Gits/smu_cs/is415-site/HandsOn/data/geospatial/PreSchoolsLocation.kml' 
   using driver `KML'
 Simple feature collection with 2290 features and 2 fields
 Geometry type: POINT
@@ -685,7 +685,7 @@ First 5 geometries:</code></pre>
 <h2 class="anchored" data-anchor-id="h1.8.1-importing-aspatial-airbnb-data">H1.8.1 Importing aspatial Airbnb data</h2>
 <p>Just like importing and reading data in Python’s <code>pandas</code>, importing aspatial data into the R/quarto environment is as easy as calling <code>read_csv()</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>listings <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/aspatial/listings.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>listings <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"../data/aspatial/listings.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Rows: 3540 Columns: 18
 ── Column specification ────────────────────────────────────────────────────────

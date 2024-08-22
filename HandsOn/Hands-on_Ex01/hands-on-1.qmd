@@ -87,7 +87,7 @@ Geospatial data was imported into R using [*st_read()*](https://r-spatial.github
 The code chunk below uses *st_read()* function of **sf** package to import the `MP14_SUBZONE_WEB_PL` shapefile into R as a polygon feature data frame.
 
 ```{r}
-mp_subzone = st_read(dsn="data/geospatial/MasterPlan2014SubzoneBoundaryWebSHP", layer="MP14_SUBZONE_WEB_PL")
+mp_subzone = st_read(dsn="../data/geospatial/MasterPlan2014SubzoneBoundaryWebSHP", layer="MP14_SUBZONE_WEB_PL")
 ```
 
 There are a total of 323 multipolygon features and 15 fields in `mpsz` simple feature data frame. `mpsz` is in **svy21** projected coordinates systems. The bounding box provides the x extend and y extend of the data.
@@ -97,13 +97,13 @@ There are a total of 323 multipolygon features and 15 fields in `mpsz` simple fe
 Using the same method as above, we now import the `CyclingPath` shapefile into R as a line feature data frame.
 
 ```{r}
-cycling_paths = st_read(dsn="data/geospatial/CyclingPath_Jul2024", layer="CyclingPathGazette")
+cycling_paths = st_read(dsn="../data/geospatial/CyclingPath_Jul2024", layer="CyclingPathGazette")
 ```
 
 ## H1.4.3 Importing GIS data in kml format
 
 ```{r}
-preschool_data = st_read("data/geospatial/PreSchoolsLocation.kml")
+preschool_data = st_read("../data/geospatial/PreSchoolsLocation.kml")
 ```
 
 # H1.5 Checking the Content of a Simple Feature DataFrame
@@ -191,7 +191,7 @@ st_geometry(preschool_3414)
 Just like importing and reading data in Python's `pandas`, importing aspatial data into the R/quarto environment is as easy as calling `read_csv()`.
 
 ```{r}
-listings <- read_csv("data/aspatial/listings.csv")
+listings <- read_csv("../data/aspatial/listings.csv")
 list(listings)
 ```
 

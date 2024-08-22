@@ -22,3 +22,32 @@ While thematic mapping uses map symbols to visualise geographic properties such 
 ```{r}
 pacman::p_load(sf, tmap, tidyverse)
 ```
+
+# H2.3 Importing Data into R
+
+The datasets to be used are:
+
+1. Master Plan 2014 Subzone Boundary (Web)(`MP14_SUBZONE_WEB_PL`) in ESRI shapefile format
+```{r}
+mp_subzone = st_read(dsn="../data/geospatial/MasterPlan2014SubzoneBoundaryWebSHP", layer="MP14_SUBZONE_WEB_PL")
+mp_subzone
+```
+
+2. Singapore Residents by Planning Area / Subzone, Age Group, Sex and Type of Dwelling, June 2011-2020 (aspatial)
+
+```{r}
+population_data = read_csv("../data/aspatial/respopagesextod2011to2020/respopagesextod2011to2020.csv")
+head(population_data)
+```
+
+# H2.3.4 Data Preparation
+
+To prepare our thematic map visualising the distribution of Singapore residents of various attributes, we need to filter the population dataset to only include values from the year 2020.
+
+The `%>%` operator is used extensively here, so it might be worth summarising
+
+```{r}
+population_2020 <- population_data %>%
+  filter(Time == 2020) %>%
+
+```
