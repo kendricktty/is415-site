@@ -10,6 +10,7 @@ execute:
   echo: true
   freeze: true
 ---
+Changelog: Since the same dataset may be required across multiple hands-on exercises, the data folder for this hands-on exercise has been moded to the root of the `HandsOn` directory. Correspondingly, all code chunks have been modified to reference the newly located data folder.
 
 # H1.1 Overview
 
