@@ -184,10 +184,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#h2.3.4-data-preparation" id="toc-h2.3.4-data-preparation" class="nav-link" data-scroll-target="#h2.3.4-data-preparation">H2.3.4 Data Preparation</a>
   <ul class="collapse">
   <li><a href="#h2.3.4.0-operator" id="toc-h2.3.4.0-operator" class="nav-link" data-scroll-target="#h2.3.4.0-operator">H2.3.4.0 <code>%&gt;%</code> Operator</a></li>
-  <li><a href="#data-wrangling" id="toc-data-wrangling" class="nav-link" data-scroll-target="#data-wrangling">2.3.4.1 Data wrangling</a></li>
-  <li><a href="#joining-attribute-and-geospatial-data" id="toc-joining-attribute-and-geospatial-data" class="nav-link" data-scroll-target="#joining-attribute-and-geospatial-data">2.3.4.2 Joining attribute and geospatial data</a></li>
   </ul></li>
-  <li><a href="#choropleth-mapping-using-tmap" id="toc-choropleth-mapping-using-tmap" class="nav-link" data-scroll-target="#choropleth-mapping-using-tmap">2.4 Choropleth mapping using <code>tmap</code></a></li>
+  <li><a href="#choropleth-mapping-using-tmap" id="toc-choropleth-mapping-using-tmap" class="nav-link" data-scroll-target="#choropleth-mapping-using-tmap">2.4 Choropleth mapping using <code>tmap</code></a>
+  <ul class="collapse">
+  <li><a href="#plotting-a-choropleth-map-quickly-using-qtm" id="toc-plotting-a-choropleth-map-quickly-using-qtm" class="nav-link" data-scroll-target="#plotting-a-choropleth-map-quickly-using-qtm">2.4.1 Plotting a choropleth map quickly using <code>qtm()</code></a></li>
+  <li><a href="#creating-a-choropleth-map-using-tmap-elements" id="toc-creating-a-choropleth-map-using-tmap-elements" class="nav-link" data-scroll-target="#creating-a-choropleth-map-using-tmap-elements">2.4.2 Creating a choropleth map using <code>tmap</code> elements</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -332,6 +334,7 @@ dbl (2): Pop, Time
 6 Ang Mo Kio Ang Mo Kio Town Centre 0_to_4 Males Landed Properties       0  2011</code></pre>
 </div>
 </div>
+<p>The data appears to be arranged in order of planning area, so by calling <code>head()</code>, the first few rows feature entries located in the good town of <a href="https://en.wikipedia.org/wiki/Ang_Mo_Kio">Ang Mo Kio</a>.</p>
 </section>
 <section id="h2.3.4-data-preparation" class="level2">
 <h2 class="anchored" data-anchor-id="h2.3.4-data-preparation">H2.3.4 Data Preparation</h2>
@@ -378,9 +381,8 @@ dbl (2): Pop, Time
 <pre><code>{python}
 df = pd.read_csv()
 df.fillna().head()</code></pre>
-</section>
-<section id="data-wrangling" class="level3">
-<h3 class="anchored" data-anchor-id="data-wrangling">2.3.4.1 Data wrangling</h3>
+<section id="data-wrangling" class="level4">
+<h4 class="anchored" data-anchor-id="data-wrangling">2.3.4.1 Data wrangling</h4>
 <p>Great! Now that we’ve explained <code>%&gt;%</code>, let’s now move on to the more complicated job of feature-engineering the population data.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>population_2020 <span class="ot">&lt;-</span> population_data <span class="sc">%&gt;%</span></span>
@@ -404,8 +406,8 @@ df.fillna().head()</code></pre>
 </div>
 </div>
 </section>
-<section id="joining-attribute-and-geospatial-data" class="level3">
-<h3 class="anchored" data-anchor-id="joining-attribute-and-geospatial-data">2.3.4.2 Joining attribute and geospatial data</h3>
+<section id="joining-attribute-and-geospatial-data" class="level4">
+<h4 class="anchored" data-anchor-id="joining-attribute-and-geospatial-data">2.3.4.2 Joining attribute and geospatial data</h4>
 <p>A georelational join will now need to be performed to combine them into the same table.</p>
 <p>Before we can do so, though, we need to convert the PA and SZ fields to uppercase, to unify its presentation with teh SUBZONE_N and PLN_AREA_N fields.</p>
 <div class="cell">
@@ -419,6 +421,7 @@ df.fillna().head()</code></pre>
 </div>
 </section>
 </section>
+</section>
 <section id="choropleth-mapping-using-tmap" class="level2">
 <h2 class="anchored" data-anchor-id="choropleth-mapping-using-tmap">2.4 Choropleth mapping using <code>tmap</code></h2>
 <p>We can now create our choropleth map.</p>
@@ -426,8 +429,80 @@ df.fillna().head()</code></pre>
 <blockquote class="blockquote">
 <p>Choropleth mapping involves the symbolisation of enumeration units, such as countries, provinces, states, counties or census units, using area patterns or graduated colors. For example, a social scientist may need to use a choropleth map to portray the spatial distribution of aged population of Singapore by Master Plan 2014 Subzone Boundary.</p>
 </blockquote>
+<blockquote class="blockquote">
+<p>Two approaches can be used to prepare thematic map using tmap, they are:</p>
+</blockquote>
+<blockquote class="blockquote">
+<ul>
+<li>Plotting a thematic map quickly by using qtm().</li>
+<li>Plotting highly customisable thematic map by using tmap elements.</li>
+</ul>
+</blockquote>
+<section id="plotting-a-choropleth-map-quickly-using-qtm" class="level3">
+<h3 class="anchored" data-anchor-id="plotting-a-choropleth-map-quickly-using-qtm">2.4.1 Plotting a choropleth map quickly using <code>qtm()</code></h3>
+<p>The easiest and quickest way to draw a chloropleth map is using <code>qtm()</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_mode</span>(<span class="st">"plot"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>tmap mode set to plotting</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qtm</span>(combined, </span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"DEPENDENCY"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hands-on-2_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This map indicates that the dependency ratio in most of the island is a supposedly healthy 5 and below. Missing datapoints correspond with major commercial nodes and key installations in the country (such as Changi Airport in the east, the central catchment nature reserve, the downtown core and industrial estates in Jurong and Tuas), while Changi Village (the patch of red) seems to have the highest percentage of dependents.</p>
+<blockquote class="blockquote">
+<p>Learning points:</p>
+</blockquote>
+<blockquote class="blockquote">
+<ul>
+<li><code>tmap_mode()</code> with <code>“plot”</code> option is used to produce a static map. For interactive mode, <code>“view”</code> option should be used.</li>
+</ul>
+</blockquote>
+<blockquote class="blockquote">
+<ul>
+<li><code>fill</code> argument is used to map the attribute (in this case, <code>"DEPENDENCY"</code>)</li>
+</ul>
+</blockquote>
+</section>
+<section id="creating-a-choropleth-map-using-tmap-elements" class="level3">
+<h3 class="anchored" data-anchor-id="creating-a-choropleth-map-using-tmap-elements">2.4.2 Creating a choropleth map using <code>tmap</code> elements</h3>
+<p>A major disadvantage of <code>qtm()</code> is that it makes aesthetics of individual layers harder to control. Using the <code>tmap</code> elements allows us to draw better quality cartographic choropleth maps like the one below.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(combined)<span class="sc">+</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="st">"DEPENDENCY"</span>, </span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">style =</span> <span class="st">"quantile"</span>, </span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">palette =</span> <span class="st">"Blues"</span>,</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>          <span class="at">title =</span> <span class="st">"Dependency ratio"</span>) <span class="sc">+</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">main.title =</span> <span class="st">"Distribution of Dependency Ratio by planning subzone"</span>,</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">main.title.position =</span> <span class="st">"center"</span>,</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">main.title.size =</span> <span class="fl">1.2</span>,</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">legend.height =</span> <span class="fl">0.45</span>, </span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>            <span class="at">legend.width =</span> <span class="fl">0.35</span>,</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>            <span class="at">frame =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_compass</span>(<span class="at">type=</span><span class="st">"8star"</span>, <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_scale_bar</span>() <span class="sc">+</span></span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_grid</span>(<span class="at">alpha =</span><span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_credits</span>(<span class="st">"Source: Planning Sub-zone boundary from Urban Redevelopment Authorithy (URA)</span><span class="sc">\n</span><span class="st"> and Population data from Department of Statistics DOS"</span>, </span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>             <span class="at">position =</span> <span class="fu">c</span>(<span class="st">"left"</span>, <span class="st">"bottom"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hands-on-2_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

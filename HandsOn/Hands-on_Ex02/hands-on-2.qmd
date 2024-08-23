@@ -40,6 +40,8 @@ population_data = read_csv("../data/aspatial/respopagesextod2011to2020/respopage
 head(population_data)
 ```
 
+The data appears to be arranged in order of planning area, so by calling `head()`, the first few rows feature entries located in the good town of [Ang Mo Kio](https://en.wikipedia.org/wiki/Ang_Mo_Kio).
+
 ## H2.3.4 Data Preparation
 
 To prepare our thematic map visualising the distribution of Singapore residents of various attributes, we need to filter the population dataset to only include values from the year 2020.
@@ -82,7 +84,7 @@ df = pd.read_csv()
 df.fillna().head()
 ```
 
-### 2.3.4.1 Data wrangling
+#### 2.3.4.1 Data wrangling
 
 Great! Now that we've explained `%>%`, let's now move on to the more complicated job of feature-engineering the population data.
 
@@ -104,7 +106,7 @@ population_2020 <- population_data %>%
        `TOTAL`, `DEPENDENCY`)
 ```
 
-### 2.3.4.2 Joining attribute and geospatial data
+#### 2.3.4.2 Joining attribute and geospatial data
 
 A georelational join will now need to be performed to combine them into the same table.
 
@@ -129,3 +131,57 @@ We can now create our choropleth map.
 As adapted from the [course website](https://r4gdsa.netlify.app/chap02.html):
 
 > Choropleth mapping involves the symbolisation of enumeration units, such as countries, provinces, states, counties or census units, using area patterns or graduated colors. For example, a social scientist may need to use a choropleth map to portray the spatial distribution of aged population of Singapore by Master Plan 2014 Subzone Boundary.
+
+> Two approaches can be used to prepare thematic map using tmap, they are:
+
+> * Plotting a thematic map quickly by using qtm().
+> * Plotting highly customisable thematic map by using tmap elements.
+
+
+### 2.4.1 Plotting a choropleth map quickly using `qtm()`
+
+The easiest and quickest way to draw a chloropleth map is using `qtm()`:
+
+```{r}
+tmap_mode("plot")
+qtm(combined, 
+    fill = "DEPENDENCY")
+```
+
+This map indicates that the dependency ratio in most of the island is a supposedly healthy 5 and below. Missing datapoints correspond with major commercial nodes and key installations in the country (such as Changi Airport in the east, the central catchment nature reserve, the downtown core and industrial estates in Jurong and Tuas), while [Changi Village](https://en.wikipedia.org/wiki/Changi_Village) (the patch of red) seems to have the highest percentage of dependents.
+
+> Learning points:
+
+> * `tmap_mode()` with `“plot”` option is used to produce a static map. For interactive mode, `“view”` option should be used.
+
+> * `fill` argument is used to map the attribute (in this case, `"DEPENDENCY"`)
+
+### 2.4.2 Creating a choropleth map using `tmap` elements
+
+A major disadvantage of `qtm()` is that it makes aesthetics of individual layers harder to control. Using the `tmap` elements allows us to draw better quality cartographic choropleth maps like the one below.
+
+```{r}
+tm_shape(combined)+
+  tm_fill("DEPENDENCY", 
+          style = "quantile", 
+          palette = "Blues",
+          title = "Dependency ratio") +
+  tm_layout(main.title = "Distribution of Dependency Ratio by planning subzone",
+            main.title.position = "center",
+            main.title.size = 1.2,
+            legend.height = 0.45, 
+            legend.width = 0.35,
+            frame = TRUE) +
+  tm_borders(alpha = 0.5) +
+  tm_compass(type="8star", size = 2) +
+  tm_scale_bar() +
+  tm_grid(alpha =0.2) +
+  tm_credits("Source: Planning Sub-zone boundary from Urban Redevelopment Authorithy (URA)\n and Population data from Department of Statistics DOS", 
+             position = c("left", "bottom"))
+```
+
+Once again the missing datapoints correspond to areas of the country not dedicated to residential use, but this time we have a much more varied visualisation of the dependency ratio within the country. The areas with the highest dependency ratio appear to correlate with the oldest [HDB](https://en.wikipedia.org/wiki/Housing_and_Development_Board) estates, from [Toa Payoh](https://en.wikipedia.org/wiki/Toa_Payoh) to [Queenstown](https://en.wikipedia.org/wiki/Queenstown,_Singapore), while the newer estates such as [Sengkang](https://en.wikipedia.org/wiki/Sengkang), [Punggol](https://en.wikipedia.org/wiki/Punggol) and even [Yishun](https://en.wikipedia.org/wiki/Yishun) have a smaller proportion of dependants.
+
+#### 2.4.2.1 Drawing a base map
+
+In the code chunk below, tm_shape() is used to define the input data (i.e mpsz_pop2020) and tm_polygons() is used to draw the planning subzone polygons
