@@ -11,11 +11,11 @@ execute:
   freeze: true
 ---
 
-# H2.1 Overview
+## H2.1 Overview
 
 While thematic mapping uses map symbols to visualise geographic properties such as population and temperature, geovisualisation is a subset of thematic mapping, where a pseudocolour is used to correspond with these geographic properties.
 
-# H2.2 Getting Started
+## H2.2 Getting Started
 
 `tmap` contains the packages needed to perform geovisualisation, so we need to import that along with the usual packages we use.
 
@@ -23,7 +23,7 @@ While thematic mapping uses map symbols to visualise geographic properties such 
 pacman::p_load(sf, tmap, tidyverse)
 ```
 
-# H2.3 Importing Data into R
+## H2.3 Importing Data into R
 
 The datasets to be used are:
 
@@ -40,14 +40,92 @@ population_data = read_csv("../data/aspatial/respopagesextod2011to2020/respopage
 head(population_data)
 ```
 
-# H2.3.4 Data Preparation
+## H2.3.4 Data Preparation
 
 To prepare our thematic map visualising the distribution of Singapore residents of various attributes, we need to filter the population dataset to only include values from the year 2020.
 
-The `%>%` operator is used extensively here, so it might be worth summarising
+### H2.3.4.0 `%>%` Operator
+
+The `%>%` operator is used extensively here, so as an R beginner, it might be worth summarising what it does. Basically, `%>%` is a pipe that directs the output of the function called to its left to the one called on its right.
+
+```{r}
+quadratic_function <- function(x) {
+  return (x * x)
+}
+
+add_3 <- function(x) {
+  return (x + 3)
+}
+
+multiply_2 <- function(x) {
+  return (x * 2)
+}
+
+three_plus_three_times_2 <- 3 %>% multiply_2 %>% add_3 %>% multiply_2
+print("Expected: 18")
+print(paste("Actual:", three_plus_three_times_2, sep=" "))
+```
+
+The alternative would be to create a large composite list of functions within functions, which would make our code difficult to read:
+
+```{r}
+three_plus_three_times_2 <- multiply_2(add_3(multiply_2(3)))
+print("Expected: 18")
+print(paste("Actual:", three_plus_three_times_2, sep=" "))
+```
+
+In the context of data preprocessing, the `%>%` would be akin, in Python, to chaining multiple `pandas` methods together in the same line, such that the operations are also performed from left to right. For example:
+
+```
+{python}
+df = pd.read_csv()
+df.fillna().head()
+```
+
+### 2.3.4.1 Data wrangling
+
+Great! Now that we've explained `%>%`, let's now move on to the more complicated job of feature-engineering the population data.
 
 ```{r}
 population_2020 <- population_data %>%
   filter(Time == 2020) %>%
-
+  group_by(PA, SZ, AG) %>%
+  summarise(`POP` = sum(`Pop`)) %>%
+  ungroup() %>%
+  pivot_wider(names_from=AG, values_from=POP) %>%
+  mutate(`YOUNG`=rowSums(.[3:6]) + rowSums(.[12])) %>%
+  mutate(`ECONOMY ACTIVE`=rowSums(.[7:11]) + rowSums(.[13:15])) %>%
+  mutate(`AGED`=rowSums(.[16:21])) %>%
+  mutate(`TOTAL`=rowSums(.[3:21])) %>%  
+  mutate(`DEPENDENCY`=(`YOUNG` + `AGED`)
+    /`ECONOMY ACTIVE`) %>%
+  select(`PA`, `SZ`, `YOUNG`, 
+       `ECONOMY ACTIVE`, `AGED`, 
+       `TOTAL`, `DEPENDENCY`)
 ```
+
+### 2.3.4.2 Joining attribute and geospatial data
+
+A georelational join will now need to be performed to combine them into the same table.
+
+Before we can do so, though, we need to convert the PA and SZ fields to uppercase, to unify its presentation with teh SUBZONE_N and PLN_AREA_N fields.
+
+```{r}
+population_2020 <- population_2020 %>% 
+  mutate_at(.vars = vars(PA, SZ), .funs = list(toupper)) %>% 
+  filter(`ECONOMY ACTIVE` > 0)
+```
+
+We can now perform a **left join** (from the `dplyr` function) between the subzone geospatial data and the population data on the `SUBZONE_N` and `SZ` identifiers:
+
+```{r}
+combined <- left_join(mp_subzone, population_2020, by=c("SUBZONE_N" = "SZ"))
+```
+
+## 2.4 Choropleth mapping using `tmap`
+
+We can now create our choropleth map.
+
+As adapted from the [course website](https://r4gdsa.netlify.app/chap02.html):
+
+> Choropleth mapping involves the symbolisation of enumeration units, such as countries, provinces, states, counties or census units, using area patterns or graduated colors. For example, a social scientist may need to use a choropleth map to portray the spatial distribution of aged population of Singapore by Master Plan 2014 Subzone Boundary.

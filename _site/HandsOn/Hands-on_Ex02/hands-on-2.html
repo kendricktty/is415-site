@@ -181,6 +181,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#h2.1-overview" id="toc-h2.1-overview" class="nav-link active" data-scroll-target="#h2.1-overview">H2.1 Overview</a></li>
   <li><a href="#h2.2-getting-started" id="toc-h2.2-getting-started" class="nav-link" data-scroll-target="#h2.2-getting-started">H2.2 Getting Started</a></li>
   <li><a href="#h2.3-importing-data-into-r" id="toc-h2.3-importing-data-into-r" class="nav-link" data-scroll-target="#h2.3-importing-data-into-r">H2.3 Importing Data into R</a></li>
+  <li><a href="#h2.3.4-data-preparation" id="toc-h2.3.4-data-preparation" class="nav-link" data-scroll-target="#h2.3.4-data-preparation">H2.3.4 Data Preparation</a>
+  <ul class="collapse">
+  <li><a href="#h2.3.4.0-operator" id="toc-h2.3.4.0-operator" class="nav-link" data-scroll-target="#h2.3.4.0-operator">H2.3.4.0 <code>%&gt;%</code> Operator</a></li>
+  <li><a href="#data-wrangling" id="toc-data-wrangling" class="nav-link" data-scroll-target="#data-wrangling">2.3.4.1 Data wrangling</a></li>
+  <li><a href="#joining-attribute-and-geospatial-data" id="toc-joining-attribute-and-geospatial-data" class="nav-link" data-scroll-target="#joining-attribute-and-geospatial-data">2.3.4.2 Joining attribute and geospatial data</a></li>
+  </ul></li>
+  <li><a href="#choropleth-mapping-using-tmap" id="toc-choropleth-mapping-using-tmap" class="nav-link" data-scroll-target="#choropleth-mapping-using-tmap">2.4 Choropleth mapping using <code>tmap</code></a></li>
   </ul>
 </nav>
     </div>
@@ -214,7 +221,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">August 22, 2024</p>
+      <p class="date-modified">August 23, 2024</p>
     </div>
   </div>
     
@@ -225,19 +232,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="h2.1-overview" class="level1">
-<h1>H2.1 Overview</h1>
+<section id="h2.1-overview" class="level2">
+<h2 class="anchored" data-anchor-id="h2.1-overview">H2.1 Overview</h2>
 <p>While thematic mapping uses map symbols to visualise geographic properties such as population and temperature, geovisualisation is a subset of thematic mapping, where a pseudocolour is used to correspond with these geographic properties.</p>
 </section>
-<section id="h2.2-getting-started" class="level1">
-<h1>H2.2 Getting Started</h1>
+<section id="h2.2-getting-started" class="level2">
+<h2 class="anchored" data-anchor-id="h2.2-getting-started">H2.2 Getting Started</h2>
 <p><code>tmap</code> contains the packages needed to perform geovisualisation, so we need to import that along with the usual packages we use.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sf, tmap, tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="h2.3-importing-data-into-r" class="level1">
-<h1>H2.3 Importing Data into R</h1>
+<section id="h2.3-importing-data-into-r" class="level2">
+<h2 class="anchored" data-anchor-id="h2.3-importing-data-into-r">H2.3 Importing Data into R</h2>
 <p>The datasets to be used are:</p>
 <ol type="1">
 <li>Master Plan 2014 Subzone Boundary (Web)(<code>MP14_SUBZONE_WEB_PL</code>) in ESRI shapefile format</li>
@@ -325,6 +332,100 @@ dbl (2): Pop, Time
 6 Ang Mo Kio Ang Mo Kio Town Centre 0_to_4 Males Landed Properties       0  2011</code></pre>
 </div>
 </div>
+</section>
+<section id="h2.3.4-data-preparation" class="level2">
+<h2 class="anchored" data-anchor-id="h2.3.4-data-preparation">H2.3.4 Data Preparation</h2>
+<p>To prepare our thematic map visualising the distribution of Singapore residents of various attributes, we need to filter the population dataset to only include values from the year 2020.</p>
+<section id="h2.3.4.0-operator" class="level3">
+<h3 class="anchored" data-anchor-id="h2.3.4.0-operator">H2.3.4.0 <code>%&gt;%</code> Operator</h3>
+<p>The <code>%&gt;%</code> operator is used extensively here, so as an R beginner, it might be worth summarising what it does. Basically, <code>%&gt;%</code> is a pipe that directs the output of the function called to its left to the one called on its right.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>quadratic_function <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span> (x <span class="sc">*</span> x)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>add_3 <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span> (x <span class="sc">+</span> <span class="dv">3</span>)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>multiply_2 <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span> (x <span class="sc">*</span> <span class="dv">2</span>)</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>three_plus_three_times_2 <span class="ot">&lt;-</span> <span class="dv">3</span> <span class="sc">%&gt;%</span> multiply_2 <span class="sc">%&gt;%</span> add_3 <span class="sc">%&gt;%</span> multiply_2</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"Expected: 18"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Expected: 18"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"Actual:"</span>, three_plus_three_times_2, <span class="at">sep=</span><span class="st">" "</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Actual: 18"</code></pre>
+</div>
+</div>
+<p>The alternative would be to create a large composite list of functions within functions, which would make our code difficult to read:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>three_plus_three_times_2 <span class="ot">&lt;-</span> <span class="fu">multiply_2</span>(<span class="fu">add_3</span>(<span class="fu">multiply_2</span>(<span class="dv">3</span>)))</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"Expected: 18"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Expected: 18"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"Actual:"</span>, three_plus_three_times_2, <span class="at">sep=</span><span class="st">" "</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Actual: 18"</code></pre>
+</div>
+</div>
+<p>In the context of data preprocessing, the <code>%&gt;%</code> would be akin, in Python, to chaining multiple <code>pandas</code> methods together in the same line, such that the operations are also performed from left to right. For example:</p>
+<pre><code>{python}
+df = pd.read_csv()
+df.fillna().head()</code></pre>
+</section>
+<section id="data-wrangling" class="level3">
+<h3 class="anchored" data-anchor-id="data-wrangling">2.3.4.1 Data wrangling</h3>
+<p>Great! Now that we’ve explained <code>%&gt;%</code>, let’s now move on to the more complicated job of feature-engineering the population data.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>population_2020 <span class="ot">&lt;-</span> population_data <span class="sc">%&gt;%</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Time <span class="sc">==</span> <span class="dv">2020</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(PA, SZ, AG) <span class="sc">%&gt;%</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="st">`</span><span class="at">POP</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sum</span>(<span class="st">`</span><span class="at">Pop</span><span class="st">`</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from=</span>AG, <span class="at">values_from=</span>POP) <span class="sc">%&gt;%</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">YOUNG</span><span class="st">`</span><span class="ot">=</span><span class="fu">rowSums</span>(.[<span class="dv">3</span><span class="sc">:</span><span class="dv">6</span>]) <span class="sc">+</span> <span class="fu">rowSums</span>(.[<span class="dv">12</span>])) <span class="sc">%&gt;%</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">ECONOMY ACTIVE</span><span class="st">`</span><span class="ot">=</span><span class="fu">rowSums</span>(.[<span class="dv">7</span><span class="sc">:</span><span class="dv">11</span>]) <span class="sc">+</span> <span class="fu">rowSums</span>(.[<span class="dv">13</span><span class="sc">:</span><span class="dv">15</span>])) <span class="sc">%&gt;%</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">AGED</span><span class="st">`</span><span class="ot">=</span><span class="fu">rowSums</span>(.[<span class="dv">16</span><span class="sc">:</span><span class="dv">21</span>])) <span class="sc">%&gt;%</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">TOTAL</span><span class="st">`</span><span class="ot">=</span><span class="fu">rowSums</span>(.[<span class="dv">3</span><span class="sc">:</span><span class="dv">21</span>])) <span class="sc">%&gt;%</span>  </span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">DEPENDENCY</span><span class="st">`</span><span class="ot">=</span>(<span class="st">`</span><span class="at">YOUNG</span><span class="st">`</span> <span class="sc">+</span> <span class="st">`</span><span class="at">AGED</span><span class="st">`</span>)</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>    <span class="sc">/</span><span class="st">`</span><span class="at">ECONOMY ACTIVE</span><span class="st">`</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="st">`</span><span class="at">PA</span><span class="st">`</span>, <span class="st">`</span><span class="at">SZ</span><span class="st">`</span>, <span class="st">`</span><span class="at">YOUNG</span><span class="st">`</span>, </span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>       <span class="st">`</span><span class="at">ECONOMY ACTIVE</span><span class="st">`</span>, <span class="st">`</span><span class="at">AGED</span><span class="st">`</span>, </span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>       <span class="st">`</span><span class="at">TOTAL</span><span class="st">`</span>, <span class="st">`</span><span class="at">DEPENDENCY</span><span class="st">`</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has grouped output by 'PA', 'SZ'. You can override using the
+`.groups` argument.</code></pre>
+</div>
+</div>
+</section>
+<section id="joining-attribute-and-geospatial-data" class="level3">
+<h3 class="anchored" data-anchor-id="joining-attribute-and-geospatial-data">2.3.4.2 Joining attribute and geospatial data</h3>
+<p>A georelational join will now need to be performed to combine them into the same table.</p>
+<p>Before we can do so, though, we need to convert the PA and SZ fields to uppercase, to unify its presentation with teh SUBZONE_N and PLN_AREA_N fields.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>population_2020 <span class="ot">&lt;-</span> population_2020 <span class="sc">%&gt;%</span> </span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate_at</span>(<span class="at">.vars =</span> <span class="fu">vars</span>(PA, SZ), <span class="at">.funs =</span> <span class="fu">list</span>(toupper)) <span class="sc">%&gt;%</span> </span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="st">`</span><span class="at">ECONOMY ACTIVE</span><span class="st">`</span> <span class="sc">&gt;</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We can now perform a <strong>left join</strong> (from the <code>dplyr</code> function) between the subzone geospatial data and the population data on the <code>SUBZONE_N</code> and <code>SZ</code> identifiers:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>combined <span class="ot">&lt;-</span> <span class="fu">left_join</span>(mp_subzone, population_2020, <span class="at">by=</span><span class="fu">c</span>(<span class="st">"SUBZONE_N"</span> <span class="ot">=</span> <span class="st">"SZ"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="choropleth-mapping-using-tmap" class="level2">
+<h2 class="anchored" data-anchor-id="choropleth-mapping-using-tmap">2.4 Choropleth mapping using <code>tmap</code></h2>
+<p>We can now create our choropleth map.</p>
+<p>As adapted from the <a href="https://r4gdsa.netlify.app/chap02.html">course website</a>:</p>
+<blockquote class="blockquote">
+<p>Choropleth mapping involves the symbolisation of enumeration units, such as countries, provinces, states, counties or census units, using area patterns or graduated colors. For example, a social scientist may need to use a choropleth map to portray the spatial distribution of aged population of Singapore by Master Plan 2014 Subzone Boundary.</p>
+</blockquote>
 
 
 </section>
