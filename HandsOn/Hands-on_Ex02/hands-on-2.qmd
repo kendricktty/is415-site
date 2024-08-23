@@ -27,13 +27,14 @@ pacman::p_load(sf, tmap, tidyverse)
 
 The datasets to be used are:
 
-1. Master Plan 2014 Subzone Boundary (Web)(`MP14_SUBZONE_WEB_PL`) in ESRI shapefile format
+1.  Master Plan 2014 Subzone Boundary (Web)(`MP14_SUBZONE_WEB_PL`) in ESRI shapefile format
+
 ```{r}
 mp_subzone = st_read(dsn="../data/geospatial/MasterPlan2014SubzoneBoundaryWebSHP", layer="MP14_SUBZONE_WEB_PL")
 mp_subzone
 ```
 
-2. Singapore Residents by Planning Area / Subzone, Age Group, Sex and Type of Dwelling, June 2011-2020 (aspatial)
+2.  Singapore Residents by Planning Area / Subzone, Age Group, Sex and Type of Dwelling, June 2011-2020 (aspatial)
 
 ```{r}
 population_data = read_csv("../data/aspatial/respopagesextod2011to2020/respopagesextod2011to2020.csv")
@@ -79,12 +80,11 @@ print(paste("Actual:", three_plus_three_times_2, sep=" "))
 In the context of data preprocessing, the `%>%` would be akin, in Python, to chaining multiple `pandas` methods together in the same line, such that the operations are also performed from left to right. For example:
 
 ```
-{python}
 df = pd.read_csv()
 df.fillna().head()
 ```
 
-#### 2.3.4.1 Data wrangling
+#### H2.3.4.1 Data wrangling
 
 Great! Now that we've explained `%>%`, let's now move on to the more complicated job of feature-engineering the population data.
 
@@ -106,7 +106,7 @@ population_2020 <- population_data %>%
        `TOTAL`, `DEPENDENCY`)
 ```
 
-#### 2.3.4.2 Joining attribute and geospatial data
+#### H2.3.4.2 Joining attribute and geospatial data
 
 A georelational join will now need to be performed to combine them into the same table.
 
@@ -124,7 +124,7 @@ We can now perform a **left join** (from the `dplyr` function) between the subzo
 combined <- left_join(mp_subzone, population_2020, by=c("SUBZONE_N" = "SZ"))
 ```
 
-## 2.4 Choropleth mapping using `tmap`
+## H2.4 Choropleth mapping using `tmap`
 
 We can now create our choropleth map.
 
@@ -134,11 +134,10 @@ As adapted from the [course website](https://r4gdsa.netlify.app/chap02.html):
 
 > Two approaches can be used to prepare thematic map using tmap, they are:
 
-> * Plotting a thematic map quickly by using qtm().
-> * Plotting highly customisable thematic map by using tmap elements.
+> -   Plotting a thematic map quickly by using qtm().
+> -   Plotting highly customisable thematic map by using tmap elements.
 
-
-### 2.4.1 Plotting a choropleth map quickly using `qtm()`
+### H2.4.1 Plotting a choropleth map quickly using `qtm()`
 
 The easiest and quickest way to draw a chloropleth map is using `qtm()`:
 
@@ -152,11 +151,11 @@ This map indicates that the dependency ratio in most of the island is a supposed
 
 > Learning points:
 
-> * `tmap_mode()` with `“plot”` option is used to produce a static map. For interactive mode, `“view”` option should be used.
+> -   `tmap_mode()` with `“plot”` option is used to produce a static map. For interactive mode, `“view”` option should be used.
 
-> * `fill` argument is used to map the attribute (in this case, `"DEPENDENCY"`)
+> -   `fill` argument is used to map the attribute (in this case, `"DEPENDENCY"`)
 
-### 2.4.2 Creating a choropleth map using `tmap` elements
+### H2.4.2 Creating a choropleth map using `tmap` elements
 
 A major disadvantage of `qtm()` is that it makes aesthetics of individual layers harder to control. Using the `tmap` elements allows us to draw better quality cartographic choropleth maps like the one below.
 
@@ -180,8 +179,82 @@ tm_shape(combined)+
              position = c("left", "bottom"))
 ```
 
-Once again the missing datapoints correspond to areas of the country not dedicated to residential use, but this time we have a much more varied visualisation of the dependency ratio within the country. The areas with the highest dependency ratio appear to correlate with the oldest [HDB](https://en.wikipedia.org/wiki/Housing_and_Development_Board) estates, from [Toa Payoh](https://en.wikipedia.org/wiki/Toa_Payoh) to [Queenstown](https://en.wikipedia.org/wiki/Queenstown,_Singapore), while the newer estates such as [Sengkang](https://en.wikipedia.org/wiki/Sengkang), [Punggol](https://en.wikipedia.org/wiki/Punggol) and even [Yishun](https://en.wikipedia.org/wiki/Yishun) have a smaller proportion of dependants.
+Once again the missing datapoints correspond to areas of the country not dedicated to residential use, but this time we have a much more varied visualisation of the dependency ratio within the country. The areas with the highest dependency ratio appear to correlate with the oldest [HDB](https://en.wikipedia.org/wiki/Housing_and_Development_Board) estates, from [Toa Payoh](https://en.wikipedia.org/wiki/Toa_Payoh) to [Queenstown](https://en.wikipedia.org/wiki/Queenstown,_Singapore), while the newer estates such as [Sengkang](https://en.wikipedia.org/wiki/Sengkang), [Punggol](https://en.wikipedia.org/wiki/Punggol) and even [Yishun](https://en.wikipedia.org/wiki/Yishun) have a smaller proportion of dependents.
 
-#### 2.4.2.1 Drawing a base map
+#### H2.4.2.1 Drawing a base map
 
-In the code chunk below, tm_shape() is used to define the input data (i.e mpsz_pop2020) and tm_polygons() is used to draw the planning subzone polygons
+In the code chunk below, `tm_shape()` is used to define the input data (i.e `comined`) and `tm_polygons()` is used to draw the planning subzone polygons.
+
+```{r}
+tm_shape(combined) + tm_polygons()
+```
+
+#### 2.4.2.2 Drawing a choropleth map using `tm_polygons()`
+
+To draw a choropleth map showing the geographical distribution of a selected variable by planning subzone, we just need to assign that target variable to `tm_polgyons()`. The maps below show a higher than usual population of young dependents in [Woodlands](https://en.wikipedia.org/wiki/Woodlands,_Singapore), Sengkang, Punggol, [Tampines](https://en.wikipedia.org/wiki/Tampines) and [Pasir Ris](https://en.wikipedia.org/wiki/Pasir_Ris), and a higher than usual population of elderly dependents in Ang Mo Kio, [Hougang](https://en.wikipedia.org/wiki/Hougang) and [Bedok](https://en.wikipedia.org/wiki/Bedok).
+
+```{r}
+tm_shape(combined) + tm_polygons("YOUNG")
+tm_shape(combined) + tm_polygons("AGED")
+```
+
+> Things to learn from `tm_polygons()`:
+
+-   The default interval binning used to draw the choropleth map is called “pretty”. A detailed discussion of the data classification methods supported by **tmap** will be provided in sub-section 4.3.
+
+-   The default colour scheme used is `YlOrRd` of ColorBrewer. You will learn more about the color scheme in sub-section 4.4.
+
+-   By default, missing values are shaded in grey.
+
+#### H2.4.2.3 Drawing a choropleth map with `tm_fill()` and `tm_border()`
+
+`tm_polygons()` is a wrapper of `tm_fill()` and `tm_border()`, which shades the polygons and adds borders from the shapefile onto the map respectively. Let's see what happens when we try to use each of these two functions individually:
+
+```{r}
+tm_shape(combined) + tm_fill("DEPENDENCY")
+tm_shape(combined) + tm_borders(lwd = 0.1,  alpha = 1)
+tm_shape(combined) + tm_fill("DEPENDENCY") + tm_borders(lwd = 0.1,  alpha = 1)
+```
+
+The `alpha` argument is used to define a transparency number between 0 (totally transparent) and 1 (not transparent). By default, the alpha value of the col is used (normally 1).
+
+The three other arguments for `tm_borders()` are:
+
+* `col`: border colour
+* `lwd`: border line width (default `1`)
+* `lty`: border line type (default `solid`)
+
+### H2.4.3 Data classification methods of `tmap`
+
+Data classification serves to take a large number of observations and group them into data ranges or classes. `tmap` provides a total ten data classification methods, namely `fixed`, `sd`, `equal`, `pretty` (default), `quantile`, `kmeans`, `hclust`, `bclust`, `fisher`, and `jenks`. A data classification method is defined using the `style` argument of the `tm_fill()` or `tm_polygons()` method.
+
+#### H2.4.3.1 Plotting choropleth maps with built-in classification methods
+
+A quantile data classification with 4 classes:
+```{r}
+tm_shape(combined)+
+  tm_fill("AGED",
+          n = 4,
+          style = "quantile") +
+  tm_borders(alpha = 0.5)
+```
+
+An equal data classification:
+
+```{r}
+tm_shape(combined)+
+  tm_fill("AGED",
+          n = 5,
+          style = "equal") +
+  tm_borders(alpha = 0.5)
+```
+
+Using standard deviation:
+
+```{r}
+tm_shape(combined)+
+  tm_fill("AGED",
+          n = 4,
+          style = "sd") +
+  tm_borders(alpha = 0.5)
+```

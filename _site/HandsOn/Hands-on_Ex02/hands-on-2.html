@@ -185,10 +185,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#h2.3.4.0-operator" id="toc-h2.3.4.0-operator" class="nav-link" data-scroll-target="#h2.3.4.0-operator">H2.3.4.0 <code>%&gt;%</code> Operator</a></li>
   </ul></li>
-  <li><a href="#choropleth-mapping-using-tmap" id="toc-choropleth-mapping-using-tmap" class="nav-link" data-scroll-target="#choropleth-mapping-using-tmap">2.4 Choropleth mapping using <code>tmap</code></a>
+  <li><a href="#h2.4-choropleth-mapping-using-tmap" id="toc-h2.4-choropleth-mapping-using-tmap" class="nav-link" data-scroll-target="#h2.4-choropleth-mapping-using-tmap">H2.4 Choropleth mapping using <code>tmap</code></a>
   <ul class="collapse">
-  <li><a href="#plotting-a-choropleth-map-quickly-using-qtm" id="toc-plotting-a-choropleth-map-quickly-using-qtm" class="nav-link" data-scroll-target="#plotting-a-choropleth-map-quickly-using-qtm">2.4.1 Plotting a choropleth map quickly using <code>qtm()</code></a></li>
-  <li><a href="#creating-a-choropleth-map-using-tmap-elements" id="toc-creating-a-choropleth-map-using-tmap-elements" class="nav-link" data-scroll-target="#creating-a-choropleth-map-using-tmap-elements">2.4.2 Creating a choropleth map using <code>tmap</code> elements</a></li>
+  <li><a href="#h2.4.1-plotting-a-choropleth-map-quickly-using-qtm" id="toc-h2.4.1-plotting-a-choropleth-map-quickly-using-qtm" class="nav-link" data-scroll-target="#h2.4.1-plotting-a-choropleth-map-quickly-using-qtm">H2.4.1 Plotting a choropleth map quickly using <code>qtm()</code></a></li>
+  <li><a href="#h2.4.2-creating-a-choropleth-map-using-tmap-elements" id="toc-h2.4.2-creating-a-choropleth-map-using-tmap-elements" class="nav-link" data-scroll-target="#h2.4.2-creating-a-choropleth-map-using-tmap-elements">H2.4.2 Creating a choropleth map using <code>tmap</code> elements</a></li>
+  <li><a href="#h2.4.3-data-classification-methods-of-tmap" id="toc-h2.4.3-data-classification-methods-of-tmap" class="nav-link" data-scroll-target="#h2.4.3-data-classification-methods-of-tmap">H2.4.3 Data classification methods of <code>tmap</code></a></li>
   </ul></li>
   </ul>
 </nav>
@@ -378,11 +379,10 @@ dbl (2): Pop, Time
 </div>
 </div>
 <p>In the context of data preprocessing, the <code>%&gt;%</code> would be akin, in Python, to chaining multiple <code>pandas</code> methods together in the same line, such that the operations are also performed from left to right. For example:</p>
-<pre><code>{python}
-df = pd.read_csv()
+<pre><code>df = pd.read_csv()
 df.fillna().head()</code></pre>
-<section id="data-wrangling" class="level4">
-<h4 class="anchored" data-anchor-id="data-wrangling">2.3.4.1 Data wrangling</h4>
+<section id="h2.3.4.1-data-wrangling" class="level4">
+<h4 class="anchored" data-anchor-id="h2.3.4.1-data-wrangling">H2.3.4.1 Data wrangling</h4>
 <p>Great! Now that we’ve explained <code>%&gt;%</code>, let’s now move on to the more complicated job of feature-engineering the population data.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>population_2020 <span class="ot">&lt;-</span> population_data <span class="sc">%&gt;%</span></span>
@@ -406,8 +406,8 @@ df.fillna().head()</code></pre>
 </div>
 </div>
 </section>
-<section id="joining-attribute-and-geospatial-data" class="level4">
-<h4 class="anchored" data-anchor-id="joining-attribute-and-geospatial-data">2.3.4.2 Joining attribute and geospatial data</h4>
+<section id="h2.3.4.2-joining-attribute-and-geospatial-data" class="level4">
+<h4 class="anchored" data-anchor-id="h2.3.4.2-joining-attribute-and-geospatial-data">H2.3.4.2 Joining attribute and geospatial data</h4>
 <p>A georelational join will now need to be performed to combine them into the same table.</p>
 <p>Before we can do so, though, we need to convert the PA and SZ fields to uppercase, to unify its presentation with teh SUBZONE_N and PLN_AREA_N fields.</p>
 <div class="cell">
@@ -422,8 +422,8 @@ df.fillna().head()</code></pre>
 </section>
 </section>
 </section>
-<section id="choropleth-mapping-using-tmap" class="level2">
-<h2 class="anchored" data-anchor-id="choropleth-mapping-using-tmap">2.4 Choropleth mapping using <code>tmap</code></h2>
+<section id="h2.4-choropleth-mapping-using-tmap" class="level2">
+<h2 class="anchored" data-anchor-id="h2.4-choropleth-mapping-using-tmap">H2.4 Choropleth mapping using <code>tmap</code></h2>
 <p>We can now create our choropleth map.</p>
 <p>As adapted from the <a href="https://r4gdsa.netlify.app/chap02.html">course website</a>:</p>
 <blockquote class="blockquote">
@@ -438,8 +438,8 @@ df.fillna().head()</code></pre>
 <li>Plotting highly customisable thematic map by using tmap elements.</li>
 </ul>
 </blockquote>
-<section id="plotting-a-choropleth-map-quickly-using-qtm" class="level3">
-<h3 class="anchored" data-anchor-id="plotting-a-choropleth-map-quickly-using-qtm">2.4.1 Plotting a choropleth map quickly using <code>qtm()</code></h3>
+<section id="h2.4.1-plotting-a-choropleth-map-quickly-using-qtm" class="level3">
+<h3 class="anchored" data-anchor-id="h2.4.1-plotting-a-choropleth-map-quickly-using-qtm">H2.4.1 Plotting a choropleth map quickly using <code>qtm()</code></h3>
 <p>The easiest and quickest way to draw a chloropleth map is using <code>qtm()</code>:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_mode</span>(<span class="st">"plot"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -471,8 +471,8 @@ df.fillna().head()</code></pre>
 </ul>
 </blockquote>
 </section>
-<section id="creating-a-choropleth-map-using-tmap-elements" class="level3">
-<h3 class="anchored" data-anchor-id="creating-a-choropleth-map-using-tmap-elements">2.4.2 Creating a choropleth map using <code>tmap</code> elements</h3>
+<section id="h2.4.2-creating-a-choropleth-map-using-tmap-elements" class="level3">
+<h3 class="anchored" data-anchor-id="h2.4.2-creating-a-choropleth-map-using-tmap-elements">H2.4.2 Creating a choropleth map using <code>tmap</code> elements</h3>
 <p>A major disadvantage of <code>qtm()</code> is that it makes aesthetics of individual layers harder to control. Using the <code>tmap</code> elements allows us to draw better quality cartographic choropleth maps like the one below.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(combined)<span class="sc">+</span></span>
@@ -500,10 +500,139 @@ df.fillna().head()</code></pre>
 </div>
 </div>
 </div>
-<p>Once again the missing datapoints correspond to areas of the country not dedicated to residential use, but this time we have a much more varied visualisation of the dependency ratio within the country. The areas with the highest dependency ratio appear to correlate with the oldest <a href="https://en.wikipedia.org/wiki/Housing_and_Development_Board">HDB</a> estates, from <a href="https://en.wikipedia.org/wiki/Toa_Payoh">Toa Payoh</a> to <a href="https://en.wikipedia.org/wiki/Queenstown,_Singapore">Queenstown</a>, while the newer estates such as <a href="https://en.wikipedia.org/wiki/Sengkang">Sengkang</a>, <a href="https://en.wikipedia.org/wiki/Punggol">Punggol</a> and even <a href="https://en.wikipedia.org/wiki/Yishun">Yishun</a> have a smaller proportion of dependants.</p>
-<section id="drawing-a-base-map" class="level4">
-<h4 class="anchored" data-anchor-id="drawing-a-base-map">2.4.2.1 Drawing a base map</h4>
-<p>In the code chunk below, tm_shape() is used to define the input data (i.e mpsz_pop2020) and tm_polygons() is used to draw the planning subzone polygons</p>
+<p>Once again the missing datapoints correspond to areas of the country not dedicated to residential use, but this time we have a much more varied visualisation of the dependency ratio within the country. The areas with the highest dependency ratio appear to correlate with the oldest <a href="https://en.wikipedia.org/wiki/Housing_and_Development_Board">HDB</a> estates, from <a href="https://en.wikipedia.org/wiki/Toa_Payoh">Toa Payoh</a> to <a href="https://en.wikipedia.org/wiki/Queenstown,_Singapore">Queenstown</a>, while the newer estates such as <a href="https://en.wikipedia.org/wiki/Sengkang">Sengkang</a>, <a href="https://en.wikipedia.org/wiki/Punggol">Punggol</a> and even <a href="https://en.wikipedia.org/wiki/Yishun">Yishun</a> have a smaller proportion of dependents.</p>
+<section id="h2.4.2.1-drawing-a-base-map" class="level4">
+<h4 class="anchored" data-anchor-id="h2.4.2.1-drawing-a-base-map">H2.4.2.1 Drawing a base map</h4>
+<p>In the code chunk below, <code>tm_shape()</code> is used to define the input data (i.e <code>comined</code>) and <code>tm_polygons()</code> is used to draw the planning subzone polygons.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(combined) <span class="sc">+</span> <span class="fu">tm_polygons</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hands-on-2_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="drawing-a-choropleth-map-using-tm_polygons" class="level4">
+<h4 class="anchored" data-anchor-id="drawing-a-choropleth-map-using-tm_polygons">2.4.2.2 Drawing a choropleth map using <code>tm_polygons()</code></h4>
+<p>To draw a choropleth map showing the geographical distribution of a selected variable by planning subzone, we just need to assign that target variable to <code>tm_polgyons()</code>. The maps below show a higher than usual population of young dependents in <a href="https://en.wikipedia.org/wiki/Woodlands,_Singapore">Woodlands</a>, Sengkang, Punggol, <a href="https://en.wikipedia.org/wiki/Tampines">Tampines</a> and <a href="https://en.wikipedia.org/wiki/Pasir_Ris">Pasir Ris</a>, and a higher than usual population of elderly dependents in Ang Mo Kio, <a href="https://en.wikipedia.org/wiki/Hougang">Hougang</a> and <a href="https://en.wikipedia.org/wiki/Bedok">Bedok</a>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(combined) <span class="sc">+</span> <span class="fu">tm_polygons</span>(<span class="st">"YOUNG"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hands-on-2_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(combined) <span class="sc">+</span> <span class="fu">tm_polygons</span>(<span class="st">"AGED"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hands-on-2_files/figure-html/unnamed-chunk-12-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Things to learn from <code>tm_polygons()</code>:</p>
+</blockquote>
+<ul>
+<li><p>The default interval binning used to draw the choropleth map is called “pretty”. A detailed discussion of the data classification methods supported by <strong>tmap</strong> will be provided in sub-section 4.3.</p></li>
+<li><p>The default colour scheme used is <code>YlOrRd</code> of ColorBrewer. You will learn more about the color scheme in sub-section 4.4.</p></li>
+<li><p>By default, missing values are shaded in grey.</p></li>
+</ul>
+</section>
+<section id="h2.4.2.3-drawing-a-choropleth-map-with-tm_fill-and-tm_border" class="level4">
+<h4 class="anchored" data-anchor-id="h2.4.2.3-drawing-a-choropleth-map-with-tm_fill-and-tm_border">H2.4.2.3 Drawing a choropleth map with <code>tm_fill()</code> and <code>tm_border()</code></h4>
+<p><code>tm_polygons()</code> is a wrapper of <code>tm_fill()</code> and <code>tm_border()</code>, which shades the polygons and adds borders from the shapefile onto the map respectively. Let’s see what happens when we try to use each of these two functions individually:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(combined) <span class="sc">+</span> <span class="fu">tm_fill</span>(<span class="st">"DEPENDENCY"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hands-on-2_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(combined) <span class="sc">+</span> <span class="fu">tm_borders</span>(<span class="at">lwd =</span> <span class="fl">0.1</span>,  <span class="at">alpha =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hands-on-2_files/figure-html/unnamed-chunk-13-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(combined) <span class="sc">+</span> <span class="fu">tm_fill</span>(<span class="st">"DEPENDENCY"</span>) <span class="sc">+</span> <span class="fu">tm_borders</span>(<span class="at">lwd =</span> <span class="fl">0.1</span>,  <span class="at">alpha =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hands-on-2_files/figure-html/unnamed-chunk-13-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The <code>alpha</code> argument is used to define a transparency number between 0 (totally transparent) and 1 (not transparent). By default, the alpha value of the col is used (normally 1).</p>
+<p>The three other arguments for <code>tm_borders()</code> are:</p>
+<ul>
+<li><code>col</code>: border colour</li>
+<li><code>lwd</code>: border line width (default <code>1</code>)</li>
+<li><code>lty</code>: border line type (default <code>solid</code>)</li>
+</ul>
+</section>
+</section>
+<section id="h2.4.3-data-classification-methods-of-tmap" class="level3">
+<h3 class="anchored" data-anchor-id="h2.4.3-data-classification-methods-of-tmap">H2.4.3 Data classification methods of <code>tmap</code></h3>
+<p>Data classification serves to take a large number of observations and group them into data ranges or classes. <code>tmap</code> provides a total ten data classification methods, namely <code>fixed</code>, <code>sd</code>, <code>equal</code>, <code>pretty</code> (default), <code>quantile</code>, <code>kmeans</code>, <code>hclust</code>, <code>bclust</code>, <code>fisher</code>, and <code>jenks</code>. A data classification method is defined using the <code>style</code> argument of the <code>tm_fill()</code> or <code>tm_polygons()</code> method.</p>
+<section id="h2.4.3.1-plotting-choropleth-maps-with-built-in-classification-methods" class="level4">
+<h4 class="anchored" data-anchor-id="h2.4.3.1-plotting-choropleth-maps-with-built-in-classification-methods">H2.4.3.1 Plotting choropleth maps with built-in classification methods</h4>
+<p>A quantile data classification with 4 classes:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(combined)<span class="sc">+</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="st">"AGED"</span>,</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">n =</span> <span class="dv">4</span>,</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">style =</span> <span class="st">"quantile"</span>) <span class="sc">+</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hands-on-2_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>An equal data classification:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(combined)<span class="sc">+</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="st">"AGED"</span>,</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">n =</span> <span class="dv">5</span>,</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">style =</span> <span class="st">"equal"</span>) <span class="sc">+</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hands-on-2_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Using standard deviation:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(combined)<span class="sc">+</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="st">"AGED"</span>,</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">n =</span> <span class="dv">4</span>,</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">style =</span> <span class="st">"sd"</span>) <span class="sc">+</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hands-on-2_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
 
 
 </section>
