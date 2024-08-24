@@ -1,0 +1,15 @@
+{
+  "hash": "4b0f808f0374c91b32731dd57a4e5545",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"IS415: Geospatial Analytics and Applications\"\nsubtitle: \"Student portfolio website\"\n---\n\n\n\nWelcome, and thanks for stopping by! My name is Kendrick, and you've reached my portfolio website for **IS415: Geospatial Analytics and Applications**.\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nhello_world <- \"hello world!\"\nprint(hello_world)\n```\n\n::: {.cell-output .cell-output-stdout}\n\n```\n[1] \"hello world!\"\n```\n\n\n:::\n:::\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
