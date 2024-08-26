@@ -74,4 +74,24 @@ colnames(population_2023)
 # Read the data structure carefully before proceeding!
 ```
 
-## CE2.6 
+## CE2.6 Data Wrangling
+
+```{r}
+population_2023_pivot <- population_2023_pivot %>%
+    # As young boys in Singapore serve 2 years of national service, the earliest age to be considered economically active should be 25.
+    mutate(`YOUNG` = rowSums(.[3:6]) + rowSums(.[14])) %>%
+    # By 2026, the retirement age in Singapore will be raised to 64.
+    mutate(`ECONOMY ACTIVE` = rowSums(.[7:13]) + rowSums(.[15])) %>%
+    mutate(`AGED` = rowSums(.[16:21])) %>%
+    mutate(`TOTAL` = rowSums(.[3:21])) %>%
+    mutate(`DEPENDENCY` = (`YOUNG` + `AGED`)
+    / `ECONOMY ACTIVE`) %>%
+    # mutate(): Perform calculation or conversion
+    select(
+        `PA`, `SZ`, `YOUNG`,
+        `ECONOMY ACTIVE`, `AGED`,
+        `TOTAL`, `DEPENDENCY`
+    ) %>% 
+    mutate_at(.vars = vars(PA, SZ), .funs = list(toupper)) %>%
+    filter(`ECONOMY ACTIVE` > 0)
+```
