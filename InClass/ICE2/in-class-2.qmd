@@ -71,4 +71,7 @@ population_2023_pivot <- population_2023 %>%
   ungroup() %>%
   pivot_wider(names_from=AG, values_from=POP)
 colnames(population_2023)
+# Read the data structure carefully before proceeding!
 ```
+
+## CE2.6 
