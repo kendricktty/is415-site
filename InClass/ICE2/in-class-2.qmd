@@ -1,0 +1,74 @@
+---
+title: "CE2: Working with Master Plan Planning Subzone Data"
+subtitle: "In-class Exercise 2"
+author: "Kendrick Teo"
+date: "2024-08-26"
+date-modified: "last-modified"
+
+execute: 
+  eval: true
+  echo: true
+  freeze: true
+---
+
+## CE2.1 Working with Masterplan 2014 Subzone Data
+
+1. Create a subfolder called *data* in In-class_Ex02 folder
+
+2. Download and load both the ESRI shapefile and `kml` file from *Master Plan 2014 Subzone Boundary (Web)* from the portal.
+
+3. Write a code chunk to import *Master Plan 2014 Subzone Boundary (Web)* as SF simple features DataFrame.
+
+```{r}
+pacman::p_load(sf, tmap, tidyverse, ggstatsplot)
+
+mp_subzone_14_shp <- st_read(dsn="data/MasterPlan2014SubzoneBoundaryWebSHP", layer="MP14_SUBZONE_WEB_PL")
+class(mp_subzone_14_shp)
+
+#! eval:false
+# Doesn't work!
+tryCatch({mp_subzone_kml <- st_read("data/MasterPlan2014SubzoneBoundaryWebKML.kml")}, error=function(e) {
+  print(e)
+  print("Cannot load!")
+  })
+
+# So we need to write our own KML file.
+st_write(mp_subzone_14_shp, "data/WORKINGMasterPlan2014SubzoneBoundaryWebKML.kml", delete_dsn=TRUE)
+# delete_dsn replaces the file with our new one if its already exists
+```
+
+## CE2.2 Working with Masterplan 2019 Subzone Data
+
+```{r}
+mp_subzone_19_shp <- st_read(dsn="data/MPSZ-2019", layer="MPSZ-2019")
+mp_subzone_19_kml <- st_read("data/MasterPlan2019SubzoneBoundaryNoSeaKML.kml")
+```
+
+## CE2.3 Transforming coordinate data from WGS84 to SVY21
+
+```{r}
+mp_subzone_19_shp <- mp_subzone_19_shp %>% st_transform(crs = 3414)
+st_crs(mp_subzone_19_shp)
+```
+
+
+## CE2.4 Working with Population Data
+
+```{r}
+population_2023 <- read_csv("data/respopagesextod2023/respopagesextod2023.csv")
+print("Columns of population_2023")
+colnames(population_2023)
+print("Head of population_2023")
+head(population_2023)
+```
+
+## CE2.5 Group data by planning area and subzone
+
+```{r}
+population_2023_pivot <- population_2023 %>%
+  group_by(PA, SZ, AG) %>%
+  summarise(`POP`=sum(`Pop`)) %>%
+  ungroup() %>%
+  pivot_wider(names_from=AG, values_from=POP)
+colnames(population_2023)
+```

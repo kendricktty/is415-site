@@ -11,8 +11,12 @@ website:
         - href: "InClass/ICE1/in-class-1.qmd"
       - text: "Hands-On Exercises"
         menu:
-        - href: "HandsOn/Hands-on_Ex01/hands-on-1.qmd"
-        - href: "HandsOn/Hands-on_Ex02/hands-on-2.qmd"
+        # - href: "HandsOn/Hands-on_Ex01/hands-on-1.qmd"
+        # - href: "HandsOn/Hands-on_Ex02/hands-on-2.qmd"
+          - text: "Hands-on Exercise 1"
+          - href: "HandsOn/Hands-on_Ex01/hands-on-1.html"
+          - text: "Hands-on Exercise 2"
+          - href: "HandsOn/Hands-on_Ex02/hands-on-2.html"
       - text: "Take-home Exercises"
         menu:
         - text: "To be updated" 
