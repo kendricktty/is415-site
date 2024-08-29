@@ -1,0 +1,99 @@
+---
+title: "H3: Spatial Point Patterns Analysis"
+subtitle: "Hands-On Exercise 3"
+author: "Kendrick Teo"
+date: "2024-08-29"
+date-modified: "last-modified"
+
+execute: 
+  eval: true
+  echo: true
+  freeze: true
+---
+
+## H3.1 Overview
+
+**Spatial Point Pattern Analysis** serves to evaluate the pattern or distribution of a set of points on a map surface. These points serve many purposes, ranging from mapping events like crimes and disease onset (like John Snow's map of the 1854 Broad Street cholera outbreak), or the locations of business services or facilities.
+
+Using appropriate functions, this hands-on exercise aims to discover the spatial point patterns of two quintessential facilities in 2020s Singapore - childcare centres and hawker centres. Specifically, we want to find out:
+
+1. if these are randomly distributed throughout the country, and;
+2. the planning areas with the highest concentration of each.
+
+## H3.2 The data
+
+The datasets to be used are:
+
+* `MP14_SUBZONE_WEB_PL`, containing polygon features.
+
+* `CoastalOutline`, a new dataset containing polygon features showing the boundaries of Singapore. It is provided by SLA in ESRI shapefile format.
+
+In additional, our childcare centre and hawker centre data will, as always, be sourced from the Singapore government's data lake at [data.gov.sg](data.gov.sg). These will take the form of point feature data.
+
+## H3.3 Installing and Loading R packages
+
+Along with the usual `sf` and `tmap`, three new packages will be used. They are:
+
+* `spatstat`, which includes a wide range of useful functions for first and second order spatial point patterns analysis, and to derive the kernel density estimation (KDE) layer.
+
+* `raster` reads, writes, manipulates, analyses and models (i.e. rasters) gridded spatial data.
+
+* `maptools`, which is for manipulating geographic data.
+
+```{r}
+pacman::p_load(sf, raster, spatstat, tmap, tidyverse)
+```
+
+## H3.4 Spatial Data Wrangling
+
+### H3.4.1 Importing spatial data
+
+Here, we import the data we need and plot basic maps to get a basic sense of the spatial patterns we are dealing with.
+
+```{r}
+mpsz_sf <- st_read(dsn="../data/geospatial/MasterPlan2014SubzoneBoundaryWebSHP", layer="MP14_SUBZONE_WEB_PL")
+sg_sf <- st_read(dsn="../data/geospatial/CoastalOutline", layer="CostalOutline")
+childcare_sf <- st_read("../data/geospatial/child-care-services-geojson.geojson") %>% st_transform(crs=3414)
+hawker_sf <- st_read("../data/geospatial/HawkerCentresGEOJSON.geojson") %>% st_transform(crs=3414)
+
+tm_shape(mpsz_sf) + tm_polygons() + tm_shape(childcare_sf) + tm_dots() + tm_layout(title = 'Childcare Centres')
+
+tm_shape(mpsz_sf) + tm_polygons() + tm_shape(hawker_sf) + tm_dots() + tm_layout(title = 'Hawker Centres')
+```
+
+Alternatively, we can prepare a pin map as below.
+
+```{r}
+tmap_mode('view')
+tm_shape(childcare_sf) + tm_dots() + tm_layout(title = 'Childcare Centres')
+tmap_mode('plot')
+```
+
+## H3.5 Geospatial Data Wrangling
+
+Some geospatial analysis packages require that any input geospatial data be represented with `sp`'s `Spatial*` classes. This section introduces a way to convert simple feature data into the `Spatial*` class.
+
+### H3.5.1 Converting `sf` data frames to `Spatial*` class
+
+```{r}
+childcare <- as_Spatial(childcare_sf)
+hawker <- as_Spatial(hawker_sf)
+mpsz <- as_Spatial(mpsz_sf)
+sg <- as_Spatial(sg_sf)
+
+childcare
+mpsz
+sg
+hawker
+```
+
+### H3.5.2 Converting `Spatial*` into generic `sp` format
+
+**`spatstat`** requires the analytical data to be in **`ppp`** object form. There is no direct way to convert a `Spatial*` class into a `ppp` object. We need to convert it into a `Spatial` object first.
+
+```{r}
+childcare_sp <- as(childcare, "SpatialPoints")
+childcare_sp
+sg_sp <- as(sg, "SpatialPolygons")
+sg_sp
+```

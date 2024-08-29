@@ -9,3 +9,6 @@ Welcome, and thanks for stopping by! My name is Kendrick, and you've reached my 
 hello_world <- "hello world!"
 print(hello_world)
 ```
+
+Hands-on Exercises
+

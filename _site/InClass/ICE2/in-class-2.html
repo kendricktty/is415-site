@@ -138,8 +138,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="dropdown-text">CE1: Geospatial Data Science</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../../InClass/ICE1/in-class-2.qmd">
- <span class="dropdown-text"></span></a>
+    <a class="dropdown-item" href="../../InClass/ICE2/in-class-2.html">
+ <span class="dropdown-text">CE2: Working with Master Plan Planning Subzone Data</span></a>
   </li>  
     </ul>
   </li>
@@ -187,6 +187,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#ce2.3-transforming-coordinate-data-from-wgs84-to-svy21" id="toc-ce2.3-transforming-coordinate-data-from-wgs84-to-svy21" class="nav-link" data-scroll-target="#ce2.3-transforming-coordinate-data-from-wgs84-to-svy21">CE2.3 Transforming coordinate data from WGS84 to SVY21</a></li>
   <li><a href="#ce2.4-working-with-population-data" id="toc-ce2.4-working-with-population-data" class="nav-link" data-scroll-target="#ce2.4-working-with-population-data">CE2.4 Working with Population Data</a></li>
   <li><a href="#ce2.5-group-data-by-planning-area-and-subzone" id="toc-ce2.5-group-data-by-planning-area-and-subzone" class="nav-link" data-scroll-target="#ce2.5-group-data-by-planning-area-and-subzone">CE2.5 Group data by planning area and subzone</a></li>
+  <li><a href="#ce2.6-data-wrangling" id="toc-ce2.6-data-wrangling" class="nav-link" data-scroll-target="#ce2.6-data-wrangling">CE2.6 Data Wrangling</a></li>
   </ul>
 </nav>
     </div>
@@ -220,7 +221,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">August 26, 2024</p>
+      <p class="date-modified">August 29, 2024</p>
     </div>
   </div>
     
@@ -239,12 +240,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><p>Write a code chunk to import <em>Master Plan 2014 Subzone Boundary (Web)</em> as SF simple features DataFrame.</p></li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sf, tmap, tidyverse, ggstatsplot)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>mp_subzone_14_shp <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="at">dsn=</span><span class="st">"data/MasterPlan2014SubzoneBoundaryWebSHP"</span>, <span class="at">layer=</span><span class="st">"MP14_SUBZONE_WEB_PL"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sf, tmap, tidyverse, ggstatsplot)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>also installing the dependencies 'cowplot', 'Deriv', 'microbenchmark', 'SparseM', 'minqa', 'nloptr', 'numDeriv', 'doBy', 'carData', 'quantreg', 'elliptic', 'contfrac', 'deSolve', 'plyr', 'lme4', 'pbkrtest', 'lmerTest', 'car', 'coda', 'pbapply', 'mvtnorm', 'MatrixModels', 'hypergeo', 'RcppEigen', 'multcompView', 'gmp', 'Rmpfr', 'SuppDists', 'kSamples', 'BWStest', 'reshape', 'bayestestR', 'reshape2', 'prismatic', 'afex', 'BayesFactor', 'effectsize', 'PMCMRplus', 'WRS2', 'zeallot', 'correlation', 'datawizard', 'ggcorrplot', 'ggrepel', 'ggside', 'ggsignif', 'insight', 'paletteer', 'parameters', 'patchwork', 'performance', 'statsExpressions'</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+The downloaded binary packages are in
+    /var/folders/vr/0hgfmmp145324r9mrj0dm6gr0000gn/T//RtmpJexGnN/downloaded_packages</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+ggstatsplot installed</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>mp_subzone_14_shp <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="at">dsn=</span><span class="st">"data/MasterPlan2014SubzoneBoundaryWebSHP"</span>, <span class="at">layer=</span><span class="st">"MP14_SUBZONE_WEB_PL"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Reading layer `MP14_SUBZONE_WEB_PL' from data source 
-  `/Users/kendricktty/Gits/SMU_CS/is415-site/InClass/ICE2/data/MasterPlan2014SubzoneBoundaryWebSHP' 
+  `/Users/kendricktty/Gits/smu_cs/is415-site/InClass/ICE2/data/MasterPlan2014SubzoneBoundaryWebSHP' 
   using driver `ESRI Shapefile'
 Simple feature collection with 323 features and 15 fields
 Geometry type: MULTIPOLYGON
@@ -252,38 +264,38 @@ Dimension:     XY
 Bounding box:  xmin: 2667.538 ymin: 15748.72 xmax: 56396.44 ymax: 50256.33
 Projected CRS: SVY21</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(mp_subzone_14_shp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(mp_subzone_14_shp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "sf"         "data.frame"</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#! eval:false</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Doesn't work!</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tryCatch</span>({mp_subzone_kml <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"data/MasterPlan2014SubzoneBoundaryWebKML.kml"</span>)}, <span class="at">error=</span><span class="cf">function</span>(e) {</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(e)</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="st">"Cannot load!"</span>)</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  })</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">#! eval:false</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Doesn't work!</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tryCatch</span>({mp_subzone_kml <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"data/MasterPlan2014SubzoneBoundaryWebKML.kml"</span>)}, <span class="at">error=</span><span class="cf">function</span>(e) {</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(e)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="st">"Cannot load!"</span>)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  })</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>&lt;Rcpp::exception: Cannot open "/Users/kendricktty/Gits/SMU_CS/is415-site/InClass/ICE2/data/MasterPlan2014SubzoneBoundaryWebKML.kml"; The source could be corrupt or not supported. See `st_drivers()` for a list of supported formats.&gt;
+<pre><code>&lt;Rcpp::exception: Cannot open "/Users/kendricktty/Gits/smu_cs/is415-site/InClass/ICE2/data/MasterPlan2014SubzoneBoundaryWebKML.kml"; The source could be corrupt or not supported. See `st_drivers()` for a list of supported formats.&gt;
 [1] "Cannot load!"</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># So we need to write our own KML file.</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">st_write</span>(mp_subzone_14_shp, <span class="st">"data/WORKINGMasterPlan2014SubzoneBoundaryWebKML.kml"</span>, <span class="at">delete_dsn=</span><span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># So we need to write our own KML file.</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">st_write</span>(mp_subzone_14_shp, <span class="st">"data/WORKINGMasterPlan2014SubzoneBoundaryWebKML.kml"</span>, <span class="at">delete_dsn=</span><span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Deleting source `data/WORKINGMasterPlan2014SubzoneBoundaryWebKML.kml' using driver `KML'
 Writing layer `WORKINGMasterPlan2014SubzoneBoundaryWebKML' to data source 
   `data/WORKINGMasterPlan2014SubzoneBoundaryWebKML.kml' using driver `KML'
 Writing 323 features with 15 fields and geometry type Multi Polygon.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># delete_dsn replaces the file with our new one if its already exists</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># delete_dsn replaces the file with our new one if its already exists</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="ce2.2-working-with-masterplan-2019-subzone-data" class="level2">
 <h2 class="anchored" data-anchor-id="ce2.2-working-with-masterplan-2019-subzone-data">CE2.2 Working with Masterplan 2019 Subzone Data</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>mp_subzone_19_shp <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="at">dsn=</span><span class="st">"data/MPSZ-2019"</span>, <span class="at">layer=</span><span class="st">"MPSZ-2019"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>mp_subzone_19_shp <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="at">dsn=</span><span class="st">"data/MPSZ-2019"</span>, <span class="at">layer=</span><span class="st">"MPSZ-2019"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Reading layer `MPSZ-2019' from data source 
-  `/Users/kendricktty/Gits/SMU_CS/is415-site/InClass/ICE2/data/MPSZ-2019' 
+  `/Users/kendricktty/Gits/smu_cs/is415-site/InClass/ICE2/data/MPSZ-2019' 
   using driver `ESRI Shapefile'
 Simple feature collection with 332 features and 6 fields
 Geometry type: MULTIPOLYGON
@@ -291,10 +303,10 @@ Dimension:     XY
 Bounding box:  xmin: 103.6057 ymin: 1.158699 xmax: 104.0885 ymax: 1.470775
 Geodetic CRS:  WGS 84</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>mp_subzone_19_kml <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"data/MasterPlan2019SubzoneBoundaryNoSeaKML.kml"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>mp_subzone_19_kml <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"data/MasterPlan2019SubzoneBoundaryNoSeaKML.kml"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Reading layer `URA_MP19_SUBZONE_NO_SEA_PL' from data source 
-  `/Users/kendricktty/Gits/SMU_CS/is415-site/InClass/ICE2/data/MasterPlan2019SubzoneBoundaryNoSeaKML.kml' 
+  `/Users/kendricktty/Gits/smu_cs/is415-site/InClass/ICE2/data/MasterPlan2019SubzoneBoundaryNoSeaKML.kml' 
   using driver `KML'
 Simple feature collection with 332 features and 2 fields
 Geometry type: MULTIPOLYGON
@@ -308,8 +320,8 @@ Geodetic CRS:  WGS 84</code></pre>
 <section id="ce2.3-transforming-coordinate-data-from-wgs84-to-svy21" class="level2">
 <h2 class="anchored" data-anchor-id="ce2.3-transforming-coordinate-data-from-wgs84-to-svy21">CE2.3 Transforming coordinate data from WGS84 to SVY21</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>mp_subzone_19_shp <span class="ot">&lt;-</span> mp_subzone_19_shp <span class="sc">%&gt;%</span> <span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="dv">3414</span>)</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">st_crs</span>(mp_subzone_19_shp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>mp_subzone_19_shp <span class="ot">&lt;-</span> mp_subzone_19_shp <span class="sc">%&gt;%</span> <span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="dv">3414</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">st_crs</span>(mp_subzone_19_shp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Coordinate Reference System:
   User input: EPSG:3414 
@@ -358,7 +370,7 @@ PROJCRS["SVY21 / Singapore TM",
 <section id="ce2.4-working-with-population-data" class="level2">
 <h2 class="anchored" data-anchor-id="ce2.4-working-with-population-data">CE2.4 Working with Population Data</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>population_2023 <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/respopagesextod2023/respopagesextod2023.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>population_2023 <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/respopagesextod2023/respopagesextod2023.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Rows: 100928 Columns: 7
 ── Column specification ────────────────────────────────────────────────────────
@@ -369,19 +381,19 @@ dbl (2): Pop, Time
 ℹ Use `spec()` to retrieve the full column specification for this data.
 ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"Columns of population_2023"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"Columns of population_2023"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "Columns of population_2023"</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(population_2023)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(population_2023)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "PA"   "SZ"   "AG"   "Sex"  "TOD"  "Pop"  "Time"</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"Head of population_2023"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"Head of population_2023"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "Head of population_2023"</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(population_2023)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(population_2023)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 7
   PA         SZ                     AG     Sex   TOD                   Pop  Time
@@ -398,23 +410,42 @@ dbl (2): Pop, Time
 <section id="ce2.5-group-data-by-planning-area-and-subzone" class="level2">
 <h2 class="anchored" data-anchor-id="ce2.5-group-data-by-planning-area-and-subzone">CE2.5 Group data by planning area and subzone</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>population_2023 <span class="ot">&lt;-</span> population_2023 <span class="sc">%&gt;%</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(PA, SZ, AG) <span class="sc">%&gt;%</span></span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="st">`</span><span class="at">POP</span><span class="st">`</span><span class="ot">=</span><span class="fu">sum</span>(<span class="st">`</span><span class="at">Pop</span><span class="st">`</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from=</span>AG, <span class="at">values_from=</span>POP)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>population_2023_pivot <span class="ot">&lt;-</span> population_2023 <span class="sc">%&gt;%</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(PA, SZ, AG) <span class="sc">%&gt;%</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="st">`</span><span class="at">POP</span><span class="st">`</span><span class="ot">=</span><span class="fu">sum</span>(<span class="st">`</span><span class="at">Pop</span><span class="st">`</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from=</span>AG, <span class="at">values_from=</span>POP)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>`summarise()` has grouped output by 'PA', 'SZ'. You can override using the
 `.groups` argument.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(population_2023)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(population_2023)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code> [1] "PA"          "SZ"          "0_to_4"      "10_to_14"    "15_to_19"   
- [6] "20_to_24"    "25_to_29"    "30_to_34"    "35_to_39"    "40_to_44"   
-[11] "45_to_49"    "50_to_54"    "55_to_59"    "5_to_9"      "60_to_64"   
-[16] "65_to_69"    "70_to_74"    "75_to_79"    "80_to_84"    "85_to_89"   
-[21] "90_and_Over"</code></pre>
+<pre><code>[1] "PA"   "SZ"   "AG"   "Sex"  "TOD"  "Pop"  "Time"</code></pre>
 </div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Read the data structure carefully before proceeding!</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="ce2.6-data-wrangling" class="level2">
+<h2 class="anchored" data-anchor-id="ce2.6-data-wrangling">CE2.6 Data Wrangling</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>population_2023_pivot <span class="ot">&lt;-</span> population_2023_pivot <span class="sc">%&gt;%</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># As young boys in Singapore serve 2 years of national service, the earliest age to be considered economically active should be 25.</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="st">`</span><span class="at">YOUNG</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">rowSums</span>(.[<span class="dv">3</span><span class="sc">:</span><span class="dv">6</span>]) <span class="sc">+</span> <span class="fu">rowSums</span>(.[<span class="dv">14</span>])) <span class="sc">%&gt;%</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># By 2026, the retirement age in Singapore will be raised to 64.</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="st">`</span><span class="at">ECONOMY ACTIVE</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">rowSums</span>(.[<span class="dv">7</span><span class="sc">:</span><span class="dv">13</span>]) <span class="sc">+</span> <span class="fu">rowSums</span>(.[<span class="dv">15</span>])) <span class="sc">%&gt;%</span></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="st">`</span><span class="at">AGED</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">rowSums</span>(.[<span class="dv">16</span><span class="sc">:</span><span class="dv">21</span>])) <span class="sc">%&gt;%</span></span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="st">`</span><span class="at">TOTAL</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">rowSums</span>(.[<span class="dv">3</span><span class="sc">:</span><span class="dv">21</span>])) <span class="sc">%&gt;%</span></span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="st">`</span><span class="at">DEPENDENCY</span><span class="st">`</span> <span class="ot">=</span> (<span class="st">`</span><span class="at">YOUNG</span><span class="st">`</span> <span class="sc">+</span> <span class="st">`</span><span class="at">AGED</span><span class="st">`</span>)</span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>    <span class="sc">/</span> <span class="st">`</span><span class="at">ECONOMY ACTIVE</span><span class="st">`</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># mutate(): Perform calculation or conversion</span></span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(</span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>        <span class="st">`</span><span class="at">PA</span><span class="st">`</span>, <span class="st">`</span><span class="at">SZ</span><span class="st">`</span>, <span class="st">`</span><span class="at">YOUNG</span><span class="st">`</span>,</span>
+<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a>        <span class="st">`</span><span class="at">ECONOMY ACTIVE</span><span class="st">`</span>, <span class="st">`</span><span class="at">AGED</span><span class="st">`</span>,</span>
+<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a>        <span class="st">`</span><span class="at">TOTAL</span><span class="st">`</span>, <span class="st">`</span><span class="at">DEPENDENCY</span><span class="st">`</span></span>
+<span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span> </span>
+<span id="cb35-16"><a href="#cb35-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate_at</span>(<span class="at">.vars =</span> <span class="fu">vars</span>(PA, SZ), <span class="at">.funs =</span> <span class="fu">list</span>(toupper)) <span class="sc">%&gt;%</span></span>
+<span id="cb35-17"><a href="#cb35-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(<span class="st">`</span><span class="at">ECONOMY ACTIVE</span><span class="st">`</span> <span class="sc">&gt;</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 
