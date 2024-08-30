@@ -15,30 +15,30 @@ execute:
 
 **Spatial Point Pattern Analysis** serves to evaluate the pattern or distribution of a set of points on a map surface. These points serve many purposes, ranging from mapping events like crimes and disease onset (like John Snow's map of the 1854 Broad Street cholera outbreak), or the locations of business services or facilities.
 
-Using appropriate functions, this hands-on exercise aims to discover the spatial point patterns of two quintessential facilities in 2020s Singapore - childcare centres and hawker centres. Specifically, we want to find out:
+Using appropriate functions, this hands-on exercise aims to discover the spatial point patterns of a quintessential facility in 2020s Singapore - childcare centres. Specifically, we want to find out:
 
-1. if these are randomly distributed throughout the country, and;
-2. the planning areas with the highest concentration of each.
+1.  if these are randomly distributed throughout the country, and;
+2.  the planning areas with the highest concentration of childcare centres.
 
 ## H3.2 The data
 
 The datasets to be used are:
 
-* `MP14_SUBZONE_WEB_PL`, containing polygon features.
+-   `MP14_SUBZONE_WEB_PL`, containing polygon features.
 
-* `CoastalOutline`, a new dataset containing polygon features showing the boundaries of Singapore. It is provided by SLA in ESRI shapefile format.
+-   `CoastalOutline`, a new dataset containing polygon features showing the boundaries of Singapore. It is provided by SLA in ESRI shapefile format.
 
-In additional, our childcare centre and hawker centre data will, as always, be sourced from the Singapore government's data lake at [data.gov.sg](data.gov.sg). These will take the form of point feature data.
+In addition, our childcare centre data will, as always, be sourced from the Singapore government's data lake at [data.gov.sg](data.gov.sg). These will take the form of point feature data.
 
 ## H3.3 Installing and Loading R packages
 
 Along with the usual `sf` and `tmap`, three new packages will be used. They are:
 
-* `spatstat`, which includes a wide range of useful functions for first and second order spatial point patterns analysis, and to derive the kernel density estimation (KDE) layer.
+-   `spatstat`, which includes a wide range of useful functions for first and second order spatial point patterns analysis, and to derive the kernel density estimation (KDE) layer.
 
-* `raster` reads, writes, manipulates, analyses and models (i.e. rasters) gridded spatial data.
+-   `raster` reads, writes, manipulates, analyses and models (i.e. rasters) gridded spatial data.
 
-* `maptools`, which is for manipulating geographic data.
+-   `maptools`, which is for manipulating geographic data.
 
 ```{r}
 pacman::p_load(sf, raster, spatstat, tmap, tidyverse)
@@ -54,19 +54,16 @@ Here, we import the data we need and plot basic maps to get a basic sense of the
 mpsz_sf <- st_read(dsn="../data/geospatial/MasterPlan2014SubzoneBoundaryWebSHP", layer="MP14_SUBZONE_WEB_PL")
 sg_sf <- st_read(dsn="../data/geospatial/CoastalOutline", layer="CostalOutline")
 childcare_sf <- st_read("../data/geospatial/child-care-services-geojson.geojson") %>% st_transform(crs=3414)
-hawker_sf <- st_read("../data/geospatial/HawkerCentresGEOJSON.geojson") %>% st_transform(crs=3414)
 
 tm_shape(mpsz_sf) + tm_polygons() + tm_shape(childcare_sf) + tm_dots() + tm_layout(title = 'Childcare Centres')
-
-tm_shape(mpsz_sf) + tm_polygons() + tm_shape(hawker_sf) + tm_dots() + tm_layout(title = 'Hawker Centres')
 ```
 
 Alternatively, we can prepare a pin map as below.
 
 ```{r}
-tmap_mode('view')
-tm_shape(childcare_sf) + tm_dots() + tm_layout(title = 'Childcare Centres')
-tmap_mode('plot')
+# tmap_mode('view')
+# tm_shape(childcare_sf) + tm_dots() + tm_layout(title = 'Childcare Centres')
+# tmap_mode('plot')
 ```
 
 ## H3.5 Geospatial Data Wrangling
@@ -77,14 +74,12 @@ Some geospatial analysis packages require that any input geospatial data be repr
 
 ```{r}
 childcare <- as_Spatial(childcare_sf)
-hawker <- as_Spatial(hawker_sf)
 mpsz <- as_Spatial(mpsz_sf)
 sg <- as_Spatial(sg_sf)
 
 childcare
 mpsz
 sg
-hawker
 ```
 
 ### H3.5.2 Converting `Spatial*` into generic `sp` format
@@ -97,3 +92,201 @@ childcare_sp
 sg_sp <- as(sg, "SpatialPolygons")
 sg_sp
 ```
+
+One major difference that can observed between a `Spatial` class object and generic `sp` object is the `variables`, `names`, `min values` and `max values` attributes, which are absent in the latter.
+
+### H3.5.3 Converting generic `sp` format into `ppp` format
+
+```{r}
+childcare_ppp <- as.ppp(childcare_sf)
+childcare_ppp
+plot(childcare_ppp)
+summary(childcare_ppp)
+```
+
+## H3.5.4 Handling duplicates
+
+In spatial point patterns analysis, as is data analytics in general, an issue of significance is the presence of **duplicates**. These need to be handled, since it is assumed that the points cannot be *coincident*.
+
+In this section, we will:
+
+1.  Check for duplicated points in our `childcare_ppp` object;
+2.  Count the number of coincidence points with the `multiplicity()` function;
+3.  Find the number of locations with more than one point event;
+4.  View the locations of duplicated point events on a map plot;
+5.  Perform *jittering*, which will add a small perturbation to the duplicate points so that they do not occupy the exact same space.
+
+```{r}
+# Check for duplication
+any(duplicated(childcare_ppp))
+# Find multiplicity
+multiplicity <- multiplicity(childcare_ppp)
+multiplicity
+# Print the number of locations with more than 1 point event
+sum(multiplicity > 1)
+```
+
+We can conclude from the above that there are no duplicates in the data.
+
+```{r}
+# Find the locations of duplicate point events
+# tmap_mode('view')
+# tm_shape(childcare) +
+#   tm_dots(alpha=0.4, 
+#           size=0.05)
+# tmap_mode('plot')
+
+# Perform jittering
+childcare_ppp_jit <- rjitter(childcare_ppp, 
+                             retry=TRUE, 
+                             nsim=1, 
+                             drop=TRUE)
+any(duplicated(childcare_ppp_jit))
+```
+
+Jittering is one of three ways to deal with missing geospatial data, the others being to make each point "unique" and then attach the duplicate attributes as marks (which would be more complex), or simply remove the data (which might lead to the loss of other important attributes).
+
+### H3.5.5 Creating an `owin` object
+
+When analysing spatial point patterns, it is a good practice to confine the analysis within a geographical area, such as the national boundary of Singapore. In `spatstat`, `owin` is specifically designed to represent this polygonal region and can be defined and output as such:
+
+```{r}
+sg_owin <- as.owin(sg_sf)
+plot(sg_owin)
+summary(sg_owin)
+```
+
+### H3.5.6 Combining point events and `owin` objects
+
+Finally, we can extract our childcare centre "events" and combine them with the `owin` object as such:
+
+```{r}
+childcare_SG_ppp = childcare_ppp[sg_owin]
+plot(childcare_SG_ppp)
+summary(childcare_SG_ppp)
+```
+
+## H3.6 First Order Spatial Point Patterns Analysis
+
+Spatial point patterns analysis (SPPA) is the study of the spatial arrangements of points in (typically) 2D space. In this section, we will perform first order SPPA using `spatstat`. In particular, we will:
+
+-   derive the **kernel density estimation (KDE)** layer for visualising and exploring the intensity of point processes, and;
+-   performing **confirmatory spatial point patterns analysis** using **nearest neighbour** statistics.
+
+### H3.6.1 Kernel Density Estimation
+
+Kernel density estimation (KDE) serves to compute the *intensity* of a point distribution. It has two general steps: first to compute the point intensity, followed by spatial interpolation using a kernel function (to create distributions like a uniform, triangular, quartic or gaussian distribution). In this exercise, we will mostly use the `gaussian` kernel.
+
+#### H3.6.1.1 Computing KDE using automatic bandwidth selection
+
+```{r}
+kde_childcareSG_bw <- density(childcare_SG_ppp,
+                              sigma=bw.diggle,
+                              edge=TRUE,
+                            kernel="gaussian")
+plot(kde_childcareSG_bw)
+```
+
+As we can see, the range of our density values is between 0 and 35\*10^-4^, which is way too small for us. This is because `svy21` uses **metres** by default, which means the density values to be computed will be the **number of points per square metre**.
+
+We will therefore need to rescale our KDE values. Before we move on though, it is good to know that the following code chunk will retrieve us the bandwidth used to compute the KDE layer.
+
+```{r}
+bw <- bw.diggle(childcare_SG_ppp)
+bw
+```
+
+#### H3.6.1.2 Rescaling KDE values
+
+To rescale our KDE values, we can convert the unit of measurement into **kilometres**, and then re-run `density()` and plot the output map to see the result.
+
+```{r}
+childcareSG_ppp.km <- rescale.ppp(childcare_SG_ppp, 1000, "km")
+kde_childcareSG.bw <- density(childcareSG_ppp.km, sigma=bw.diggle, edge=TRUE, kernel="gaussian")
+plot(kde_childcareSG.bw)
+```
+
+We now have a much more readable density map.
+
+### H3.6.2 Working with different automatic bandwidth methods
+
+Other than `bw.diggle()`, `bw.CvL()`, `bw.scott()` and `bw.ppl` may be used to determine the bandwidth.
+
+```{r}
+bw.diggle(childcareSG_ppp.km)
+bw.scott(childcareSG_ppp.km)
+bw.CvL(childcareSG_ppp.km)
+bw.ppl(childcareSG_ppp.km)
+```
+
+We can also plot different maps to compare the output of different bandwidth methods.
+
+```{r}
+kde_childcareSG.ppl <- density(childcareSG_ppp.km, 
+                               sigma=bw.ppl, 
+                               edge=TRUE,
+                               kernel="gaussian")
+par(mfrow=c(1,2))
+plot(kde_childcareSG.bw, main = "bw.diggle")
+plot(kde_childcareSG.ppl, main = "bw.ppl")
+```
+
+### H3.6.3 Working with different kernel methods
+
+As mentioned, there are different kernel methods to give us different distributions. The code chunk below compares the results of three other kernel methods than `gaussian`, and computes additional kernel density estimations.
+
+```{r}
+par(mfrow=c(2,2))
+plot(density(childcareSG_ppp.km, 
+             sigma=bw.ppl, 
+             edge=TRUE, 
+             kernel="gaussian"), 
+     main="Gaussian")
+plot(density(childcareSG_ppp.km, 
+             sigma=bw.ppl, 
+             edge=TRUE, 
+             kernel="epanechnikov"), 
+     main="Epanechnikov")
+plot(density(childcareSG_ppp.km, 
+             sigma=bw.ppl, 
+             edge=TRUE, 
+             kernel="quartic"), 
+     main="Quartic")
+plot(density(childcareSG_ppp.km, 
+             sigma=bw.ppl, 
+             edge=TRUE, 
+             kernel="disc"), 
+     main="Disc")
+```
+
+## H3.7 Fixed and adaptive KDE
+
+### H3.7.1 Computing KDE using fixed bandwidth
+
+Another way to compute a KDE layer is by defining a fixed bandwidth. The code chunk below defines a bandwidth (sigma) of 600m (0.6km).
+
+```{r}
+kde_childcareSG_600 <- density(childcareSG_ppp.km, sigma=0.6, edge=TRUE, kernel="gaussian")
+plot(kde_childcareSG_600)
+```
+
+### H3.7.2 Computing KDE using adaptive bandwidth
+
+The fixed bandwidth method is sensitive to skewed distributions of spatial point patterns (for instance, if a large number of points is clustered in one area, say an urban area, instead of another, like a rural area.) Adaptive bandwidth, using `density.adaptive()`, is one way to overcome this problem.
+
+```{r}
+kde_childcareSG_adaptive <- adaptive.density(childcareSG_ppp.km, method="kernel")
+plot(kde_childcareSG_adaptive)
+```
+
+Two KDE outputs may be compared as follows.
+
+```{r}
+par(mfrow=c(1,2))
+plot(kde_childcareSG.bw, main = "Fixed bandwidth")
+plot(kde_childcareSG_adaptive, main = "Adaptive bandwidth")
+```
+
+### H3.7.3 Converting KDE outputs into grid objects
+
+### H3.7.3.1
