@@ -459,13 +459,15 @@ Once again, our *p*-value is lower than 0.05, leading us to conclude that the po
 
 ## H3.9 Second Order Spatial Points Patterns Analysis
 
-While first order SPPA measures how observations vary due to *changes in the underlying property*, **second order SPPA** deals with variations in observations *due to the way they interact with one another*. The methods used for second order SPPA include the G-, F-, K- and L-functions.
+While first order SPPA measures how observations vary due to *changes in the underlying property*, **second order SPPA** deals with variations in observations *due to the way they interact with one another*. The methods used for second order SPPA include the F-, G-, K- and L-functions.
+
+In this section, we will explore the F-, G- K- and L-functions by applying them on the childcare centre data for the planning areas of **Choa Chu Kang** in Western Singapore, and **Tampines** in the East.
 
 ## H3.10 F-Function
 
 The F-function estimates the empty space function $F(r)$ from a point pattern in a window of arbitrary shape. It can be computed using `Fest()` of the spatstat package.
 
-Following that, a Monte Carlo simulation test can be performed using `envelope()`. We will perform both operations on the segments of the data representing 
+Following that, a Monte Carlo simulation test can be performed using `envelope()`. We will perform both operations on the segments of the data representing
 
 ### H3.10.1 Computing F-function estimations
 
@@ -487,9 +489,9 @@ plot(F_function_Tampines)
 
 To confirm the observed spatial patterns above, we can conduct a Monte Carlo (hypothesis) test with `envelope()`. The hypothesis and test are as follows:
 
-Ho = The distribution of childcare services at Choa Chu Kang are randomly distributed.
+H~0~ = The distribution of childcare services at Choa Chu Kang/Tampines are randomly distributed.
 
-H1= The distribution of childcare services at Choa Chu Kang are not randomly distributed.
+H~1~= The distribution of childcare services at Choa Chu Kang/Tampines are *not* randomly distributed.
 
 The null hypothesis will be rejected if p-value is smaller than alpha value of 0.001.
 
@@ -510,3 +512,134 @@ plot(F_TM.csr)
 The F-functions for both Choa Chu Kang and Tampines are below the envelopes, indicating that the childcare centres in both locations are **clustered**.
 
 ## H3.11 G-Function
+
+The **G-function** measures the distribution of distances from an arbitrary event to its nearest event.
+
+Once again, a function from the `spatstat` package will be used, this time the `Gest()` function. Following that, we will perform another Monte Carlo simulation test with `envelope()`.
+
+### H3.11.1 Computing G-function estimations
+
+#### H3.11.1.1 Choa Chu Kang
+
+```{r}
+G_CK <- Gest(childcare_ck_ppp, correction = "border")
+plot(G_CK, xlim=c(0,500))
+```
+
+#### H3.11.1.2 Tampines
+
+```{r}
+G_tm <- Gest(childcare_tm_ppp, correction = "best")
+plot(G_tm)
+```
+
+### H3.11.2 Performing Complete Spatial Randomness Test
+
+As a reminder:
+
+H~0~ = The distribution of childcare services at Choa Chu Kang/Tampines are randomly distributed.
+
+H~1~= The distribution of childcare services at Choa Chu Kang/Tampines are *not* randomly distributed.
+
+The null hypothesis will be rejected if p-value is smaller than alpha value of 0.001.
+
+#### H3.11.2.1 Choa Chu Kang
+
+```{r}
+G_CK.csr <- envelope(childcare_ck_ppp, Gest, nsim = 999)
+plot(G_CK.csr)
+```
+
+#### H3.11.2.2 Tampines
+
+```{r}
+G_tm.csr <- envelope(childcare_tm_ppp, Gest, correction = "all", nsim = 999)
+plot(G_tm.csr)
+```
+
+## H3.12 K-Function
+
+The **K-function** measures the number of events found up to a given distance of any particular event. For this exercise, the `spatstat` function to be used is the the `Kest()` function, and another Monte Carlo simulation test will be performed with `envelope()`.
+
+### H3.12.1 Computing K-function estimations
+
+#### H3.12.1.1 Choa Chu Kang
+
+```{r}
+K_ck = Kest(childcare_ck_ppp, correction = "Ripley")
+plot(K_ck, . -r ~ r, ylab= "K(d)-r", xlab = "d(m)")
+```
+
+#### H3.12.1.2 Tampines
+
+```{r}
+K_tm = Kest(childcare_tm_ppp, correction = "Ripley")
+plot(K_tm, . -r ~ r, 
+     ylab= "K(d)-r", xlab = "d(m)", 
+     xlim=c(0,1000))
+```
+
+### H3.12.2 Performing Complete Spatial Randomness Test
+
+As a reminder:
+
+H~0~ = The distribution of childcare services at Choa Chu Kang/Tampines are randomly distributed.
+
+H~1~= The distribution of childcare services at Choa Chu Kang/Tampines are *not* randomly distributed.
+
+The null hypothesis will be rejected if p-value is smaller than alpha value of 0.001.
+
+#### H3.12.2.1 Choa Chu Kang
+
+```{r}
+K_ck.csr <- envelope(childcare_ck_ppp, Kest, nsim = 99, rank = 1, glocal=TRUE)
+plot(K_ck.csr, . - r ~ r, xlab="d", ylab="K(d)-r")
+```
+
+#### H3.12.2.2 Tampines
+
+```{r}
+K_tm.csr <- envelope(childcare_tm_ppp, Kest, nsim = 99, rank = 1, glocal=TRUE)
+plot(K_tm.csr, . - r ~ r, 
+     xlab="d", ylab="K(d)-r", xlim=c(0,500))
+```
+
+## H3.13 L-Function
+
+The **L-function** measures the distribution of distances from an arbitrary event to its nearest event. For this exercise, the `spatstat` function to be used is the the `Lest()` function, and another Monte Carlo simulation test will be performed with `envelope()`.
+
+### H3.13.1 Computing L-function estimations
+
+#### H3.13.1.1 Choa Chu Kang
+
+```{r}
+L_ck = Lest(childcare_ck_ppp, correction = "Ripley")
+plot(L_ck, . -r ~ r, 
+     ylab= "L(d)-r", xlab = "d(m)")
+```
+
+#### H3.13.1.2 Tampines
+
+```{r}
+L_tm = Lest(childcare_tm_ppp, correction = "Ripley")
+plot(L_tm, . -r ~ r, 
+     ylab= "L(d)-r", xlab = "d(m)", 
+     xlim=c(0,1000))
+```
+
+### H3.13.2 Performing Complete Spatial Randomness Test
+
+#### H3.13.2.1 Choa Chu Kang
+
+```{r}
+L_ck.csr <- envelope(childcare_ck_ppp, Lest, nsim = 99, rank = 1, glocal=TRUE)
+plot(L_ck.csr, . - r ~ r, xlab="d", ylab="L(d)-r")
+```
+
+#### H3.13.2.2 Tampines
+
+```{r}
+L_tm.csr <- envelope(childcare_tm_ppp, Lest, nsim = 99, rank = 1, glocal=TRUE)
+plot(L_tm.csr, . - r ~ r, 
+     xlab="d", ylab="L(d)-r", xlim=c(0,500))
+```
