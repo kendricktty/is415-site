@@ -103,6 +103,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../../styles.css">
 </head>
@@ -219,7 +248,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#h3.7.1-computing-kde-using-fixed-bandwidth" id="toc-h3.7.1-computing-kde-using-fixed-bandwidth" class="nav-link" data-scroll-target="#h3.7.1-computing-kde-using-fixed-bandwidth">H3.7.1 Computing KDE using fixed bandwidth</a></li>
   <li><a href="#h3.7.2-computing-kde-using-adaptive-bandwidth" id="toc-h3.7.2-computing-kde-using-adaptive-bandwidth" class="nav-link" data-scroll-target="#h3.7.2-computing-kde-using-adaptive-bandwidth">H3.7.2 Computing KDE using adaptive bandwidth</a></li>
   <li><a href="#h3.7.3-converting-kde-outputs-into-grid-objects" id="toc-h3.7.3-converting-kde-outputs-into-grid-objects" class="nav-link" data-scroll-target="#h3.7.3-converting-kde-outputs-into-grid-objects">H3.7.3 Converting KDE outputs into grid objects</a></li>
-  <li><a href="#h3.7.3.1" id="toc-h3.7.3.1" class="nav-link" data-scroll-target="#h3.7.3.1">H3.7.3.1</a></li>
+  <li><a href="#h3.7.3.1-converting-gridded-output-into-rasterlayer" id="toc-h3.7.3.1-converting-gridded-output-into-rasterlayer" class="nav-link" data-scroll-target="#h3.7.3.1-converting-gridded-output-into-rasterlayer">H3.7.3.1 Converting gridded output into <code>RasterLayer</code></a></li>
+  <li><a href="#h3.7.3.2-assigning-projection-system" id="toc-h3.7.3.2-assigning-projection-system" class="nav-link" data-scroll-target="#h3.7.3.2-assigning-projection-system">H3.7.3.2 Assigning projection system</a></li>
+  <li><a href="#h3.7.4-visualising-output-in-tmap" id="toc-h3.7.4-visualising-output-in-tmap" class="nav-link" data-scroll-target="#h3.7.4-visualising-output-in-tmap">H3.7.4 Visualising output in tmap</a></li>
+  <li><a href="#h3.7.5-comparing-spatial-point-patterns-using-kde" id="toc-h3.7.5-comparing-spatial-point-patterns-using-kde" class="nav-link" data-scroll-target="#h3.7.5-comparing-spatial-point-patterns-using-kde">H3.7.5 Comparing Spatial Point Patterns using KDE</a></li>
+  </ul></li>
+  <li><a href="#h3.8-nearest-neighbour-analysis" id="toc-h3.8-nearest-neighbour-analysis" class="nav-link" data-scroll-target="#h3.8-nearest-neighbour-analysis">H3.8 Nearest Neighbour Analysis</a>
+  <ul class="collapse">
+  <li><a href="#h3.8.1-testing-spatial-point-patterns-using-the-clark-evans-test" id="toc-h3.8.1-testing-spatial-point-patterns-using-the-clark-evans-test" class="nav-link" data-scroll-target="#h3.8.1-testing-spatial-point-patterns-using-the-clark-evans-test">H3.8.1 Testing spatial point patterns using the Clark-Evans Test</a></li>
+  <li><a href="#h3.8.2-clark-evans-test-punggol" id="toc-h3.8.2-clark-evans-test-punggol" class="nav-link" data-scroll-target="#h3.8.2-clark-evans-test-punggol">H3.8.2 Clark-Evans Test: Punggol</a></li>
+  <li><a href="#h3.8.3-clark-evans-test-jurong-west" id="toc-h3.8.3-clark-evans-test-jurong-west" class="nav-link" data-scroll-target="#h3.8.3-clark-evans-test-jurong-west">H3.8.3 Clark-Evans Test: Jurong West</a></li>
+  </ul></li>
+  <li><a href="#h3.9-second-order-spatial-points-patterns-analysis" id="toc-h3.9-second-order-spatial-points-patterns-analysis" class="nav-link" data-scroll-target="#h3.9-second-order-spatial-points-patterns-analysis">H3.9 Second Order Spatial Points Patterns Analysis</a></li>
+  <li><a href="#h3.10-f-function" id="toc-h3.10-f-function" class="nav-link" data-scroll-target="#h3.10-f-function">H3.10 F-Function</a>
+  <ul class="collapse">
+  <li><a href="#h3.10.1-computing-f-function-estimations" id="toc-h3.10.1-computing-f-function-estimations" class="nav-link" data-scroll-target="#h3.10.1-computing-f-function-estimations">H3.10.1 Computing F-function estimations</a></li>
+  <li><a href="#h3.10.2-performing-complete-spatial-randomness-test" id="toc-h3.10.2-performing-complete-spatial-randomness-test" class="nav-link" data-scroll-target="#h3.10.2-performing-complete-spatial-randomness-test">H3.10.2 Performing Complete Spatial Randomness Test</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -265,6 +309,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
+<blockquote class="blockquote">
+<p>Notes for grading: For <strong>week 3</strong>, the requirement is to complete both <strong>chapters 4</strong> and <strong>5</strong> in the <strong>R for Geospatial Data Science and Analytics</strong> course website. Both have been combined into a single webpage for brevity.</p>
+</blockquote>
 <section id="h3.1-overview" class="level2">
 <h2 class="anchored" data-anchor-id="h3.1-overview">H3.1 Overview</h2>
 <p><strong>Spatial Point Pattern Analysis</strong> serves to evaluate the pattern or distribution of a set of points on a map surface. These points serve many purposes, ranging from mapping events like crimes and disease onset (like John Snow’s map of the 1854 Broad Street cholera outbreak), or the locations of business services or facilities.</p>
@@ -918,11 +965,428 @@ Bandwidth selection will be based on Gaussian kernel</code></pre>
 </section>
 <section id="h3.7.3-converting-kde-outputs-into-grid-objects" class="level3">
 <h3 class="anchored" data-anchor-id="h3.7.3-converting-kde-outputs-into-grid-objects">H3.7.3 Converting KDE outputs into grid objects</h3>
+<p>For mapping purposes.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>gridded_kde_childcareSG_bw <span class="ot">&lt;-</span> <span class="fu">as</span>(kde_childcareSG.bw, <span class="st">"SpatialGridDataFrame"</span>)</span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a><span class="fu">spplot</span>(gridded_kde_childcareSG_bw)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hands-on-3_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
 </section>
-<section id="h3.7.3.1" class="level3">
-<h3 class="anchored" data-anchor-id="h3.7.3.1">H3.7.3.1</h3>
+<section id="h3.7.3.1-converting-gridded-output-into-rasterlayer" class="level3">
+<h3 class="anchored" data-anchor-id="h3.7.3.1-converting-gridded-output-into-rasterlayer">H3.7.3.1 Converting gridded output into <code>RasterLayer</code></h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>kde_childcareSG_bw_raster <span class="ot">&lt;-</span> <span class="fu">raster</span>(kde_childcareSG.bw)</span>
+<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a>kde_childcareSG_bw_raster</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>class      : RasterLayer 
+dimensions : 128, 128, 16384  (nrow, ncol, ncell)
+resolution : 0.4170614, 0.2647348  (x, y)
+extent     : 2.663926, 56.04779, 16.35798, 50.24403  (xmin, xmax, ymin, ymax)
+crs        : NA 
+source     : memory
+names      : layer 
+values     : -8.476185e-15, 28.51831  (min, max)</code></pre>
+</div>
+</div>
+</section>
+<section id="h3.7.3.2-assigning-projection-system" class="level3">
+<h3 class="anchored" data-anchor-id="h3.7.3.2-assigning-projection-system">H3.7.3.2 Assigning projection system</h3>
+<p>Notice that the <code>crs</code> attribute is <code>NA</code>, indicating that no coordinate system has been assigned to the raster. We will fix this by adding the WSY21 (Singapore) CRS to our <code>RasterLayer</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="fu">projection</span>(kde_childcareSG_bw_raster) <span class="ot">&lt;-</span> <span class="fu">CRS</span>(<span class="st">"+init=EPSG:3414"</span>)</span>
+<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a>kde_childcareSG_bw_raster</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>class      : RasterLayer 
+dimensions : 128, 128, 16384  (nrow, ncol, ncell)
+resolution : 0.4170614, 0.2647348  (x, y)
+extent     : 2.663926, 56.04779, 16.35798, 50.24403  (xmin, xmax, ymin, ymax)
+crs        : +proj=tmerc +lat_0=1.36666666666667 +lon_0=103.833333333333 +k=1 +x_0=28001.642 +y_0=38744.572 +ellps=WGS84 +units=m +no_defs 
+source     : memory
+names      : layer 
+values     : -8.476185e-15, 28.51831  (min, max)</code></pre>
+</div>
+</div>
+</section>
+<section id="h3.7.4-visualising-output-in-tmap" class="level3">
+<h3 class="anchored" data-anchor-id="h3.7.4-visualising-output-in-tmap">H3.7.4 Visualising output in tmap</h3>
+<p>Finally, we can display the raster in cartographic quality using <code>tmap</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(kde_childcareSG_bw_raster) <span class="sc">+</span> </span>
+<span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_raster</span>(<span class="st">"layer"</span>, <span class="at">palette =</span> <span class="st">"viridis"</span>) <span class="sc">+</span></span>
+<span id="cb72-3"><a href="#cb72-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">legend.position =</span> <span class="fu">c</span>(<span class="st">"right"</span>, <span class="st">"bottom"</span>), <span class="at">frame =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hands-on-3_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>With all the work we have done so far, a quick glance at the maps indicates a higher than usual density of childcare centres in the areas of <a href="https://en.wikipedia.org/wiki/Woodlands,_Singapore">Woodlands South</a> and <a href="https://en.wikipedia.org/wiki/Punggol">Punggol</a> (the yellow patches in the above <code>tmap</code> display).</p>
+</section>
+<section id="h3.7.5-comparing-spatial-point-patterns-using-kde" class="level3">
+<h3 class="anchored" data-anchor-id="h3.7.5-comparing-spatial-point-patterns-using-kde">H3.7.5 Comparing Spatial Point Patterns using KDE</h3>
+<p>And now for the fun part - comparing KDEs between regions. In this section, we will compare the density estimations of childcare centres located in the planning areas of <a href="https://en.wikipedia.org/wiki/Choa_Chu_Kang">Choa Chu Kang</a>, <a href="https://en.wikipedia.org/wiki/Jurong_West">Jurong West</a>, Punggol and <a href="https://en.wikipedia.org/wiki/Tampines">Tampines</a>.</p>
+<section id="h3.7.5.1-extracting-and-plotting-study-areas" class="level4">
+<h4 class="anchored" data-anchor-id="h3.7.5.1-extracting-and-plotting-study-areas">H3.7.5.1 Extracting and plotting study areas</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="co"># First, extract the target planning areas</span></span>
+<span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb73-3"><a href="#cb73-3" aria-hidden="true" tabindex="-1"></a>punggol <span class="ot">&lt;-</span> mpsz_sf <span class="sc">%&gt;%</span></span>
+<span id="cb73-4"><a href="#cb73-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(PLN_AREA_N <span class="sc">==</span> <span class="st">"PUNGGOL"</span>)</span>
+<span id="cb73-5"><a href="#cb73-5" aria-hidden="true" tabindex="-1"></a>tampines <span class="ot">&lt;-</span> mpsz_sf <span class="sc">%&gt;%</span></span>
+<span id="cb73-6"><a href="#cb73-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(PLN_AREA_N <span class="sc">==</span> <span class="st">"TAMPINES"</span>)</span>
+<span id="cb73-7"><a href="#cb73-7" aria-hidden="true" tabindex="-1"></a>choa_chu_kang <span class="ot">&lt;-</span> mpsz_sf <span class="sc">%&gt;%</span></span>
+<span id="cb73-8"><a href="#cb73-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(PLN_AREA_N <span class="sc">==</span> <span class="st">"CHOA CHU KANG"</span>)</span>
+<span id="cb73-9"><a href="#cb73-9" aria-hidden="true" tabindex="-1"></a>jurong_west <span class="ot">&lt;-</span> mpsz_sf <span class="sc">%&gt;%</span></span>
+<span id="cb73-10"><a href="#cb73-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(PLN_AREA_N <span class="sc">==</span> <span class="st">"JURONG WEST"</span>)</span>
+<span id="cb73-11"><a href="#cb73-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb73-12"><a href="#cb73-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Then, visualise the areas with a plot</span></span>
+<span id="cb73-13"><a href="#cb73-13" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>))</span>
+<span id="cb73-14"><a href="#cb73-14" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(punggol, <span class="at">main =</span> <span class="st">"Punggol"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: plotting the first 9 out of 15 attributes; use max.plot = 15 to plot
+all</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hands-on-3_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(tampines, <span class="at">main =</span> <span class="st">"Tampines"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: plotting the first 9 out of 15 attributes; use max.plot = 15 to plot
+all</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hands-on-3_files/figure-html/unnamed-chunk-24-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(choa_chu_kang, <span class="at">main =</span> <span class="st">"Choa Chu Kang"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: plotting the first 10 out of 15 attributes; use max.plot = 15 to plot
+all</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hands-on-3_files/figure-html/unnamed-chunk-24-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(jurong_west, <span class="at">main =</span> <span class="st">"Jurong West"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: plotting the first 9 out of 15 attributes; use max.plot = 15 to plot
+all</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hands-on-3_files/figure-html/unnamed-chunk-24-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="h3.7.5.2-creating-owin-object" class="level4">
+<h4 class="anchored" data-anchor-id="h3.7.5.2-creating-owin-object">H3.7.5.2 Creating <code>owin</code> object</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb81"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a>pg_owin <span class="ot">&lt;-</span> <span class="fu">as.owin</span>(punggol)</span>
+<span id="cb81-2"><a href="#cb81-2" aria-hidden="true" tabindex="-1"></a>tm_owin <span class="ot">&lt;-</span> <span class="fu">as.owin</span>(tampines)</span>
+<span id="cb81-3"><a href="#cb81-3" aria-hidden="true" tabindex="-1"></a>ck_owin <span class="ot">&lt;-</span> <span class="fu">as.owin</span>(choa_chu_kang)</span>
+<span id="cb81-4"><a href="#cb81-4" aria-hidden="true" tabindex="-1"></a>jw_owin <span class="ot">&lt;-</span> <span class="fu">as.owin</span>(jurong_west)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="h3.7.5.3-combining-childcare-points-and-the-study-area" class="level4">
+<h4 class="anchored" data-anchor-id="h3.7.5.3-combining-childcare-points-and-the-study-area">H3.7.5.3 Combining childcare points and the study area</h4>
+<p>The code chunk below completes the following 3 tasks. First, we extract the childcare region for each of our four study areas. Next, we transform the unit of measurement from <strong>metres</strong> to <strong>kilometres</strong>. Finally, we can plot the locations of childcare centres within the four study areas.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb82"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a>childcare_pg_ppp <span class="ot">&lt;-</span> childcare_ppp_jit[pg_owin]</span>
+<span id="cb82-2"><a href="#cb82-2" aria-hidden="true" tabindex="-1"></a>childcare_tm_ppp <span class="ot">&lt;-</span> childcare_ppp_jit[tm_owin]</span>
+<span id="cb82-3"><a href="#cb82-3" aria-hidden="true" tabindex="-1"></a>childcare_ck_ppp <span class="ot">&lt;-</span> childcare_ppp_jit[ck_owin]</span>
+<span id="cb82-4"><a href="#cb82-4" aria-hidden="true" tabindex="-1"></a>childcare_jw_ppp <span class="ot">&lt;-</span> childcare_ppp_jit[jw_owin]</span>
+<span id="cb82-5"><a href="#cb82-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-6"><a href="#cb82-6" aria-hidden="true" tabindex="-1"></a>childcare_pg_ppp.km <span class="ot">&lt;-</span> <span class="fu">rescale.ppp</span>(childcare_pg_ppp, <span class="dv">1000</span>, <span class="st">"km"</span>)</span>
+<span id="cb82-7"><a href="#cb82-7" aria-hidden="true" tabindex="-1"></a>childcare_tm_ppp.km <span class="ot">&lt;-</span> <span class="fu">rescale.ppp</span>(childcare_tm_ppp, <span class="dv">1000</span>, <span class="st">"km"</span>)</span>
+<span id="cb82-8"><a href="#cb82-8" aria-hidden="true" tabindex="-1"></a>childcare_ck_ppp.km <span class="ot">&lt;-</span> <span class="fu">rescale.ppp</span>(childcare_ck_ppp, <span class="dv">1000</span>, <span class="st">"km"</span>)</span>
+<span id="cb82-9"><a href="#cb82-9" aria-hidden="true" tabindex="-1"></a>childcare_jw_ppp.km <span class="ot">&lt;-</span> <span class="fu">rescale.ppp</span>(childcare_jw_ppp, <span class="dv">1000</span>, <span class="st">"km"</span>)</span>
+<span id="cb82-10"><a href="#cb82-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-11"><a href="#cb82-11" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>))</span>
+<span id="cb82-12"><a href="#cb82-12" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(childcare_pg_ppp.km, <span class="at">main=</span><span class="st">"Childcare centres in Punggol"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in default.charmap(ntypes, chars): Too many types to display every type
+as a different character</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Only 10 out of 61 symbols are shown in the symbol map</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb85"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(childcare_tm_ppp.km, <span class="at">main=</span><span class="st">"Childcare centres in Tampines"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in default.charmap(ntypes, chars): Too many types to display every type
+as a different character</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Only 10 out of 89 symbols are shown in the symbol map</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb88"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(childcare_ck_ppp.km, <span class="at">main=</span><span class="st">"Childcare centres in Choa Chu Kang"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in default.charmap(ntypes, chars): Too many types to display every type
+as a different character</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Only 10 out of 61 symbols are shown in the symbol map</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb91"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(childcare_jw_ppp.km, <span class="at">main=</span><span class="st">"Childcare centres in Jurong West"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in default.charmap(ntypes, chars): Too many types to display every type
+as a different character</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Only 10 out of 87 symbols are shown in the symbol map</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hands-on-3_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="h3.7.5.4-computing-kde" class="level4">
+<h4 class="anchored" data-anchor-id="h3.7.5.4-computing-kde">H3.7.5.4 Computing KDE</h4>
+<p>Finally, we can compute the KDE for each of the four planning areas with the <code>bw.diggle</code> method.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb94"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>))</span>
+<span id="cb94-2"><a href="#cb94-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">density</span>(childcare_pg_ppp.km, </span>
+<span id="cb94-3"><a href="#cb94-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">sigma=</span>bw.diggle, </span>
+<span id="cb94-4"><a href="#cb94-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">edge=</span><span class="cn">TRUE</span>, </span>
+<span id="cb94-5"><a href="#cb94-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">kernel=</span><span class="st">"gaussian"</span>),</span>
+<span id="cb94-6"><a href="#cb94-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">main=</span><span class="st">"Punggol"</span>)</span>
+<span id="cb94-7"><a href="#cb94-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">density</span>(childcare_tm_ppp.km, </span>
+<span id="cb94-8"><a href="#cb94-8" aria-hidden="true" tabindex="-1"></a>             <span class="at">sigma=</span>bw.diggle, </span>
+<span id="cb94-9"><a href="#cb94-9" aria-hidden="true" tabindex="-1"></a>             <span class="at">edge=</span><span class="cn">TRUE</span>, </span>
+<span id="cb94-10"><a href="#cb94-10" aria-hidden="true" tabindex="-1"></a>             <span class="at">kernel=</span><span class="st">"gaussian"</span>),</span>
+<span id="cb94-11"><a href="#cb94-11" aria-hidden="true" tabindex="-1"></a>     <span class="at">main=</span><span class="st">"Tempines"</span>)</span>
+<span id="cb94-12"><a href="#cb94-12" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">density</span>(childcare_ck_ppp.km, </span>
+<span id="cb94-13"><a href="#cb94-13" aria-hidden="true" tabindex="-1"></a>             <span class="at">sigma=</span>bw.diggle, </span>
+<span id="cb94-14"><a href="#cb94-14" aria-hidden="true" tabindex="-1"></a>             <span class="at">edge=</span><span class="cn">TRUE</span>, </span>
+<span id="cb94-15"><a href="#cb94-15" aria-hidden="true" tabindex="-1"></a>             <span class="at">kernel=</span><span class="st">"gaussian"</span>),</span>
+<span id="cb94-16"><a href="#cb94-16" aria-hidden="true" tabindex="-1"></a>     <span class="at">main=</span><span class="st">"Choa Chu Kang"</span>)</span>
+<span id="cb94-17"><a href="#cb94-17" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">density</span>(childcare_jw_ppp.km, </span>
+<span id="cb94-18"><a href="#cb94-18" aria-hidden="true" tabindex="-1"></a>             <span class="at">sigma=</span>bw.diggle, </span>
+<span id="cb94-19"><a href="#cb94-19" aria-hidden="true" tabindex="-1"></a>             <span class="at">edge=</span><span class="cn">TRUE</span>, </span>
+<span id="cb94-20"><a href="#cb94-20" aria-hidden="true" tabindex="-1"></a>             <span class="at">kernel=</span><span class="st">"gaussian"</span>),</span>
+<span id="cb94-21"><a href="#cb94-21" aria-hidden="true" tabindex="-1"></a>     <span class="at">main=</span><span class="st">"Jurong West"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hands-on-3_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The KDE displays indicate <strong>Jurong West</strong> as the planning area with the lowest concentration of childcare centres and <strong>Punggol</strong> as the planning area with the highest. <strong>Choa Chu Kang</strong> comes in second, followed by <strong>Tampines</strong>.</p>
+</section>
+</section>
+</section>
+<section id="h3.8-nearest-neighbour-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="h3.8-nearest-neighbour-analysis">H3.8 Nearest Neighbour Analysis</h2>
+<p><strong>Nearest neighbours</strong> are the direct distance from points to their nearest neighbours. The <strong>nearest neighbour index</strong> is expressed as the ratio of the <strong>observed mean distance</strong> to the <strong>expected mean distance</strong>. An index of less than 1 indicates the spatial point pattern exhibits <strong>clustering</strong>, while an index of greater than 1 indicates <strong>dispersion or competition</strong>. Finally, an index of exactly 1 indicates complete random distribution.</p>
+<p>In this section, we will perform the Clark-Evans test on the hypothesis that <em>the distribution of childcare services is</em> <strong><em>random</em></strong>.</p>
+<section id="h3.8.1-testing-spatial-point-patterns-using-the-clark-evans-test" class="level3">
+<h3 class="anchored" data-anchor-id="h3.8.1-testing-spatial-point-patterns-using-the-clark-evans-test">H3.8.1 Testing spatial point patterns using the Clark-Evans Test</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb95"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb95-1"><a href="#cb95-1" aria-hidden="true" tabindex="-1"></a><span class="fu">clarkevans.test</span>(childcare_SG_ppp,</span>
+<span id="cb95-2"><a href="#cb95-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">correction=</span><span class="st">"none"</span>,</span>
+<span id="cb95-3"><a href="#cb95-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">clipregion=</span><span class="st">"sg_owin"</span>,</span>
+<span id="cb95-4"><a href="#cb95-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">alternative=</span><span class="fu">c</span>(<span class="st">"clustered"</span>),</span>
+<span id="cb95-5"><a href="#cb95-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">nsim=</span><span class="dv">95</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Clark-Evans test
+    No edge correction
+    Z-test
+
+data:  childcare_SG_ppp
+R = 0.55631, p-value &lt; 2.2e-16
+alternative hypothesis: clustered (R &lt; 1)</code></pre>
+</div>
+</div>
+<p>With a <em>p</em>-value of 2.2 * 10<sup>-16</sup>, we can conclude that the spatial point patterns are <em>not</em> randomly distributed for the entire country, and are instead <em>clustered</em>. We can corroborate this test result with the map visualisations, that indicates that childcare centres are typically located in either the city centre or suburban towns.</p>
+<p>We can run the test again on each of the sets pertaining to our four planning areas. For now, we will focus on Punggol and Jurong West - the former is a non-mature estate inhabited by more young families, while the latter is a mature estate where residents might have lived in for longer.</p>
+</section>
+<section id="h3.8.2-clark-evans-test-punggol" class="level3">
+<h3 class="anchored" data-anchor-id="h3.8.2-clark-evans-test-punggol">H3.8.2 Clark-Evans Test: Punggol</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb97"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb97-1"><a href="#cb97-1" aria-hidden="true" tabindex="-1"></a><span class="fu">clarkevans.test</span>(childcare_pg_ppp,</span>
+<span id="cb97-2"><a href="#cb97-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">correction=</span><span class="st">"none"</span>,</span>
+<span id="cb97-3"><a href="#cb97-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">clipregion=</span><span class="cn">NULL</span>,</span>
+<span id="cb97-4"><a href="#cb97-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">alternative=</span><span class="fu">c</span>(<span class="st">"two.sided"</span>),</span>
+<span id="cb97-5"><a href="#cb97-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">nsim=</span><span class="dv">95</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Clark-Evans test
+    No edge correction
+    Z-test
+
+data:  childcare_pg_ppp
+R = 0.84796, p-value = 0.0231
+alternative hypothesis: two-sided</code></pre>
+</div>
+</div>
+<p>Once again, we use a 95% confidence interval. Since the <em>p</em>-value is lower than 0.05, we can reject the null hypothesis that the point patterns are randomly distributed - i.e., conclude that the point patterns are not randomly distributed.</p>
+</section>
+<section id="h3.8.3-clark-evans-test-jurong-west" class="level3">
+<h3 class="anchored" data-anchor-id="h3.8.3-clark-evans-test-jurong-west">H3.8.3 Clark-Evans Test: Jurong West</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb99"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb99-1"><a href="#cb99-1" aria-hidden="true" tabindex="-1"></a><span class="fu">clarkevans.test</span>(childcare_jw_ppp,</span>
+<span id="cb99-2"><a href="#cb99-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">correction=</span><span class="st">"none"</span>,</span>
+<span id="cb99-3"><a href="#cb99-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">clipregion=</span><span class="cn">NULL</span>,</span>
+<span id="cb99-4"><a href="#cb99-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">alternative=</span><span class="fu">c</span>(<span class="st">"two.sided"</span>),</span>
+<span id="cb99-5"><a href="#cb99-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">nsim=</span><span class="dv">95</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Clark-Evans test
+    No edge correction
+    Z-test
+
+data:  childcare_jw_ppp
+R = 0.8751, p-value = 0.02583
+alternative hypothesis: two-sided</code></pre>
+</div>
+</div>
+<p>Once again, our <em>p</em>-value is lower than 0.05, leading us to conclude that the point patterns are not randomly distributed.</p>
+</section>
+</section>
+<section id="h3.9-second-order-spatial-points-patterns-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="h3.9-second-order-spatial-points-patterns-analysis">H3.9 Second Order Spatial Points Patterns Analysis</h2>
+<p>While first order SPPA measures how observations vary due to <em>changes in the underlying property</em>, <strong>second order SPPA</strong> deals with variations in observations <em>due to the way they interact with one another</em>. The methods used for second order SPPA include the G-, F-, K- and L-functions.</p>
+</section>
+<section id="h3.10-f-function" class="level2">
+<h2 class="anchored" data-anchor-id="h3.10-f-function">H3.10 F-Function</h2>
+<p>The F-function estimates the empty space function <span class="math inline">\(F(r)\)</span> from a point pattern in a window of arbitrary shape. It can be computed using <code>Fest()</code> of the spatstat package.</p>
+<p>Following that, a Monte Carlo simulation test can be performed using <code>envelope()</code>. We will perform both operations on the segments of the data representing</p>
+<section id="h3.10.1-computing-f-function-estimations" class="level3">
+<h3 class="anchored" data-anchor-id="h3.10.1-computing-f-function-estimations">H3.10.1 Computing F-function estimations</h3>
+<section id="h3.10.1.1-choa-chu-kang" class="level4">
+<h4 class="anchored" data-anchor-id="h3.10.1.1-choa-chu-kang">H3.10.1.1 Choa Chu Kang</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb101"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb101-1"><a href="#cb101-1" aria-hidden="true" tabindex="-1"></a>F_function_Choa_Chu_Kang <span class="ot">&lt;-</span> <span class="fu">Fest</span>(childcare_ck_ppp)</span>
+<span id="cb101-2"><a href="#cb101-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(F_function_Choa_Chu_Kang)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hands-on-3_files/figure-html/unnamed-chunk-31-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="h3.10.1.2-tampines" class="level4">
+<h4 class="anchored" data-anchor-id="h3.10.1.2-tampines">H3.10.1.2 Tampines</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb102"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a>F_function_Tampines <span class="ot">&lt;-</span> <span class="fu">Fest</span>(childcare_tm_ppp, <span class="at">correction=</span><span class="st">"best"</span>)</span>
+<span id="cb102-2"><a href="#cb102-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(F_function_Tampines)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hands-on-3_files/figure-html/unnamed-chunk-32-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="h3.10.2-performing-complete-spatial-randomness-test" class="level3">
+<h3 class="anchored" data-anchor-id="h3.10.2-performing-complete-spatial-randomness-test">H3.10.2 Performing Complete Spatial Randomness Test</h3>
+<p>To confirm the observed spatial patterns above, we can conduct a Monte Carlo (hypothesis) test with <code>envelope()</code>. The hypothesis and test are as follows:</p>
+<p>Ho = The distribution of childcare services at Choa Chu Kang are randomly distributed.</p>
+<p>H1= The distribution of childcare services at Choa Chu Kang are not randomly distributed.</p>
+<p>The null hypothesis will be rejected if p-value is smaller than alpha value of 0.001.</p>
+<section id="h3.10.2.1-choa-chu-kang" class="level4">
+<h4 class="anchored" data-anchor-id="h3.10.2.1-choa-chu-kang">H3.10.2.1 Choa Chu Kang</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb103"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb103-1"><a href="#cb103-1" aria-hidden="true" tabindex="-1"></a>F_CCK.csr <span class="ot">&lt;-</span> <span class="fu">envelope</span>(childcare_ck_ppp, Fest, <span class="at">nsim =</span> <span class="dv">999</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Generating 999 simulations of CSR  ...
+1, 2, 3, ......10.........20.........30.........40.........50.........60..
+.......70.........80.........90.........100.........110.........120.........130
+.........140.........150.........160.........170.........180.........190........
+.200.........210.........220.........230.........240.........250.........260......
+...270.........280.........290.........300.........310.........320.........330....
+.....340.........350.........360.........370.........380.........390.........400..
+.......410.........420.........430.........440.........450.........460.........470
+.........480.........490.........500.........510.........520.........530........
+.540.........550.........560.........570.........580.........590.........600......
+...610.........620.........630.........640.........650.........660.........670....
+.....680.........690.........700.........710.........720.........730.........740..
+.......750.........760.........770.........780.........790.........800.........810
+.........820.........830.........840.........850.........860.........870........
+.880.........890.........900.........910.........920.........930.........940......
+...950.........960.........970.........980.........990........
+999.
+
+Done.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb105"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb105-1"><a href="#cb105-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(F_CCK.csr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hands-on-3_files/figure-html/unnamed-chunk-33-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="h3.10.2.2-tampines" class="level4">
+<h4 class="anchored" data-anchor-id="h3.10.2.2-tampines">H3.10.2.2 Tampines</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb106"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a>F_TM.csr <span class="ot">&lt;-</span> <span class="fu">envelope</span>(childcare_tm_ppp, Fest, <span class="at">correction=</span><span class="st">"all"</span>, <span class="at">nsim =</span> <span class="dv">999</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Generating 999 simulations of CSR  ...
+1, 2, 3, ......10.........20.........30.........40.........50.........60..
+.......70.........80.........90.........100.........110.........120.........130
+.........140.........150.........160.........170.........180.........190........
+.200.........210.........220.........230.........240.........250.........260......
+...270.........280.........290.........300.........310.........320.........330....
+.....340.........350.........360.........370.........380.........390.........400..
+.......410.........420.........430.........440.........450.........460.........470
+.........480.........490.........500.........510.........520.........530........
+.540.........550.........560.........570.........580.........590.........600......
+...610.........620.........630.........640.........650.........660.........670....
+.....680.........690.........700.........710.........720.........730.........740..
+.......750.........760.........770.........780.........790.........800.........810
+.........820.........830.........840.........850.........860.........870........
+.880.........890.........900.........910.........920.........930.........940......
+...950.........960.........970.........980.........990........
+999.
+
+Done.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb108"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(F_TM.csr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hands-on-3_files/figure-html/unnamed-chunk-34-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
 
 
+</section>
 </section>
 </section>
 

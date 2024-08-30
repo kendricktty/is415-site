@@ -31,8 +31,3 @@ format:
     toc: true
 
 editor: source
-
-execute: 
-  eval: true
-  echo: true
-  freeze: true

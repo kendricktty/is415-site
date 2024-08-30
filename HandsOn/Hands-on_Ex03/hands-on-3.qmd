@@ -11,6 +11,8 @@ execute:
   freeze: true
 ---
 
+> Notes for grading: For **week 3**, the requirement is to complete both **chapters 4** and **5** in the **R for Geospatial Data Science and Analytics** course website. Both have been combined into a single webpage for brevity.
+
 ## H3.1 Overview
 
 **Spatial Point Pattern Analysis** serves to evaluate the pattern or distribution of a set of points on a map surface. These points serve many purposes, ranging from mapping events like crimes and disease onset (like John Snow's map of the 1854 Broad Street cholera outbreak), or the locations of business services or facilities.
@@ -289,9 +291,219 @@ plot(kde_childcareSG_adaptive, main = "Adaptive bandwidth")
 
 ### H3.7.3 Converting KDE outputs into grid objects
 
+For mapping purposes.
+
 ```{r}
-gridded_kde_childcareSG_bw <- as.SpatialGridDataFrame.im(kde_childcareSG.bw)
+gridded_kde_childcareSG_bw <- as(kde_childcareSG.bw, "SpatialGridDataFrame")
 spplot(gridded_kde_childcareSG_bw)
 ```
 
-### H3.7.3.1
+### H3.7.3.1 Converting gridded output into `RasterLayer`
+
+```{r}
+kde_childcareSG_bw_raster <- raster(kde_childcareSG.bw)
+kde_childcareSG_bw_raster
+```
+
+### H3.7.3.2 Assigning projection system
+
+Notice that the `crs` attribute is `NA`, indicating that no coordinate system has been assigned to the raster. We will fix this by adding the WSY21 (Singapore) CRS to our `RasterLayer`.
+
+```{r}
+projection(kde_childcareSG_bw_raster) <- CRS("+init=EPSG:3414")
+kde_childcareSG_bw_raster
+```
+
+### H3.7.4 Visualising output in tmap
+
+Finally, we can display the raster in cartographic quality using `tmap`.
+
+```{r}
+tm_shape(kde_childcareSG_bw_raster) + 
+  tm_raster("layer", palette = "viridis") +
+  tm_layout(legend.position = c("right", "bottom"), frame = FALSE)
+```
+
+With all the work we have done so far, a quick glance at the maps indicates a higher than usual density of childcare centres in the areas of [Woodlands South](https://en.wikipedia.org/wiki/Woodlands,_Singapore) and [Punggol](https://en.wikipedia.org/wiki/Punggol) (the yellow patches in the above `tmap` display).
+
+### H3.7.5 Comparing Spatial Point Patterns using KDE
+
+And now for the fun part - comparing KDEs between regions. In this section, we will compare the density estimations of childcare centres located in the planning areas of [Choa Chu Kang](https://en.wikipedia.org/wiki/Choa_Chu_Kang), [Jurong West](https://en.wikipedia.org/wiki/Jurong_West), Punggol and [Tampines](https://en.wikipedia.org/wiki/Tampines).
+
+#### H3.7.5.1 Extracting and plotting study areas
+
+```{r}
+# First, extract the target planning areas
+
+punggol <- mpsz_sf %>%
+  filter(PLN_AREA_N == "PUNGGOL")
+tampines <- mpsz_sf %>%
+  filter(PLN_AREA_N == "TAMPINES")
+choa_chu_kang <- mpsz_sf %>%
+  filter(PLN_AREA_N == "CHOA CHU KANG")
+jurong_west <- mpsz_sf %>%
+  filter(PLN_AREA_N == "JURONG WEST")
+
+# Then, visualise the areas with a plot
+par(mfrow=c(2,2))
+plot(punggol, main = "Punggol")
+plot(tampines, main = "Tampines")
+plot(choa_chu_kang, main = "Choa Chu Kang")
+plot(jurong_west, main = "Jurong West")
+```
+
+#### H3.7.5.2 Creating `owin` object
+
+```{r}
+pg_owin <- as.owin(punggol)
+tm_owin <- as.owin(tampines)
+ck_owin <- as.owin(choa_chu_kang)
+jw_owin <- as.owin(jurong_west)
+```
+
+#### H3.7.5.3 Combining childcare points and the study area
+
+The code chunk below completes the following 3 tasks. First, we extract the childcare region for each of our four study areas. Next, we transform the unit of measurement from **metres** to **kilometres**. Finally, we can plot the locations of childcare centres within the four study areas.
+
+```{r}
+childcare_pg_ppp <- childcare_ppp_jit[pg_owin]
+childcare_tm_ppp <- childcare_ppp_jit[tm_owin]
+childcare_ck_ppp <- childcare_ppp_jit[ck_owin]
+childcare_jw_ppp <- childcare_ppp_jit[jw_owin]
+
+childcare_pg_ppp.km <- rescale.ppp(childcare_pg_ppp, 1000, "km")
+childcare_tm_ppp.km <- rescale.ppp(childcare_tm_ppp, 1000, "km")
+childcare_ck_ppp.km <- rescale.ppp(childcare_ck_ppp, 1000, "km")
+childcare_jw_ppp.km <- rescale.ppp(childcare_jw_ppp, 1000, "km")
+
+par(mfrow=c(2,2))
+plot(childcare_pg_ppp.km, main="Childcare centres in Punggol")
+plot(childcare_tm_ppp.km, main="Childcare centres in Tampines")
+plot(childcare_ck_ppp.km, main="Childcare centres in Choa Chu Kang")
+plot(childcare_jw_ppp.km, main="Childcare centres in Jurong West")
+```
+
+#### H3.7.5.4 Computing KDE
+
+Finally, we can compute the KDE for each of the four planning areas with the `bw.diggle` method.
+
+```{r}
+par(mfrow=c(2,2))
+plot(density(childcare_pg_ppp.km, 
+             sigma=bw.diggle, 
+             edge=TRUE, 
+             kernel="gaussian"),
+     main="Punggol")
+plot(density(childcare_tm_ppp.km, 
+             sigma=bw.diggle, 
+             edge=TRUE, 
+             kernel="gaussian"),
+     main="Tempines")
+plot(density(childcare_ck_ppp.km, 
+             sigma=bw.diggle, 
+             edge=TRUE, 
+             kernel="gaussian"),
+     main="Choa Chu Kang")
+plot(density(childcare_jw_ppp.km, 
+             sigma=bw.diggle, 
+             edge=TRUE, 
+             kernel="gaussian"),
+     main="Jurong West")
+```
+
+The KDE displays indicate **Jurong West** as the planning area with the lowest concentration of childcare centres and **Punggol** as the planning area with the highest. **Choa Chu Kang** comes in second, followed by **Tampines**.
+
+## H3.8 Nearest Neighbour Analysis
+
+**Nearest neighbours** are the direct distance from points to their nearest neighbours. The **nearest neighbour index** is expressed as the ratio of the **observed mean distance** to the **expected mean distance**. An index of less than 1 indicates the spatial point pattern exhibits **clustering**, while an index of greater than 1 indicates **dispersion or competition**. Finally, an index of exactly 1 indicates complete random distribution.
+
+In this section, we will perform the Clark-Evans test on the hypothesis that *the distribution of childcare services is* ***random***.
+
+### H3.8.1 Testing spatial point patterns using the Clark-Evans Test
+
+```{r}
+clarkevans.test(childcare_SG_ppp,
+                correction="none",
+                clipregion="sg_owin",
+                alternative=c("clustered"),
+                nsim=95)
+```
+
+With a *p*-value of 2.2 \* 10^-16^, we can conclude that the spatial point patterns are *not* randomly distributed for the entire country, and are instead *clustered*. We can corroborate this test result with the map visualisations, that indicates that childcare centres are typically located in either the city centre or suburban towns.
+
+We can run the test again on each of the sets pertaining to our four planning areas. For now, we will focus on Punggol and Jurong West - the former is a non-mature estate inhabited by more young families, while the latter is a mature estate where residents might have lived in for longer.
+
+### H3.8.2 Clark-Evans Test: Punggol
+
+```{r}
+clarkevans.test(childcare_pg_ppp,
+                correction="none",
+                clipregion=NULL,
+                alternative=c("two.sided"),
+                nsim=95)
+```
+
+Once again, we use a 95% confidence interval. Since the *p*-value is lower than 0.05, we can reject the null hypothesis that the point patterns are randomly distributed - i.e., conclude that the point patterns are not randomly distributed.
+
+### H3.8.3 Clark-Evans Test: Jurong West
+
+```{r}
+clarkevans.test(childcare_jw_ppp,
+                correction="none",
+                clipregion=NULL,
+                alternative=c("two.sided"),
+                nsim=95)
+```
+
+Once again, our *p*-value is lower than 0.05, leading us to conclude that the point patterns are not randomly distributed.
+
+## H3.9 Second Order Spatial Points Patterns Analysis
+
+While first order SPPA measures how observations vary due to *changes in the underlying property*, **second order SPPA** deals with variations in observations *due to the way they interact with one another*. The methods used for second order SPPA include the G-, F-, K- and L-functions.
+
+## H3.10 F-Function
+
+The F-function estimates the empty space function $F(r)$ from a point pattern in a window of arbitrary shape. It can be computed using `Fest()` of the spatstat package.
+
+Following that, a Monte Carlo simulation test can be performed using `envelope()`. We will perform both operations on the segments of the data representing 
+
+### H3.10.1 Computing F-function estimations
+
+#### H3.10.1.1 Choa Chu Kang
+
+```{r}
+F_function_Choa_Chu_Kang <- Fest(childcare_ck_ppp)
+plot(F_function_Choa_Chu_Kang)
+```
+
+#### H3.10.1.2 Tampines
+
+```{r}
+F_function_Tampines <- Fest(childcare_tm_ppp, correction="best")
+plot(F_function_Tampines)
+```
+
+### H3.10.2 Performing Complete Spatial Randomness Test
+
+To confirm the observed spatial patterns above, we can conduct a Monte Carlo (hypothesis) test with `envelope()`. The hypothesis and test are as follows:
+
+Ho = The distribution of childcare services at Choa Chu Kang are randomly distributed.
+
+H1= The distribution of childcare services at Choa Chu Kang are not randomly distributed.
+
+The null hypothesis will be rejected if p-value is smaller than alpha value of 0.001.
+
+#### H3.10.2.1 Choa Chu Kang
+
+```{r}
+F_CCK.csr <- envelope(childcare_ck_ppp, Fest, nsim = 999)
+plot(F_CCK.csr)
+```
+
+#### H3.10.2.2 Tampines
+
+```{r}
+F_TM.csr <- envelope(childcare_tm_ppp, Fest, correction="all", nsim = 999)
+plot(F_TM.csr)
+```
+
