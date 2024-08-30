@@ -507,3 +507,6 @@ F_TM.csr <- envelope(childcare_tm_ppp, Fest, correction="all", nsim = 999)
 plot(F_TM.csr)
 ```
 
+The F-functions for both Choa Chu Kang and Tampines are below the envelopes, indicating that the childcare centres in both locations are **clustered**.
+
+## H3.11 G-Function
