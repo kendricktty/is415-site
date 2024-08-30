@@ -289,4 +289,9 @@ plot(kde_childcareSG_adaptive, main = "Adaptive bandwidth")
 
 ### H3.7.3 Converting KDE outputs into grid objects
 
+```{r}
+gridded_kde_childcareSG_bw <- as.SpatialGridDataFrame.im(kde_childcareSG.bw)
+spplot(gridded_kde_childcareSG_bw)
+```
+
 ### H3.7.3.1
