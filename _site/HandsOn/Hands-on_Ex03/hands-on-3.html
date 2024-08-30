@@ -211,6 +211,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#h3.6-first-order-spatial-point-patterns-analysis" id="toc-h3.6-first-order-spatial-point-patterns-analysis" class="nav-link" data-scroll-target="#h3.6-first-order-spatial-point-patterns-analysis">H3.6 First Order Spatial Point Patterns Analysis</a>
   <ul class="collapse">
   <li><a href="#h3.6.1-kernel-density-estimation" id="toc-h3.6.1-kernel-density-estimation" class="nav-link" data-scroll-target="#h3.6.1-kernel-density-estimation">H3.6.1 Kernel Density Estimation</a></li>
+  <li><a href="#h3.6.2-working-with-different-automatic-bandwidth-methods" id="toc-h3.6.2-working-with-different-automatic-bandwidth-methods" class="nav-link" data-scroll-target="#h3.6.2-working-with-different-automatic-bandwidth-methods">H3.6.2 Working with different automatic bandwidth methods</a></li>
+  <li><a href="#h3.6.3-working-with-different-kernel-methods" id="toc-h3.6.3-working-with-different-kernel-methods" class="nav-link" data-scroll-target="#h3.6.3-working-with-different-kernel-methods">H3.6.3 Working with different kernel methods</a></li>
+  </ul></li>
+  <li><a href="#h3.7-fixed-and-adaptive-kde" id="toc-h3.7-fixed-and-adaptive-kde" class="nav-link" data-scroll-target="#h3.7-fixed-and-adaptive-kde">H3.7 Fixed and adaptive KDE</a>
+  <ul class="collapse">
+  <li><a href="#h3.7.1-computing-kde-using-fixed-bandwidth" id="toc-h3.7.1-computing-kde-using-fixed-bandwidth" class="nav-link" data-scroll-target="#h3.7.1-computing-kde-using-fixed-bandwidth">H3.7.1 Computing KDE using fixed bandwidth</a></li>
+  <li><a href="#h3.7.2-computing-kde-using-adaptive-bandwidth" id="toc-h3.7.2-computing-kde-using-adaptive-bandwidth" class="nav-link" data-scroll-target="#h3.7.2-computing-kde-using-adaptive-bandwidth">H3.7.2 Computing KDE using adaptive bandwidth</a></li>
+  <li><a href="#h3.7.3-converting-kde-outputs-into-grid-objects" id="toc-h3.7.3-converting-kde-outputs-into-grid-objects" class="nav-link" data-scroll-target="#h3.7.3-converting-kde-outputs-into-grid-objects">H3.7.3 Converting KDE outputs into grid objects</a></li>
+  <li><a href="#h3.7.3.1" id="toc-h3.7.3.1" class="nav-link" data-scroll-target="#h3.7.3.1">H3.7.3.1</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -769,9 +778,151 @@ Fraction of frame area: 0.401</code></pre>
 </div>
 </div>
 </div>
-
-
+<p>We now have a much more readable density map.</p>
 </section>
+</section>
+<section id="h3.6.2-working-with-different-automatic-bandwidth-methods" class="level3">
+<h3 class="anchored" data-anchor-id="h3.6.2-working-with-different-automatic-bandwidth-methods">H3.6.2 Working with different automatic bandwidth methods</h3>
+<p>Other than <code>bw.diggle()</code>, <code>bw.CvL()</code>, <code>bw.scott()</code> and <code>bw.ppl</code> may be used to determine the bandwidth.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bw.diggle</span>(childcareSG_ppp.km)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    sigma 
+0.2984095 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bw.scott</span>(childcareSG_ppp.km)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> sigma.x  sigma.y 
+2.224898 1.450966 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bw.CvL</span>(childcareSG_ppp.km)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   sigma 
+4.543278 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bw.ppl</span>(childcareSG_ppp.km)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    sigma 
+0.3897114 </code></pre>
+</div>
+</div>
+<p>We can also plot different maps to compare the output of different bandwidth methods.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>kde_childcareSG.ppl <span class="ot">&lt;-</span> <span class="fu">density</span>(childcareSG_ppp.km, </span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>                               <span class="at">sigma=</span>bw.ppl, </span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>                               <span class="at">edge=</span><span class="cn">TRUE</span>,</span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>                               <span class="at">kernel=</span><span class="st">"gaussian"</span>)</span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(kde_childcareSG.bw, <span class="at">main =</span> <span class="st">"bw.diggle"</span>)</span>
+<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(kde_childcareSG.ppl, <span class="at">main =</span> <span class="st">"bw.ppl"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hands-on-3_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="h3.6.3-working-with-different-kernel-methods" class="level3">
+<h3 class="anchored" data-anchor-id="h3.6.3-working-with-different-kernel-methods">H3.6.3 Working with different kernel methods</h3>
+<p>As mentioned, there are different kernel methods to give us different distributions. The code chunk below compares the results of three other kernel methods than <code>gaussian</code>, and computes additional kernel density estimations.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>))</span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">density</span>(childcareSG_ppp.km, </span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">sigma=</span>bw.ppl, </span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">edge=</span><span class="cn">TRUE</span>, </span>
+<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">kernel=</span><span class="st">"gaussian"</span>), </span>
+<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">main=</span><span class="st">"Gaussian"</span>)</span>
+<span id="cb58-7"><a href="#cb58-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">density</span>(childcareSG_ppp.km, </span>
+<span id="cb58-8"><a href="#cb58-8" aria-hidden="true" tabindex="-1"></a>             <span class="at">sigma=</span>bw.ppl, </span>
+<span id="cb58-9"><a href="#cb58-9" aria-hidden="true" tabindex="-1"></a>             <span class="at">edge=</span><span class="cn">TRUE</span>, </span>
+<span id="cb58-10"><a href="#cb58-10" aria-hidden="true" tabindex="-1"></a>             <span class="at">kernel=</span><span class="st">"epanechnikov"</span>), </span>
+<span id="cb58-11"><a href="#cb58-11" aria-hidden="true" tabindex="-1"></a>     <span class="at">main=</span><span class="st">"Epanechnikov"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in density.ppp(childcareSG_ppp.km, sigma = bw.ppl, edge = TRUE, :
+Bandwidth selection will be based on Gaussian kernel</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">density</span>(childcareSG_ppp.km, </span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">sigma=</span>bw.ppl, </span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">edge=</span><span class="cn">TRUE</span>, </span>
+<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">kernel=</span><span class="st">"quartic"</span>), </span>
+<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">main=</span><span class="st">"Quartic"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in density.ppp(childcareSG_ppp.km, sigma = bw.ppl, edge = TRUE, :
+Bandwidth selection will be based on Gaussian kernel</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">density</span>(childcareSG_ppp.km, </span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">sigma=</span>bw.ppl, </span>
+<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">edge=</span><span class="cn">TRUE</span>, </span>
+<span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">kernel=</span><span class="st">"disc"</span>), </span>
+<span id="cb62-5"><a href="#cb62-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">main=</span><span class="st">"Disc"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in density.ppp(childcareSG_ppp.km, sigma = bw.ppl, edge = TRUE, :
+Bandwidth selection will be based on Gaussian kernel</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hands-on-3_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="h3.7-fixed-and-adaptive-kde" class="level2">
+<h2 class="anchored" data-anchor-id="h3.7-fixed-and-adaptive-kde">H3.7 Fixed and adaptive KDE</h2>
+<section id="h3.7.1-computing-kde-using-fixed-bandwidth" class="level3">
+<h3 class="anchored" data-anchor-id="h3.7.1-computing-kde-using-fixed-bandwidth">H3.7.1 Computing KDE using fixed bandwidth</h3>
+<p>Another way to compute a KDE layer is by defining a fixed bandwidth. The code chunk below defines a bandwidth (sigma) of 600m (0.6km).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>kde_childcareSG_600 <span class="ot">&lt;-</span> <span class="fu">density</span>(childcareSG_ppp.km, <span class="at">sigma=</span><span class="fl">0.6</span>, <span class="at">edge=</span><span class="cn">TRUE</span>, <span class="at">kernel=</span><span class="st">"gaussian"</span>)</span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(kde_childcareSG_600)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hands-on-3_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="h3.7.2-computing-kde-using-adaptive-bandwidth" class="level3">
+<h3 class="anchored" data-anchor-id="h3.7.2-computing-kde-using-adaptive-bandwidth">H3.7.2 Computing KDE using adaptive bandwidth</h3>
+<p>The fixed bandwidth method is sensitive to skewed distributions of spatial point patterns (for instance, if a large number of points is clustered in one area, say an urban area, instead of another, like a rural area.) Adaptive bandwidth, using <code>density.adaptive()</code>, is one way to overcome this problem.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>kde_childcareSG_adaptive <span class="ot">&lt;-</span> <span class="fu">adaptive.density</span>(childcareSG_ppp.km, <span class="at">method=</span><span class="st">"kernel"</span>)</span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(kde_childcareSG_adaptive)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hands-on-3_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Two KDE outputs may be compared as follows.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span>
+<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(kde_childcareSG.bw, <span class="at">main =</span> <span class="st">"Fixed bandwidth"</span>)</span>
+<span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(kde_childcareSG_adaptive, <span class="at">main =</span> <span class="st">"Adaptive bandwidth"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hands-on-3_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="h3.7.3-converting-kde-outputs-into-grid-objects" class="level3">
+<h3 class="anchored" data-anchor-id="h3.7.3-converting-kde-outputs-into-grid-objects">H3.7.3 Converting KDE outputs into grid objects</h3>
+</section>
+<section id="h3.7.3.1" class="level3">
+<h3 class="anchored" data-anchor-id="h3.7.3.1">H3.7.3.1</h3>
+
+
 </section>
 </section>
 
