@@ -509,7 +509,7 @@ F_TM.csr <- envelope(childcare_tm_ppp, Fest, correction="all", nsim = 999)
 plot(F_TM.csr)
 ```
 
-The F-functions for both Choa Chu Kang and Tampines are below the envelopes, indicating that the childcare centres in both locations are **clustered**.
+The F-function for the Choa Chu Kang set is within the envelope, and that for the Tampines set is below the envelope. This indicates that indicating that the childcare centres in Choa Chu Kang exhibit **complete spatial randomness (CSR)**, while the centres in Tampines are **clustered**.
 
 ## H3.11 G-Function
 
@@ -556,6 +556,8 @@ plot(G_CK.csr)
 G_tm.csr <- envelope(childcare_tm_ppp, Gest, correction = "all", nsim = 999)
 plot(G_tm.csr)
 ```
+
+Unlike the function for Choa Chu Kang, which lies entirely within the envelopes, a small portion of the Tampines function falls above the envelopes. Once again, this indicates that the childcare centres of Choa Chu Kang exhibit **CSR**, while those in Tampines are clustered.
 
 ## H3.12 K-Function
 
@@ -604,9 +606,13 @@ plot(K_tm.csr, . - r ~ r,
      xlab="d", ylab="K(d)-r", xlim=c(0,500))
 ```
 
+The Choa Chu Kang K-function lies entirely inside the envelope, while much of that for Tampines lies above it. Once again, this shows that the Choa Chu Kang childcare centres are randomly distributed **(CSR)**. The K-function indicates that the childcare centres in Tampines exhibit a significant regular pattern.
+
 ## H3.13 L-Function
 
-The **L-function** measures the distribution of distances from an arbitrary event to its nearest event. For this exercise, the `spatstat` function to be used is the the `Lest()` function, and another Monte Carlo simulation test will be performed with `envelope()`.
+The **L-function** is a normalisation of the K-function so as to obtain a benchmark of zero.
+
+For this exercise, the `spatstat` function to be used is the the `Lest()` function, and another Monte Carlo simulation test will be performed with `envelope()`.
 
 ### H3.13.1 Computing L-function estimations
 
