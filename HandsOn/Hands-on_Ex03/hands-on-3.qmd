@@ -426,7 +426,7 @@ clarkevans.test(childcare_SG_ppp,
                 correction="none",
                 clipregion="sg_owin",
                 alternative=c("clustered"),
-                nsim=95)
+                nsim=99)
 ```
 
 With a *p*-value of 2.2 \* 10^-16^, we can conclude that the spatial point patterns are *not* randomly distributed for the entire country, and are instead *clustered*. We can corroborate this test result with the map visualisations, that indicates that childcare centres are typically located in either the city centre or suburban towns.
@@ -440,10 +440,8 @@ clarkevans.test(childcare_pg_ppp,
                 correction="none",
                 clipregion=NULL,
                 alternative=c("two.sided"),
-                nsim=95)
+                nsim=999)
 ```
-
-Once again, we use a 95% confidence interval. Since the *p*-value is lower than 0.05, we can reject the null hypothesis that the point patterns are randomly distributed - i.e., conclude that the point patterns are not randomly distributed.
 
 ### H3.8.3 Clark-Evans Test: Jurong West
 
@@ -452,10 +450,8 @@ clarkevans.test(childcare_jw_ppp,
                 correction="none",
                 clipregion=NULL,
                 alternative=c("two.sided"),
-                nsim=95)
+                nsim=999)
 ```
-
-Once again, our *p*-value is lower than 0.05, leading us to conclude that the point patterns are not randomly distributed.
 
 ## H3.9 Second Order Spatial Points Patterns Analysis
 
