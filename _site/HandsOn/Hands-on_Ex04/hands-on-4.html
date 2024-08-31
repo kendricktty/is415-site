@@ -207,6 +207,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#h4.4.2-generating-line-centre-points" id="toc-h4.4.2-generating-line-centre-points" class="nav-link" data-scroll-target="#h4.4.2-generating-line-centre-points">H4.4.2 Generating line centre points</a></li>
   <li><a href="#h4.4.3-performing-nkde" id="toc-h4.4.3-performing-nkde" class="nav-link" data-scroll-target="#h4.4.3-performing-nkde">H4.4.3 Performing NKDE</a></li>
   </ul></li>
+  <li><a href="#h4.5-network-constrained-g--and-k-function-analysis" id="toc-h4.5-network-constrained-g--and-k-function-analysis" class="nav-link" data-scroll-target="#h4.5-network-constrained-g--and-k-function-analysis">H4.5 Network-Constrained G- and K-Function Analysis</a></li>
   </ul>
 </nav>
     </div>
@@ -254,7 +255,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="h4.1-overview-and-data" class="level2">
 <h2 class="anchored" data-anchor-id="h4.1-overview-and-data">H4.1 Overview and Data</h2>
 <p><strong>Network Constrained Spatial Point Patterns Analysis (NetSPPA)</strong> is a collection of <em>spatial point patterns analysis</em> (SPPA) methods special developed for analysing spatial point event occurs on or alongside a network. Examples of networks are road, train and river networks, while examples of spatial point events include locations of events like crime, or facilities like schools and parks.</p>
-<p>This exercise will be on the <code>spNetwork</code> package, which serves to derive network kernel density estimation (NKDE), as well as to perform network G- and K-function analysis. Continuing on our theme of childcare centres, we will analyise the spatial distribution of childcare centres in <a href="https://en.wikipedia.org/wiki/Punggol">Punggol</a>. Two geospatial datasets in ESRI shapefile format will be used, namely:</p>
+<p>This exercise will be on the <code>spNetwork</code> package, which serves to derive network kernel density estimation (NKDE), as well as to perform network G- and K-function analysis. Continuing on our theme of childcare centres, we will analyise the spatial distribution of childcare centres in the relatively young, northeastern planning area of <a href="https://en.wikipedia.org/wiki/Punggol">Punggol</a>. Two geospatial datasets in ESRI shapefile format will be used, namely:</p>
 <ul>
 <li><code>Punggol_St</code>, a line featureset storing information on Punggol’s road network, and;</li>
 <li><code>Punggol_CC</code>, a point featureset storing the locations of Punggol’s childcare centres.</li>
@@ -330,10 +331,81 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co">#                   sparse = TRUE,</span></span>
 <span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co">#                   verbose = FALSE)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Some interesting</p>
-
-
+<p>Some interesting elements to note from the above code chunk include:</p>
+<ul>
+<li>The <strong><code>quartic</code></strong> kernel is to be used for this NKDE exercise, and is passed into the <code>kernel_name</code> argument.</li>
+<li>The <code>simple</code> keyword is passed into the <code>method</code> argument, which indicates it is to be used to find the NKDE.</li>
+</ul>
+<p>Three popular methods are currently supported by <code>spNetwork</code> - <code>simple</code>, <code>discontinuous</code> and <code>continuous</code>. <code>simple</code> uses network distances between events and sampling points, and the density is calculated over a linear unit (like metres) instead of an areal unit (like square metres). <code>discontinuous</code> “divides” the mass density of an event at intersections of lixels, while <code>continuous</code> divides the mass of the density at intersection but adjusts the density before the intersection to make the function continuous.</p>
+<section id="h4.4.3.1-visualising-nkde" class="level4">
+<h4 class="anchored" data-anchor-id="h4.4.3.1-visualising-nkde">H4.4.3.1 Visualising NKDE</h4>
+<p>We are now ready to visualise our computed NKDE values, but not before doing some preparatory work beforehand.</p>
+<p>First, we need to insert the computed density values (densities) into the <code>density</code> fields of our <code>samples</code> and <code>lixels</code> objects.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># samples$density &lt;- densities</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># lixels$density &lt;- densities</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Next, we have to rescale our density values by kilometres, up from the current metres. As we’ve seen in a previous hands-on exercise, leaving the projection system in metres (the SVY21 default) leads to extremely small computed density values.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># samples$density &lt;- samples$density * 1000</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># lixels$density &lt;- lixels$density * 1000</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Finally, we can draw our interactive and high-quality map visualisation.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># tmap_mode('view')</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># tm_shape(lixels)+</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   tm_lines(col="density")+</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># tm_shape(childcare)+</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   tm_dots()</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co"># tmap_mode('plot')</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The interactive map above effectively distinguishes road segments with a relatively higher density of childcare centres (darker color) than those with a relatively lower density of childcare centres (lighter color).</p>
 </section>
+</section>
+</section>
+<section id="h4.5-network-constrained-g--and-k-function-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="h4.5-network-constrained-g--and-k-function-analysis">H4.5 Network-Constrained G- and K-Function Analysis</h2>
+<p>The last step is to perform a complete spatial randomness (CSR) test by running our data through a K-function. The function to be used is <code>kfunctions()</code>, once again from the <code>spNetwork</code> package.</p>
+<p>Today’s null hypothesis is defined as:</p>
+<p><strong>H<sub>0</sub>: The observed spatial point events (i.e distribution of childcare centres) are uniformly distributed over a street network in Punggol.</strong></p>
+<p>In other words, our childcare centres are randomly and independently distributed over the street network. If this null hypothesis is rejected, we may infer that the childcare centres in Punggol are spatially dependent on each other; as a result, they may form non-random patterns.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># kfun_childcare &lt;- kfunctions(network, </span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co">#                              childcare,</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co">#                              start = 0, </span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co">#                              end = 1000, </span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co">#                              step = 50, </span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co">#                              width = 50, </span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co">#                              nsim = 50, </span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co">#                              resolution = 50,</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co">#                              verbose = FALSE, </span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="co">#                              conf_int = 0.05)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The ten arguments required by <code>kfunctions()</code> are:</p>
+<ul>
+<li><p><code>lines</code>: A <code>SpatialLinesDataFrame</code> with the sampling points.</p></li>
+<li><p><code>points</code>: A SpatialPointsDataFrame representing the points on the network. These points will be snapped on the network.</p></li>
+<li><p><code>start</code>: A <code>double</code>, the start value for evaluating the K- and G- functions.</p></li>
+<li><p><code>end</code>: A <code>double</code>, the last value for evaluating the K- and G- functions.</p></li>
+<li><p><code>step</code>: A <code>double</code>, the jump between two evaluations of the K- and G- function.</p></li>
+<li><p><code>width</code>: The width of each donut for the g-function.</p></li>
+<li><p><code>nsim</code>: An integer indicating the number of Monte Carlo simulations required. In the above example, 50 simulations were performed, but it is usually preferred to have more simulations.</p></li>
+<li><p><code>resolution</code>: When simulating random points on the network, selecting a resolution will reduce greatly the calculation time. When the <code>resolution</code> is <code>NULL</code>, the random points can occur everywhere on the graph. If a value is specified, the edges are split according to this value and the random points are selected vertices on the new network.</p></li>
+<li><p><code>conf_int</code>: A double indicating the width confidence interval (default = <code>0.05</code>).</p></li>
+</ul>
+<p><code>kfunctions()</code> outputs:</p>
+<ul>
+<li><code>plotkA</code>, a <code>ggplot2</code> object representing the values of the K-function;</li>
+<li><code>plotgA</code>, a <code>ggplot2</code> object representing the values of the G-function;</li>
+<li><code>valuesA</code>, a DataFrame with the values used to build the plots.</li>
+</ul>
+<p>Finally, we can visualise the <code>ggplot2</code> object of our K-function as follows.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># kfun_childcare$plotk</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Since the observed values for the distance interval of 250-400m are <em>below</em> the envelop, we can infer that the childcare centres in Punggol resemble a regular pattern for that distance.</p>
+
+
 </section>
 
 </main> <!-- /main -->
