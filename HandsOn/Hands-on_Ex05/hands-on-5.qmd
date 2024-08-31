@@ -15,8 +15,8 @@ execute:
 
 This exercise is on computing spatial weights with R. For this exercise, the following datasets, set in [Hunan Province, China](https://en.wikipedia.org/wiki/Hunan), will be used:
 
-* The **Hunan country boundary layer**, in ESRI shapefile format, and;
-* `Hunan_2012.csv`, an aspatial dataset containing selected local development indicators for the area in 2012.
+-   The **Hunan country boundary layer**, in ESRI shapefile format, and;
+-   `Hunan_2012.csv`, an aspatial dataset containing selected local development indicators for the area in 2012.
 
 In addition to the usual `sf`, `readr` and `dplyr` packages, spatial weights and spatially lagged variables will be computed using appropriate `spdep` functions.
 
@@ -55,3 +55,120 @@ Using `qtm()` and other `tmap` packages, we can now prepare a basemap and chorop
 
 ## H5.3 Computing Contiguity Spatial Weights
 
+The `poly2nb()` function of the `spdep` package may be used to compute contiguity weight matrices for the study area. This function builds a neighbours list based on regions with continuous boundaries.
+
+### H5.3.1 Creating QUEEN contiguity-based neighbours
+
+```{r}
+# wm_q <- poly2nb(hunan, queen=TRUE)
+# summary(wm_q)
+```
+
+For each polygon in our polygon object, `wm_q` lists all neighbouring polygons. The following code chunk reveals the neighbours for the first polygon in the object. **It is good to be reminded here that R is not a zero-index index, so all list indices start from `1`**.
+
+```{r}
+# wm_q[[1]]
+```
+
+We can also retrieve the county name with Polygon ID=1 as follows:
+
+```{r}
+# hunan$County[1]
+```
+
+Or the county names of the five counties bordering county ID 1:
+
+```{r}
+# hunan$NAME_3[c(2,3,4,57,85)]
+```
+
+Finally, we can retrieve the GDP per capita of each of the five counties bordering county ID 1:
+
+```{r}
+# nb1 <- wm_q[[1]]
+# nb1 <- hunan$GDPPC[nb1]
+# nb1
+```
+
+The complete weight matrix may be displayed using `str()`. It's a long one.
+
+```{r}
+# str(wm_q)
+```
+
+### H5.3.2 Creating ROOK contiguity-based neighbours
+
+Aside from the QUEEN contiguity weight matrix, we can also create ROOK contiguity based neighbours by setting the `queen` parameter to `FALSE`. The summary report below shows there are 88 area units in Hunan Province, with the most connected area unit having 10 neighbours.
+
+```{r}
+# wm_r <- poly2nb(hunan, queen=FALSE)
+# summary(wm_r)
+```
+
+### H5.3.3 Visualising contiguity weights
+
+A connectivity graph takes a point and displays a line to each neighboring point. We are working with polygons at the moment, so we will need to get points in order to make our connectivity graphs. The most typically method for this will be polygon centroids, which we can calculate these in the sf package. 
+
+#### H5.3.3.1 Getting Latitude and Longitude of Polygon Centroids
+
+We will need points to associate with each polygon before we can make our connectivity graph. It will be a little more complicated than just running st_centroid on the sf object: us.bound. We need the coordinates in a separate data frame for this to work. To do this we will use a mapping function. The mapping function applies a given function to each element of a vector and returns a vector of the same length. Our input vector will be the geometry column of us.bound. Our function will be st_centroid. We will be using map_dbl variation of map from the purrr package. For more documentation, check out map documentation
+
+To get our longitude values we map the st_centroid function over the geometry column of us.bound and access the longitude value through double bracket notation \[\[\]\] and 1. This allows us to get only the longitude, which is the first value in each centroid.
+
+```{r}
+# longitude <- map_dbl(hunan$geometry, ~st_centroid(.x)[[1]])
+```
+
+We do the same for latitude with one key difference. We access the second value per each centroid with \[\[2\]\].
+
+```{r}
+# latitude <- map_dbl(hunan$geometry, ~st_centroid(.x)[[2]])
+```
+
+Now that we have latitude and longitude, we use cbind to put longitude and latitude into the same object.
+
+```{r}
+# coords <- cbind(longitude, latitude)
+```
+
+We can check the first few observations to see if things are formatted correctly.
+
+```{r}
+# head(coords)
+```
+
+#### H5.3.3.2 Plotting Queen contiguity based neighbours map
+
+```{r}
+# plot(hunan$geometry, border="lightgrey")
+# plot(wm_q, coords, pch = 19, cex = 0.6, add = TRUE, col= "red")
+```
+
+#### H5.3.3.3 Plotting Rookc contiguity based neighbours map
+
+```{r}
+# plot(hunan$geometry, border="lightgrey")
+# plot(wm_r, coords, pch = 19, cex = 0.6, add = TRUE, col = "red")
+```
+
+### H5.4 Computing distance-based neighbours
+
+Distance-based weight matrices may be derived using `dnearneigh()`. This function identifies neighbours of region points by **Euclidean distance** with a lower bound of `d1` and upper bound of `d2`, controlled by the `bounds` parameter. If unprojected coordinates are used and either specified in the coordinates object x or with x as a two column matrix, and `longlat=TRUE`, great circle distances in **km** will be calculated assuming the **WGS84** reference ellipsoid.
+
+### H5.4.1 Determining the cutoff distance
+
+To determine the upper limit for the distance band, we can follow the steps below:
+
+* Return a matrix with the indices of points belonging to the set of the k nearest neighbours of each other using `knearneigh()`;
+* Convert the `knn` object returned by `knearneigh()` into a neighbours list of class `nb` with a list of integer vectors containing neighbour region number IDs using `knn2nb()`
+* Return the length of neighbour relationship edges using `nbdists()`, which returns in the units of the coordinates if one is projected, and in *kilometres* otherwise.
+* Remove the list structure of the returned object using `unlist()`.
+
+```{r}
+#coords <- coordinates(hunan)
+# k1 <- knn2nb(knearneigh(coords))
+# k1dists <- unlist(nbdists(k1, coords, longlat = TRUE))
+# summary(k1dists)
+```
+
+### H5.4.2 Computing fixed distance weight matrix

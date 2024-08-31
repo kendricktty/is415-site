@@ -201,6 +201,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#h5.1-overview-study-area-and-data" id="toc-h5.1-overview-study-area-and-data" class="nav-link active" data-scroll-target="#h5.1-overview-study-area-and-data">H5.1 Overview, Study Area and Data</a>
   <ul class="collapse">
   <li><a href="#h5.1.1-getting-started" id="toc-h5.1.1-getting-started" class="nav-link" data-scroll-target="#h5.1.1-getting-started">H5.1.1 Getting Started</a></li>
+  <li><a href="#h5.1.2-relational-join" id="toc-h5.1.2-relational-join" class="nav-link" data-scroll-target="#h5.1.2-relational-join">H5.1.2 Relational Join</a></li>
+  </ul></li>
+  <li><a href="#h5.2-visualising-our-data" id="toc-h5.2-visualising-our-data" class="nav-link" data-scroll-target="#h5.2-visualising-our-data">H5.2 Visualising our Data</a></li>
+  <li><a href="#h5.3-computing-contiguity-spatial-weights" id="toc-h5.3-computing-contiguity-spatial-weights" class="nav-link" data-scroll-target="#h5.3-computing-contiguity-spatial-weights">H5.3 Computing Contiguity Spatial Weights</a>
+  <ul class="collapse">
+  <li><a href="#h5.3.1-creating-queen-contiguity-based-neighbours" id="toc-h5.3.1-creating-queen-contiguity-based-neighbours" class="nav-link" data-scroll-target="#h5.3.1-creating-queen-contiguity-based-neighbours">H5.3.1 Creating QUEEN contiguity-based neighbours</a></li>
+  <li><a href="#h5.3.2-creating-rook-contiguity-based-neighbours" id="toc-h5.3.2-creating-rook-contiguity-based-neighbours" class="nav-link" data-scroll-target="#h5.3.2-creating-rook-contiguity-based-neighbours">H5.3.2 Creating ROOK contiguity-based neighbours</a></li>
+  <li><a href="#h5.3.3-visualising-contiguity-weights" id="toc-h5.3.3-visualising-contiguity-weights" class="nav-link" data-scroll-target="#h5.3.3-visualising-contiguity-weights">H5.3.3 Visualising contiguity weights</a></li>
+  <li><a href="#h5.4-computing-distance-based-neighbours" id="toc-h5.4-computing-distance-based-neighbours" class="nav-link" data-scroll-target="#h5.4-computing-distance-based-neighbours">H5.4 Computing distance-based neighbours</a></li>
+  <li><a href="#h5.4.1-determining-the-cutoff-distance" id="toc-h5.4.1-determining-the-cutoff-distance" class="nav-link" data-scroll-target="#h5.4.1-determining-the-cutoff-distance">H5.4.1 Determining the cutoff distance</a></li>
+  <li><a href="#h5.4.2-computing-fixed-distance-weight-matrix" id="toc-h5.4.2-computing-fixed-distance-weight-matrix" class="nav-link" data-scroll-target="#h5.4.2-computing-fixed-distance-weight-matrix">H5.4.2 Computing fixed distance weight matrix</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -256,9 +267,135 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>In addition to the usual <code>sf</code>, <code>readr</code> and <code>dplyr</code> packages, spatial weights and spatially lagged variables will be computed using appropriate <code>spdep</code> functions.</p>
 <section id="h5.1.1-getting-started" class="level3">
 <h3 class="anchored" data-anchor-id="h5.1.1-getting-started">H5.1.1 Getting Started</h3>
+<p>After loading our packages, our data will be imported into the R environment.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sf, spdep, tmap, tidyverse, knitr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># pacman::p_load(sf, spdep, tmap, tidyverse, knitr)</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># hunan &lt;- st_read(dsn = "../data/geospatial", </span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">#                  layer = "Hunan")</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># dev_2012 &lt;- read_csv("../data/aspatial/Hunan_2012.csv")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</section>
+<section id="h5.1.2-relational-join" class="level3">
+<h3 class="anchored" data-anchor-id="h5.1.2-relational-join">H5.1.2 Relational Join</h3>
+<p>We can now perform a <strong>left join</strong> of the Hunan 2012 development dataset on the map of Hunan province:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># hunan &lt;- left_join(hunan,dev_2012)%&gt;%</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   select(1:4, 7, 15)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="h5.2-visualising-our-data" class="level2">
+<h2 class="anchored" data-anchor-id="h5.2-visualising-our-data">H5.2 Visualising our Data</h2>
+<p>Using <code>qtm()</code> and other <code>tmap</code> packages, we can now prepare a basemap and choropleth map showing the distribution of <strong>GDP per capita</strong> by region.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># basemap &lt;- tm_shape(hunan) +</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   tm_polygons() +</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   tm_text("NAME_3", size=0.5)</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># gdppc &lt;- qtm(hunan, "GDPPC")</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># tmap_arrange(basemap, gdppc, asp=1, ncol=2)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="h5.3-computing-contiguity-spatial-weights" class="level2">
+<h2 class="anchored" data-anchor-id="h5.3-computing-contiguity-spatial-weights">H5.3 Computing Contiguity Spatial Weights</h2>
+<p>The <code>poly2nb()</code> function of the <code>spdep</code> package may be used to compute contiguity weight matrices for the study area. This function builds a neighbours list based on regions with continuous boundaries.</p>
+<section id="h5.3.1-creating-queen-contiguity-based-neighbours" class="level3">
+<h3 class="anchored" data-anchor-id="h5.3.1-creating-queen-contiguity-based-neighbours">H5.3.1 Creating QUEEN contiguity-based neighbours</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># wm_q &lt;- poly2nb(hunan, queen=TRUE)</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># summary(wm_q)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>For each polygon in our polygon object, <code>wm_q</code> lists all neighbouring polygons. The following code chunk reveals the neighbours for the first polygon in the object. <strong>It is good to be reminded here that R is not a zero-index index, so all list indices start from <code>1</code></strong>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># wm_q[[1]]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We can also retrieve the county name with Polygon ID=1 as follows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># hunan$County[1]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Or the county names of the five counties bordering county ID 1:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># hunan$NAME_3[c(2,3,4,57,85)]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Finally, we can retrieve the GDP per capita of each of the five counties bordering county ID 1:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># nb1 &lt;- wm_q[[1]]</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># nb1 &lt;- hunan$GDPPC[nb1]</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co"># nb1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The complete weight matrix may be displayed using <code>str()</code>. It’s a long one.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># str(wm_q)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="h5.3.2-creating-rook-contiguity-based-neighbours" class="level3">
+<h3 class="anchored" data-anchor-id="h5.3.2-creating-rook-contiguity-based-neighbours">H5.3.2 Creating ROOK contiguity-based neighbours</h3>
+<p>Aside from the QUEEN contiguity weight matrix, we can also create ROOK contiguity based neighbours by setting the <code>queen</code> parameter to <code>FALSE</code>. The summary report below shows there are 88 area units in Hunan Province, with the most connected area unit having 10 neighbours.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># wm_r &lt;- poly2nb(hunan, queen=FALSE)</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"># summary(wm_r)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="h5.3.3-visualising-contiguity-weights" class="level3">
+<h3 class="anchored" data-anchor-id="h5.3.3-visualising-contiguity-weights">H5.3.3 Visualising contiguity weights</h3>
+<p>A connectivity graph takes a point and displays a line to each neighboring point. We are working with polygons at the moment, so we will need to get points in order to make our connectivity graphs. The most typically method for this will be polygon centroids, which we can calculate these in the sf package.</p>
+<section id="h5.3.3.1-getting-latitude-and-longitude-of-polygon-centroids" class="level4">
+<h4 class="anchored" data-anchor-id="h5.3.3.1-getting-latitude-and-longitude-of-polygon-centroids">H5.3.3.1 Getting Latitude and Longitude of Polygon Centroids</h4>
+<p>We will need points to associate with each polygon before we can make our connectivity graph. It will be a little more complicated than just running st_centroid on the sf object: us.bound. We need the coordinates in a separate data frame for this to work. To do this we will use a mapping function. The mapping function applies a given function to each element of a vector and returns a vector of the same length. Our input vector will be the geometry column of us.bound. Our function will be st_centroid. We will be using map_dbl variation of map from the purrr package. For more documentation, check out map documentation</p>
+<p>To get our longitude values we map the st_centroid function over the geometry column of us.bound and access the longitude value through double bracket notation [[]] and 1. This allows us to get only the longitude, which is the first value in each centroid.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># longitude &lt;- map_dbl(hunan$geometry, ~st_centroid(.x)[[1]])</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We do the same for latitude with one key difference. We access the second value per each centroid with [[2]].</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># latitude &lt;- map_dbl(hunan$geometry, ~st_centroid(.x)[[2]])</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now that we have latitude and longitude, we use cbind to put longitude and latitude into the same object.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># coords &lt;- cbind(longitude, latitude)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We can check the first few observations to see if things are formatted correctly.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># head(coords)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="h5.3.3.2-plotting-queen-contiguity-based-neighbours-map" class="level4">
+<h4 class="anchored" data-anchor-id="h5.3.3.2-plotting-queen-contiguity-based-neighbours-map">H5.3.3.2 Plotting Queen contiguity based neighbours map</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot(hunan$geometry, border="lightgrey")</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co"># plot(wm_q, coords, pch = 19, cex = 0.6, add = TRUE, col= "red")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="h5.3.3.3-plotting-rookc-contiguity-based-neighbours-map" class="level4">
+<h4 class="anchored" data-anchor-id="h5.3.3.3-plotting-rookc-contiguity-based-neighbours-map">H5.3.3.3 Plotting Rookc contiguity based neighbours map</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot(hunan$geometry, border="lightgrey")</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co"># plot(wm_r, coords, pch = 19, cex = 0.6, add = TRUE, col = "red")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="h5.4-computing-distance-based-neighbours" class="level3">
+<h3 class="anchored" data-anchor-id="h5.4-computing-distance-based-neighbours">H5.4 Computing distance-based neighbours</h3>
+<p>Distance-based weight matrices may be derived using <code>dnearneigh()</code>. This function identifies neighbours of region points by <strong>Euclidean distance</strong> with a lower bound of <code>d1</code> and upper bound of <code>d2</code>, controlled by the <code>bounds</code> parameter. If unprojected coordinates are used and either specified in the coordinates object x or with x as a two column matrix, and <code>longlat=TRUE</code>, great circle distances in <strong>km</strong> will be calculated assuming the <strong>WGS84</strong> reference ellipsoid.</p>
+</section>
+<section id="h5.4.1-determining-the-cutoff-distance" class="level3">
+<h3 class="anchored" data-anchor-id="h5.4.1-determining-the-cutoff-distance">H5.4.1 Determining the cutoff distance</h3>
+<p>To determine the upper limit for the distance band, we can follow the steps below:</p>
+<ul>
+<li>Return a matrix with the indices of points belonging to the set of the k nearest neighbours of each other using <code>knearneigh()</code>;</li>
+<li>Convert the <code>knn</code> object returned by <code>knearneigh()</code> into a neighbours list of class <code>nb</code> with a list of integer vectors containing neighbour region number IDs using <code>knn2nb()</code></li>
+<li>Return the length of neighbour relationship edges using <code>nbdists()</code>, which returns in the units of the coordinates if one is projected, and in <em>kilometres</em> otherwise.</li>
+<li>Remove the list structure of the returned object using <code>unlist()</code>.</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co">#coords &lt;- coordinates(hunan)</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># k1 &lt;- knn2nb(knearneigh(coords))</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co"># k1dists &lt;- unlist(nbdists(k1, coords, longlat = TRUE))</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co"># summary(k1dists)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="h5.4.2-computing-fixed-distance-weight-matrix" class="level3">
+<h3 class="anchored" data-anchor-id="h5.4.2-computing-fixed-distance-weight-matrix">H5.4.2 Computing fixed distance weight matrix</h3>
 
 
 </section>
