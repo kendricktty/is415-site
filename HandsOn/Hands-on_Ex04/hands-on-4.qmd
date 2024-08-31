@@ -1,5 +1,5 @@
 ---
-title: "H4: Network Constrained Spatial Point Patterns Analysis"
+title: "H4: Network Constrained Spatial Point Patterns Analysis (Incomplete)"
 subtitle: "Hands-On Exercise 4"
 author: "Kendrick Teo"
 date: "2024-08-30"

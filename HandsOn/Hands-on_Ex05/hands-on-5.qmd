@@ -1,5 +1,5 @@
 ---
-title: "H5: Spatial Weights and Appliations"
+title: "H5: Spatial Weights and Appliations (Incomplete)"
 subtitle: "Hands-On Exercise 5"
 author: "Kendrick Teo"
 date: "2024-08-31"
