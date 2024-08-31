@@ -1,0 +1,57 @@
+---
+title: "H5: Spatial Weights and Appliations"
+subtitle: "Hands-On Exercise 5"
+author: "Kendrick Teo"
+date: "2024-08-31"
+date-modified: "last-modified"
+
+execute: 
+  eval: true
+  echo: true
+  freeze: true
+---
+
+## H5.1 Overview, Study Area and Data
+
+This exercise is on computing spatial weights with R. For this exercise, the following datasets, set in [Hunan Province, China](https://en.wikipedia.org/wiki/Hunan), will be used:
+
+* The **Hunan country boundary layer**, in ESRI shapefile format, and;
+* `Hunan_2012.csv`, an aspatial dataset containing selected local development indicators for the area in 2012.
+
+In addition to the usual `sf`, `readr` and `dplyr` packages, spatial weights and spatially lagged variables will be computed using appropriate `spdep` functions.
+
+### H5.1.1 Getting Started
+
+After loading our packages, our data will be imported into the R environment.
+
+```{r}
+# pacman::p_load(sf, spdep, tmap, tidyverse, knitr)
+# hunan <- st_read(dsn = "../data/geospatial", 
+#                  layer = "Hunan")
+# dev_2012 <- read_csv("../data/aspatial/Hunan_2012.csv")
+```
+
+### H5.1.2 Relational Join
+
+We can now perform a **left join** of the Hunan 2012 development dataset on the map of Hunan province:
+
+```{r}
+# hunan <- left_join(hunan,dev_2012)%>%
+#   select(1:4, 7, 15)
+```
+
+## H5.2 Visualising our Data
+
+Using `qtm()` and other `tmap` packages, we can now prepare a basemap and choropleth map showing the distribution of **GDP per capita** by region.
+
+```{r}
+# basemap <- tm_shape(hunan) +
+#   tm_polygons() +
+#   tm_text("NAME_3", size=0.5)
+
+# gdppc <- qtm(hunan, "GDPPC")
+# tmap_arrange(basemap, gdppc, asp=1, ncol=2)
+```
+
+## H5.3 Computing Contiguity Spatial Weights
+

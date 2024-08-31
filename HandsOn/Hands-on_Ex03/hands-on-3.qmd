@@ -63,9 +63,9 @@ tm_shape(mpsz_sf) + tm_polygons() + tm_shape(childcare_sf) + tm_dots() + tm_layo
 Alternatively, we can prepare a pin map as below.
 
 ```{r}
-# tmap_mode('view')
-# tm_shape(childcare_sf) + tm_dots() + tm_layout(title = 'Childcare Centres')
-# tmap_mode('plot')
+tmap_mode('view')
+tm_shape(childcare_sf) + tm_dots() + tm_layout(title = 'Childcare Centres')
+tmap_mode('plot')
 ```
 
 ## H3.5 Geospatial Data Wrangling
@@ -132,11 +132,11 @@ We can conclude from the above that there are no duplicates in the data.
 
 ```{r}
 # Find the locations of duplicate point events
-# tmap_mode('view')
-# tm_shape(childcare) +
-#   tm_dots(alpha=0.4, 
-#           size=0.05)
-# tmap_mode('plot')
+tmap_mode('view')
+tm_shape(childcare) +
+  tm_dots(alpha=0.4, 
+          size=0.05)
+tmap_mode('plot')
 
 # Perform jittering
 childcare_ppp_jit <- rjitter(childcare_ppp, 
@@ -411,7 +411,7 @@ plot(density(childcare_jw_ppp.km,
      main="Jurong West")
 ```
 
-The KDE displays indicate **Jurong West** as the planning area with the lowest concentration of childcare centres and **Punggol** as the planning area with the highest. **Choa Chu Kang** comes in second, followed by **Tampines**.
+The KDE displays indicate  **Punggol** as the planning area with the highest density of childcare centres.
 
 ## H3.8 Nearest Neighbour Analysis
 

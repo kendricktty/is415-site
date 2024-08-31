@@ -22,6 +22,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -134,6 +168,10 @@ ul.task-list li input[type="checkbox"] {
     <a class="dropdown-item" href="../../HandsOn/Hands-on_Ex04/hands-on-4.html">
  <span class="dropdown-text">H4: Network Constrained Spatial Point Patterns Analysis</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../../HandsOn/Hands-on_Ex05/hands-on-5.html">
+ <span class="dropdown-text">H5: Spatial Weights and Appliations</span></a>
+  </li>  
     </ul>
   </li>
   <li class="nav-item dropdown ">
@@ -160,7 +198,15 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#h4.1-overview" id="toc-h4.1-overview" class="nav-link active" data-scroll-target="#h4.1-overview">H4.1 Overview</a></li>
+  <li><a href="#h4.1-overview-and-data" id="toc-h4.1-overview-and-data" class="nav-link active" data-scroll-target="#h4.1-overview-and-data">H4.1 Overview and Data</a></li>
+  <li><a href="#h4.2-installing-and-launching-r-packages" id="toc-h4.2-installing-and-launching-r-packages" class="nav-link" data-scroll-target="#h4.2-installing-and-launching-r-packages">H4.2 Installing and launching R packages</a></li>
+  <li><a href="#h4.3-data-import-preparation-and-visualisation" id="toc-h4.3-data-import-preparation-and-visualisation" class="nav-link" data-scroll-target="#h4.3-data-import-preparation-and-visualisation">H4.3 Data Import, Preparation and Visualisation</a></li>
+  <li><a href="#h4.4-network-kde-analysis" id="toc-h4.4-network-kde-analysis" class="nav-link" data-scroll-target="#h4.4-network-kde-analysis">H4.4 Network KDE Analysis</a>
+  <ul class="collapse">
+  <li><a href="#h4.4.1-preparing-lixel-objects" id="toc-h4.4.1-preparing-lixel-objects" class="nav-link" data-scroll-target="#h4.4.1-preparing-lixel-objects">H4.4.1 Preparing lixel objects</a></li>
+  <li><a href="#h4.4.2-generating-line-centre-points" id="toc-h4.4.2-generating-line-centre-points" class="nav-link" data-scroll-target="#h4.4.2-generating-line-centre-points">H4.4.2 Generating line centre points</a></li>
+  <li><a href="#h4.4.3-performing-nkde" id="toc-h4.4.3-performing-nkde" class="nav-link" data-scroll-target="#h4.4.3-performing-nkde">H4.4.3 Performing NKDE</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -194,7 +240,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">August 30, 2024</p>
+      <p class="date-modified">August 31, 2024</p>
     </div>
   </div>
     
@@ -205,11 +251,89 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="h4.1-overview" class="level2">
-<h2 class="anchored" data-anchor-id="h4.1-overview">H4.1 Overview</h2>
-<p><strong>Network constrained Spatial Point Patterns Analysis (NetSPAA)</strong> is a collection of spatial point patterns analysis methods special developed for analysing spatial point event occurs on or alongside network. The spatial point event can be locations of traffic accident or childcare centre for example. The network, on the other hand can be a road network or river network.</p>
+<section id="h4.1-overview-and-data" class="level2">
+<h2 class="anchored" data-anchor-id="h4.1-overview-and-data">H4.1 Overview and Data</h2>
+<p><strong>Network Constrained Spatial Point Patterns Analysis (NetSPPA)</strong> is a collection of <em>spatial point patterns analysis</em> (SPPA) methods special developed for analysing spatial point event occurs on or alongside a network. Examples of networks are road, train and river networks, while examples of spatial point events include locations of events like crime, or facilities like schools and parks.</p>
+<p>This exercise will be on the <code>spNetwork</code> package, which serves to derive network kernel density estimation (NKDE), as well as to perform network G- and K-function analysis. Continuing on our theme of childcare centres, we will analyise the spatial distribution of childcare centres in <a href="https://en.wikipedia.org/wiki/Punggol">Punggol</a>. Two geospatial datasets in ESRI shapefile format will be used, namely:</p>
+<ul>
+<li><code>Punggol_St</code>, a line featureset storing information on Punggol’s road network, and;</li>
+<li><code>Punggol_CC</code>, a point featureset storing the locations of Punggol’s childcare centres.</li>
+</ul>
+</section>
+<section id="h4.2-installing-and-launching-r-packages" class="level2">
+<h2 class="anchored" data-anchor-id="h4.2-installing-and-launching-r-packages">H4.2 Installing and launching R packages</h2>
+<p>The R packages to be used today are:</p>
+<ul>
+<li><code>spNetwork</code>, for performing SPPA procedures like KDE and K-functions on the network. It can also be used to build spatial matrices to conduct any kind of traditional spatial analysis with spatial weights based on reticular distances.</li>
+<li><code>sf</code></li>
+<li><code>tmap</code>, particularly the <code>leaflet</code> API, which helps us plot cartographic-quality static point pattern maps or interactive maps.</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># pacman::p_load(sf, spNetwork, tmap, tidyverse)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="h4.3-data-import-preparation-and-visualisation" class="level2">
+<h2 class="anchored" data-anchor-id="h4.3-data-import-preparation-and-visualisation">H4.3 Data Import, Preparation and Visualisation</h2>
+<p>As always, the first step is to import our geospatial datasets into RStudio as <code>sf</code> dataframes.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># network &lt;- st_read(dsn=".../data/geospatial", </span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">#                    layer="Punggol_St")</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># network</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># childcare &lt;- st_read(dsn=".../data/geospatial",</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">#                      layer="Punggol_CC")</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># childcare</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># plot(st_geometry(network))</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># plot(childcare, add=T, col='blue', pch=19)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="h4.4-network-kde-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="h4.4-network-kde-analysis">H4.4 Network KDE Analysis</h2>
+<p><strong>Network KDE (NKDE) analysis</strong> can be performed by using appropriate functions from the <code>spNetwork</code> package.</p>
+<section id="h4.4.1-preparing-lixel-objects" class="level3">
+<h3 class="anchored" data-anchor-id="h4.4.1-preparing-lixel-objects">H4.4.1 Preparing lixel objects</h3>
+<p>Before finding the NKDE, we need to first cut our <code>SpatialLines</code> objects into <em>lixels</em> with a specified minimal distance. We can do this by calling <code>lixelize_lines()</code> as shown. In the code chunk below:</p>
+<ul>
+<li>The length of a lixel, taken in with the <code>lx_length</code> parameter, is set to <code>700</code> metres, and;</li>
+<li>The minimum length of a lixel, as defined in the <code>mindist</code> parameter, is <code>375</code> metres.</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># lixels &lt;- lixelize_lines(network, </span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#                          700, </span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">#                          mindist = 375)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>After cutting, the length of the final lixel, if shorter than the minimum distance, is added to the previous lixel. If <code>mindist</code> is not defined (<code>NULL</code>), then it is <code>maxdist / 10</code>. Segments that are already shorter than the minimum distance are also not modified.</p>
+</section>
+<section id="h4.4.2-generating-line-centre-points" class="level3">
+<h3 class="anchored" data-anchor-id="h4.4.2-generating-line-centre-points">H4.4.2 Generating line centre points</h3>
+<p>Next, the code chunk below will generate a <code>SpatialPointsDataFrame</code> (i.e.&nbsp;samples) with line centre points. These points are located at the centre of the line based on its length.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># samples &lt;- lines_center(lixels)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="h4.4.3-performing-nkde" class="level3">
+<h3 class="anchored" data-anchor-id="h4.4.3-performing-nkde">H4.4.3 Performing NKDE</h3>
+<p>We are now ready to compute the NKDE by using the following code chunk.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># densities &lt;- nkde(network, </span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co">#                   events = childcare,</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">#                   w = rep(1, nrow(childcare)),</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#                   samples = samples,</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#                   kernel_name = "quartic",</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">#                   bw = 300, </span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">#                   div= "bw", </span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co">#                   method = "simple", </span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co">#                   digits = 1, </span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co">#                   tol = 1,</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co">#                   grid_shape = c(1,1), </span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co">#                   max_depth = 8,</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co">#                   agg = 5, </span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co">#                   sparse = TRUE,</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co">#                   verbose = FALSE)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Some interesting</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

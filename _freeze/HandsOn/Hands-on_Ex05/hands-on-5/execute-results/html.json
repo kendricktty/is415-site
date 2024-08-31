@@ -1,0 +1,15 @@
+{
+  "hash": "b9ee67b9293e475b439a3664e128a956",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"H5: Spatial Weights and Appliations\"\nsubtitle: \"Hands-On Exercise 5\"\nauthor: \"Kendrick Teo\"\ndate: \"2024-08-31\"\ndate-modified: \"last-modified\"\n\nexecute: \n  eval: true\n  echo: true\n  freeze: true\n---\n\n\n\n\n\n## H5.1 Overview, Study Area and Data\n\nThis exercise is on computing spatial weights with R. For this exercise, the following datasets, set in [Hunan Province, China](https://en.wikipedia.org/wiki/Hunan), will be used:\n\n* The **Hunan country boundary layer**, in ESRI shapefile format, and;\n* `Hunan_2012.csv`, an aspatial dataset containing selected local development indicators for the area in 2012.\n\nIn addition to the usual `sf`, `readr` and `dplyr` packages, spatial weights and spatially lagged variables will be computed using appropriate `spdep` functions.\n\n### H5.1.1 Getting Started\n\n\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\npacman::p_load(sf, spdep, tmap, tidyverse, knitr)\n```\n:::",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
