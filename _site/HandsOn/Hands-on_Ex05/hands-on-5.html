@@ -211,7 +211,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#h5.3.3-visualising-contiguity-weights" id="toc-h5.3.3-visualising-contiguity-weights" class="nav-link" data-scroll-target="#h5.3.3-visualising-contiguity-weights">H5.3.3 Visualising contiguity weights</a></li>
   <li><a href="#h5.4-computing-distance-based-neighbours" id="toc-h5.4-computing-distance-based-neighbours" class="nav-link" data-scroll-target="#h5.4-computing-distance-based-neighbours">H5.4 Computing distance-based neighbours</a></li>
   <li><a href="#h5.4.1-determining-the-cutoff-distance" id="toc-h5.4.1-determining-the-cutoff-distance" class="nav-link" data-scroll-target="#h5.4.1-determining-the-cutoff-distance">H5.4.1 Determining the cutoff distance</a></li>
-  <li><a href="#h5.4.2-computing-fixed-distance-weight-matrix" id="toc-h5.4.2-computing-fixed-distance-weight-matrix" class="nav-link" data-scroll-target="#h5.4.2-computing-fixed-distance-weight-matrix">H5.4.2 Computing fixed distance weight matrix</a></li>
+  <li><a href="#h5.4.2-computing-fixed-distance-weight-matrix-using-dnearneigh" id="toc-h5.4.2-computing-fixed-distance-weight-matrix-using-dnearneigh" class="nav-link" data-scroll-target="#h5.4.2-computing-fixed-distance-weight-matrix-using-dnearneigh">H5.4.2 Computing fixed distance weight matrix using <code>dnearneigh()</code></a></li>
+  <li><a href="#h5.4.3-computing-distance-matrix" id="toc-h5.4.3-computing-distance-matrix" class="nav-link" data-scroll-target="#h5.4.3-computing-distance-matrix">H5.4.3 Computing distance matrix</a></li>
+  <li><a href="#h5.4.3.1-plotting-distance-based-neighbours" id="toc-h5.4.3.1-plotting-distance-based-neighbours" class="nav-link" data-scroll-target="#h5.4.3.1-plotting-distance-based-neighbours">H5.4.3.1 Plotting distance-based neighbours</a></li>
+  <li><a href="#h5.5-weights-based-on-idw" id="toc-h5.5-weights-based-on-idw" class="nav-link" data-scroll-target="#h5.5-weights-based-on-idw">H5.5 Weights based on IDW</a></li>
+  <li><a href="#h5.6-row-standardised-weights-matrix" id="toc-h5.6-row-standardised-weights-matrix" class="nav-link" data-scroll-target="#h5.6-row-standardised-weights-matrix">H5.6 Row-standardised Weights Matrix</a></li>
+  </ul></li>
+  <li><a href="#h5.7-applications-of-spatial-weight-matrices" id="toc-h5.7-applications-of-spatial-weight-matrices" class="nav-link" data-scroll-target="#h5.7-applications-of-spatial-weight-matrices">H5.7 Applications of Spatial Weight Matrices</a>
+  <ul class="collapse">
+  <li><a href="#h5.7.1-row-standardised-weights" id="toc-h5.7.1-row-standardised-weights" class="nav-link" data-scroll-target="#h5.7.1-row-standardised-weights">H5.7.1 Row-standardised weights</a></li>
+  <li><a href="#h5.7.2-spatial-lag-as-a-sum-of-neighbouring-values" id="toc-h5.7.2-spatial-lag-as-a-sum-of-neighbouring-values" class="nav-link" data-scroll-target="#h5.7.2-spatial-lag-as-a-sum-of-neighbouring-values">H5.7.2 Spatial lag as a sum of neighbouring values</a></li>
+  <li><a href="#h5.7.3-spatial-window-average" id="toc-h5.7.3-spatial-window-average" class="nav-link" data-scroll-target="#h5.7.3-spatial-window-average">H5.7.3 Spatial window average</a></li>
+  <li><a href="#h5.7.4-spatial-window-sum" id="toc-h5.7.4-spatial-window-sum" class="nav-link" data-scroll-target="#h5.7.4-spatial-window-sum">H5.7.4 Spatial Window Sum</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -246,7 +257,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">August 31, 2024</p>
+      <p class="date-modified">September 1, 2024</p>
     </div>
   </div>
     
@@ -270,7 +281,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>After loading our packages, our data will be imported into the R environment.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># pacman::p_load(sf, spdep, tmap, tidyverse, knitr)</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># hunan &lt;- st_read(dsn = "../data/geospatial", </span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># hunan &lt;- st_read(dsn = "../data/geospatial",</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">#                  layer = "Hunan")</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># dev_2012 &lt;- read_csv("../data/aspatial/Hunan_2012.csv")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -388,14 +399,191 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Remove the list structure of the returned object using <code>unlist()</code>.</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co">#coords &lt;- coordinates(hunan)</span></span>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># coords &lt;- coordinates(hunan)</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># k1 &lt;- knn2nb(knearneigh(coords))</span></span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co"># k1dists &lt;- unlist(nbdists(k1, coords, longlat = TRUE))</span></span>
 <span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co"># summary(k1dists)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="h5.4.2-computing-fixed-distance-weight-matrix" class="level3">
-<h3 class="anchored" data-anchor-id="h5.4.2-computing-fixed-distance-weight-matrix">H5.4.2 Computing fixed distance weight matrix</h3>
+<section id="h5.4.2-computing-fixed-distance-weight-matrix-using-dnearneigh" class="level3">
+<h3 class="anchored" data-anchor-id="h5.4.2-computing-fixed-distance-weight-matrix-using-dnearneigh">H5.4.2 Computing fixed distance weight matrix using <code>dnearneigh()</code></h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># wm_d62 &lt;- dnearneigh(coords, 0, 62, longlat=TRUE)</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="co"># wm_d62</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Next, we use <code>str()</code> to display the content of our matrix.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># str(wm_d62)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We can also display the weight matrix in a table form by combining <code>table()</code> and <code>card()</code>, from <code>spdep</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># table(human$County, card(wm_d62))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="h5.4.2.1-plotting-fixed-distance-weight-matrix" class="level4">
+<h4 class="anchored" data-anchor-id="h5.4.2.1-plotting-fixed-distance-weight-matrix">H5.4.2.1 Plotting fixed distance weight matrix</h4>
+<p>A weight matrix can now be plotted as below:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot(hunan$geometry, border="lightgrey")</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="co"># plot(wm_d62, coords, add=TRUE)</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="co"># plot(k1, coords, add=TRUE, col="red", length=0.08)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The red lines show links of first nearest neighbours, while the black lines show the links of neighbours within the cutoff distance of 62km.</p>
+<p>Alternatively, we can plot both of these next to each other as below:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># par(mfrow=c(1,2))</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="co"># plot(hunan$geometry, border="lightgrey", main="1st nearest neighbours")</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="co"># plot(k1, coords, add=TRUE, col="red", length=0.08)</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="co"># plot(hunan$geometry, border="lightgrey", main="Distance link")</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="co"># plot(wm_d62, coords, add=TRUE, pch = 19, cex = 0.6)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="h5.4.3-computing-distance-matrix" class="level3">
+<h3 class="anchored" data-anchor-id="h5.4.3-computing-distance-matrix">H5.4.3 Computing distance matrix</h3>
+<p>A key characteristic involving fixed distance weight matrices is that more densly-populated areas (usually urban areas) tend to have more neighbours than their less densly-populated counterparts. Yet, having many neighbours smoothes the neighbour relationship across more neighbours. It is possible to control the number of neighbours directly using K-nearest neighbours, by either accepting asymmetric neighbours or imposing symmetry as shown below.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># knn6 &lt;- knn2nb(knearneigh(coords, k=6))</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="co"># knn6</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="co"># str(knn6)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="h5.4.3.1-plotting-distance-based-neighbours" class="level3">
+<h3 class="anchored" data-anchor-id="h5.4.3.1-plotting-distance-based-neighbours">H5.4.3.1 Plotting distance-based neighbours</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot(hunan$geometry, border="lightgrey")</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="co"># plot(knn6, coords, pch = 19, cex = 0.6, add = TRUE, col = "red")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="h5.5-weights-based-on-idw" class="level3">
+<h3 class="anchored" data-anchor-id="h5.5-weights-based-on-idw">H5.5 Weights based on IDW</h3>
+<p>This section serves to derive a spatial weight matrix based on the inversed distance method.</p>
+<p>First, we compute the distance between areas using <code>nbdists()</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># dist &lt;- nbdists(wm_q, coords, longlat = TRUE)</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ids &lt;- lapply(dist, function(x) 1/(x))</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ids</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="h5.6-row-standardised-weights-matrix" class="level3">
+<h3 class="anchored" data-anchor-id="h5.6-row-standardised-weights-matrix">H5.6 Row-standardised Weights Matrix</h3>
+<p>Next, we need to assign weights to each neighbouring polygon. In our case, each neighbouring polygon will be assigned equal weight (<code>style="W"</code>).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># rswm_q &lt;- nb2listw(wm_q, style="W", zero.policy = TRUE)</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="co"># rswm_q</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="co"># rswm_ids$weights[1]</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="co"># summary(unlist(rswm_ids$weights))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="h5.7-applications-of-spatial-weight-matrices" class="level2">
+<h2 class="anchored" data-anchor-id="h5.7-applications-of-spatial-weight-matrices">H5.7 Applications of Spatial Weight Matrices</h2>
+<p>Spatial weight matrices are used to create spatial lagged variables. In this section, four of them will be created: first with row-standardised weights, second as a sum of neighbouring values, third a spatial window average, and fourth a spatial window sum.</p>
+<section id="h5.7.1-row-standardised-weights" class="level3">
+<h3 class="anchored" data-anchor-id="h5.7.1-row-standardised-weights">H5.7.1 Row-standardised weights</h3>
+<p>First, the average neighbour GDP per capita value for each polygon is calculated.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># GDPPC.lag &lt;- lag.listw(rswm_q, hunan$GDPPC)</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="co"># GDPPC.lag</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>In the previous section, we retrieved the GDP per capita of the five neighbours with this code chunk:</p>
+<pre><code>nb1 &lt;- wm_q[[1]]
+nb1 &lt;- hunan$GDPPC[nb1]
+nb1</code></pre>
+<p>We can then append the spatially lag GDP per capita values onto the <code>hunan</code> dataset by using the code chunk below, and print out the average neighbouring income values for each county. Following that, we can plot both GDP per capita and spatial lag GDP per capita for comparison.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># lag.list &lt;- list(hunan$NAME_3, lag.listw(rswm_q, hunan$GDPPC))</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="co"># lag.res &lt;- as.data.frame(lag.list)</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="co"># colnames(lag.res) &lt;- c("NAME_3", "lag GDPPC")</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="co"># hunan &lt;- left_join(hunan,lag.res)</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="co"># head(hunan)</span></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="co"># gdppc &lt;- qtm(hunan, "GDPPC")</span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a><span class="co"># lag_gdppc &lt;- qtm(hunan, "lag GDPPC")</span></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a><span class="co"># tmap_arrange(gdppc, lag_gdppc, asp=1, ncol=2)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="h5.7.2-spatial-lag-as-a-sum-of-neighbouring-values" class="level3">
+<h3 class="anchored" data-anchor-id="h5.7.2-spatial-lag-as-a-sum-of-neighbouring-values">H5.7.2 Spatial lag as a sum of neighbouring values</h3>
+<p>We can also calculate spatial lag as a sum of neighbouring values by assigning binary weights. This requires us to go back to the neighbours list, apply a function to assign binary weights, then explicitly assign the weights with the <code>glist=</code> parameter in the <code>nb2listw()</code> function.</p>
+<p>We start by applying a function that will assign a value of <code>1</code> per neighbour. This is done with <code>lapply()</code>, which was used before to manipulate neighbour structure. The <code>lapply()</code> a function across each value in the neighbours structure.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># b_weights &lt;- lapply(wm_q, function(x) 0*x + 1)</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="co"># b_weights2 &lt;- nb2listw(wm_q,</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="co">#                        glist = b_weights,</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="co">#                        style = "B")</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="co"># b_weights2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>With the proper weights assigned, we can use <code>lag.listw()</code> to compute a lag variable from our weight and GDP per capita. We can then examine the result with the code chunk below.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># lag_sum &lt;- list(hunan$NAME_3, lag.listw(b_weights2, hunan$GDPPC))</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="co"># lag.res &lt;- as.data.frame(lag_sum)</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="co"># colnames(lag.res) &lt;- c("NAME_3", "lag_sum GDPPC")</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="co"># lag_sum</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Next, let’s <strong>left join</strong> the <code>GDPPC</code> field of <code>lag_sum</code> into the <code>hunan</code> dataframe. After that, we can plot both the original dataset and the spatial lag sum dataset for comparison.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># gdppc &lt;- qtm(hunan, "GDPPC")</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="co"># lag_sum_gdppc &lt;- qtm(hunan, "lag_sum GDPPC")</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="co"># tmap_arrange(gdppc, lag_sum_gdppc, asp=1, ncol=2)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="h5.7.3-spatial-window-average" class="level3">
+<h3 class="anchored" data-anchor-id="h5.7.3-spatial-window-average">H5.7.3 Spatial window average</h3>
+<p>The <strong>spatial window average</strong> uses row-standardised weights and includes the diagonal element. To do this in R, we need to go back to the neighbours structure and add the diagonal element before assigning weights with <code>include.self(wm_q)</code> before assigning weights.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># wm_qs &lt;- include.self(wm_q)</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="co"># wm_qs[[1]]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Notice that <code>[1]</code> now has 6 neighbours instead of 5. We can now proceed to obtain and assign weight values to our</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># wm_qs &lt;- nb2listw(wm_qs)</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="co"># wm_qs</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="co"># lag_w_avg_gpdpc &lt;- lag.listw(wm_qs,</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="co">#     glist = b_weights,</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a><span class="co">#     style = "B"</span></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a><span class="co"># )</span></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a><span class="co"># lag_w_avg_gpdpc</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The final steps are to:</p>
+<ol type="1">
+<li>Convert the lag variable <code>listw</code> object into a dataframe;</li>
+<li><strong>Left joining</strong> our lag window back to the <code>hunan</code> dataframe;</li>
+<li>Compare the spatial lag weights and spatial window average by plotting the <code>lag_gdppc</code> and <code>w_ave_dgppc</code> maps side by side.</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># lag.list.wm_qs &lt;- list(hunan$NAME_3, lag.listw(wm_qs, hunan$GDPPC))</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="co"># lag_wm_qs.res &lt;- as.data.frame(lag.list.wm_qs)</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="co"># colnames(lag_wm_qs.res) &lt;- c("NAME_3", "lag_window_avg GDPPC")</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="co"># hunan &lt;- left_join(hunan, lag_wm_qs.res)</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a><span class="co"># w_avg_gdppc &lt;- qtm(hunan, "lag_window_avg GDPPC")</span></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a><span class="co"># tmap_arrange(lag_gdppc, w_avg_gdppc, asp=1, ncol=2)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>To compare the values of lag GDPPC and Spatial window average, we can use <code>kable()</code> from the <code>Knitr</code> package to prepare a table.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># hunan %&gt;%</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   select("County", </span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="co">#          "lag GDPPC", </span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="co">#          "lag_window_avg GDPPC") %&gt;%</span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   kable()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="h5.7.4-spatial-window-sum" class="level3">
+<h3 class="anchored" data-anchor-id="h5.7.4-spatial-window-sum">H5.7.4 Spatial Window Sum</h3>
+<p>Unlike the spatial window average, the <strong>spatial window sum</strong> does not use row-standardised weights. The first two steps to creating our spatial window sum are the same as before - add the diagonal element from the neighbour list and assign binary weights. The lag variable is then computed with <code>lag.listw()</code>, then converted into a data frame and <strong>left joined</strong> back to the <code>hunan</code> data frame.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># w_sum_gdppc &lt;- list(hunan$NAME_3, lag.listw(b_weights2, hunan$GDPPC))</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="co"># w_sum_gdppc</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="co"># w_sum_gdppc.res &lt;- as.data.frame(w_sum_gdppc)</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="co"># colnames(w_sum_gdppc.res) &lt;- c("NAME_3", "w_sum GDPPC")</span></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a><span class="co"># hunan &lt;- left_join(hunan, w_sum_gdppc.res)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Finally, we can compare the spatial lag weights and spatial window average by plotting the <code>lag_sum_gdppc</code> and <code>w_sum_gdppc</code> maps side by side. We can also construct a <code>kable()</code> table to compare the results in tabular form.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># w_sum_gdppc &lt;- qtm(hunan, "w_sum GDPPC")</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="co"># tmap_arrange(lag_sum_gdppc, w_sum_gdppc, asp=1, ncol=2)</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="co"># hunan %&gt;%</span></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   select("County", "lag_sum GDPPC", "w_sum GDPPC") %&gt;%</span></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   kable()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 
 
 </section>
