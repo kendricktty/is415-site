@@ -11,11 +11,12 @@ execute:
   freeze: true
 ---
 
-## CE1. Installing `maptools`
+## CE1. Installing `maptools` [DEPRECATED]
 
 ```{r}
 #| eval: false
-install.packages("maptools", repos="https://packagemanager.posit.co/cran/2023-10-13")
+pacman::p_load(sf, raster, spatstat, tmap, tidyverse)
+# install.packages("maptools", repos="https://packagemanager.posit.co/cran/2023-10-13")
 ```
 
 ## CE2. `st_combine()` vs `st_union()`
@@ -23,11 +24,24 @@ install.packages("maptools", repos="https://packagemanager.posit.co/cran/2023-10
 
 
 ```{r}
-sg_sf <- mpsz_sf %>% st_union()
+# sg_sf <- mpsz_sf %>% st_union()
 ```
 
 ## CE3. `spatstat.geom`
 
 ```{r}
+# gridded_kde_childcareSG_ad <- maptools::as.SpatialGridDataFrae.im(kde_childcareSG_adaptive)
+# spplot(gridded_kde_childcareSG_ad)
+```
 
+## CE4. Importing data
+
+```{r}
+acled_sf <- read_csv("data/ACLED_Myanmar.csv") %>%
+    st_as_sf(
+        coords=c("longitude", "latitude"),
+        crs=4326
+    ) %>%
+    st_transform(crs=32647) %>%
+    mutate(event_date=dmy(event_date))
 ```
