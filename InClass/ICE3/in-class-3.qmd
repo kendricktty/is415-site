@@ -1,5 +1,5 @@
 ---
-title: "CE3: TBA"
+title: "CE3: Spatial Point Patterns Analysis"
 subtitle: "In-class Exercise 3"
 author: "Kendrick Teo"
 date: "2024-09-01"
@@ -10,3 +10,24 @@ execute:
   echo: true
   freeze: true
 ---
+
+## CE1. Installing `maptools`
+
+```{r}
+#| eval: false
+install.packages("maptools", repos="https://packagemanager.posit.co/cran/2023-10-13")
+```
+
+## CE2. `st_combine()` vs `st_union()`
+
+
+
+```{r}
+sg_sf <- mpsz_sf %>% st_union()
+```
+
+## CE3. `spatstat.geom`
+
+```{r}
+
+```
