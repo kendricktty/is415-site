@@ -24,7 +24,7 @@ website:
         - href: "HandsOn/Hands-on_Ex05/hands-on-5.qmd"
       - text: "Take-home Exercises"
         menu:
-        - text: "To be updated" 
+        - href: "TakeHome/TakeHome1/take-home-1.qmd"
 
 format:
   html:

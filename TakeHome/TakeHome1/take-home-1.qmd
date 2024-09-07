@@ -1,0 +1,13 @@
+---
+title: "TH1: Geospatial Analytics for Social Good"
+image: "../../_site/HandsOn/Hands-on_Ex03/hands-on-3_files/figure-html/unnamed-chunk-42-1.png"
+subtitle: "Take Home Exercise 1: Application of Spatial and Spatio-temporal Point Patterns Analysis to discover the geographical distribution of Armed Conflict in Myanmar"
+author: "Kendrick Teo"
+date: "2024-09-07"
+date-modified: "last-modified"
+
+execute: 
+  eval: true
+  echo: true
+  freeze: true
+---

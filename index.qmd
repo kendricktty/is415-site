@@ -10,5 +10,6 @@ hello_world <- "hello world!"
 print(hello_world)
 ```
 
-Hands-on Exercises
+## Featured Exercises
 
+[Hands-on Exercise 1: Geospatial Data Wrangling with R](InClass/ICE3/in-class-3.qmd)
