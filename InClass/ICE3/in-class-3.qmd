@@ -45,3 +45,11 @@ acled_sf <- read_csv("data/ACLED_Myanmar.csv") %>%
     st_transform(crs=32647) %>%
     mutate(event_date=dmy(event_date))
 ```
+
+```{r}
+tmap_mode('view') # View the interactive map
+tmap_mode('plot') # Return to "plot" mode - or everything will be slow
+
+group_by()
+ungroup() # Ungroup after grouping
+```
