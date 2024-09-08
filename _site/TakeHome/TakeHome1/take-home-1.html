@@ -22,6 +22,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -109,7 +143,7 @@ ul.task-list li input[type="checkbox"] {
   </li>  
         <li>
     <a class="dropdown-item" href="../../InClass/ICE3/in-class-3.html">
- <span class="dropdown-text">CE3: TBA</span></a>
+ <span class="dropdown-text">CE3: Spatial Point Patterns Analysis</span></a>
   </li>  
     </ul>
   </li>
@@ -162,8 +196,20 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#th1.1-setting-the-scene" id="toc-th1.1-setting-the-scene" class="nav-link active" data-scroll-target="#th1.1-setting-the-scene">TH1.1 Setting the Scene</a></li>
+  <li><a href="#th1.2-the-data" id="toc-th1.2-the-data" class="nav-link" data-scroll-target="#th1.2-the-data">TH1.2 The Data</a></li>
+  <li><a href="#th1.3-importing-and-transforming-armed-conflict-data-and-administrative-boundary-data-into-sf-tibble-data.frames" id="toc-th1.3-importing-and-transforming-armed-conflict-data-and-administrative-boundary-data-into-sf-tibble-data.frames" class="nav-link" data-scroll-target="#th1.3-importing-and-transforming-armed-conflict-data-and-administrative-boundary-data-into-sf-tibble-data.frames">TH1.3 Importing and transforming armed conflict data and administrative boundary data into <code>sf</code> <code>tibble</code> <code>data.frames</code></a>
+  <ul class="collapse">
+  <li><a href="#th1.3.1-loading-r-packages-and-aspatial-data" id="toc-th1.3.1-loading-r-packages-and-aspatial-data" class="nav-link" data-scroll-target="#th1.3.1-loading-r-packages-and-aspatial-data">TH1.3.1 Loading R packages and aspatial data</a></li>
+  <li><a href="#th1.3.2-loading-geospatial-data" id="toc-th1.3.2-loading-geospatial-data" class="nav-link" data-scroll-target="#th1.3.2-loading-geospatial-data">TH1.3.2 Loading geospatial data</a></li>
+  </ul></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -195,7 +241,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">September 7, 2024</p>
+      <p class="date-modified">September 8, 2024</p>
     </div>
   </div>
     
@@ -206,8 +252,124 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
+<section id="th1.1-setting-the-scene" class="level2">
+<h2 class="anchored" data-anchor-id="th1.1-setting-the-scene">TH1.1 Setting the Scene</h2>
+<p>Millions of people have their lives shattered by armed conflict every year. One of these is the <a href="https://en.wikipedia.org/wiki/Myanmar_civil_war_(2021%E2%80%93present)"><strong>Myanmar Civil War</strong></a>, a significant escalation of the long-running <a href="https://en.wikipedia.org/wiki/Myanmar_conflict">Myanmar Conflict</a> in response to the <a href="https://en.wikipedia.org/wiki/2021_Myanmar_coup_d%27%C3%A9tat">2021 coup</a>.</p>
+<p>Geospatial analtyics holds the potential to address complex problems facing society, such as this one. This study serves to discover the sptial and spatio-temporal distribution of armed conflict in Myanmar by applying spatial point patterns analysis methods.</p>
+</section>
+<section id="th1.2-the-data" class="level2">
+<h2 class="anchored" data-anchor-id="th1.2-the-data">TH1.2 The Data</h2>
+<p>Armed conflict data in Myanmar between 2021 and 2024 was downloaded from the <a href="https://acleddata.com/">Armed Conflict Location &amp; Event Database (ACLED)</a>, an independent, impartial, international non-profit organization collecting data on violent conflicts and protests in all countries and territories in the world. We will be superimposing these locations with</p>
+</section>
+<section id="th1.3-importing-and-transforming-armed-conflict-data-and-administrative-boundary-data-into-sf-tibble-data.frames" class="level2">
+<h2 class="anchored" data-anchor-id="th1.3-importing-and-transforming-armed-conflict-data-and-administrative-boundary-data-into-sf-tibble-data.frames">TH1.3 Importing and transforming armed conflict data and administrative boundary data into <code>sf</code> <code>tibble</code> <code>data.frames</code></h2>
+<section id="th1.3.1-loading-r-packages-and-aspatial-data" class="level3">
+<h3 class="anchored" data-anchor-id="th1.3.1-loading-r-packages-and-aspatial-data">TH1.3.1 Loading R packages and aspatial data</h3>
+<p>The <code>R</code> packages we will use today are:</p>
+<ul>
+<li><code>sf</code></li>
+<li><code>tmap</code></li>
+<li><code>spatstat</code></li>
+<li><code>raster</code></li>
+<li><code>maptools</code></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sf, raster, spatstat, tmap, tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>acled_mya <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/ACLED_Myanmar.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 55574 Columns: 31
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (20): event_id_cnty, event_date, disorder_type, event_type, sub_event_ty...
+dbl (11): year, time_precision, inter1, inter2, interaction, iso, latitude, ...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>acled_mya</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 55,574 × 31
+   event_id_cnty event_date        year time_precision disorder_type  event_type
+   &lt;chr&gt;         &lt;chr&gt;            &lt;dbl&gt;          &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt;     
+ 1 MMR56099      31 December 2023  2023              1 Political vio… Explosion…
+ 2 MMR56222      31 December 2023  2023              1 Political vio… Explosion…
+ 3 MMR56370      31 December 2023  2023              1 Political vio… Battles   
+ 4 MMR56376      31 December 2023  2023              1 Demonstrations Protests  
+ 5 MMR56380      31 December 2023  2023              1 Strategic dev… Strategic…
+ 6 MMR56869      31 December 2023  2023              1 Strategic dev… Strategic…
+ 7 MMR56871      31 December 2023  2023              1 Political vio… Battles   
+ 8 MMR56873      31 December 2023  2023              1 Political vio… Explosion…
+ 9 MMR56874      31 December 2023  2023              1 Political vio… Battles   
+10 MMR56876      31 December 2023  2023              1 Political vio… Violence …
+# ℹ 55,564 more rows
+# ℹ 25 more variables: sub_event_type &lt;chr&gt;, actor1 &lt;chr&gt;, assoc_actor_1 &lt;chr&gt;,
+#   inter1 &lt;dbl&gt;, actor2 &lt;chr&gt;, assoc_actor_2 &lt;chr&gt;, inter2 &lt;dbl&gt;,
+#   interaction &lt;dbl&gt;, civilian_targeting &lt;chr&gt;, iso &lt;dbl&gt;, region &lt;chr&gt;,
+#   country &lt;chr&gt;, admin1 &lt;chr&gt;, admin2 &lt;chr&gt;, admin3 &lt;chr&gt;, location &lt;chr&gt;,
+#   latitude &lt;dbl&gt;, longitude &lt;dbl&gt;, geo_precision &lt;dbl&gt;, source &lt;chr&gt;,
+#   source_scale &lt;chr&gt;, notes &lt;chr&gt;, fatalities &lt;dbl&gt;, tags &lt;chr&gt;, …</code></pre>
+</div>
+</div>
+</section>
+<section id="th1.3.2-loading-geospatial-data" class="level3">
+<h3 class="anchored" data-anchor-id="th1.3.2-loading-geospatial-data">TH1.3.2 Loading geospatial data</h3>
+<p>Three representations of Myanmar’s geography exist on - <code>Admin1</code> subdivides the country into its states and regions only, while <code>Admin2</code> subdivides the country by its smaller districts, and <code>Admin3</code> its townships. Further, the ACLED labels each incident with all 3 representations. For simplicity and ease of understanding, we shall use the <code>Admin1</code> representation.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>mmr_admin1 <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="at">dsn=</span><span class="st">"data/mmr_polbnda_adm1_250k_mimu_1"</span>, <span class="at">layer=</span><span class="st">"mmr_polbnda_adm1_250k_mimu_1"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Reading layer `mmr_polbnda_adm1_250k_mimu_1' from data source 
+  `/Users/kendricktty/Gits/smu_cs/is415-site/TakeHome/TakeHome1/data/mmr_polbnda_adm1_250k_mimu_1' 
+  using driver `ESRI Shapefile'
+Simple feature collection with 15 features and 6 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: 92.1721 ymin: 9.696844 xmax: 101.17 ymax: 28.54554
+Geodetic CRS:  WGS 84</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>mmr_admin1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simple feature collection with 15 features and 6 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: 92.1721 ymin: 9.696844 xmax: 101.17 ymax: 28.54554
+Geodetic CRS:  WGS 84
+First 10 features:
+   OBJECTID          ST ST_PCODE           ST_RG          ST_MMR PCode_V
+1         1  Ayeyarwady   MMR017          Region  ဧရာဝတီတိုင်းဒေသကြီး     9.4
+2         2        Bago   MMR111          Region    ပဲခူးတိုင်းဒေသကြီး     9.4
+3         4        Chin   MMR004           State       ချင်းပြည်နယ်     9.4
+4         5      Kachin   MMR001           State       ကချင်ပြည်နယ်     9.4
+5         6       Kayah   MMR002           State       ကယားပြည်နယ်     9.4
+6         7       Kayin   MMR003           State        ကရင်ပြည်နယ်     9.4
+7         8      Magway   MMR009          Region   မကွေးတိုင်းဒေသကြီး     9.4
+8         9    Mandalay   MMR010          Region မန္တလေးတိုင်းဒေသကြီး     9.4
+9        10         Mon   MMR011           State         မွန်ပြည်နယ်     9.4
+10       11 Nay Pyi Taw   MMR018 Union Territory        နေပြည်တော်     9.4
+                         geometry
+1  MULTIPOLYGON (((95.20798 15...
+2  MULTIPOLYGON (((96.17964 19...
+3  MULTIPOLYGON (((93.36931 24...
+4  MULTIPOLYGON (((97.59674 28...
+5  MULTIPOLYGON (((97.1759 19....
+6  MULTIPOLYGON (((97.81508 16...
+7  MULTIPOLYGON (((94.11699 22...
+8  MULTIPOLYGON (((96.14023 23...
+9  MULTIPOLYGON (((97.73689 15...
+10 MULTIPOLYGON (((96.32013 20...</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qtm</span>(mmr_admin1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
 
 
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

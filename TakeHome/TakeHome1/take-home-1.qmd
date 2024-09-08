@@ -11,3 +11,45 @@ execute:
   echo: true
   freeze: true
 ---
+
+## TH1.1 Setting the Scene
+
+Millions of people have their lives shattered by armed conflict every year. One of these is the [**Myanmar Civil War**](https://en.wikipedia.org/wiki/Myanmar_civil_war_(2021%E2%80%93present)), a significant escalation of the long-running [Myanmar Conflict](https://en.wikipedia.org/wiki/Myanmar_conflict) in response to the [2021 coup](https://en.wikipedia.org/wiki/2021_Myanmar_coup_d%27%C3%A9tat).
+
+Geospatial analtyics holds the potential to address complex problems facing society, such as this one. This study serves to discover the sptial and spatio-temporal distribution of armed conflict in Myanmar by applying spatial point patterns analysis methods.
+
+## TH1.2 The Data
+
+Armed conflict data in Myanmar between 2021 and 2024 was downloaded from the [Armed Conflict Location & Event Database (ACLED)](https://acleddata.com/), an independent, impartial, international non-profit organization collecting data on violent conflicts and protests in all countries and territories in the world. We will be superimposing these locations with 
+
+## TH1.3 Importing and transforming armed conflict data and administrative boundary data into `sf` `tibble` `data.frames`
+
+### TH1.3.1 Loading R packages and aspatial data
+
+The `R` packages we will use today are:
+
+- `sf`
+- `tmap`
+- `spatstat`
+- `raster`
+- `maptools`
+
+```{r}
+pacman::p_load(sf, raster, spatstat, tmap, tidyverse)
+acled_mya <- read_csv("data/ACLED_Myanmar.csv")
+acled_mya
+```
+
+### TH1.3.2 Loading geospatial data
+
+Three representations of Myanmar's geography exist on  - `Admin1` subdivides the country into its states and regions only, while `Admin2` subdivides the country by its smaller districts, and `Admin3` its townships. Further, the ACLED labels each incident with all 3 representations. For simplicity and ease of understanding, we shall use the `Admin1` representation.
+
+```{r}
+mmr_admin1 <- st_read(dsn="data/mmr_polbnda_adm1_250k_mimu_1", layer="mmr_polbnda_adm1_250k_mimu_1")
+mmr_admin1
+qtm(mmr_admin1)
+```
+
+### TH1.3.3 Creating simple feature data frame from aspatial data
+
+The ACLED data contains coordinates, making it useful for plotting on our map as points. We can therefore use it to create a simple feature data frame
