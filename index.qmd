@@ -12,4 +12,8 @@ print(hello_world)
 
 ## Featured Exercises
 
-[Hands-on Exercise 1: Geospatial Data Wrangling with R](InClass/ICE3/in-class-3.qmd)
+[Hands-on Exercise 1: Geospatial Data Wrangling with R](HandsOn/Hands-on_Ex01/hands-on-1.qmd)
+
+[Hands-on Exercise 2: Thematic Mapping and GeoVisualisation with R](HandsOn/Hands-on_Ex02/hands-on-2.qmd)
+
+[Hands-on Exercise 3: Spatial Point Patterns Analysis](HandsOn/Hands-on_Ex03/hands-on-3.qmd)
