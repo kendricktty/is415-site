@@ -50,9 +50,9 @@ mmr_admin1
 qtm(mmr_admin1)
 ```
 
-### TH1.3.3 Creating simple feature data frame from aspatial data
+### TH1.3.3 Creating `sf` data frame from aspatial data
 
-The ACLED data contains coordinates, making it useful for plotting on our map as points. We can therefore use it to create a simple feature data frame
+The ACLED data contains coordinates, making it useful for plotting on our map as points. We can therefore use it to create an `sf` data frame which we can use to plot our points on a map.
 
 ```{r}
 
