@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Kendrick Teo">
-<meta name="dcterms.date" content="2024-09-07">
+<meta name="dcterms.date" content="2024-09-01">
 
-<title>TH1: Geospatial Analytics for Social Good – IS415 - Kendrick</title>
+<title>CE4/H4: Spatial-Temporal Point Patterns Analysis – IS415 - Kendrick</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -145,6 +145,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="dropdown-item" href="../../InClass/ICE3/in-class-3.html">
  <span class="dropdown-text">CE3: Spatial Point Patterns Analysis</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../../InClass/ICE4/in-class-4.html">
+ <span class="dropdown-text">CE4/H4: Spatial-Temporal Point Patterns Analysis</span></a>
+  </li>  
     </ul>
   </li>
   <li class="nav-item dropdown ">
@@ -165,8 +169,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="dropdown-text">H3: Spatial Point Patterns Analysis</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../../HandsOn/Hands-on_Ex04/hands-on-4.html">
- <span class="dropdown-text">H4: Network Constrained Spatial Point Patterns Analysis (Incomplete)</span></a>
+    <a class="dropdown-item" href="../../InClass/ICE4/in-class-4.html">
+ <span class="dropdown-text">CE4/H4: Spatial-Temporal Point Patterns Analysis</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="../../HandsOn/Hands-on_Ex05/hands-on-5.html">
@@ -201,15 +205,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#th1.1-setting-the-scene" id="toc-th1.1-setting-the-scene" class="nav-link active" data-scroll-target="#th1.1-setting-the-scene">TH1.1 Setting the Scene</a></li>
-  <li><a href="#th1.2-the-data" id="toc-th1.2-the-data" class="nav-link" data-scroll-target="#th1.2-the-data">TH1.2 The Data</a></li>
-  <li><a href="#th1.3-importing-and-transforming-armed-conflict-data-and-administrative-boundary-data-into-sf-tibble-data.frames" id="toc-th1.3-importing-and-transforming-armed-conflict-data-and-administrative-boundary-data-into-sf-tibble-data.frames" class="nav-link" data-scroll-target="#th1.3-importing-and-transforming-armed-conflict-data-and-administrative-boundary-data-into-sf-tibble-data.frames">TH1.3 Importing and transforming armed conflict data and administrative boundary data into <code>sf</code> <code>tibble</code> <code>data.frames</code></a>
+  <li><a href="#ce4.1-overview-and-explanation" id="toc-ce4.1-overview-and-explanation" class="nav-link active" data-scroll-target="#ce4.1-overview-and-explanation">CE4.1 Overview and explanation</a></li>
+  <li><a href="#ce4.2-research-questions" id="toc-ce4.2-research-questions" class="nav-link" data-scroll-target="#ce4.2-research-questions">CE4.2 Research questions</a></li>
+  <li><a href="#ce4.3-the-data" id="toc-ce4.3-the-data" class="nav-link" data-scroll-target="#ce4.3-the-data">CE4.3 The data</a></li>
+  <li><a href="#ce4.4-new-r-packages" id="toc-ce4.4-new-r-packages" class="nav-link" data-scroll-target="#ce4.4-new-r-packages">CE4.4 New R Packages</a></li>
+  <li><a href="#ce4.5-importing-and-preparing-study-area" id="toc-ce4.5-importing-and-preparing-study-area" class="nav-link" data-scroll-target="#ce4.5-importing-and-preparing-study-area">CE4.5 Importing and preparing study area</a>
   <ul class="collapse">
-  <li><a href="#th1.3.1-loading-r-packages-and-aspatial-data" id="toc-th1.3.1-loading-r-packages-and-aspatial-data" class="nav-link" data-scroll-target="#th1.3.1-loading-r-packages-and-aspatial-data">TH1.3.1 Loading R packages and aspatial data</a></li>
-  <li><a href="#th1.3.2-loading-geospatial-data" id="toc-th1.3.2-loading-geospatial-data" class="nav-link" data-scroll-target="#th1.3.2-loading-geospatial-data">TH1.3.2 Loading geospatial data</a></li>
-  <li><a href="#th1.3.3-creating-simple-feature-data-frame-from-aspatial-data" id="toc-th1.3.3-creating-simple-feature-data-frame-from-aspatial-data" class="nav-link" data-scroll-target="#th1.3.3-creating-simple-feature-data-frame-from-aspatial-data">TH1.3.3 Creating simple feature data frame from aspatial data</a></li>
+  <li><a href="#ce4.5.1-importing-study-area-and-creating-owin-object" id="toc-ce4.5.1-importing-study-area-and-creating-owin-object" class="nav-link" data-scroll-target="#ce4.5.1-importing-study-area-and-creating-owin-object">CE4.5.1 Importing study area and creating OWIN object</a></li>
   </ul></li>
-  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  <li><a href="#ce4.6-importing-and-preparing-forest-fire-data" id="toc-ce4.6-importing-and-preparing-forest-fire-data" class="nav-link" data-scroll-target="#ce4.6-importing-and-preparing-forest-fire-data">CE4.6 Importing and preparing forest fire data</a></li>
+  <li><a href="#ce4.7-visualising-fire-locations" id="toc-ce4.7-visualising-fire-locations" class="nav-link" data-scroll-target="#ce4.7-visualising-fire-locations">CE4.7 Visualising fire locations</a>
+  <ul class="collapse">
+  <li><a href="#ce4.7.1-as-points" id="toc-ce4.7.1-as-points" class="nav-link" data-scroll-target="#ce4.7.1-as-points">CE4.7.1 As points</a></li>
+  <li><a href="#ce4.7.2-over-time" id="toc-ce4.7.2-over-time" class="nav-link" data-scroll-target="#ce4.7.2-over-time">CE4.7.2 Over time</a></li>
+  </ul></li>
+  <li><a href="#ce4.8-computing-stkde-by-month" id="toc-ce4.8-computing-stkde-by-month" class="nav-link" data-scroll-target="#ce4.8-computing-stkde-by-month">CE4.8 Computing STKDE by Month</a>
+  <ul class="collapse">
+  <li><a href="#ce4.8.1-forest-fires-by-month-ppp" id="toc-ce4.8.1-forest-fires-by-month-ppp" class="nav-link" data-scroll-target="#ce4.8.1-forest-fires-by-month-ppp">CE4.8.1 Forest fires by month (<code>ppp</code>)</a></li>
+  <li><a href="#ce4.8.2-spatio-temporal-kde" id="toc-ce4.8.2-spatio-temporal-kde" class="nav-link" data-scroll-target="#ce4.8.2-spatio-temporal-kde">CE4.8.2 Spatio-temporal KDE</a></li>
+  <li><a href="#ce4.8.3-plotting-the-spatio-temporal-kde-object" id="toc-ce4.8.3-plotting-the-spatio-temporal-kde-object" class="nav-link" data-scroll-target="#ce4.8.3-plotting-the-spatio-temporal-kde-object">CE4.8.3 Plotting the spatio-temporal KDE object</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -218,8 +233,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">TH1: Geospatial Analytics for Social Good</h1>
-<p class="subtitle lead">Take Home Exercise 1: Application of Spatial and Spatio-temporal Point Patterns Analysis to discover the geographical distribution of Armed Conflict in Myanmar</p>
+<h1 class="title">CE4/H4: Spatial-Temporal Point Patterns Analysis</h1>
+<p class="subtitle lead">In-class/Hands-On Exercise 4</p>
 </div>
 
 
@@ -236,7 +251,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">September 7, 2024</p>
+      <p class="date">September 1, 2024</p>
     </div>
   </div>
   
@@ -254,133 +269,271 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="th1.1-setting-the-scene" class="level2">
-<h2 class="anchored" data-anchor-id="th1.1-setting-the-scene">TH1.1 Setting the Scene</h2>
-<p>Millions of people have their lives shattered by armed conflict every year. One of these is the <a href="https://en.wikipedia.org/wiki/Myanmar_civil_war_(2021%E2%80%93present)"><strong>Myanmar Civil War</strong></a>, a significant escalation of the long-running <a href="https://en.wikipedia.org/wiki/Myanmar_conflict">Myanmar Conflict</a> in response to the <a href="https://en.wikipedia.org/wiki/2021_Myanmar_coup_d%27%C3%A9tat">2021 coup</a>.</p>
-<p>Geospatial analtyics holds the potential to address complex problems facing society, such as this one. This study serves to discover the sptial and spatio-temporal distribution (spread) of the armed conflict in Myanmar by applying spatial point patterns analysis methods.</p>
+<section id="ce4.1-overview-and-explanation" class="level2">
+<h2 class="anchored" data-anchor-id="ce4.1-overview-and-explanation">CE4.1 Overview and explanation</h2>
+<p>A spatio-temporal point process (also called space-time or spatial-temporal point process) is a random collection of points, where each point represents the time and location of an event. Examples of events include incidence of disease, sightings or births of a species, or the occurrences of fires, earthquakes, lightning strikes, tsunamis, or volcanic eruptions.</p>
+<p><strong>Spatio-temporal point patterns analysis (STPPA)</strong> is becoming increasingly necessary, given the rapid emergence of geographically and temporally indexed data in a wide range of fields. Several spatio-temporal point patterns analysis methods have been introduced and implemented in R in the last ten years. Today’s exercise will use data on a real-world forest fire event in <em>Kepulauan Bangka Belitung, Indonesia</em> from 1st January to 31st December 2023, to illustrate the methods, procedures and interpretations of STPPA.</p>
+<p>This chapter shows how various R packages can be combined to run a set of spatio-temporal point pattern analyses in a guided and intuitive way. A real world forest fire event in from 1st January 2023 to 31st December 2023 is used to illustrate the methods, procedures and interpretations.</p>
 </section>
-<section id="th1.2-the-data" class="level2">
-<h2 class="anchored" data-anchor-id="th1.2-the-data">TH1.2 The Data</h2>
-<p>Armed conflict data in Myanmar between 2021 and 2024 was downloaded from the <a href="https://acleddata.com/">Armed Conflict Location &amp; Event Database (ACLED)</a>, an independent, impartial, international non-profit organization collecting data on violent conflicts and protests in all countries and territories in the world. We will be superimposing these locations with the geogrpahical boundary and subdivisions of the country, from the <strong>Myanmar Information Management Unit</strong> (MIMU)</p>
-</section>
-<section id="th1.3-importing-and-transforming-armed-conflict-data-and-administrative-boundary-data-into-sf-tibble-data.frames" class="level2">
-<h2 class="anchored" data-anchor-id="th1.3-importing-and-transforming-armed-conflict-data-and-administrative-boundary-data-into-sf-tibble-data.frames">TH1.3 Importing and transforming armed conflict data and administrative boundary data into <code>sf</code> <code>tibble</code> <code>data.frames</code></h2>
-<section id="th1.3.1-loading-r-packages-and-aspatial-data" class="level3">
-<h3 class="anchored" data-anchor-id="th1.3.1-loading-r-packages-and-aspatial-data">TH1.3.1 Loading R packages and aspatial data</h3>
-<p>The <code>R</code> packages we will use today are:</p>
+<section id="ce4.2-research-questions" class="level2">
+<h2 class="anchored" data-anchor-id="ce4.2-research-questions">CE4.2 Research questions</h2>
+<p>By the end of the exercise I hope to find out:</p>
 <ul>
-<li><code>sf</code></li>
-<li><code>tmap</code></li>
-<li><code>spatstat</code></li>
-<li><code>raster</code></li>
-<li><code>maptools</code></li>
+<li>If the locations of forest fires in Kepulauan Bangka Belitung are spatially and spatially-temporally independent, and;</li>
+<li>If not, where and when the observed forest fire locations tend to cluster.</li>
 </ul>
+</section>
+<section id="ce4.3-the-data" class="level2">
+<h2 class="anchored" data-anchor-id="ce4.3-the-data">CE4.3 The data</h2>
+<ul>
+<li><code>forestfires</code>, a CSV file that provides locations on forest fires from Moderate Resolution Imaging Spectroradiometer (MODIS) sensor data.</li>
+<li><code>Kepulauan_Bangka_Belitung</code>, which as the name suggests marks the boundary of the region of Kepulauan Bangka Belitung.</li>
+</ul>
+</section>
+<section id="ce4.4-new-r-packages" class="level2">
+<h2 class="anchored" data-anchor-id="ce4.4-new-r-packages">CE4.4 New R Packages</h2>
+<p>A new R package to be introduced today is <code>rgdal</code>, which is used for importing geospatial data in the GIS file format and saving it as a <code>Spatial*</code> DataFrame.</p>
+<p>In addition, <code>sparr</code> gives us the ability to estimate fixed and adatptive kernel-smoothed spatial relative risk surfaces via the density-ratio method, and perform subsequent inferrence.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sf, raster, spatstat, tmap, tidyverse)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>acled_mya <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/ACLED_Myanmar.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sf, raster, spatstat, tmap, tidyverse, sparr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="ce4.5-importing-and-preparing-study-area" class="level2">
+<h2 class="anchored" data-anchor-id="ce4.5-importing-and-preparing-study-area">CE4.5 Importing and preparing study area</h2>
+<section id="ce4.5.1-importing-study-area-and-creating-owin-object" class="level3">
+<h3 class="anchored" data-anchor-id="ce4.5.1-importing-study-area-and-creating-owin-object">CE4.5.1 Importing study area and creating OWIN object</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>kbb <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="at">dsn=</span><span class="st">"data/rawdata"</span>, <span class="at">layer=</span><span class="st">"Kepulauan_Bangka_Belitung"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_union</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_zm</span>(<span class="at">drop=</span><span class="cn">TRUE</span>, <span class="at">what=</span><span class="st">"ZM"</span>) <span class="sc">%&gt;%</span> <span class="co"># Drop Z-values</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="at">crs=</span><span class="dv">32748</span>) <span class="co"># EPSG: Indonesia</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Reading layer `Kepulauan_Bangka_Belitung' from data source 
+  `/Users/kendricktty/Gits/SMU_CS/is415-site/InClass/ICE4/data/rawdata' 
+  using driver `ESRI Shapefile'
+Simple feature collection with 298 features and 27 fields
+Geometry type: POLYGON
+Dimension:     XYZ
+Bounding box:  xmin: 105.1085 ymin: -3.116593 xmax: 106.8488 ymax: -1.501603
+z_range:       zmin: 0 zmax: 0
+Geodetic CRS:  WGS 84</code></pre>
+</div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Rows: 55574 Columns: 31
+<pre><code>st_as_s2(): dropping Z and/or M coordinate</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># This dataset keeps Z-dimension (height) data. We might want to remove it if we are to do KDE</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>kbb_owin <span class="ot">&lt;-</span> <span class="fu">as.owin</span>(kbb)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>kbb_owin</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>window: polygonal boundary
+enclosing rectangle: [512066.8, 705559.4] x [9655398, 9834006] units</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="ce4.6-importing-and-preparing-forest-fire-data" class="level2">
+<h2 class="anchored" data-anchor-id="ce4.6-importing-and-preparing-forest-fire-data">CE4.6 Importing and preparing forest fire data</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Creating an SF dataframe from a CSV removes "longitude" and "latitude", transforming it to a "geometry" field</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>fire_sf <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/rawdata/forestfires.csv"</span>) <span class="sc">%&gt;%</span> <span class="fu">st_as_sf</span>(<span class="at">coords=</span><span class="fu">c</span>(<span class="st">"longitude"</span>, <span class="st">"latitude"</span>), <span class="at">crs=</span><span class="dv">4326</span>) <span class="sc">%&gt;%</span> <span class="fu">st_transform</span>(<span class="at">crs=</span><span class="dv">32748</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 741 Columns: 15
 ── Column specification ────────────────────────────────────────────────────────
 Delimiter: ","
-chr (20): event_id_cnty, event_date, disorder_type, event_type, sub_event_ty...
-dbl (11): year, time_precision, inter1, inter2, interaction, iso, latitude, ...
+chr   (3): satellite, instrument, daynight
+dbl  (11): latitude, longitude, brightness, scan, track, acq_time, confidenc...
+date  (1): acq_date
 
 ℹ Use `spec()` to retrieve the full column specification for this data.
 ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>acled_mya</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 55,574 × 31
-   event_id_cnty event_date        year time_precision disorder_type  event_type
-   &lt;chr&gt;         &lt;chr&gt;            &lt;dbl&gt;          &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt;     
- 1 MMR56099      31 December 2023  2023              1 Political vio… Explosion…
- 2 MMR56222      31 December 2023  2023              1 Political vio… Explosion…
- 3 MMR56370      31 December 2023  2023              1 Political vio… Battles   
- 4 MMR56376      31 December 2023  2023              1 Demonstrations Protests  
- 5 MMR56380      31 December 2023  2023              1 Strategic dev… Strategic…
- 6 MMR56869      31 December 2023  2023              1 Strategic dev… Strategic…
- 7 MMR56871      31 December 2023  2023              1 Political vio… Battles   
- 8 MMR56873      31 December 2023  2023              1 Political vio… Explosion…
- 9 MMR56874      31 December 2023  2023              1 Political vio… Battles   
-10 MMR56876      31 December 2023  2023              1 Political vio… Violence …
-# ℹ 55,564 more rows
-# ℹ 25 more variables: sub_event_type &lt;chr&gt;, actor1 &lt;chr&gt;, assoc_actor_1 &lt;chr&gt;,
-#   inter1 &lt;dbl&gt;, actor2 &lt;chr&gt;, assoc_actor_2 &lt;chr&gt;, inter2 &lt;dbl&gt;,
-#   interaction &lt;dbl&gt;, civilian_targeting &lt;chr&gt;, iso &lt;dbl&gt;, region &lt;chr&gt;,
-#   country &lt;chr&gt;, admin1 &lt;chr&gt;, admin2 &lt;chr&gt;, admin3 &lt;chr&gt;, location &lt;chr&gt;,
-#   latitude &lt;dbl&gt;, longitude &lt;dbl&gt;, geo_precision &lt;dbl&gt;, source &lt;chr&gt;,
-#   source_scale &lt;chr&gt;, notes &lt;chr&gt;, fatalities &lt;dbl&gt;, tags &lt;chr&gt;, …</code></pre>
 </div>
+<p>We will want to convert our SF object into <code>ppp</code>, which only accepts numerical or character data, later on. We will therefore need to convert our <code>acq_date</code> fields into numeric fields.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>fire_sf <span class="ot">&lt;-</span> fire_sf <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">DayOfYear=</span><span class="fu">yday</span>(acq_date)) <span class="sc">%&gt;%</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>                      <span class="fu">mutate</span>(<span class="at">Month_num=</span><span class="fu">month</span>(acq_date)) <span class="sc">%&gt;%</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>                      <span class="fu">mutate</span>(<span class="at">Month_fac=</span><span class="fu">month</span>(acq_date, <span class="at">label=</span><span class="cn">TRUE</span>, <span class="at">abbr=</span><span class="cn">FALSE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="th1.3.2-loading-geospatial-data" class="level3">
-<h3 class="anchored" data-anchor-id="th1.3.2-loading-geospatial-data">TH1.3.2 Loading geospatial data</h3>
-<p>Three representations of Myanmar’s geography exist on - <code>Admin1</code> subdivides the country into its states and regions only, while <code>Admin2</code> subdivides the country by its smaller districts, and <code>Admin3</code> its townships. Further, the ACLED labels each incident with all 3 representations. For simplicity and ease of understanding, we shall use the <code>Admin1</code> representation.</p>
+<section id="ce4.7-visualising-fire-locations" class="level2">
+<h2 class="anchored" data-anchor-id="ce4.7-visualising-fire-locations">CE4.7 Visualising fire locations</h2>
+<section id="ce4.7.1-as-points" class="level3">
+<h3 class="anchored" data-anchor-id="ce4.7.1-as-points">CE4.7.1 As points</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>mmr_admin1 <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="at">dsn=</span><span class="st">"data/mmr_polbnda_adm1_250k_mimu_1"</span>, <span class="at">layer=</span><span class="st">"mmr_polbnda_adm1_250k_mimu_1"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Reading layer `mmr_polbnda_adm1_250k_mimu_1' from data source 
-  `/Users/kendricktty/Gits/SMU_CS/is415-site/TakeHome/TakeHome1/data/mmr_polbnda_adm1_250k_mimu_1' 
-  using driver `ESRI Shapefile'
-Simple feature collection with 15 features and 6 fields
-Geometry type: MULTIPOLYGON
-Dimension:     XY
-Bounding box:  xmin: 92.1721 ymin: 9.696844 xmax: 101.17 ymax: 28.54554
-Geodetic CRS:  WGS 84</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>mmr_admin1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Simple feature collection with 15 features and 6 fields
-Geometry type: MULTIPOLYGON
-Dimension:     XY
-Bounding box:  xmin: 92.1721 ymin: 9.696844 xmax: 101.17 ymax: 28.54554
-Geodetic CRS:  WGS 84
-First 10 features:
-   OBJECTID          ST ST_PCODE           ST_RG          ST_MMR PCode_V
-1         1  Ayeyarwady   MMR017          Region  ဧရာဝတီတိုင်းဒေသကြီး     9.4
-2         2        Bago   MMR111          Region    ပဲခူးတိုင်းဒေသကြီး     9.4
-3         4        Chin   MMR004           State       ချင်းပြည်နယ်     9.4
-4         5      Kachin   MMR001           State       ကချင်ပြည်နယ်     9.4
-5         6       Kayah   MMR002           State       ကယားပြည်နယ်     9.4
-6         7       Kayin   MMR003           State        ကရင်ပြည်နယ်     9.4
-7         8      Magway   MMR009          Region   မကွေးတိုင်းဒေသကြီး     9.4
-8         9    Mandalay   MMR010          Region မန္တလေးတိုင်းဒေသကြီး     9.4
-9        10         Mon   MMR011           State         မွန်ပြည်နယ်     9.4
-10       11 Nay Pyi Taw   MMR018 Union Territory        နေပြည်တော်     9.4
-                         geometry
-1  MULTIPOLYGON (((95.20798 15...
-2  MULTIPOLYGON (((96.17964 19...
-3  MULTIPOLYGON (((93.36931 24...
-4  MULTIPOLYGON (((97.59674 28...
-5  MULTIPOLYGON (((97.1759 19....
-6  MULTIPOLYGON (((97.81508 16...
-7  MULTIPOLYGON (((94.11699 22...
-8  MULTIPOLYGON (((96.14023 23...
-9  MULTIPOLYGON (((97.73689 15...
-10 MULTIPOLYGON (((96.32013 20...</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qtm</span>(mmr_admin1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># tm_shape(kbb) + tm_polygons() + tm_shape(fire_sf) + tm_dots()</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(kbb) <span class="sc">+</span> <span class="fu">tm_polygons</span>() <span class="sc">+</span> <span class="fu">tm_shape</span>(fire_sf) <span class="sc">+</span> <span class="fu">tm_bubbles</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="take-home-1_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="in-class-4_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 </section>
-<section id="th1.3.3-creating-simple-feature-data-frame-from-aspatial-data" class="level3">
-<h3 class="anchored" data-anchor-id="th1.3.3-creating-simple-feature-data-frame-from-aspatial-data">TH1.3.3 Creating simple feature data frame from aspatial data</h3>
-<p>The ACLED data contains coordinates, making it useful for plotting on our map as points. We can therefore use it to create a simple feature data frame</p>
+<section id="ce4.7.2-over-time" class="level3">
+<h3 class="anchored" data-anchor-id="ce4.7.2-over-time">CE4.7.2 Over time</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(kbb) <span class="sc">+</span> <span class="fu">tm_polygons</span>() <span class="sc">+</span> <span class="fu">tm_shape</span>(fire_sf) <span class="sc">+</span> <span class="fu">tm_dots</span>(<span class="at">size=</span><span class="fl">0.1</span>) <span class="sc">+</span> <span class="fu">tm_facets</span>(<span class="at">by=</span><span class="st">"Month_fac"</span>, <span class="at">free.coords=</span><span class="cn">FALSE</span>, <span class="at">drop.units=</span><span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="in-class-4_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># free.coords: All points have the same coordinate pairs</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 </section>
 </section>
-<section id="references" class="level2">
-<h2 class="anchored" data-anchor-id="references">References</h2>
-<ol type="1">
-<li>Raleigh, C., Kishi, R. &amp; Linke, A. Political instability patterns are obscured by conflict dataset scope conditions, sources, and coding choices. Humanit Soc Sci Commun 10, 74 (2023). https://doi.org/10.1057/s41599-023-01559-4</li>
-</ol>
+<section id="ce4.8-computing-stkde-by-month" class="level2">
+<h2 class="anchored" data-anchor-id="ce4.8-computing-stkde-by-month">CE4.8 Computing STKDE by Month</h2>
+<p>Using <code>sparttemp.density()</code> of the <code>sparr</code> package, we are able to compute <strong>spatial-temporal KDE (STKDE)</strong>.</p>
+<section id="ce4.8.1-forest-fires-by-month-ppp" class="level3">
+<h3 class="anchored" data-anchor-id="ce4.8.1-forest-fires-by-month-ppp">CE4.8.1 Forest fires by month (<code>ppp</code>)</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>fire_month <span class="ot">&lt;-</span> fire_sf <span class="sc">%&gt;%</span> <span class="fu">select</span>(Month_num)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>fire_month_ppp <span class="ot">&lt;-</span> <span class="fu">as.ppp</span>(fire_month)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>fire_month_ppp</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Marked planar point pattern: 741 points
+marks are numeric, of storage type  'double'
+window: rectangle = [521564.1, 695791] x [9658137, 9828767] units</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fire_month_ppp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Marked planar point pattern:  741 points
+Average intensity 2.49258e-08 points per square unit
+
+Coordinates are given to 10 decimal places
+
+marks are numeric, of type 'double'
+Summary:
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  1.000   8.000   9.000   8.579  10.000  12.000 
+
+Window: rectangle = [521564.1, 695791] x [9658137, 9828767] units
+                    (174200 x 170600 units)
+Window area = 29728200000 square units</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">any</span>(<span class="fu">duplicated</span>(fire_month_ppp))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] FALSE</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>fire_month_owin <span class="ot">&lt;-</span> fire_month_ppp[kbb_owin]</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fire_month_owin)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Marked planar point pattern:  741 points
+Average intensity 6.424519e-08 points per square unit
+
+Coordinates are given to 10 decimal places
+
+marks are numeric, of type 'double'
+Summary:
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  1.000   8.000   9.000   8.579  10.000  12.000 
+
+Window: polygonal boundary
+2 separate polygons (no holes)
+           vertices        area relative.area
+polygon 1     47493 11533600000      1.00e+00
+polygon 2       256      306427      2.66e-05
+enclosing rectangle: [512066.8, 705559.4] x [9655398, 9834006] units
+                     (193500 x 178600 units)
+Window area = 11533900000 square units
+Fraction of frame area: 0.334</code></pre>
+</div>
+</div>
+</section>
+<section id="ce4.8.2-spatio-temporal-kde" class="level3">
+<h3 class="anchored" data-anchor-id="ce4.8.2-spatio-temporal-kde">CE4.8.2 Spatio-temporal KDE</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>st_kde <span class="ot">&lt;-</span> <span class="fu">spattemp.density</span>(fire_month_owin)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Calculating trivariate smooth...Done.
+Edge-correcting...Done.
+Conditioning on time...Done.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(st_kde)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Spatiotemporal Kernel Density Estimate
+
+Bandwidths
+  h = 15102.47 (spatial)
+  lambda = 0.0304 (temporal)
+
+No. of observations
+  741 
+
+Spatial bound
+  Type: polygonal
+  2D enclosure: [512066.8, 705559.4] x [9655398, 9834006]
+
+Temporal bound
+  [1, 12]
+
+Evaluation
+  128 x 128 x 12 trivariate lattice
+  Density range: [1.233458e-27, 8.202976e-10]</code></pre>
+</div>
+</div>
+</section>
+<section id="ce4.8.3-plotting-the-spatio-temporal-kde-object" class="level3">
+<h3 class="anchored" data-anchor-id="ce4.8.3-plotting-the-spatio-temporal-kde-object">CE4.8.3 Plotting the spatio-temporal KDE object</h3>
+<p>This code chunk <code>plot()</code>s the KDE for the entire year 2023. As expected, the KDEs indicate far fewer occurrences of forest fires in the area before June 2023 and in December 2023 (the rainy season usually falls between December and February.)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># sparr</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>tims <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">9</span>, <span class="dv">10</span>, <span class="dv">11</span>, <span class="dv">12</span>)</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfcol=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> tims) {</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(st_kde, i, <span class="at">override.par=</span><span class="cn">FALSE</span>, <span class="at">fix.range=</span><span class="cn">TRUE</span>, <span class="at">main=</span><span class="fu">paste</span>(<span class="st">"KDE at month"</span>, i))</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="in-class-4_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="in-class-4_files/figure-html/unnamed-chunk-9-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="in-class-4_files/figure-html/unnamed-chunk-9-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="in-class-4_files/figure-html/unnamed-chunk-9-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="in-class-4_files/figure-html/unnamed-chunk-9-5.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="in-class-4_files/figure-html/unnamed-chunk-9-6.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

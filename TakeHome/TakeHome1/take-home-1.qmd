@@ -16,11 +16,11 @@ execute:
 
 Millions of people have their lives shattered by armed conflict every year. One of these is the [**Myanmar Civil War**](https://en.wikipedia.org/wiki/Myanmar_civil_war_(2021%E2%80%93present)), a significant escalation of the long-running [Myanmar Conflict](https://en.wikipedia.org/wiki/Myanmar_conflict) in response to the [2021 coup](https://en.wikipedia.org/wiki/2021_Myanmar_coup_d%27%C3%A9tat).
 
-Geospatial analtyics holds the potential to address complex problems facing society, such as this one. This study serves to discover the sptial and spatio-temporal distribution of armed conflict in Myanmar by applying spatial point patterns analysis methods.
+Geospatial analtyics holds the potential to address complex problems facing society, such as this one. This study serves to discover the sptial and spatio-temporal distribution (spread) of the armed conflict in Myanmar by applying spatial point patterns analysis methods.
 
 ## TH1.2 The Data
 
-Armed conflict data in Myanmar between 2021 and 2024 was downloaded from the [Armed Conflict Location & Event Database (ACLED)](https://acleddata.com/), an independent, impartial, international non-profit organization collecting data on violent conflicts and protests in all countries and territories in the world. We will be superimposing these locations with 
+Armed conflict data in Myanmar between 2021 and 2024 was downloaded from the [Armed Conflict Location & Event Database (ACLED)](https://acleddata.com/), an independent, impartial, international non-profit organization collecting data on violent conflicts and protests in all countries and territories in the world. We will be superimposing these locations with the geogrpahical boundary and subdivisions of the country, from the **Myanmar Information Management Unit** (MIMU)
 
 ## TH1.3 Importing and transforming armed conflict data and administrative boundary data into `sf` `tibble` `data.frames`
 
@@ -57,3 +57,7 @@ The ACLED data contains coordinates, making it useful for plotting on our map as
 ```{r}
 
 ```
+
+## References
+
+1. Raleigh, C., Kishi, R. & Linke, A. Political instability patterns are obscured by conflict dataset scope conditions, sources, and coding choices. Humanit Soc Sci Commun 10, 74 (2023). https://doi.org/10.1057/s41599-023-01559-4

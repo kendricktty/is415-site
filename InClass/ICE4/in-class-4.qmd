@@ -1,0 +1,122 @@
+---
+title: "CE4/H4: Spatial-Temporal Point Patterns Analysis"
+subtitle: "In-class/Hands-On Exercise 4"
+author: "Kendrick Teo"
+date: "2024-09-01"
+date-modified: "last-modified"
+
+execute: 
+  eval: true
+  echo: true
+  freeze: true
+---
+
+## CE4.1 Overview and explanation
+
+A spatio-temporal point process (also called space-time or spatial-temporal point process) is a random collection of points, where each point represents the time and location of an event. Examples of events include incidence of disease, sightings or births of a species, or the occurrences of fires, earthquakes, lightning strikes, tsunamis, or volcanic eruptions.
+
+**Spatio-temporal point patterns analysis (STPPA)** is becoming increasingly necessary, given the rapid emergence of geographically and temporally indexed data in a wide range of fields. Several spatio-temporal point patterns analysis methods have been introduced and implemented in R in the last ten years. Today's exercise will use data on a real-world forest fire event in *Kepulauan Bangka Belitung, Indonesia* from 1st January to 31st December 2023, to illustrate the methods, procedures and interpretations of STPPA.
+
+This chapter shows how various R packages can be combined to run a set of spatio-temporal point pattern analyses in a guided and intuitive way. A real world forest fire event in  from 1st January 2023 to 31st December 2023 is used to illustrate the methods, procedures and interpretations.
+
+## CE4.2 Research questions
+
+By the end of the exercise I hope to find out:
+
+- If the locations of forest fires in Kepulauan Bangka Belitung are spatially and spatially-temporally independent, and;
+- If not, where and when the observed forest fire locations tend to cluster.
+
+## CE4.3 The data
+
+- `forestfires`, a CSV file that provides locations on forest fires from Moderate Resolution Imaging Spectroradiometer (MODIS) sensor data.
+- `Kepulauan_Bangka_Belitung`, which as the name suggests marks the boundary of the region of Kepulauan Bangka Belitung.
+
+## CE4.4 New R Packages
+
+A new R package to be introduced today is `rgdal`, which is used for importing geospatial data in the GIS file format and saving it as a `Spatial*` DataFrame.
+
+In addition, `sparr` gives us the ability to estimate fixed and adatptive kernel-smoothed spatial relative risk surfaces via the density-ratio method, and perform subsequent inferrence.
+
+```{r}
+pacman::p_load(sf, raster, spatstat, tmap, tidyverse, sparr)
+```
+
+## CE4.5 Importing and preparing study area
+
+### CE4.5.1 Importing study area and creating OWIN object
+
+```{r}
+kbb <- st_read(dsn="data/rawdata", layer="Kepulauan_Bangka_Belitung") %>%
+  st_union() %>%
+  st_zm(drop=TRUE, what="ZM") %>% # Drop Z-values
+  st_transform(crs=32748) # EPSG: Indonesia
+# This dataset keeps Z-dimension (height) data. We might want to remove it if we are to do KDE
+kbb_owin <- as.owin(kbb)
+kbb_owin
+```
+
+## CE4.6 Importing and preparing forest fire data
+
+```{r}
+# Creating an SF dataframe from a CSV removes "longitude" and "latitude", transforming it to a "geometry" field
+fire_sf <- read_csv("data/rawdata/forestfires.csv") %>% st_as_sf(coords=c("longitude", "latitude"), crs=4326) %>% st_transform(crs=32748)
+```
+
+We will want to convert our SF object into `ppp`, which only accepts numerical or character data, later on. We will therefore need to convert our `acq_date` fields into numeric fields.
+
+```{r}
+fire_sf <- fire_sf %>% mutate(DayOfYear=yday(acq_date)) %>%
+                      mutate(Month_num=month(acq_date)) %>%
+                      mutate(Month_fac=month(acq_date, label=TRUE, abbr=FALSE))
+```
+
+## CE4.7 Visualising fire locations
+
+### CE4.7.1 As points
+```{r}
+# tm_shape(kbb) + tm_polygons() + tm_shape(fire_sf) + tm_dots()
+tm_shape(kbb) + tm_polygons() + tm_shape(fire_sf) + tm_bubbles()
+```
+
+### CE4.7.2 Over time
+
+```{r}
+tm_shape(kbb) + tm_polygons() + tm_shape(fire_sf) + tm_dots(size=0.1) + tm_facets(by="Month_fac", free.coords=FALSE, drop.units=TRUE)
+# free.coords: All points have the same coordinate pairs
+```
+
+## CE4.8 Computing STKDE by Month
+
+Using `sparttemp.density()` of the `sparr` package, we are able to compute **spatial-temporal KDE (STKDE)**.
+
+### CE4.8.1 Forest fires by month (`ppp`)
+
+```{r}
+fire_month <- fire_sf %>% select(Month_num)
+fire_month_ppp <- as.ppp(fire_month)
+fire_month_ppp
+summary(fire_month_ppp)
+any(duplicated(fire_month_ppp))
+fire_month_owin <- fire_month_ppp[kbb_owin]
+summary(fire_month_owin)
+```
+
+### CE4.8.2 Spatio-temporal KDE
+
+```{r}
+st_kde <- spattemp.density(fire_month_owin)
+summary(st_kde)
+```
+
+### CE4.8.3 Plotting the spatio-temporal KDE object
+
+This code chunk `plot()`s the KDE for the entire year 2023. As expected, the KDEs indicate far fewer occurrences of forest fires in the area before June 2023 and in December 2023 (the rainy season usually falls between December and February.)
+
+```{r}
+# sparr
+tims <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)
+par(mfcol=c(1,2))
+for (i in tims) {
+  plot(st_kde, i, override.par=FALSE, fix.range=TRUE, main=paste("KDE at month", i))
+}
+```

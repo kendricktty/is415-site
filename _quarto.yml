@@ -11,6 +11,7 @@ website:
         - href: "InClass/ICE1/in-class-1.qmd"
         - href: "InClass/ICE2/in-class-2.qmd"
         - href: "InClass/ICE3/in-class-3.qmd"
+        - href: "InClass/ICE4/in-class-4.qmd"
       - text: "Hands-On Exercises"
         menu:
         - href: "HandsOn/Hands-on_Ex01/hands-on-1.qmd"
@@ -20,7 +21,7 @@ website:
         # - text: "Hands-on Exercise 2"
         # - href: "HandsOn/Hands-on_Ex02/hands-on-2.html"
         - href: "HandsOn/Hands-on_Ex03/hands-on-3.qmd"
-        - href: "HandsOn/Hands-on_Ex04/hands-on-4.qmd"
+        - href: "InClass/ICE4/in-class-4.qmd"
         - href: "HandsOn/Hands-on_Ex05/hands-on-5.qmd"
       - text: "Take-home Exercises"
         menu:
