@@ -40,7 +40,7 @@ acled_mya <- read_csv("data/ACLED_Myanmar.csv")
 head(acled_mya)
 ```
 
-### TH1.3.2 Loading geospatial data
+### TH1.3.2 Loading and plotting geospatial data
 
 Three representations of Myanmar's geography exist on  - `Admin1` subdivides the country into its states and regions only, while `Admin2` subdivides the country by its smaller districts, and `Admin3` its townships. Further, the ACLED labels each incident with all 3 representations. For simplicity and ease of understanding, we shall use the `Admin1` representation.
 
@@ -58,12 +58,12 @@ The ACLED data contains coordinates, making it useful for plotting on our map as
 acled_mya_sf <- st_as_sf(acled_mya, coords = c("longitude", "latitude"), crs=4326) 
 ```
 
-The EPSG area code for Myanmar is [`4239`](https://epsg.io/4239). 
+The EPSG area code for Myanmar is [`4239`](https://epsg.io/4239). Before we work with our datasets, we will need to transform the coordinate system to use it.
 
 ```{r}
-acled_mya_sf <- acled_mya_sf %>% st_transform(crs=4239)
-mmr_admin1 <- mmr_admin1 %>% st_transform(crs=4239)
-tm_shape(mmr_admin1) + tm_polygons() + tm_shape(acled_mya_sf) + tm_dots(size=0.1)
+acled_mya_sf <- acled_mya_sf %>% st_transform(crs=32647)
+mmr_admin1 <- mmr_admin1 %>% st_transform(crs=32647)
+tm_shape(mmr_admin1) + tm_polygons() + tm_shape(acled_mya_sf) + tm_dots(size=0.05)
 ```
 
 ## References

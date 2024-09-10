@@ -210,7 +210,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#th1.3-importing-and-transforming-armed-conflict-data-and-administrative-boundary-data-into-sf-tibble-data.frames" id="toc-th1.3-importing-and-transforming-armed-conflict-data-and-administrative-boundary-data-into-sf-tibble-data.frames" class="nav-link" data-scroll-target="#th1.3-importing-and-transforming-armed-conflict-data-and-administrative-boundary-data-into-sf-tibble-data.frames">TH1.3 Importing and transforming armed conflict data and administrative boundary data into <code>sf</code> <code>tibble</code> <code>data.frames</code></a>
   <ul class="collapse">
   <li><a href="#th1.3.1-loading-r-packages-and-aspatial-data" id="toc-th1.3.1-loading-r-packages-and-aspatial-data" class="nav-link" data-scroll-target="#th1.3.1-loading-r-packages-and-aspatial-data">TH1.3.1 Loading R packages and aspatial data</a></li>
-  <li><a href="#th1.3.2-loading-geospatial-data" id="toc-th1.3.2-loading-geospatial-data" class="nav-link" data-scroll-target="#th1.3.2-loading-geospatial-data">TH1.3.2 Loading geospatial data</a></li>
+  <li><a href="#th1.3.2-loading-and-plotting-geospatial-data" id="toc-th1.3.2-loading-and-plotting-geospatial-data" class="nav-link" data-scroll-target="#th1.3.2-loading-and-plotting-geospatial-data">TH1.3.2 Loading and plotting geospatial data</a></li>
   <li><a href="#th1.3.3-creating-sf-data-frame-from-aspatial-data" id="toc-th1.3.3-creating-sf-data-frame-from-aspatial-data" class="nav-link" data-scroll-target="#th1.3.3-creating-sf-data-frame-from-aspatial-data">TH1.3.3 Creating <code>sf</code> data frame from aspatial data</a></li>
   </ul></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
@@ -313,8 +313,8 @@ dbl (11): year, time_precision, inter1, inter2, interaction, iso, latitude, ...
 </div>
 </div>
 </section>
-<section id="th1.3.2-loading-geospatial-data" class="level3">
-<h3 class="anchored" data-anchor-id="th1.3.2-loading-geospatial-data">TH1.3.2 Loading geospatial data</h3>
+<section id="th1.3.2-loading-and-plotting-geospatial-data" class="level3">
+<h3 class="anchored" data-anchor-id="th1.3.2-loading-and-plotting-geospatial-data">TH1.3.2 Loading and plotting geospatial data</h3>
 <p>Three representations of Myanmar’s geography exist on - <code>Admin1</code> subdivides the country into its states and regions only, while <code>Admin2</code> subdivides the country by its smaller districts, and <code>Admin3</code> its townships. Further, the ACLED labels each incident with all 3 representations. For simplicity and ease of understanding, we shall use the <code>Admin1</code> representation.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>mmr_admin1 <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="at">dsn=</span><span class="st">"data/mmr_polbnda_adm1_250k_mimu_1"</span>, <span class="at">layer=</span><span class="st">"mmr_polbnda_adm1_250k_mimu_1"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -375,11 +375,11 @@ First 10 features:
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>acled_mya_sf <span class="ot">&lt;-</span> <span class="fu">st_as_sf</span>(acled_mya, <span class="at">coords =</span> <span class="fu">c</span>(<span class="st">"longitude"</span>, <span class="st">"latitude"</span>), <span class="at">crs=</span><span class="dv">4326</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>The EPSG area code for Myanmar is <a href="https://epsg.io/4239"><code>4239</code></a>.</p>
+<p>The EPSG area code for Myanmar is <a href="https://epsg.io/4239"><code>4239</code></a>. Before we work with our datasets, we will need to transform the coordinate system to use it.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>acled_mya_sf <span class="ot">&lt;-</span> acled_mya_sf <span class="sc">%&gt;%</span> <span class="fu">st_transform</span>(<span class="at">crs=</span><span class="dv">4239</span>)</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>mmr_admin1 <span class="ot">&lt;-</span> mmr_admin1 <span class="sc">%&gt;%</span> <span class="fu">st_transform</span>(<span class="at">crs=</span><span class="dv">4239</span>)</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(mmr_admin1) <span class="sc">+</span> <span class="fu">tm_polygons</span>() <span class="sc">+</span> <span class="fu">tm_shape</span>(acled_mya_sf) <span class="sc">+</span> <span class="fu">tm_dots</span>(<span class="at">size=</span><span class="fl">0.1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>acled_mya_sf <span class="ot">&lt;-</span> acled_mya_sf <span class="sc">%&gt;%</span> <span class="fu">st_transform</span>(<span class="at">crs=</span><span class="dv">32647</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>mmr_admin1 <span class="ot">&lt;-</span> mmr_admin1 <span class="sc">%&gt;%</span> <span class="fu">st_transform</span>(<span class="at">crs=</span><span class="dv">32647</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(mmr_admin1) <span class="sc">+</span> <span class="fu">tm_polygons</span>() <span class="sc">+</span> <span class="fu">tm_shape</span>(acled_mya_sf) <span class="sc">+</span> <span class="fu">tm_dots</span>(<span class="at">size=</span><span class="fl">0.05</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
