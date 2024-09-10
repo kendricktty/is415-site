@@ -145,6 +145,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="dropdown-item" href="../../InClass/ICE3/in-class-3.html">
  <span class="dropdown-text">CE3: Spatial Point Patterns Analysis</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../../InClass/ICE4/in-class-4.html">
+ <span class="dropdown-text">CE4/H4: Spatial-Temporal Point Patterns Analysis</span></a>
+  </li>  
     </ul>
   </li>
   <li class="nav-item dropdown ">
@@ -165,8 +169,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="dropdown-text">H3: Spatial Point Patterns Analysis</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../../HandsOn/Hands-on_Ex04/hands-on-4.html">
- <span class="dropdown-text">H4: Network Constrained Spatial Point Patterns Analysis (Incomplete)</span></a>
+    <a class="dropdown-item" href="../../InClass/ICE4/in-class-4.html">
+ <span class="dropdown-text">CE4/H4: Spatial-Temporal Point Patterns Analysis</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="../../HandsOn/Hands-on_Ex05/hands-on-5.html">
@@ -207,7 +211,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#th1.3.1-loading-r-packages-and-aspatial-data" id="toc-th1.3.1-loading-r-packages-and-aspatial-data" class="nav-link" data-scroll-target="#th1.3.1-loading-r-packages-and-aspatial-data">TH1.3.1 Loading R packages and aspatial data</a></li>
   <li><a href="#th1.3.2-loading-geospatial-data" id="toc-th1.3.2-loading-geospatial-data" class="nav-link" data-scroll-target="#th1.3.2-loading-geospatial-data">TH1.3.2 Loading geospatial data</a></li>
-  <li><a href="#th1.3.3-creating-simple-feature-data-frame-from-aspatial-data" id="toc-th1.3.3-creating-simple-feature-data-frame-from-aspatial-data" class="nav-link" data-scroll-target="#th1.3.3-creating-simple-feature-data-frame-from-aspatial-data">TH1.3.3 Creating simple feature data frame from aspatial data</a></li>
+  <li><a href="#th1.3.3-creating-sf-data-frame-from-aspatial-data" id="toc-th1.3.3-creating-sf-data-frame-from-aspatial-data" class="nav-link" data-scroll-target="#th1.3.3-creating-sf-data-frame-from-aspatial-data">TH1.3.3 Creating <code>sf</code> data frame from aspatial data</a></li>
   </ul></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
@@ -243,7 +247,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">September 9, 2024</p>
+      <p class="date-modified">September 10, 2024</p>
     </div>
   </div>
     
@@ -288,28 +292,24 @@ dbl (11): year, time_precision, inter1, inter2, interaction, iso, latitude, ...
 ℹ Use `spec()` to retrieve the full column specification for this data.
 ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>acled_mya</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(acled_mya)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 55,574 × 31
-   event_id_cnty event_date        year time_precision disorder_type  event_type
-   &lt;chr&gt;         &lt;chr&gt;            &lt;dbl&gt;          &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt;     
- 1 MMR56099      31 December 2023  2023              1 Political vio… Explosion…
- 2 MMR56222      31 December 2023  2023              1 Political vio… Explosion…
- 3 MMR56370      31 December 2023  2023              1 Political vio… Battles   
- 4 MMR56376      31 December 2023  2023              1 Demonstrations Protests  
- 5 MMR56380      31 December 2023  2023              1 Strategic dev… Strategic…
- 6 MMR56869      31 December 2023  2023              1 Strategic dev… Strategic…
- 7 MMR56871      31 December 2023  2023              1 Political vio… Battles   
- 8 MMR56873      31 December 2023  2023              1 Political vio… Explosion…
- 9 MMR56874      31 December 2023  2023              1 Political vio… Battles   
-10 MMR56876      31 December 2023  2023              1 Political vio… Violence …
-# ℹ 55,564 more rows
+<pre><code># A tibble: 6 × 31
+  event_id_cnty event_date        year time_precision disorder_type   event_type
+  &lt;chr&gt;         &lt;chr&gt;            &lt;dbl&gt;          &lt;dbl&gt; &lt;chr&gt;           &lt;chr&gt;     
+1 MMR56099      31 December 2023  2023              1 Political viol… Explosion…
+2 MMR56222      31 December 2023  2023              1 Political viol… Explosion…
+3 MMR56370      31 December 2023  2023              1 Political viol… Battles   
+4 MMR56376      31 December 2023  2023              1 Demonstrations  Protests  
+5 MMR56380      31 December 2023  2023              1 Strategic deve… Strategic…
+6 MMR56869      31 December 2023  2023              1 Strategic deve… Strategic…
 # ℹ 25 more variables: sub_event_type &lt;chr&gt;, actor1 &lt;chr&gt;, assoc_actor_1 &lt;chr&gt;,
 #   inter1 &lt;dbl&gt;, actor2 &lt;chr&gt;, assoc_actor_2 &lt;chr&gt;, inter2 &lt;dbl&gt;,
 #   interaction &lt;dbl&gt;, civilian_targeting &lt;chr&gt;, iso &lt;dbl&gt;, region &lt;chr&gt;,
 #   country &lt;chr&gt;, admin1 &lt;chr&gt;, admin2 &lt;chr&gt;, admin3 &lt;chr&gt;, location &lt;chr&gt;,
 #   latitude &lt;dbl&gt;, longitude &lt;dbl&gt;, geo_precision &lt;dbl&gt;, source &lt;chr&gt;,
-#   source_scale &lt;chr&gt;, notes &lt;chr&gt;, fatalities &lt;dbl&gt;, tags &lt;chr&gt;, …</code></pre>
+#   source_scale &lt;chr&gt;, notes &lt;chr&gt;, fatalities &lt;dbl&gt;, tags &lt;chr&gt;,
+#   timestamp &lt;dbl&gt;</code></pre>
 </div>
 </div>
 </section>
@@ -320,7 +320,7 @@ dbl (11): year, time_precision, inter1, inter2, interaction, iso, latitude, ...
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>mmr_admin1 <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="at">dsn=</span><span class="st">"data/mmr_polbnda_adm1_250k_mimu_1"</span>, <span class="at">layer=</span><span class="st">"mmr_polbnda_adm1_250k_mimu_1"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Reading layer `mmr_polbnda_adm1_250k_mimu_1' from data source 
-  `/Users/kendricktty/Gits/SMU_CS/is415-site/TakeHome/TakeHome1/data/mmr_polbnda_adm1_250k_mimu_1' 
+  `/Users/kendricktty/Gits/smu_cs/is415-site/TakeHome/TakeHome1/data/mmr_polbnda_adm1_250k_mimu_1' 
   using driver `ESRI Shapefile'
 Simple feature collection with 15 features and 6 fields
 Geometry type: MULTIPOLYGON
@@ -369,9 +369,25 @@ First 10 features:
 </div>
 </div>
 </section>
-<section id="th1.3.3-creating-simple-feature-data-frame-from-aspatial-data" class="level3">
-<h3 class="anchored" data-anchor-id="th1.3.3-creating-simple-feature-data-frame-from-aspatial-data">TH1.3.3 Creating simple feature data frame from aspatial data</h3>
-<p>The ACLED data contains coordinates, making it useful for plotting on our map as points. We can therefore use it to create a simple feature data frame</p>
+<section id="th1.3.3-creating-sf-data-frame-from-aspatial-data" class="level3">
+<h3 class="anchored" data-anchor-id="th1.3.3-creating-sf-data-frame-from-aspatial-data">TH1.3.3 Creating <code>sf</code> data frame from aspatial data</h3>
+<p>The ACLED data contains coordinates, making it useful for plotting on our map as points. We can therefore use it to create an <code>sf</code> data frame which we can use to plot our points on a map. The EPSG format of the import coordinates should be <a href="https://epsg.io/4326"><code>4326</code></a>, corresponding to the WGS84 Geographic Coordinate System.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>acled_mya_sf <span class="ot">&lt;-</span> <span class="fu">st_as_sf</span>(acled_mya, <span class="at">coords =</span> <span class="fu">c</span>(<span class="st">"longitude"</span>, <span class="st">"latitude"</span>), <span class="at">crs=</span><span class="dv">4326</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The EPSG area code for Myanmar is <a href="https://epsg.io/4239"><code>4239</code></a>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>acled_mya_sf <span class="ot">&lt;-</span> acled_mya_sf <span class="sc">%&gt;%</span> <span class="fu">st_transform</span>(<span class="at">crs=</span><span class="dv">4239</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>mmr_admin1 <span class="ot">&lt;-</span> mmr_admin1 <span class="sc">%&gt;%</span> <span class="fu">st_transform</span>(<span class="at">crs=</span><span class="dv">4239</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(mmr_admin1) <span class="sc">+</span> <span class="fu">tm_polygons</span>() <span class="sc">+</span> <span class="fu">tm_shape</span>(acled_mya_sf) <span class="sc">+</span> <span class="fu">tm_dots</span>(<span class="at">size=</span><span class="fl">0.1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
 </section>
 </section>
 <section id="references" class="level2">

@@ -37,7 +37,7 @@ The `R` packages we will use today are:
 ```{r}
 pacman::p_load(sf, raster, spatstat, tmap, tidyverse)
 acled_mya <- read_csv("data/ACLED_Myanmar.csv")
-acled_mya
+head(acled_mya)
 ```
 
 ### TH1.3.2 Loading geospatial data
@@ -52,10 +52,18 @@ qtm(mmr_admin1)
 
 ### TH1.3.3 Creating `sf` data frame from aspatial data
 
-The ACLED data contains coordinates, making it useful for plotting on our map as points. We can therefore use it to create an `sf` data frame which we can use to plot our points on a map.
+The ACLED data contains coordinates, making it useful for plotting on our map as points. We can therefore use it to create an `sf` data frame which we can use to plot our points on a map. The EPSG format of the import coordinates should be [`4326`](https://epsg.io/4326), corresponding to the WGS84 Geographic Coordinate System.
 
 ```{r}
+acled_mya_sf <- st_as_sf(acled_mya, coords = c("longitude", "latitude"), crs=4326) 
+```
 
+The EPSG area code for Myanmar is [`4239`](https://epsg.io/4239). 
+
+```{r}
+acled_mya_sf <- acled_mya_sf %>% st_transform(crs=4239)
+mmr_admin1 <- mmr_admin1 %>% st_transform(crs=4239)
+tm_shape(mmr_admin1) + tm_polygons() + tm_shape(acled_mya_sf) + tm_dots(size=0.1)
 ```
 
 ## References
