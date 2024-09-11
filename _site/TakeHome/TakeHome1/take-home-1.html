@@ -247,7 +247,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">September 10, 2024</p>
+      <p class="date-modified">September 11, 2024</p>
     </div>
   </div>
     
@@ -320,7 +320,7 @@ dbl (11): year, time_precision, inter1, inter2, interaction, iso, latitude, ...
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>mmr_admin1 <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="at">dsn=</span><span class="st">"data/mmr_polbnda_adm1_250k_mimu_1"</span>, <span class="at">layer=</span><span class="st">"mmr_polbnda_adm1_250k_mimu_1"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Reading layer `mmr_polbnda_adm1_250k_mimu_1' from data source 
-  `/Users/kendricktty/Gits/smu_cs/is415-site/TakeHome/TakeHome1/data/mmr_polbnda_adm1_250k_mimu_1' 
+  `/Users/kendricktty/Gits/SMU_CS/is415-site/TakeHome/TakeHome1/data/mmr_polbnda_adm1_250k_mimu_1' 
   using driver `ESRI Shapefile'
 Simple feature collection with 15 features and 6 fields
 Geometry type: MULTIPOLYGON
@@ -377,8 +377,8 @@ First 10 features:
 </div>
 <p>The EPSG area code for Myanmar is <a href="https://epsg.io/4239"><code>4239</code></a>. Before we work with our datasets, we will need to transform the coordinate system to use it.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>acled_mya_sf <span class="ot">&lt;-</span> acled_mya_sf <span class="sc">%&gt;%</span> <span class="fu">st_transform</span>(<span class="at">crs=</span><span class="dv">32647</span>)</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>mmr_admin1 <span class="ot">&lt;-</span> mmr_admin1 <span class="sc">%&gt;%</span> <span class="fu">st_transform</span>(<span class="at">crs=</span><span class="dv">32647</span>)</span>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>acled_mya_sf <span class="ot">&lt;-</span> acled_mya_sf <span class="sc">%&gt;%</span> <span class="fu">st_transform</span>(<span class="at">crs=</span><span class="dv">4239</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>mmr_admin1 <span class="ot">&lt;-</span> mmr_admin1 <span class="sc">%&gt;%</span> <span class="fu">st_transform</span>(<span class="at">crs=</span><span class="dv">4239</span>)</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(mmr_admin1) <span class="sc">+</span> <span class="fu">tm_polygons</span>() <span class="sc">+</span> <span class="fu">tm_shape</span>(acled_mya_sf) <span class="sc">+</span> <span class="fu">tm_dots</span>(<span class="at">size=</span><span class="fl">0.05</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
