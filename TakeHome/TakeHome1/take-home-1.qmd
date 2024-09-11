@@ -16,7 +16,7 @@ execute:
 
 Millions of people have their lives shattered by armed conflict every year. One of these is the [**Myanmar Civil War**](https://en.wikipedia.org/wiki/Myanmar_civil_war_(2021%E2%80%93present)), a significant escalation of the long-running [Myanmar Conflict](https://en.wikipedia.org/wiki/Myanmar_conflict) in response to the [2021 coup d'etat](https://en.wikipedia.org/wiki/2021_Myanmar_coup_d%27%C3%A9tat).
 
-Geospatial analtyics holds the potential to address complex problems facing society, such as this one. This study serves to discover the sptial and spatio-temporal distribution (spread) of the armed conflict in Myanmar by applying spatial point patterns analysis methods.
+Geospatial analtyics holds the potential to address complex problems facing society, such as this one. This study serves to discover the sptial and spatio-temporal distribution (spread) of the armed conflict in Myanmar by applying spatial point pattern analysis (SPPA) methods.
 
 ## TH1.2 The Data
 
@@ -24,7 +24,7 @@ Armed conflict data in Myanmar between 2010 and 2024 was downloaded from the [Ar
 
 We are interested in conflict events from 2019 onwards - starting from a year before the COVID-19 pandemic and 2 years before the 2021 coup - cumulating into the civil war of today.
 
-## TH1.3 Importing and transforming armed conflict data and administrative boundary data into `sf` `tibble` `data.frames`
+## TH1.3 Importing and transforming armed conflict data and administrative boundary data into `sf` and `tibble` dataframes
 
 ### TH1.3.1 Loading R packages and aspatial data
 
@@ -54,13 +54,13 @@ qtm(mmr_admin1)
 
 ### TH1.3.3 Creating `sf` data frame from aspatial data
 
-The ACLED data contains coordinates, making it useful for plotting on our map as points. We can therefore use it to create an `sf` data frame which we can use to plot our points on a map. The EPSG format of the import coordinates should be [`4326`](https://epsg.io/4326), corresponding to the WGS84 Geographic Coordinate System.
+The ACLED `tibble` contains coordinates, making it useful for plotting on our map as points. We can therefore use it to create an `sf` data frame using which we can plot our points on a map. The EPSG format of the import coordinates should be [`4326`](https://epsg.io/4326), corresponding to the WGS84 Geographic Coordinate System.
 
 ```{r}
 acled_mya_sf <- st_as_sf(acled_mya, coords = c("longitude", "latitude"), crs=4326) 
 ```
 
-The EPSG area code for Myanmar is [`4239`](https://epsg.io/4239). Before we work with our datasets, we will need to transform the coordinate system to use it.
+The EPSG area code for Myanmar is [`4239`](https://epsg.io/4239). Before we work further with our datasets, we will need to transform the coordinate system to use it.
 
 ```{r}
 acled_mya_sf <- acled_mya_sf %>% st_transform(crs=4239)
@@ -71,7 +71,7 @@ tm_shape(mmr_admin1) + tm_polygons() + tm_shape(acled_mya_sf) + tm_dots(size=0.0
 Additionally, since the data is timestamped, we are able to plot and compare the frequency of conflict events *over time*. Before we do, though, we need to preprocess the timestamps.
 
 ```{r}
-acled_mya_sf <- acled_mya_sf %>% mutate(event_date=dmy(timestamp))
+acled_mya_sf <- acled_mya_sf %>% mutate(timestamp = dmy(acled_mya_sf$timestamp))
 ```
 
 ## References
