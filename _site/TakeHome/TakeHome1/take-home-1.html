@@ -260,12 +260,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="th1.1-setting-the-scene" class="level2">
 <h2 class="anchored" data-anchor-id="th1.1-setting-the-scene">TH1.1 Setting the Scene</h2>
-<p>Millions of people have their lives shattered by armed conflict every year. One of these is the <a href="https://en.wikipedia.org/wiki/Myanmar_civil_war_(2021%E2%80%93present)"><strong>Myanmar Civil War</strong></a>, a significant escalation of the long-running <a href="https://en.wikipedia.org/wiki/Myanmar_conflict">Myanmar Conflict</a> in response to the <a href="https://en.wikipedia.org/wiki/2021_Myanmar_coup_d%27%C3%A9tat">2021 coup</a>.</p>
+<p>Millions of people have their lives shattered by armed conflict every year. One of these is the <a href="https://en.wikipedia.org/wiki/Myanmar_civil_war_(2021%E2%80%93present)"><strong>Myanmar Civil War</strong></a>, a significant escalation of the long-running <a href="https://en.wikipedia.org/wiki/Myanmar_conflict">Myanmar Conflict</a> in response to the <a href="https://en.wikipedia.org/wiki/2021_Myanmar_coup_d%27%C3%A9tat">2021 coup d’etat</a>.</p>
 <p>Geospatial analtyics holds the potential to address complex problems facing society, such as this one. This study serves to discover the sptial and spatio-temporal distribution (spread) of the armed conflict in Myanmar by applying spatial point patterns analysis methods.</p>
 </section>
 <section id="th1.2-the-data" class="level2">
 <h2 class="anchored" data-anchor-id="th1.2-the-data">TH1.2 The Data</h2>
-<p>Armed conflict data in Myanmar between 2021 and 2024 was downloaded from the <a href="https://acleddata.com/">Armed Conflict Location &amp; Event Database (ACLED)</a>, an independent, impartial, international non-profit organization collecting data on violent conflicts and protests in all countries and territories in the world. We will be superimposing these locations with the geogrpahical boundary and subdivisions of the country, from the <strong>Myanmar Information Management Unit</strong> (MIMU)</p>
+<p>Armed conflict data in Myanmar between 2010 and 2024 was downloaded from the <a href="https://acleddata.com/">Armed Conflict Location &amp; Event Database (ACLED)</a>, an independent, impartial, international non-profit organization collecting data on violent conflicts and protests in all countries and territories in the world. We will be superimposing these locations with the geogrpahical boundary and subdivisions of the country, from the <strong>Myanmar Information Management Unit</strong> (MIMU).</p>
+<p>We are interested in conflict events from 2019 onwards - starting from a year before the COVID-19 pandemic and 2 years before the 2021 coup - cumulating into the civil war of today.</p>
 </section>
 <section id="th1.3-importing-and-transforming-armed-conflict-data-and-administrative-boundary-data-into-sf-tibble-data.frames" class="level2">
 <h2 class="anchored" data-anchor-id="th1.3-importing-and-transforming-armed-conflict-data-and-administrative-boundary-data-into-sf-tibble-data.frames">TH1.3 Importing and transforming armed conflict data and administrative boundary data into <code>sf</code> <code>tibble</code> <code>data.frames</code></h2>
@@ -386,6 +387,16 @@ First 10 features:
 <p><img src="take-home-1_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
+</div>
+</div>
+<p>Additionally, since the data is timestamped, we are able to plot and compare the frequency of conflict events <em>over time</em>. Before we do, though, we need to preprocess the timestamps.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>acled_mya_sf <span class="ot">&lt;-</span> acled_mya_sf <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">event_date=</span><span class="fu">dmy</span>(timestamp))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: There was 1 warning in `stopifnot()`.
+ℹ In argument: `event_date = dmy(timestamp)`.
+Caused by warning:
+! All formats failed to parse. No formats found.</code></pre>
 </div>
 </div>
 </section>

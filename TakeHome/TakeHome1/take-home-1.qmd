@@ -68,7 +68,11 @@ mmr_admin1 <- mmr_admin1 %>% st_transform(crs=4239)
 tm_shape(mmr_admin1) + tm_polygons() + tm_shape(acled_mya_sf) + tm_dots(size=0.05)
 ```
 
-Additionally, since the data is timestamped, we are able to plot and compare the frequency of conflict events *over time*.
+Additionally, since the data is timestamped, we are able to plot and compare the frequency of conflict events *over time*. Before we do, though, we need to preprocess the timestamps.
+
+```{r}
+acled_mya_sf <- acled_mya_sf %>% mutate(event_date=dmy(timestamp))
+```
 
 ## References
 
