@@ -80,6 +80,37 @@ acled_mya_sf <- acled_mya_sf %>%
     mutate(Month_fac = factor(format(event_date, "%B %Y")))  # Full month 
 ```
 
+### TH1.3.4 Final steps to prepare for KDE
+
+Finally, before moving on to our KDE, 
+
+#### TH1.3.4.1 Using `owin` to confine study area within Myanmar borders
+
+```{r}
+mmr_admin1_owin <- as.owin(mmr_admin1)
+plot(mmr_admin1_owin)
+summary(mmr_smin1_owin)
+```
+
+#### TH1.3.4.2 Converting ACLED `sf` object to `ppp` for KDE
+
+```{r}
+acled_mya_ppp <- as.ppp(acled_mya_sf)
+plot(acled_mya_ppp)
+acled_mya_ppp
+```
+
+#### TH1.3.4.3 Handling duplicates
+
+First, we check if there are duplicated points in the ACLED `ppp`.
+```{r}
+any(duplicated(acled_mya_ppp))
+multiplicity(acled_mya_ppp)
+sum(multiplicity(acled_mya_ppp) > 1)
+```
+
+#### TH1.3.4.4 Combining point events object and 
+
 ## TH1.4 Interlude: A brief history of Myanmar's ethnic groups
 
 ## TH1.5 First Order SPPA 
