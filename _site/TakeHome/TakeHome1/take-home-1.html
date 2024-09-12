@@ -212,9 +212,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#th1.3.1-loading-r-packages-and-aspatial-data" id="toc-th1.3.1-loading-r-packages-and-aspatial-data" class="nav-link" data-scroll-target="#th1.3.1-loading-r-packages-and-aspatial-data">TH1.3.1 Loading R packages and aspatial data</a></li>
   <li><a href="#th1.3.2-loading-and-plotting-geospatial-data" id="toc-th1.3.2-loading-and-plotting-geospatial-data" class="nav-link" data-scroll-target="#th1.3.2-loading-and-plotting-geospatial-data">TH1.3.2 Loading and plotting geospatial data</a></li>
   <li><a href="#th1.3.3-creating-sf-data-frame-from-aspatial-data" id="toc-th1.3.3-creating-sf-data-frame-from-aspatial-data" class="nav-link" data-scroll-target="#th1.3.3-creating-sf-data-frame-from-aspatial-data">TH1.3.3 Creating <code>sf</code> data frame from aspatial data</a></li>
+  <li><a href="#th1.3.4-final-steps-to-prepare-for-kde" id="toc-th1.3.4-final-steps-to-prepare-for-kde" class="nav-link" data-scroll-target="#th1.3.4-final-steps-to-prepare-for-kde">TH1.3.4 Final steps to prepare for KDE</a></li>
   </ul></li>
   <li><a href="#th1.4-interlude-a-brief-history-of-myanmars-ethnic-groups" id="toc-th1.4-interlude-a-brief-history-of-myanmars-ethnic-groups" class="nav-link" data-scroll-target="#th1.4-interlude-a-brief-history-of-myanmars-ethnic-groups">TH1.4 Interlude: A brief history of Myanmar’s ethnic groups</a></li>
-  <li><a href="#th1.5-first-order-sppa" id="toc-th1.5-first-order-sppa" class="nav-link" data-scroll-target="#th1.5-first-order-sppa">TH1.5 First Order SPPA</a></li>
+  <li><a href="#th1.5-first-order-sppa---kde" id="toc-th1.5-first-order-sppa---kde" class="nav-link" data-scroll-target="#th1.5-first-order-sppa---kde">TH1.5 First Order SPPA - KDE</a></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   <li><a href="#annex-a-spatial-temporal-distribution-of-armed-conflict-occurrences-in-myanmar-between-2019-and-2023" id="toc-annex-a-spatial-temporal-distribution-of-armed-conflict-occurrences-in-myanmar-between-2019-and-2023" class="nav-link" data-scroll-target="#annex-a-spatial-temporal-distribution-of-armed-conflict-occurrences-in-myanmar-between-2019-and-2023">Annex A: Spatial-temporal distribution of armed conflict occurrences in Myanmar between 2019 and 2023</a></li>
   </ul>
@@ -250,7 +251,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">September 11, 2024</p>
+      <p class="date-modified">September 12, 2024</p>
     </div>
   </div>
     
@@ -379,10 +380,10 @@ First 10 features:
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>acled_mya_sf <span class="ot">&lt;-</span> <span class="fu">st_as_sf</span>(acled_mya, <span class="at">coords =</span> <span class="fu">c</span>(<span class="st">"longitude"</span>, <span class="st">"latitude"</span>), <span class="at">crs =</span> <span class="dv">4326</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>The EPSG area code for Myanmar is <a href="https://epsg.io/4239"><code>4239</code></a>. Before we work further with our datasets, we will need to transform the coordinate system to use it.</p>
+<p>The EPSG area code for Myanmar is <a href="https://epsg.io/4239"><code>4239</code></a>, while the WGS 84-compatible code is <a href="https://epsg.io/32647"><code>32647</code></a>. Since we’re creating an <code>owin</code> object later, we need to first convert our coordinate system.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>acled_mya_sf <span class="ot">&lt;-</span> acled_mya_sf <span class="sc">%&gt;%</span> <span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="dv">4239</span>)</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>mmr_admin1 <span class="ot">&lt;-</span> mmr_admin1 <span class="sc">%&gt;%</span> <span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="dv">4239</span>)</span>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>acled_mya_sf <span class="ot">&lt;-</span> acled_mya_sf <span class="sc">%&gt;%</span> <span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="dv">32647</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>mmr_admin1 <span class="ot">&lt;-</span> mmr_admin1 <span class="sc">%&gt;%</span> <span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="dv">32647</span>)</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(mmr_admin1) <span class="sc">+</span> <span class="fu">tm_polygons</span>() <span class="sc">+</span> <span class="fu">tm_shape</span>(acled_mya_sf) <span class="sc">+</span> <span class="fu">tm_dots</span>(<span class="at">size =</span> <span class="fl">0.05</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
@@ -399,15 +400,112 @@ First 10 features:
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">event_date =</span> <span class="fu">dmy</span>(event_date)) <span class="sc">%&gt;%</span></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">DayOfYear =</span> <span class="fu">yday</span>(event_date)) <span class="sc">%&gt;%</span></span>
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">Month_num =</span> <span class="fu">format</span>(event_date, <span class="st">"%Y-%m"</span>)) <span class="sc">%&gt;%</span>  <span class="co"># Year-Month format</span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">Month_fac =</span> <span class="fu">factor</span>(<span class="fu">format</span>(event_date, <span class="st">"%B %Y"</span>)))  <span class="co"># Full month </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">Month_fac =</span> <span class="fu">factor</span>(<span class="fu">format</span>(event_date, <span class="st">"%B %Y"</span>))) <span class="sc">%&gt;%</span> <span class="co"># Full month</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">Quarter =</span> <span class="fu">paste0</span>(<span class="fu">year</span>(event_date), <span class="st">"-"</span>, <span class="fu">quarter</span>(event_date), <span class="st">"Q"</span>))  <span class="co"># Quarter format</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</section>
+<section id="th1.3.4-final-steps-to-prepare-for-kde" class="level3">
+<h3 class="anchored" data-anchor-id="th1.3.4-final-steps-to-prepare-for-kde">TH1.3.4 Final steps to prepare for KDE</h3>
+<p>Finally, before moving on to our KDE,</p>
+<section id="th1.3.4.1-using-owin-to-confine-study-area-within-myanmar-borders" class="level4">
+<h4 class="anchored" data-anchor-id="th1.3.4.1-using-owin-to-confine-study-area-within-myanmar-borders">TH1.3.4.1 Using <code>owin</code> to confine study area within Myanmar borders</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>mmr_admin1_owin <span class="ot">&lt;-</span> <span class="fu">as.owin</span>(mmr_admin1)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mmr_admin1_owin)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># summary(mmr_admin1_owin)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="th1.3.4.2-converting-acled-sf-object-to-ppp-for-kde" class="level4">
+<h4 class="anchored" data-anchor-id="th1.3.4.2-converting-acled-sf-object-to-ppp-for-kde">TH1.3.4.2 Converting ACLED <code>sf</code> object to <code>ppp</code> for KDE</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>acled_mya_ppp <span class="ot">&lt;-</span> <span class="fu">as.ppp</span>(acled_mya_sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in as.ppp.sf(acled_mya_sf): only first attribute column is used for
+marks</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(acled_mya_ppp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in default.charmap(ntypes, chars): Too many types to display every type
+as a different character</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Only 10 out of 47832 symbols are shown in the symbol map</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>acled_mya_ppp</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Marked planar point pattern: 47832 points
+marks are of storage type  'character'
+window: rectangle = [-207135, 640934.5] x [1103500.1, 3042960.3] units</code></pre>
+</div>
+</div>
+</section>
+<section id="th1.3.4.3-handling-duplicates" class="level4">
+<h4 class="anchored" data-anchor-id="th1.3.4.3-handling-duplicates">TH1.3.4.3 Handling duplicates</h4>
+<p>First, we check if there are duplicated points in the ACLED <code>ppp</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">any</span>(<span class="fu">duplicated</span>(acled_mya_ppp))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] FALSE</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">multiplicity</span>(acled_mya_ppp) <span class="sc">&gt;</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0</code></pre>
+</div>
+</div>
+</section>
+<section id="th1.3.4.4-combining-point-events-object-and-owin" class="level4">
+<h4 class="anchored" data-anchor-id="th1.3.4.4-combining-point-events-object-and-owin">TH1.3.4.4 Combining point events object and <code>owin</code></h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>acled_mya_ppp <span class="ot">=</span> acled_mya_ppp[mmr_admin1_owin]</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(acled_mya_ppp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in default.charmap(ntypes, chars): Too many types to display every type
+as a different character</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Only 10 out of 47825 symbols are shown in the symbol map</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
 </section>
 </section>
 <section id="th1.4-interlude-a-brief-history-of-myanmars-ethnic-groups" class="level2">
 <h2 class="anchored" data-anchor-id="th1.4-interlude-a-brief-history-of-myanmars-ethnic-groups">TH1.4 Interlude: A brief history of Myanmar’s ethnic groups</h2>
 </section>
-<section id="th1.5-first-order-sppa" class="level2">
-<h2 class="anchored" data-anchor-id="th1.5-first-order-sppa">TH1.5 First Order SPPA</h2>
+<section id="th1.5-first-order-sppa---kde" class="level2">
+<h2 class="anchored" data-anchor-id="th1.5-first-order-sppa---kde">TH1.5 First Order SPPA - KDE</h2>
+<p>Kernel density estimation (KDE) serves to compute the <em>intensity</em> of a point distribution. It has two general steps: first to compute the point intensity, followed by spatial interpolation using a kernel function.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a list to store KDE results and track quarters for each quarter</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>kde_results <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>quarters <span class="ot">&lt;-</span> <span class="fu">unique</span>(acled_mya_ppp<span class="sc">$</span>Quarter)</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (quarter <span class="cf">in</span> quarters) {</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>  acled_mya_quarters_subset <span class="ot">&lt;-</span> acled_mya_ppp[acled_mya_ppp<span class="sc">$</span>Quarter <span class="sc">==</span> quarter]</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Compute KDE and append to list</span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>  kde_results[[<span class="fu">as.character</span>(quarter)]] <span class="ot">&lt;-</span> <span class="fu">density</span>(acled_mya_quarters_subset)</span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 </section>
 <section id="references" class="level2">
 <h2 class="anchored" data-anchor-id="references">References</h2>
@@ -418,201 +516,71 @@ First 10 features:
 <section id="annex-a-spatial-temporal-distribution-of-armed-conflict-occurrences-in-myanmar-between-2019-and-2023" class="level2">
 <h2 class="anchored" data-anchor-id="annex-a-spatial-temporal-distribution-of-armed-conflict-occurrences-in-myanmar-between-2019-and-2023">Annex A: Spatial-temporal distribution of armed conflict occurrences in Myanmar between 2019 and 2023</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(mmr_admin1) <span class="sc">+</span> <span class="fu">tm_polygons</span>() <span class="sc">+</span> <span class="fu">tm_shape</span>(acled_mya_sf) <span class="sc">+</span> <span class="fu">tm_dots</span>(<span class="at">size =</span> <span class="fl">0.1</span>) <span class="sc">+</span> <span class="fu">tm_facets</span>(<span class="at">by=</span><span class="st">"Month_num"</span>, <span class="at">free.coords=</span><span class="cn">FALSE</span>, <span class="at">drop.units=</span><span class="cn">TRUE</span>, <span class="at">ncol=</span><span class="dv">3</span>, <span class="at">nrow=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(mmr_admin1) <span class="sc">+</span> <span class="fu">tm_polygons</span>() <span class="sc">+</span> <span class="fu">tm_shape</span>(acled_mya_sf) <span class="sc">+</span> <span class="fu">tm_dots</span>(<span class="at">size =</span> <span class="fl">0.1</span>) <span class="sc">+</span> <span class="fu">tm_facets</span>(<span class="at">by=</span><span class="st">"Quarter"</span>, <span class="at">free.coords=</span><span class="cn">FALSE</span>, <span class="at">drop.units=</span><span class="cn">TRUE</span>, <span class="at">ncol=</span><span class="dv">3</span>, <span class="at">nrow=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="take-home-1_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>========</code></pre>
+<pre><code>=======================</code></pre>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="take-home-1_files/figure-html/unnamed-chunk-6-2.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-11-2.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>====</code></pre>
+<pre><code>===========</code></pre>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="take-home-1_files/figure-html/unnamed-chunk-6-3.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-11-3.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>====</code></pre>
+<pre><code>============</code></pre>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="take-home-1_files/figure-html/unnamed-chunk-6-4.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-11-4.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>====</code></pre>
+<pre><code>===========</code></pre>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="take-home-1_files/figure-html/unnamed-chunk-6-5.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-11-5.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>====</code></pre>
+<pre><code>============</code></pre>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="take-home-1_files/figure-html/unnamed-chunk-6-6.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-11-6.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>====</code></pre>
+<pre><code>===========</code></pre>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="take-home-1_files/figure-html/unnamed-chunk-6-7.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>====</code></pre>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="take-home-1_files/figure-html/unnamed-chunk-6-8.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>====</code></pre>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="take-home-1_files/figure-html/unnamed-chunk-6-9.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>====</code></pre>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="take-home-1_files/figure-html/unnamed-chunk-6-10.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>====</code></pre>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="take-home-1_files/figure-html/unnamed-chunk-6-11.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>====</code></pre>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="take-home-1_files/figure-html/unnamed-chunk-6-12.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>====</code></pre>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="take-home-1_files/figure-html/unnamed-chunk-6-13.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>====</code></pre>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="take-home-1_files/figure-html/unnamed-chunk-6-14.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>====</code></pre>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="take-home-1_files/figure-html/unnamed-chunk-6-15.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>====</code></pre>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="take-home-1_files/figure-html/unnamed-chunk-6-16.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>====</code></pre>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="take-home-1_files/figure-html/unnamed-chunk-6-17.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>====</code></pre>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="take-home-1_files/figure-html/unnamed-chunk-6-18.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>====</code></pre>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="take-home-1_files/figure-html/unnamed-chunk-6-19.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>====</code></pre>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="take-home-1_files/figure-html/unnamed-chunk-6-20.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-11-7.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
