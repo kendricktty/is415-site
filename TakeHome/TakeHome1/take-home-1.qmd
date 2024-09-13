@@ -20,7 +20,7 @@ Geospatial analtyics holds the potential to address complex problems facing soci
 
 ## TH1.2 The Data
 
-Armed conflict data in Myanmar between 2010 and 2024 was downloaded from the [Armed Conflict Location & Event Database (ACLED)](https://acleddata.com/), an independent, impartial, international non-profit organization collecting data on violent conflicts and protests in all countries and territories in the world. We will be superimposing these locations with the geogrpahical boundary and subdivisions of the country, from the **Myanmar Information Management Unit** (MIMU).
+Armed conflict data in Myanmar between 2010 and 2023 was downloaded from the [Armed Conflict Location & Event Database (ACLED)](https://acleddata.com/), an independent, impartial, international non-profit organization collecting data on violent conflicts and protests in all countries and territories in the world. We will be superimposing these locations with the geogrpahical boundary and subdivisions of the country, from the **Myanmar Information Management Unit** (MIMU).
 
 We are interested in conflict events from 2019 onwards - starting from a year before the COVID-19 pandemic and 2 years before the 2021 coup - cumulating into the civil war of today.
 
@@ -44,7 +44,7 @@ head(acled_mya)
 
 ### TH1.3.2 Loading and plotting geospatial data
 
-Three representations of Myanmar's geography exist on  - `Admin1` subdivides the country into its states and regions only, while `Admin2` subdivides the country by its smaller districts, and `Admin3` its townships. Further, the ACLED labels each incident with all 3 representations. For simplicity and ease of understanding, we shall use the `Admin1` representation.
+Three representations of Myanmar's geography exist on the MIMU repository - `Admin1` subdivides the country into its states and regions only, while `Admin2` subdivides the country by its smaller districts, and `Admin3` its townships. Further, the ACLED labels each incident with all 3 representations. For simplicity and ease of understanding, we shall use the `Admin1` representation.
 
 ```{r}
 mmr_admin1 <- st_read(dsn = "data/mmr_polbnda_adm1_250k_mimu_1", layer = "mmr_polbnda_adm1_250k_mimu_1")
@@ -120,17 +120,24 @@ plot(acled_mya_ppp)
 
 ## TH1.5 First Order SPPA - KDE
 
-Kernel density estimation (KDE) serves to compute the *intensity* of a point distribution. It has two general steps: first to compute the point intensity, followed by spatial interpolation using a kernel function.
+Kernel density estimation (KDE) serves to compute the *intensity* of a point distribution. It has two general steps: first to compute the point intensity, followed by spatial interpolation using a kernel function. Using KDE, we can determine the general region of Myanmar with the highest incidence of armed conflict.
 
 ```{r}
+kde <- density(acled_mya_ppp, sigma=bw.diggle, edge=TRUE, kernel="epanechnikov")
+plot(kde)
+
 # Create a list to store KDE results and track quarters for each quarter
-kde_results <- list()
-quarters <- unique(acled_mya_ppp$Quarter)
-for (quarter in quarters) {
-  acled_mya_quarters_subset <- acled_mya_ppp[acled_mya_ppp$Quarter == quarter]
-  # Compute KDE and append to list
-  kde_results[[as.character(quarter)]] <- density(acled_mya_quarters_subset)
-}
+# kde_results <- list()
+# quarters <- unique(acled_mya_ppp$Quarter)
+# for (quarter in quarters) {
+#   acled_mya_quarters_subset <- acled_mya_ppp[acled_mya_ppp$Quarter == quarter]
+#   # Compute KDE and append to list
+#   kde_results[[as.character(quarter)]] <- density(acled_mya_quarters_subset)
+# }
+
+# for (quarter in quarters) {
+#   plot(kde_results[[as.character(quarter)]], main = paste("KDE for ", quarter))
+# }
 ```
 
 ## References

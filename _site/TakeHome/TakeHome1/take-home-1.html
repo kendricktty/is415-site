@@ -251,7 +251,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">September 12, 2024</p>
+      <p class="date-modified">September 13, 2024</p>
     </div>
   </div>
     
@@ -269,7 +269,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="th1.2-the-data" class="level2">
 <h2 class="anchored" data-anchor-id="th1.2-the-data">TH1.2 The Data</h2>
-<p>Armed conflict data in Myanmar between 2010 and 2024 was downloaded from the <a href="https://acleddata.com/">Armed Conflict Location &amp; Event Database (ACLED)</a>, an independent, impartial, international non-profit organization collecting data on violent conflicts and protests in all countries and territories in the world. We will be superimposing these locations with the geogrpahical boundary and subdivisions of the country, from the <strong>Myanmar Information Management Unit</strong> (MIMU).</p>
+<p>Armed conflict data in Myanmar between 2010 and 2023 was downloaded from the <a href="https://acleddata.com/">Armed Conflict Location &amp; Event Database (ACLED)</a>, an independent, impartial, international non-profit organization collecting data on violent conflicts and protests in all countries and territories in the world. We will be superimposing these locations with the geogrpahical boundary and subdivisions of the country, from the <strong>Myanmar Information Management Unit</strong> (MIMU).</p>
 <p>We are interested in conflict events from 2019 onwards - starting from a year before the COVID-19 pandemic and 2 years before the 2021 coup - cumulating into the civil war of today.</p>
 </section>
 <section id="th1.3-importing-and-transforming-armed-conflict-data-and-administrative-boundary-data-into-sf-and-tibble-dataframes" class="level2">
@@ -320,7 +320,7 @@ dbl (11): year, time_precision, inter1, inter2, interaction, iso, latitude, ...
 </section>
 <section id="th1.3.2-loading-and-plotting-geospatial-data" class="level3">
 <h3 class="anchored" data-anchor-id="th1.3.2-loading-and-plotting-geospatial-data">TH1.3.2 Loading and plotting geospatial data</h3>
-<p>Three representations of Myanmar’s geography exist on - <code>Admin1</code> subdivides the country into its states and regions only, while <code>Admin2</code> subdivides the country by its smaller districts, and <code>Admin3</code> its townships. Further, the ACLED labels each incident with all 3 representations. For simplicity and ease of understanding, we shall use the <code>Admin1</code> representation.</p>
+<p>Three representations of Myanmar’s geography exist on the MIMU repository - <code>Admin1</code> subdivides the country into its states and regions only, while <code>Admin2</code> subdivides the country by its smaller districts, and <code>Admin3</code> its townships. Further, the ACLED labels each incident with all 3 representations. For simplicity and ease of understanding, we shall use the <code>Admin1</code> representation.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>mmr_admin1 <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="at">dsn =</span> <span class="st">"data/mmr_polbnda_adm1_250k_mimu_1"</span>, <span class="at">layer =</span> <span class="st">"mmr_polbnda_adm1_250k_mimu_1"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -495,16 +495,33 @@ as a different character</code></pre>
 </section>
 <section id="th1.5-first-order-sppa---kde" class="level2">
 <h2 class="anchored" data-anchor-id="th1.5-first-order-sppa---kde">TH1.5 First Order SPPA - KDE</h2>
-<p>Kernel density estimation (KDE) serves to compute the <em>intensity</em> of a point distribution. It has two general steps: first to compute the point intensity, followed by spatial interpolation using a kernel function.</p>
+<p>Kernel density estimation (KDE) serves to compute the <em>intensity</em> of a point distribution. It has two general steps: first to compute the point intensity, followed by spatial interpolation using a kernel function. Using KDE, we can determine the general region of Myanmar with the highest incidence of armed conflict.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a list to store KDE results and track quarters for each quarter</span></span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>kde_results <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>quarters <span class="ot">&lt;-</span> <span class="fu">unique</span>(acled_mya_ppp<span class="sc">$</span>Quarter)</span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (quarter <span class="cf">in</span> quarters) {</span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>  acled_mya_quarters_subset <span class="ot">&lt;-</span> acled_mya_ppp[acled_mya_ppp<span class="sc">$</span>Quarter <span class="sc">==</span> quarter]</span>
-<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Compute KDE and append to list</span></span>
-<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>  kde_results[[<span class="fu">as.character</span>(quarter)]] <span class="ot">&lt;-</span> <span class="fu">density</span>(acled_mya_quarters_subset)</span>
-<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>kde <span class="ot">&lt;-</span> <span class="fu">density</span>(acled_mya_ppp, <span class="at">sigma=</span>bw.diggle, <span class="at">edge=</span><span class="cn">TRUE</span>, <span class="at">kernel=</span><span class="st">"epanechnikov"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in density.ppp(acled_mya_ppp, sigma = bw.diggle, edge = TRUE, kernel =
+"epanechnikov"): Bandwidth selection will be based on Gaussian kernel</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(kde)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a list to store KDE results and track quarters for each quarter</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="co"># kde_results &lt;- list()</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="co"># quarters &lt;- unique(acled_mya_ppp$Quarter)</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a><span class="co"># for (quarter in quarters) {</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   acled_mya_quarters_subset &lt;- acled_mya_ppp[acled_mya_ppp$Quarter == quarter]</span></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Compute KDE and append to list</span></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a><span class="co">#   kde_results[[as.character(quarter)]] &lt;- density(acled_mya_quarters_subset)</span></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a><span class="co"># }</span></span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a><span class="co"># for (quarter in quarters) {</span></span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a><span class="co">#   plot(kde_results[[as.character(quarter)]], main = paste("KDE for ", quarter))</span></span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a><span class="co"># }</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="references" class="level2">
@@ -516,7 +533,7 @@ as a different character</code></pre>
 <section id="annex-a-spatial-temporal-distribution-of-armed-conflict-occurrences-in-myanmar-between-2019-and-2023" class="level2">
 <h2 class="anchored" data-anchor-id="annex-a-spatial-temporal-distribution-of-armed-conflict-occurrences-in-myanmar-between-2019-and-2023">Annex A: Spatial-temporal distribution of armed conflict occurrences in Myanmar between 2019 and 2023</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(mmr_admin1) <span class="sc">+</span> <span class="fu">tm_polygons</span>() <span class="sc">+</span> <span class="fu">tm_shape</span>(acled_mya_sf) <span class="sc">+</span> <span class="fu">tm_dots</span>(<span class="at">size =</span> <span class="fl">0.1</span>) <span class="sc">+</span> <span class="fu">tm_facets</span>(<span class="at">by=</span><span class="st">"Quarter"</span>, <span class="at">free.coords=</span><span class="cn">FALSE</span>, <span class="at">drop.units=</span><span class="cn">TRUE</span>, <span class="at">ncol=</span><span class="dv">3</span>, <span class="at">nrow=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(mmr_admin1) <span class="sc">+</span> <span class="fu">tm_polygons</span>() <span class="sc">+</span> <span class="fu">tm_shape</span>(acled_mya_sf) <span class="sc">+</span> <span class="fu">tm_dots</span>(<span class="at">size =</span> <span class="fl">0.1</span>) <span class="sc">+</span> <span class="fu">tm_facets</span>(<span class="at">by=</span><span class="st">"Quarter"</span>, <span class="at">free.coords=</span><span class="cn">FALSE</span>, <span class="at">drop.units=</span><span class="cn">TRUE</span>, <span class="at">ncol=</span><span class="dv">3</span>, <span class="at">nrow=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
