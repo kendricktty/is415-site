@@ -1,0 +1,217 @@
+---
+title: "TH1: Geospatial Analytics for Social Good"
+image: "../../_site/HandsOn/Hands-on_Ex03/hands-on-3_files/figure-html/unnamed-chunk-42-1.png"
+subtitle: "Take Home Exercise 1: Application of Spatial and Spatio-temporal Point Patterns Analysis to discover the geographical distribution of Armed Conflict in Myanmar"
+author: "Kendrick Teo"
+date: "2024-09-07"
+date-modified: "last-modified"
+
+execute: 
+  eval: true
+  echo: true
+  freeze: true
+---
+
+
+
+
+## TH1.1 Setting the Scene
+
+Millions of people have their lives shattered by armed conflict every year. One of these is the [**Myanmar Civil War**](https://en.wikipedia.org/wiki/Myanmar_civil_war_(2021%E2%80%93present)), a significant escalation of the long-running [Myanmar Conflict](https://en.wikipedia.org/wiki/Myanmar_conflict) in response to the [2021 coup d'etat](https://en.wikipedia.org/wiki/2021_Myanmar_coup_d%27%C3%A9tat).
+
+Geospatial analtyics holds the potential to address complex problems facing society, such as this one. This study serves to discover the sptial and spatio-temporal distribution (spread) of the armed conflict in Myanmar by applying spatial point pattern analysis (SPPA) methods.
+
+## TH1.2 The Data
+
+Armed conflict data in Myanmar between 2010 and 2023 was downloaded from the [Armed Conflict Location & Event Database (ACLED)](https://acleddata.com/), an independent, impartial, international non-profit organization collecting data on violent conflicts and protests in all countries and territories in the world. We will be superimposing these locations with the geogrpahical boundary and subdivisions of the country, from the **Myanmar Information Management Unit** (MIMU).
+
+We are interested in conflict events from 2019 onwards - starting from a year before the COVID-19 pandemic and 2 years before the 2021 coup - cumulating into the civil war of today.
+
+## TH1.3 Importing and transforming armed conflict data and administrative boundary data into `sf` and `tibble` dataframes
+
+### TH1.3.1 Loading R packages and aspatial data
+
+The `R` packages we will use today are:
+
+- `sf`
+- `tmap`
+- `spatstat`
+- `raster`
+- `maptools`
+
+
+
+
+```{r}
+pacman::p_load(sf, raster, spatstat, tmap, tidyverse)
+acled_mya <- read_csv("data/ACLED_Myanmar.csv")
+head(acled_mya)
+```
+
+
+
+
+### TH1.3.2 Loading and plotting geospatial data
+
+Three representations of Myanmar's geography exist on the MIMU repository - `Admin1` subdivides the country into its states and regions only, while `Admin2` subdivides the country by its smaller districts, and `Admin3` its townships. Further, the ACLED labels each incident with all 3 representations. For simplicity and ease of understanding, we shall use the `Admin1` representation.
+
+
+
+
+```{r}
+mmr_admin1 <- st_read(dsn = "data/mmr_polbnda_adm1_250k_mimu_1", layer = "mmr_polbnda_adm1_250k_mimu_1")
+mmr_admin1
+qtm(mmr_admin1)
+```
+
+
+
+
+### TH1.3.3 Creating `sf` data frame from aspatial data
+
+The ACLED `tibble` contains coordinates, making it useful for plotting on our map as points. We can therefore use it to create an `sf` data frame using which we can plot our points on a map. The EPSG format of the import coordinates should be [`4326`](https://epsg.io/4326), corresponding to the WGS84 Geographic Coordinate System.
+
+
+
+
+```{r}
+acled_mya_sf <- st_as_sf(acled_mya, coords = c("longitude", "latitude"), crs = 4326)
+```
+
+
+
+
+The EPSG area code for Myanmar is [`4239`](https://epsg.io/4239), while the WGS 84-compatible code is [`32647`](https://epsg.io/32647). Since we're creating an `owin` object later, we need to first convert our coordinate system.
+
+
+
+
+```{r}
+acled_mya_sf <- acled_mya_sf %>% st_transform(crs = 32647)
+mmr_admin1 <- mmr_admin1 %>% st_transform(crs = 32647)
+tm_shape(mmr_admin1) + tm_polygons() + tm_shape(acled_mya_sf) + tm_dots(size = 0.05)
+```
+
+
+
+
+Additionally, since the data is timestamped, we are able to plot and compare the frequency of conflict events *over time*. Before we do, though, we need to standardise the date stamps, then compartmentalise them into their year, month and day components, so that we can perform spatial-temporal point patterns analysis (STPPA) later. 
+
+A visualisation of the spatial-temporial distribution of points can be found in **Annex A**. Notice the consistent appearance throughout the entire study period of a large cluster of points towards the west of the country - roughly the location of Rahkine state on the border with Bangladesh.
+
+
+
+
+```{r}
+acled_mya_sf <- acled_mya_sf %>%
+    mutate(event_date = dmy(event_date)) %>%
+    mutate(DayOfYear = yday(event_date)) %>%
+    mutate(Month_num = format(event_date, "%Y-%m")) %>%  # Year-Month format
+    mutate(Month_fac = factor(format(event_date, "%B %Y"))) %>% # Full month
+    mutate(Quarter = paste0(year(event_date), "-", quarter(event_date), "Q"))  # Quarter format
+```
+
+
+
+
+### TH1.3.4 Final steps to prepare for KDE
+
+Finally, before moving on to our KDE, 
+
+#### TH1.3.4.1 Using `owin` to confine study area within Myanmar borders
+
+
+
+
+```{r}
+mmr_admin1_owin <- as.owin(mmr_admin1)
+plot(mmr_admin1_owin)
+# summary(mmr_admin1_owin)
+```
+
+
+
+
+#### TH1.3.4.2 Converting ACLED `sf` object to `ppp` for KDE
+
+
+
+
+```{r}
+acled_mya_ppp <- as.ppp(acled_mya_sf)
+# plot(acled_mya_ppp)
+# acled_mya_ppp
+```
+
+
+
+
+#### TH1.3.4.3 Handling duplicates
+
+First, we check if there are duplicated points in the ACLED `ppp`.
+
+
+
+```{r}
+any(duplicated(acled_mya_ppp))
+sum(multiplicity(acled_mya_ppp) > 1)
+```
+
+
+
+
+#### TH1.3.4.4 Combining point events object and `owin`
+
+
+
+
+```{r}
+acled_mya_ppp = acled_mya_ppp[mmr_admin1_owin]
+# plot(acled_mya_ppp)
+```
+
+
+
+
+## TH1.4 Interlude: A brief history of Myanmar's ethnic groups
+
+## TH1.5 First Order SPPA - KDE
+
+Kernel density estimation (KDE) serves to compute the *intensity* of a point distribution. It has two general steps: first to compute the point intensity, followed by spatial interpolation using a kernel function. Using KDE, we can determine the general region of Myanmar with the highest incidence of armed conflict.
+
+
+
+
+```{r}
+kde <- density(acled_mya_ppp, sigma=bw.diggle, edge=TRUE, kernel="epanechnikov")
+plot(kde)
+
+# Create a list to store KDE results and track quarters for each quarter
+# kde_results <- list()
+# quarters <- unique(acled_mya_ppp$Quarter)
+# for (quarter in quarters) {
+#   acled_mya_quarters_subset <- acled_mya_ppp[acled_mya_ppp$Quarter == quarter]
+#   # Compute KDE and append to list
+#   kde_results[[as.character(quarter)]] <- density(acled_mya_quarters_subset)
+# }
+
+# for (quarter in quarters) {
+#   plot(kde_results[[as.character(quarter)]], main = paste("KDE for ", quarter))
+# }
+```
+
+
+
+
+## References
+
+1. Raleigh, C., Kishi, R. & Linke, A. Political instability patterns are obscured by conflict dataset scope conditions, sources, and coding choices. Humanit Soc Sci Commun 10, 74 (2023). https://doi.org/10.1057/s41599-023-01559-4
+
+## Annex A: Spatial-temporal distribution of armed conflict occurrences in Myanmar between 2019 and 2023
+
+
+
+
+```{r}
+tm_shape(mmr_admin1) + tm_polygons() + tm_shape(acled_mya_sf) + tm_dots(size = 0.1) + tm_facets(by="Quarter", free.coords=FALSE, drop.units=TRUE, ncol=3, nrow=1)
+```
