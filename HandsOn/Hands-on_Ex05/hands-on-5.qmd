@@ -1,5 +1,5 @@
 ---
-title: "H5: Spatial Weights and Appliations (Incomplete)"
+title: "H5: Spatial Weights and Appliations"
 subtitle: "Hands-On Exercise 5"
 author: "Kendrick Teo"
 date: "2024-08-31"
@@ -144,10 +144,20 @@ plot(hunan$geometry, border="lightgrey")
 plot(wm_q, coords, pch = 19, cex = 0.6, add = TRUE, col= "red")
 ```
 
-#### H5.3.3.3 Plotting Rookc contiguity based neighbours map
+#### H5.3.3.3 Plotting Rook contiguity based neighbours map
 
 ```{r}
 plot(hunan$geometry, border="lightgrey")
+plot(wm_r, coords, pch = 19, cex = 0.6, add = TRUE, col = "red")
+```
+
+#### H5.3.3.4 Plotting both together
+
+```{r}
+par(mfrow=c(1,2))
+plot(hunan$geometry, border="lightgrey", main="Queen Contiguity")
+plot(wm_q, coords, pch = 19, cex = 0.6, add = TRUE, col= "red")
+plot(hunan$geometry, border="lightgrey", main="Rook Contiguity")
 plot(wm_r, coords, pch = 19, cex = 0.6, add = TRUE, col = "red")
 ```
 
@@ -188,6 +198,9 @@ We can also display the weight matrix in a table form by combining `table()` and
 
 ```{r}
 table(hunan$County, card(wm_d62))
+n_comp <- n.comp.nb(wm_d62)
+n_comp$nc
+table(n_comp$comp.id)
 ```
 
 #### H5.4.2.1 Plotting fixed distance weight matrix
@@ -222,7 +235,6 @@ knn6
 str(knn6)
 ```
 
-
 ### H5.4.3.1 Plotting distance-based neighbours
 
 ```{r}
@@ -250,7 +262,7 @@ rswm_q <- nb2listw(wm_q, style="W", zero.policy = TRUE)
 rswm_q
 rswm_ids <- nb2listw(wm_q, glist=ids, style="B", zero.policy=TRUE)
 rswm_ids
-rswm_q$weights[1]
+rswm_q$weights[10]
 summary(unlist(rswm_ids$weights))
 ```
 
@@ -269,13 +281,13 @@ GDPPC.lag
 
 In the previous section, we retrieved the GDP per capita of the five neighbours with this code chunk:
 
-```
+```{r}
 nb1 <- wm_q[[1]]
 nb1 <- hunan$GDPPC[nb1]
 nb1
 ```
 
-We can then append the spatially lag GDP per capita values onto the `hunan` dataset by using the code chunk below, and print out the average neighbouring income values for each county. Following that, we can plot both GDP per capita and spatial lag GDP per capita for comparison.
+We can then append the spatially lagged GDP per capita values onto the `hunan` dataset by using the code chunk below, and print out the average neighbouring income values for each county. Following that, we can plot both GDP per capita and spatial lag GDP per capita for comparison.
 
 ```{r}
 lag.list <- list(hunan$NAME_3, lag.listw(rswm_q, hunan$GDPPC))
@@ -314,6 +326,7 @@ lag_sum
 Next, let's **left join** the `GDPPC` field of `lag_sum` into the `hunan` dataframe. After that, we can plot both the original dataset and the spatial lag sum dataset for comparison.
 
 ```{r}
+hunan <- left_join(hunan, lag.res)
 gdppc <- qtm(hunan, "GDPPC")
 lag_sum_gdppc <- qtm(hunan, "lag_sum GDPPC")
 tmap_arrange(gdppc, lag_sum_gdppc, asp=1, ncol=2)
@@ -333,10 +346,8 @@ Notice that `[1]` now has 6 neighbours instead of 5. We can now proceed to obtai
 ```{r}
 wm_qs <- nb2listw(wm_qs)
 wm_qs
-lag_w_avg_gpdpc <- lag.listw(wm_qs,
-    glist = b_weights,
-    style = "B"
-)
+lag_w_avg_gpdpc <- lag.listw(wm_qs, 
+                             hunan$GDPPC)
 lag_w_avg_gpdpc
 ```
 
@@ -351,8 +362,8 @@ lag.list.wm_qs <- list(hunan$NAME_3, lag.listw(wm_qs, hunan$GDPPC))
 lag_wm_qs.res <- as.data.frame(lag.list.wm_qs)
 colnames(lag_wm_qs.res) <- c("NAME_3", "lag_window_avg GDPPC")
 hunan <- left_join(hunan, lag_wm_qs.res)
-w_avg_gdppc <- qtm(hunan, "lag_window_avg GDPPC")
-tmap_arrange(lag_gdppc, w_avg_gdppc, asp=1, ncol=2)
+# w_avg_gdppc <- qtm(hunan, "lag_window_avg GDPPC")
+# tmap_arrange(lag_gdppc, w_avg_gdppc, asp=1, ncol=2)
 ```
 
 To compare the values of lag GDPPC and Spatial window average, we can use `kable()` from the `Knitr` package to prepare a table.
