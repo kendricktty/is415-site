@@ -97,8 +97,8 @@ plot(mmr_admin1_owin)
 
 ```{r}
 acled_mya_ppp <- as.ppp(acled_mya_sf)
-plot(acled_mya_ppp)
-acled_mya_ppp
+# plot(acled_mya_ppp)
+# acled_mya_ppp
 ```
 
 #### TH1.3.4.3 Handling duplicates
@@ -113,7 +113,7 @@ sum(multiplicity(acled_mya_ppp) > 1)
 
 ```{r}
 acled_mya_ppp = acled_mya_ppp[mmr_admin1_owin]
-plot(acled_mya_ppp)
+# plot(acled_mya_ppp)
 ```
 
 ## TH1.4 Interlude: A brief history of Myanmar's ethnic groups
