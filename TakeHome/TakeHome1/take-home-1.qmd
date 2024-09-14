@@ -79,6 +79,10 @@ acled_mya_sf <- acled_mya_sf %>%
     mutate(Month_num = format(event_date, "%Y-%m")) %>%  # Year-Month format
     mutate(Month_fac = factor(format(event_date, "%B %Y"))) %>% # Full month
     mutate(Quarter = paste0(year(event_date), "-", quarter(event_date), "Q"))  # Quarter format
+acled_mya_sf
+quarters <- unique(acled_mya_sf$Quarter)
+print(length(quarters))
+quarters
 ```
 
 ### TH1.3.4 Final steps to prepare for KDE
@@ -93,26 +97,41 @@ plot(mmr_admin1_owin)
 # summary(mmr_admin1_owin)
 ```
 
-#### TH1.3.4.2 Converting ACLED `sf` object to `ppp` for KDE
+#### TH1.3.4.2 Creating quarterly `ppp` objects for KDE and merging `owin`
+
+The code chunk below will extract quarterly 
 
 ```{r}
+# Extract quarterly armed conflict events and save to a list
+acled_ppp_list <- list()
+for (quarter in quarters) {
+  print(quarter)
+  acled_mya_quarters_subset <- subset(acled_mya_sf, acled_mya_sf$Quarter == quarter)
+  acled_mya_quarter_ppp <- as.ppp(acled_mya_quarters_subset)
+  acled_mya_quarter_ppp <- acled_mya_quarter_ppp[mmr_admin1_owin]
+  acled_ppp_list[[as.character(quarter)]]
+  plot(acled_mya_quarter_ppp)
+}
+
+# Create all-encompassing ppp
 acled_mya_ppp <- as.ppp(acled_mya_sf)
-# plot(acled_mya_ppp)
-# acled_mya_ppp
+acled_mya_ppp <- acled_mya_ppp[mmr_admin1_owin]
+plot(acled_mya_ppp)
+acled_mya_ppp
 ```
 
 #### TH1.3.4.3 Handling duplicates
 
 First, we check if there are duplicated points in the ACLED `ppp`.
 ```{r}
-any(duplicated(acled_mya_ppp))
-sum(multiplicity(acled_mya_ppp) > 1)
+# any(duplicated(acled_mya_ppp))
+# sum(multiplicity(acled_mya_ppp) > 1)
 ```
 
 #### TH1.3.4.4 Combining point events object and `owin`
 
 ```{r}
-acled_mya_ppp = acled_mya_ppp[mmr_admin1_owin]
+# acled_mya_ppp = acled_mya_ppp[mmr_admin1_owin]
 # plot(acled_mya_ppp)
 ```
 
@@ -123,21 +142,23 @@ acled_mya_ppp = acled_mya_ppp[mmr_admin1_owin]
 Kernel density estimation (KDE) serves to compute the *intensity* of a point distribution. It has two general steps: first to compute the point intensity, followed by spatial interpolation using a kernel function. Using KDE, we can determine the general region of Myanmar with the highest incidence of armed conflict.
 
 ```{r}
-kde <- density(acled_mya_ppp, sigma=bw.diggle, edge=TRUE, kernel="epanechnikov")
+acled_mya_ppp.km <- rescale.ppp(acled_mya_ppp, 1000, "km")
+kde <- density(acled_mya_ppp.km, sigma=bw.diggle, edge=TRUE, kernel="gaussian")
 plot(kde)
 
 # Create a list to store KDE results and track quarters for each quarter
-# kde_results <- list()
-# quarters <- unique(acled_mya_ppp$Quarter)
-# for (quarter in quarters) {
-#   acled_mya_quarters_subset <- acled_mya_ppp[acled_mya_ppp$Quarter == quarter]
-#   # Compute KDE and append to list
-#   kde_results[[as.character(quarter)]] <- density(acled_mya_quarters_subset)
-# }
+kde_results <- list()
 
-# for (quarter in quarters) {
-#   plot(kde_results[[as.character(quarter)]], main = paste("KDE for ", quarter))
-# }
+for (i in length(quarters)) {
+  ppp_item <- acled_ppp_list[i]
+  ppp_item
+  # Compute KDE and append to list
+  kde_results[[as.character(quarters[i])]] <- density(ppp_item, sigma=0.6, edge=TRUE, kernel="gaussian")
+}
+
+for (quarter in quarters) {
+  plot(kde_results[[as.character(quarter)]], main = paste("KDE for ", quarter))
+}
 ```
 
 ## References

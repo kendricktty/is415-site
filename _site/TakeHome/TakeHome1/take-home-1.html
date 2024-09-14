@@ -174,7 +174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
         <li>
     <a class="dropdown-item" href="../../HandsOn/Hands-on_Ex05/hands-on-5.html">
- <span class="dropdown-text">H5: Spatial Weights and Appliations (Incomplete)</span></a>
+ <span class="dropdown-text">H5: Spatial Weights and Appliations</span></a>
   </li>  
     </ul>
   </li>
@@ -251,7 +251,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">September 13, 2024</p>
+      <p class="date-modified">September 14, 2024</p>
     </div>
   </div>
     
@@ -325,7 +325,7 @@ dbl (11): year, time_precision, inter1, inter2, interaction, iso, latitude, ...
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>mmr_admin1 <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="at">dsn =</span> <span class="st">"data/mmr_polbnda_adm1_250k_mimu_1"</span>, <span class="at">layer =</span> <span class="st">"mmr_polbnda_adm1_250k_mimu_1"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Reading layer `mmr_polbnda_adm1_250k_mimu_1' from data source 
-  `/Users/kendricktty/Gits/SMU_CS/is415-site/TakeHome/TakeHome1/data/mmr_polbnda_adm1_250k_mimu_1' 
+  `/Users/kendricktty/Gits/smu_cs/is415-site/TakeHome/TakeHome1/data/mmr_polbnda_adm1_250k_mimu_1' 
   using driver `ESRI Shapefile'
 Simple feature collection with 15 features and 6 fields
 Geometry type: MULTIPOLYGON
@@ -401,7 +401,46 @@ First 10 features:
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">DayOfYear =</span> <span class="fu">yday</span>(event_date)) <span class="sc">%&gt;%</span></span>
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">Month_num =</span> <span class="fu">format</span>(event_date, <span class="st">"%Y-%m"</span>)) <span class="sc">%&gt;%</span>  <span class="co"># Year-Month format</span></span>
 <span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">Month_fac =</span> <span class="fu">factor</span>(<span class="fu">format</span>(event_date, <span class="st">"%B %Y"</span>))) <span class="sc">%&gt;%</span> <span class="co"># Full month</span></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">Quarter =</span> <span class="fu">paste0</span>(<span class="fu">year</span>(event_date), <span class="st">"-"</span>, <span class="fu">quarter</span>(event_date), <span class="st">"Q"</span>))  <span class="co"># Quarter format</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">Quarter =</span> <span class="fu">paste0</span>(<span class="fu">year</span>(event_date), <span class="st">"-"</span>, <span class="fu">quarter</span>(event_date), <span class="st">"Q"</span>))  <span class="co"># Quarter format</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>acled_mya_sf</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simple feature collection with 47832 features and 33 fields
+Geometry type: POINT
+Dimension:     XY
+Bounding box:  xmin: -207135 ymin: 1103500 xmax: 640934.5 ymax: 3042960
+Projected CRS: WGS 84 / UTM zone 47N
+# A tibble: 47,832 × 34
+   event_id_cnty event_date  year time_precision disorder_type        event_type
+ * &lt;chr&gt;         &lt;date&gt;     &lt;dbl&gt;          &lt;dbl&gt; &lt;chr&gt;                &lt;chr&gt;     
+ 1 MMR56099      2023-12-31  2023              1 Political violence   Explosion…
+ 2 MMR56222      2023-12-31  2023              1 Political violence   Explosion…
+ 3 MMR56370      2023-12-31  2023              1 Political violence   Battles   
+ 4 MMR56376      2023-12-31  2023              1 Demonstrations       Protests  
+ 5 MMR56380      2023-12-31  2023              1 Strategic developme… Strategic…
+ 6 MMR56869      2023-12-31  2023              1 Strategic developme… Strategic…
+ 7 MMR56871      2023-12-31  2023              1 Political violence   Battles   
+ 8 MMR56873      2023-12-31  2023              1 Political violence   Explosion…
+ 9 MMR56874      2023-12-31  2023              1 Political violence   Battles   
+10 MMR56876      2023-12-31  2023              1 Political violence   Violence …
+# ℹ 47,822 more rows
+# ℹ 28 more variables: sub_event_type &lt;chr&gt;, actor1 &lt;chr&gt;, assoc_actor_1 &lt;chr&gt;,
+#   inter1 &lt;dbl&gt;, actor2 &lt;chr&gt;, assoc_actor_2 &lt;chr&gt;, inter2 &lt;dbl&gt;,
+#   interaction &lt;dbl&gt;, civilian_targeting &lt;chr&gt;, iso &lt;dbl&gt;, region &lt;chr&gt;,
+#   country &lt;chr&gt;, admin1 &lt;chr&gt;, admin2 &lt;chr&gt;, admin3 &lt;chr&gt;, location &lt;chr&gt;,
+#   geo_precision &lt;dbl&gt;, source &lt;chr&gt;, source_scale &lt;chr&gt;, notes &lt;chr&gt;,
+#   fatalities &lt;dbl&gt;, tags &lt;chr&gt;, timestamp &lt;dbl&gt;, geometry &lt;POINT [m]&gt;, …</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>quarters <span class="ot">&lt;-</span> <span class="fu">unique</span>(acled_mya_sf<span class="sc">$</span>Quarter)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">length</span>(quarters))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 20</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>quarters</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "2023-4Q" "2023-3Q" "2023-2Q" "2023-1Q" "2022-4Q" "2022-3Q" "2022-2Q"
+ [8] "2022-1Q" "2021-4Q" "2021-3Q" "2021-2Q" "2021-1Q" "2020-4Q" "2020-3Q"
+[15] "2020-2Q" "2020-1Q" "2019-4Q" "2019-3Q" "2019-2Q" "2019-1Q"</code></pre>
+</div>
 </div>
 </section>
 <section id="th1.3.4-final-steps-to-prepare-for-kde" class="level3">
@@ -410,8 +449,8 @@ First 10 features:
 <section id="th1.3.4.1-using-owin-to-confine-study-area-within-myanmar-borders" class="level4">
 <h4 class="anchored" data-anchor-id="th1.3.4.1-using-owin-to-confine-study-area-within-myanmar-borders">TH1.3.4.1 Using <code>owin</code> to confine study area within Myanmar borders</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>mmr_admin1_owin <span class="ot">&lt;-</span> <span class="fu">as.owin</span>(mmr_admin1)</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mmr_admin1_owin)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>mmr_admin1_owin <span class="ot">&lt;-</span> <span class="fu">as.owin</span>(mmr_admin1)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mmr_admin1_owin)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -419,30 +458,49 @@ First 10 features:
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># summary(mmr_admin1_owin)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># summary(mmr_admin1_owin)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="th1.3.4.2-converting-acled-sf-object-to-ppp-for-kde" class="level4">
 <h4 class="anchored" data-anchor-id="th1.3.4.2-converting-acled-sf-object-to-ppp-for-kde">TH1.3.4.2 Converting ACLED <code>sf</code> object to <code>ppp</code> for KDE</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>acled_mya_ppp <span class="ot">&lt;-</span> <span class="fu">as.ppp</span>(acled_mya_sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>acled_mya_ppp <span class="ot">&lt;-</span> <span class="fu">as.ppp</span>(acled_mya_sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning in as.ppp.sf(acled_mya_sf): only first attribute column is used for
 marks</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot(acled_mya_ppp)</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># acled_mya_ppp</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(acled_mya_ppp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in default.charmap(ntypes, chars): Too many types to display every type
+as a different character</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Only 10 out of 47832 symbols are shown in the symbol map</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>acled_mya_ppp</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Marked planar point pattern: 47832 points
+marks are of storage type  'character'
+window: rectangle = [-207135, 640934.5] x [1103500.1, 3042960.3] units</code></pre>
+</div>
 </div>
 </section>
 <section id="th1.3.4.3-handling-duplicates" class="level4">
 <h4 class="anchored" data-anchor-id="th1.3.4.3-handling-duplicates">TH1.3.4.3 Handling duplicates</h4>
 <p>First, we check if there are duplicated points in the ACLED <code>ppp</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">any</span>(<span class="fu">duplicated</span>(acled_mya_ppp))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">any</span>(<span class="fu">duplicated</span>(acled_mya_ppp))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] FALSE</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">multiplicity</span>(acled_mya_ppp) <span class="sc">&gt;</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">multiplicity</span>(acled_mya_ppp) <span class="sc">&gt;</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0</code></pre>
 </div>
@@ -451,8 +509,22 @@ marks</code></pre>
 <section id="th1.3.4.4-combining-point-events-object-and-owin" class="level4">
 <h4 class="anchored" data-anchor-id="th1.3.4.4-combining-point-events-object-and-owin">TH1.3.4.4 Combining point events object and <code>owin</code></h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>acled_mya_ppp <span class="ot">=</span> acled_mya_ppp[mmr_admin1_owin]</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="co"># plot(acled_mya_ppp)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>acled_mya_ppp <span class="ot">=</span> acled_mya_ppp[mmr_admin1_owin]</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(acled_mya_ppp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in default.charmap(ntypes, chars): Too many types to display every type
+as a different character</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Only 10 out of 47825 symbols are shown in the symbol map</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
 </div>
 </section>
 </section>
@@ -464,12 +536,9 @@ marks</code></pre>
 <h2 class="anchored" data-anchor-id="th1.5-first-order-sppa---kde">TH1.5 First Order SPPA - KDE</h2>
 <p>Kernel density estimation (KDE) serves to compute the <em>intensity</em> of a point distribution. It has two general steps: first to compute the point intensity, followed by spatial interpolation using a kernel function. Using KDE, we can determine the general region of Myanmar with the highest incidence of armed conflict.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>kde <span class="ot">&lt;-</span> <span class="fu">density</span>(acled_mya_ppp, <span class="at">sigma=</span>bw.diggle, <span class="at">edge=</span><span class="cn">TRUE</span>, <span class="at">kernel=</span><span class="st">"epanechnikov"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in density.ppp(acled_mya_ppp, sigma = bw.diggle, edge = TRUE, kernel =
-"epanechnikov"): Bandwidth selection will be based on Gaussian kernel</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(kde)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>acled_mya_ppp.km <span class="ot">&lt;-</span> <span class="fu">rescale.ppp</span>(acled_mya_ppp, <span class="dv">1000</span>, <span class="st">"km"</span>)</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>kde <span class="ot">&lt;-</span> <span class="fu">density</span>(acled_mya_ppp.km, <span class="at">sigma=</span>bw.diggle, <span class="at">edge=</span><span class="cn">TRUE</span>, <span class="at">kernel=</span><span class="st">"gaussian"</span>)</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(kde)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -477,18 +546,47 @@ marks</code></pre>
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a list to store KDE results and track quarters for each quarter</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="co"># kde_results &lt;- list()</span></span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="co"># quarters &lt;- unique(acled_mya_ppp$Quarter)</span></span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="co"># for (quarter in quarters) {</span></span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   acled_mya_quarters_subset &lt;- acled_mya_ppp[acled_mya_ppp$Quarter == quarter]</span></span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Compute KDE and append to list</span></span>
-<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a><span class="co">#   kde_results[[as.character(quarter)]] &lt;- density(acled_mya_quarters_subset)</span></span>
-<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a><span class="co"># }</span></span>
-<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a><span class="co"># for (quarter in quarters) {</span></span>
-<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a><span class="co">#   plot(kde_results[[as.character(quarter)]], main = paste("KDE for ", quarter))</span></span>
-<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a><span class="co"># }</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a list to store KDE results and track quarters for each quarter</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>kde_results <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (q <span class="cf">in</span> quarters) {</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(q)</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>  acled_mya_quarters_subset <span class="ot">&lt;-</span> acled_mya_ppp.km[acled_mya_ppp.km<span class="sc">$</span>Quarter <span class="sc">==</span> q]</span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Compute KDE and append to list</span></span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>  kde_results[[<span class="fu">as.character</span>(q)]] <span class="ot">&lt;-</span> <span class="fu">density</span>(acled_mya_quarters_subset)</span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2023-4Q"
+[1] "2023-3Q"
+[1] "2023-2Q"
+[1] "2023-1Q"
+[1] "2022-4Q"
+[1] "2022-3Q"
+[1] "2022-2Q"
+[1] "2022-1Q"
+[1] "2021-4Q"
+[1] "2021-3Q"
+[1] "2021-2Q"
+[1] "2021-1Q"
+[1] "2020-4Q"
+[1] "2020-3Q"
+[1] "2020-2Q"
+[1] "2020-1Q"
+[1] "2019-4Q"
+[1] "2019-3Q"
+[1] "2019-2Q"
+[1] "2019-1Q"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (quarter <span class="cf">in</span> quarters) {</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(kde_results[[<span class="fu">as.character</span>(q)]], <span class="at">main =</span> <span class="fu">paste</span>(<span class="st">"KDE for "</span>, q))</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-10-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
 </div>
 </section>
 <section id="references" class="level2">
@@ -500,7 +598,7 @@ marks</code></pre>
 <section id="annex-a-spatial-temporal-distribution-of-armed-conflict-occurrences-in-myanmar-between-2019-and-2023" class="level2">
 <h2 class="anchored" data-anchor-id="annex-a-spatial-temporal-distribution-of-armed-conflict-occurrences-in-myanmar-between-2019-and-2023">Annex A: Spatial-temporal distribution of armed conflict occurrences in Myanmar between 2019 and 2023</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(mmr_admin1) <span class="sc">+</span> <span class="fu">tm_polygons</span>() <span class="sc">+</span> <span class="fu">tm_shape</span>(acled_mya_sf) <span class="sc">+</span> <span class="fu">tm_dots</span>(<span class="at">size =</span> <span class="fl">0.1</span>) <span class="sc">+</span> <span class="fu">tm_facets</span>(<span class="at">by=</span><span class="st">"Quarter"</span>, <span class="at">free.coords=</span><span class="cn">FALSE</span>, <span class="at">drop.units=</span><span class="cn">TRUE</span>, <span class="at">ncol=</span><span class="dv">3</span>, <span class="at">nrow=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(mmr_admin1) <span class="sc">+</span> <span class="fu">tm_polygons</span>() <span class="sc">+</span> <span class="fu">tm_shape</span>(acled_mya_sf) <span class="sc">+</span> <span class="fu">tm_dots</span>(<span class="at">size =</span> <span class="fl">0.1</span>) <span class="sc">+</span> <span class="fu">tm_facets</span>(<span class="at">by=</span><span class="st">"Quarter"</span>, <span class="at">free.coords=</span><span class="cn">FALSE</span>, <span class="at">drop.units=</span><span class="cn">TRUE</span>, <span class="at">ncol=</span><span class="dv">3</span>, <span class="at">nrow=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
