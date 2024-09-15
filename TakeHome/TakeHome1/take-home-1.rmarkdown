@@ -12,6 +12,9 @@ execute:
   freeze: true
 ---
 
+
+
+
 ## TH1.1 Setting the Scene
 
 Millions of people have their lives shattered by armed conflict every year. One of these is the [**Myanmar Civil War**](https://en.wikipedia.org/wiki/Myanmar_civil_war_(2021%E2%80%93present)), a significant escalation of the long-running [Myanmar Conflict](https://en.wikipedia.org/wiki/Myanmar_conflict) in response to the [2021 coup d'etat](https://en.wikipedia.org/wiki/2021_Myanmar_coup_d%27%C3%A9tat).
@@ -36,15 +39,24 @@ The `R` packages we will use today are:
 - `raster`
 - `maptools`
 
+
+
+
 ```{r}
 pacman::p_load(sf, raster, spatstat, tmap, tidyverse)
 acled_mya <- read_csv("data/ACLED_Myanmar.csv")
 head(acled_mya)
 ```
 
+
+
+
 ### TH1.3.2 Loading and plotting geospatial data
 
 Three representations of Myanmar's geography exist on the MIMU repository - `Admin1` subdivides the country into its states and regions only, while `Admin2` subdivides the country by its smaller districts, and `Admin3` its townships. Further, the ACLED labels each incident with all 3 representations. For simplicity and ease of understanding, we shall use the `Admin1` representation.
+
+
+
 
 ```{r}
 mmr_admin1 <- st_read(dsn = "data/mmr_polbnda_adm1_250k_mimu_1", layer = "mmr_polbnda_adm1_250k_mimu_1")
@@ -52,15 +64,27 @@ mmr_admin1
 qtm(mmr_admin1)
 ```
 
+
+
+
 ### TH1.3.3 Creating `sf` data frame from aspatial data
 
 The ACLED `tibble` contains coordinates, making it useful for plotting on our map as points. We can therefore use it to create an `sf` data frame using which we can plot our points on a map. The EPSG format of the import coordinates should be [`4326`](https://epsg.io/4326), corresponding to the WGS84 Geographic Coordinate System.
+
+
+
 
 ```{r}
 acled_mya_sf <- st_as_sf(acled_mya, coords = c("longitude", "latitude"), crs = 4326)
 ```
 
+
+
+
 The EPSG area code for Myanmar is [`4239`](https://epsg.io/4239), while the WGS 84-compatible code is [`32647`](https://epsg.io/32647). Since we're creating an `owin` object later, we need to first convert our coordinate system.
+
+
+
 
 ```{r}
 acled_mya_sf <- acled_mya_sf %>% st_transform(crs = 32647)
@@ -68,9 +92,15 @@ mmr_admin1 <- mmr_admin1 %>% st_transform(crs = 32647)
 tm_shape(mmr_admin1) + tm_polygons() + tm_shape(acled_mya_sf) + tm_dots(size = 0.05)
 ```
 
+
+
+
 Additionally, since the data is timestamped, we are able to plot and compare the frequency of conflict events *over time*. Before we do, though, we need to standardise the date stamps, then compartmentalise them into their year, month and day components, so that we can perform spatial-temporal point patterns analysis (STPPA) later. We will also aim to segregate events by whether or not they occurred before the coup on **February 1, 2021**.
 
 A visualisation of the spatial-temporial distribution of points can be found in **Annex A**. Notice the consistent appearance throughout the entire study period of a large cluster of points towards the west of the country - roughly the location of Rahkine state on the border with Bangladesh.
+
+
+
 
 ```{r}
 acled_mya_sf <- acled_mya_sf %>%
@@ -87,11 +117,17 @@ print(length(quarters))
 quarters
 ```
 
+
+
+
 ### TH1.3.4 Final steps to prepare for KDE
 
 Finally, before moving on to our KDE, 
 
 #### TH1.3.4.1 Using `owin` to confine study area within Myanmar borders
+
+
+
 
 ```{r}
 mmr_admin1_owin <- as.owin(mmr_admin1)
@@ -99,9 +135,15 @@ plot(mmr_admin1_owin)
 # summary(mmr_admin1_owin)
 ```
 
+
+
+
 #### TH1.3.4.2 Creating quarterly `ppp` objects for KDE and merging `owin`
 
 The code chunk below will create `ppp` objects for each quarter within the study period, as well as before and after the coup. Each object will be combined with the Myanmar `owin` object and rescaled from metres to kilometres for KDE calculation.
+
+
+
 
 ```{r}
 # Extract quarterly armed conflict events and save to a list
@@ -129,7 +171,13 @@ for (quarter in quarters) {
 }
 ```
 
+
+
+
 Finally, the process will be repeated but for the entire set at once.
+
+
+
 ```{r}
 # Create all-encompassing ppp
 # acled_mya_ppp <- as.ppp(acled_mya_sf)
@@ -139,6 +187,9 @@ Finally, the process will be repeated but for the entire set at once.
 # acled_mya_ppp
 ```
 
+
+
+
 ## TH1.4 Interlude: A brief history of Myanmar's ethnic groups
 
 ## TH1.5 First Order SPPA - KDE
@@ -147,17 +198,32 @@ Kernel density estimation (KDE) serves to compute the *intensity* of a point dis
 
 ### TH1.5.1 Overall Fixed-Bandwidth KDE
 
+
+
+
 ```{r}
 # overall_fixed_kde <- density(acled_mya_ppp.km, sigma=bw.diggle, edge=TRUE, kernel="gaussian")
 # plot(overall_fixed_kde, main="Overall fixed bandwidth KDE")
 ```
+
+
+
 ### TH1.5.2 Overall adaptive-bandwidth KDE
+
+
+
 ```{r}
 # overall_adaptive_kde <- adaptive.density(acled_mya_ppp.km, method="kernel")
 # plot(overall_adaptive_kde, main="Overall adaptive bandwidth KDE")
 ```
 
+
+
+
 ### TH1.5.3 Quarterly fixed-bandwidth KDE
+
+
+
 
 ```{r}
 # Create a list to store KDE results and track quarters for each quarter
@@ -177,7 +243,13 @@ for (quarter in selected_quarters) {
 }
 
 ```
+
+
+
 ### TH1.5.4 Quarterly adaptive-bandwidth KDE
+
+
+
 
 ```{r}
 # Create a list to store adaptive KDE results and track quarters for each quarter
@@ -198,26 +270,39 @@ for (quarter in selected_quarters) {
 ```
 
 
+
+
+
 ## TH1.6 First-order SPPA: Nearest Neighbour Analysis
 
 To determine whether the plotted armed conflict events are clustered, dispersed or random, we can use the Clark-Evans test. Since tensions between Myanmar's different ethnic groups already existed before the 2021 coup, it would be a good idea to run the test on the subsets of data both before and after the coup.
+
+
+
 
 ```{r}
 ppp_item <- acled_ppp_beforeAfterCoup_list[[as.character("Before")]]
 print("Clark Evans Test: Before Coup")
 clarkevans.test(ppp_item, correction = "none", clipregion = "mmr_admin1_owin", alternative = c("clustered"), nsim = 99)
 ```
+
 ```{r}
 ppp_item <- acled_ppp_beforeAfterCoup_list[[as.character("After")]]
 print("Clark Evans Test: After Coup")
 clarkevans.test(ppp_item, correction = "none", clipregion = "mmr_admin1_owin", alternative = c("clustered"), nsim = 99)
 ```
 
+
+
+
 ## TH1.7 Second-order SPPA
 
 Second order SPPA deals with variations in observations due to the way they interact with one another. The methods used for second order SPPA are the F-, G-, K- and L-functions. In this section, we will perform second-order SPPA on the conflict dataset, applying the F-, G-, K- and L-functions on subsets of the data before and after the 2021 coup.
 
 ### TH1.7.1 F-function
+
+
+
 
 ```{r}
 for (coupStatus in beforeAfterCoup) {
@@ -232,7 +317,13 @@ for (coupStatus in beforeAfterCoup) {
 }
 ```
 
+
+
+
 ### TH1.7.2 G-function
+
+
+
 
 ```{r}
 for (coupStatus in beforeAfterCoup) {
@@ -247,7 +338,13 @@ for (coupStatus in beforeAfterCoup) {
 }
 ```
 
+
+
+
 ### TH1.7.3 K-function
+
+
+
 
 ```{r}
 for (coupStatus in beforeAfterCoup) {
@@ -262,7 +359,13 @@ for (coupStatus in beforeAfterCoup) {
 }
 ```
 
+
+
+
 ### TH1.7.4 L-function
+
+
+
 
 ```{r}
 for (coupStatus in beforeAfterCoup) {
@@ -277,6 +380,9 @@ for (coupStatus in beforeAfterCoup) {
 }
 ```
 
+
+
+
 ## TH1.8 First-order STPPA: Spatio-temporal KDE
 
 ## TH1.9 Second-order STPPA
@@ -287,11 +393,20 @@ for (coupStatus in beforeAfterCoup) {
 
 ## Annex A: Spatial-temporal distribution of armed conflict occurrences in Myanmar between 2019 and 2023
 
+
+
+
 ```{r}
 tm_shape(mmr_admin1) + tm_polygons() + tm_shape(acled_mya_sf) + tm_dots(size = 0.1) + tm_facets(by="Quarter", free.coords=FALSE, drop.units=TRUE, ncol=3, nrow=1)
 ```
 
+
+
+
 ## Annex B: All quarterly fixed-bandwidth KDE plots
+
+
+
 
 ```{r}
 for (quarter in quarters) {
@@ -299,7 +414,13 @@ for (quarter in quarters) {
 }
 ```
 
+
+
+
 ## Annex C: All quarterly adaptive-bandwidth KDE plots
+
+
+
 
 ```{r}
 for (quarter in quarters) {
