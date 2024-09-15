@@ -251,7 +251,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">September 14, 2024</p>
+      <p class="date-modified">September 15, 2024</p>
     </div>
   </div>
     
@@ -461,21 +461,44 @@ Projected CRS: WGS 84 / UTM zone 47N
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># summary(mmr_admin1_owin)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="th1.3.4.2-converting-acled-sf-object-to-ppp-for-kde" class="level4">
-<h4 class="anchored" data-anchor-id="th1.3.4.2-converting-acled-sf-object-to-ppp-for-kde">TH1.3.4.2 Converting ACLED <code>sf</code> object to <code>ppp</code> for KDE</h4>
+<section id="th1.3.4.2-creating-quarterly-ppp-objects-for-kde-and-merging-owin" class="level4">
+<h4 class="anchored" data-anchor-id="th1.3.4.2-creating-quarterly-ppp-objects-for-kde-and-merging-owin">TH1.3.4.2 Creating quarterly <code>ppp</code> objects for KDE and merging <code>owin</code></h4>
+<p>The code chunk below will extract quarterly</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>acled_mya_ppp <span class="ot">&lt;-</span> <span class="fu">as.ppp</span>(acled_mya_sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in as.ppp.sf(acled_mya_sf): only first attribute column is used for
-marks</code></pre>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract quarterly armed conflict events and save to a list</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>acled_ppp_list <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (quarter <span class="cf">in</span> quarters) {</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(quarter)</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  acled_mya_quarters_subset <span class="ot">&lt;-</span> <span class="fu">subset</span>(acled_mya_sf, acled_mya_sf<span class="sc">$</span>Quarter <span class="sc">==</span> quarter)</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  acled_mya_quarter_ppp <span class="ot">&lt;-</span> <span class="fu">as.ppp</span>(acled_mya_quarters_subset)</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>  acled_mya_quarter_ppp <span class="ot">&lt;-</span> acled_mya_quarter_ppp[mmr_admin1_owin]</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>  acled_ppp_list[[<span class="fu">as.character</span>(quarter)]] <span class="ot">&lt;-</span> acled_mya_quarter_ppp</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(acled_mya_quarter_ppp)</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2023-4Q"</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(acled_mya_ppp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in as.ppp.sf(acled_mya_quarters_subset): only first attribute column is
+used for marks</code></pre>
+</div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning in default.charmap(ntypes, chars): Too many types to display every type
 as a different character</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: Only 10 out of 47832 symbols are shown in the symbol map</code></pre>
+<pre><code>Warning: Only 10 out of 3761 symbols are shown in the symbol map</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2023-3Q"</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in as.ppp.sf(acled_mya_quarters_subset): only first attribute column is
+used for marks</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in default.charmap(ntypes, chars): Too many types to display every type
+as a different character</code></pre>
 </div>
 <div class="cell-output-display">
 <div>
@@ -484,33 +507,366 @@ as a different character</code></pre>
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>acled_mya_ppp</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Only 10 out of 3195 symbols are shown in the symbol map</code></pre>
+</div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Marked planar point pattern: 47832 points
-marks are of storage type  'character'
-window: rectangle = [-207135, 640934.5] x [1103500.1, 3042960.3] units</code></pre>
+<pre><code>[1] "2023-2Q"</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in as.ppp.sf(acled_mya_quarters_subset): only first attribute column is
+used for marks
+Warning in as.ppp.sf(acled_mya_quarters_subset): Too many types to display
+every type as a different character</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-7-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
 </div>
-</section>
-<section id="th1.3.4.3-handling-duplicates" class="level4">
-<h4 class="anchored" data-anchor-id="th1.3.4.3-handling-duplicates">TH1.3.4.3 Handling duplicates</h4>
-<p>First, we check if there are duplicated points in the ACLED <code>ppp</code>.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">any</span>(<span class="fu">duplicated</span>(acled_mya_ppp))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Only 10 out of 2725 symbols are shown in the symbol map</code></pre>
+</div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] FALSE</code></pre>
+<pre><code>[1] "2023-1Q"</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">multiplicity</span>(acled_mya_ppp) <span class="sc">&gt;</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in as.ppp.sf(acled_mya_quarters_subset): only first attribute column is
+used for marks
+Warning in as.ppp.sf(acled_mya_quarters_subset): Too many types to display
+every type as a different character</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-7-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Only 10 out of 3021 symbols are shown in the symbol map</code></pre>
+</div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0</code></pre>
+<pre><code>[1] "2022-4Q"</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in as.ppp.sf(acled_mya_quarters_subset): only first attribute column is
+used for marks
+Warning in as.ppp.sf(acled_mya_quarters_subset): Too many types to display
+every type as a different character</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-7-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
 </div>
-</section>
-<section id="th1.3.4.4-combining-point-events-object-and-owin" class="level4">
-<h4 class="anchored" data-anchor-id="th1.3.4.4-combining-point-events-object-and-owin">TH1.3.4.4 Combining point events object and <code>owin</code></h4>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>acled_mya_ppp <span class="ot">=</span> acled_mya_ppp[mmr_admin1_owin]</span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(acled_mya_ppp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Only 10 out of 3400 symbols are shown in the symbol map</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2022-3Q"</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in as.ppp.sf(acled_mya_quarters_subset): only first attribute column is
+used for marks
+Warning in as.ppp.sf(acled_mya_quarters_subset): Too many types to display
+every type as a different character</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-7-5.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Only 10 out of 3759 symbols are shown in the symbol map</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2022-2Q"</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in as.ppp.sf(acled_mya_quarters_subset): only first attribute column is
+used for marks
+Warning in as.ppp.sf(acled_mya_quarters_subset): Too many types to display
+every type as a different character</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-7-6.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Only 10 out of 4111 symbols are shown in the symbol map</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2022-1Q"</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in as.ppp.sf(acled_mya_quarters_subset): only first attribute column is
+used for marks
+Warning in as.ppp.sf(acled_mya_quarters_subset): Too many types to display
+every type as a different character</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-7-7.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Only 10 out of 4265 symbols are shown in the symbol map</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2021-4Q"</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in as.ppp.sf(acled_mya_quarters_subset): only first attribute column is
+used for marks
+Warning in as.ppp.sf(acled_mya_quarters_subset): Too many types to display
+every type as a different character</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-7-8.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Only 10 out of 4452 symbols are shown in the symbol map</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2021-3Q"</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in as.ppp.sf(acled_mya_quarters_subset): only first attribute column is
+used for marks
+Warning in as.ppp.sf(acled_mya_quarters_subset): Too many types to display
+every type as a different character</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-7-9.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Only 10 out of 3393 symbols are shown in the symbol map</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2021-2Q"</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in as.ppp.sf(acled_mya_quarters_subset): only first attribute column is
+used for marks
+Warning in as.ppp.sf(acled_mya_quarters_subset): Too many types to display
+every type as a different character</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-7-10.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Only 10 out of 4737 symbols are shown in the symbol map</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2021-1Q"</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in as.ppp.sf(acled_mya_quarters_subset): only first attribute column is
+used for marks
+Warning in as.ppp.sf(acled_mya_quarters_subset): Too many types to display
+every type as a different character</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-7-11.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Only 10 out of 3692 symbols are shown in the symbol map</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2020-4Q"</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in as.ppp.sf(acled_mya_quarters_subset): only first attribute column is
+used for marks
+Warning in as.ppp.sf(acled_mya_quarters_subset): Too many types to display
+every type as a different character</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-7-12.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Only 10 out of 281 symbols are shown in the symbol map</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2020-3Q"</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in as.ppp.sf(acled_mya_quarters_subset): only first attribute column is
+used for marks
+Warning in as.ppp.sf(acled_mya_quarters_subset): Too many types to display
+every type as a different character</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-7-13.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Only 10 out of 276 symbols are shown in the symbol map</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2020-2Q"</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in as.ppp.sf(acled_mya_quarters_subset): only first attribute column is
+used for marks
+Warning in as.ppp.sf(acled_mya_quarters_subset): Too many types to display
+every type as a different character</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-7-14.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Only 10 out of 328 symbols are shown in the symbol map</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2020-1Q"</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in as.ppp.sf(acled_mya_quarters_subset): only first attribute column is
+used for marks
+Warning in as.ppp.sf(acled_mya_quarters_subset): Too many types to display
+every type as a different character</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-7-15.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Only 10 out of 614 symbols are shown in the symbol map</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2019-4Q"</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in as.ppp.sf(acled_mya_quarters_subset): only first attribute column is
+used for marks
+Warning in as.ppp.sf(acled_mya_quarters_subset): Too many types to display
+every type as a different character</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-7-16.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Only 10 out of 600 symbols are shown in the symbol map</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2019-3Q"</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in as.ppp.sf(acled_mya_quarters_subset): only first attribute column is
+used for marks
+Warning in as.ppp.sf(acled_mya_quarters_subset): Too many types to display
+every type as a different character</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-7-17.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Only 10 out of 504 symbols are shown in the symbol map</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2019-2Q"</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in as.ppp.sf(acled_mya_quarters_subset): only first attribute column is
+used for marks
+Warning in as.ppp.sf(acled_mya_quarters_subset): Too many types to display
+every type as a different character</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-7-18.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Only 10 out of 334 symbols are shown in the symbol map</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2019-1Q"</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in as.ppp.sf(acled_mya_quarters_subset): only first attribute column is
+used for marks
+Warning in as.ppp.sf(acled_mya_quarters_subset): Too many types to display
+every type as a different character</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-7-19.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Only 10 out of 377 symbols are shown in the symbol map</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-7-20.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb83"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create all-encompassing ppp</span></span>
+<span id="cb83-2"><a href="#cb83-2" aria-hidden="true" tabindex="-1"></a>acled_mya_ppp <span class="ot">&lt;-</span> <span class="fu">as.ppp</span>(acled_mya_sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in as.ppp.sf(acled_mya_sf): only first attribute column is used for
+marks</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb85"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a>acled_mya_ppp <span class="ot">&lt;-</span> acled_mya_ppp[mmr_admin1_owin]</span>
+<span id="cb85-2"><a href="#cb85-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(acled_mya_ppp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning in default.charmap(ntypes, chars): Too many types to display every type
 as a different character</code></pre>
@@ -521,10 +877,32 @@ as a different character</code></pre>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="take-home-1_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-7-21.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
+<div class="sourceCode cell-code" id="cb88"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a>acled_mya_ppp</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Marked planar point pattern: 47825 points
+marks are of storage type  'character'
+window: polygonal boundary
+enclosing rectangle: [-210008.6, 724647.6] x [1072026.3, 3158467.1] units</code></pre>
+</div>
+</div>
+</section>
+<section id="th1.3.4.3-handling-duplicates" class="level4">
+<h4 class="anchored" data-anchor-id="th1.3.4.3-handling-duplicates">TH1.3.4.3 Handling duplicates</h4>
+<p>First, we check if there are duplicated points in the ACLED <code>ppp</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb90"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a><span class="co"># any(duplicated(acled_mya_ppp))</span></span>
+<span id="cb90-2"><a href="#cb90-2" aria-hidden="true" tabindex="-1"></a><span class="co"># sum(multiplicity(acled_mya_ppp) &gt; 1)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="th1.3.4.4-combining-point-events-object-and-owin" class="level4">
+<h4 class="anchored" data-anchor-id="th1.3.4.4-combining-point-events-object-and-owin">TH1.3.4.4 Combining point events object and <code>owin</code></h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb91"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a><span class="co"># acled_mya_ppp = acled_mya_ppp[mmr_admin1_owin]</span></span>
+<span id="cb91-2"><a href="#cb91-2" aria-hidden="true" tabindex="-1"></a><span class="co"># plot(acled_mya_ppp)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
@@ -536,9 +914,9 @@ as a different character</code></pre>
 <h2 class="anchored" data-anchor-id="th1.5-first-order-sppa---kde">TH1.5 First Order SPPA - KDE</h2>
 <p>Kernel density estimation (KDE) serves to compute the <em>intensity</em> of a point distribution. It has two general steps: first to compute the point intensity, followed by spatial interpolation using a kernel function. Using KDE, we can determine the general region of Myanmar with the highest incidence of armed conflict.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>acled_mya_ppp.km <span class="ot">&lt;-</span> <span class="fu">rescale.ppp</span>(acled_mya_ppp, <span class="dv">1000</span>, <span class="st">"km"</span>)</span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>kde <span class="ot">&lt;-</span> <span class="fu">density</span>(acled_mya_ppp.km, <span class="at">sigma=</span>bw.diggle, <span class="at">edge=</span><span class="cn">TRUE</span>, <span class="at">kernel=</span><span class="st">"gaussian"</span>)</span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(kde)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb92"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a>acled_mya_ppp.km <span class="ot">&lt;-</span> <span class="fu">rescale.ppp</span>(acled_mya_ppp, <span class="dv">1000</span>, <span class="st">"km"</span>)</span>
+<span id="cb92-2"><a href="#cb92-2" aria-hidden="true" tabindex="-1"></a>kde <span class="ot">&lt;-</span> <span class="fu">density</span>(acled_mya_ppp.km, <span class="at">sigma=</span>bw.diggle, <span class="at">edge=</span><span class="cn">TRUE</span>, <span class="at">kernel=</span><span class="st">"gaussian"</span>)</span>
+<span id="cb92-3"><a href="#cb92-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(kde)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -546,47 +924,224 @@ as a different character</code></pre>
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a list to store KDE results and track quarters for each quarter</span></span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>kde_results <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
-<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (q <span class="cf">in</span> quarters) {</span>
-<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(q)</span>
-<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>  acled_mya_quarters_subset <span class="ot">&lt;-</span> acled_mya_ppp.km[acled_mya_ppp.km<span class="sc">$</span>Quarter <span class="sc">==</span> q]</span>
-<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Compute KDE and append to list</span></span>
-<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>  kde_results[[<span class="fu">as.character</span>(q)]] <span class="ot">&lt;-</span> <span class="fu">density</span>(acled_mya_quarters_subset)</span>
-<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] "2023-4Q"
-[1] "2023-3Q"
-[1] "2023-2Q"
-[1] "2023-1Q"
-[1] "2022-4Q"
-[1] "2022-3Q"
-[1] "2022-2Q"
-[1] "2022-1Q"
-[1] "2021-4Q"
-[1] "2021-3Q"
-[1] "2021-2Q"
-[1] "2021-1Q"
-[1] "2020-4Q"
-[1] "2020-3Q"
-[1] "2020-2Q"
-[1] "2020-1Q"
-[1] "2019-4Q"
-[1] "2019-3Q"
-[1] "2019-2Q"
-[1] "2019-1Q"</code></pre>
+<div class="sourceCode cell-code" id="cb93"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a list to store KDE results and track quarters for each quarter</span></span>
+<span id="cb93-2"><a href="#cb93-2" aria-hidden="true" tabindex="-1"></a>kde_results <span class="ot">&lt;-</span> <span class="fu">list</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (quarter <span class="cf">in</span> quarters) {</span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(kde_results[[<span class="fu">as.character</span>(q)]], <span class="at">main =</span> <span class="fu">paste</span>(<span class="st">"KDE for "</span>, q))</span>
-<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb94"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a>kde <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb94-2"><a href="#cb94-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (quarter <span class="cf">in</span> quarters) {</span>
+<span id="cb94-3"><a href="#cb94-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(quarter)</span>
+<span id="cb94-4"><a href="#cb94-4" aria-hidden="true" tabindex="-1"></a>  ppp_item <span class="ot">&lt;-</span> acled_ppp_list[[<span class="fu">as.character</span>(quarter)]]</span>
+<span id="cb94-5"><a href="#cb94-5" aria-hidden="true" tabindex="-1"></a>  ppp_item <span class="ot">&lt;-</span> <span class="fu">rescale.ppp</span>(ppp_item, <span class="dv">1000</span>, <span class="st">"km"</span>)</span>
+<span id="cb94-6"><a href="#cb94-6" aria-hidden="true" tabindex="-1"></a>  ppp_item</span>
+<span id="cb94-7"><a href="#cb94-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Compute KDE and append to list</span></span>
+<span id="cb94-8"><a href="#cb94-8" aria-hidden="true" tabindex="-1"></a>  each_kde <span class="ot">&lt;-</span> <span class="fu">density</span>(ppp_item, <span class="at">sigma=</span>bw.diggle, <span class="at">edge=</span><span class="cn">TRUE</span>, <span class="at">kernel=</span><span class="st">"gaussian"</span>)</span>
+<span id="cb94-9"><a href="#cb94-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(each_kde, <span class="at">main=</span><span class="fu">paste</span>(<span class="st">"KDE for "</span>, quarter))</span>
+<span id="cb94-10"><a href="#cb94-10" aria-hidden="true" tabindex="-1"></a>  kde[[<span class="fu">as.character</span>(quarter)]] <span class="ot">&lt;-</span> each_kde</span>
+<span id="cb94-11"><a href="#cb94-11" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2023-4Q"</code></pre>
+</div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="take-home-1_files/figure-html/unnamed-chunk-10-2.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2023-3Q"</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-11-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2023-2Q"</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-11-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2023-1Q"</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-11-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2022-4Q"</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-11-5.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2022-3Q"</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-11-6.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2022-2Q"</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-11-7.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2022-1Q"</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-11-8.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2021-4Q"</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-11-9.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2021-3Q"</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-11-10.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2021-2Q"</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-11-11.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2021-1Q"</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-11-12.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2020-4Q"</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-11-13.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2020-3Q"</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-11-14.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2020-2Q"</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-11-15.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2020-1Q"</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-11-16.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2019-4Q"</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-11-17.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2019-3Q"</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-11-18.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2019-2Q"</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-11-19.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2019-1Q"</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-11-20.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb115"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb115-1"><a href="#cb115-1" aria-hidden="true" tabindex="-1"></a><span class="co"># for (quarter in quarters) {</span></span>
+<span id="cb115-2"><a href="#cb115-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   plot(kde_results[[as.character(quarter)]], main = paste("KDE for ", quarter))</span></span>
+<span id="cb115-3"><a href="#cb115-3" aria-hidden="true" tabindex="-1"></a><span class="co"># }</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="references" class="level2">
@@ -598,11 +1153,11 @@ as a different character</code></pre>
 <section id="annex-a-spatial-temporal-distribution-of-armed-conflict-occurrences-in-myanmar-between-2019-and-2023" class="level2">
 <h2 class="anchored" data-anchor-id="annex-a-spatial-temporal-distribution-of-armed-conflict-occurrences-in-myanmar-between-2019-and-2023">Annex A: Spatial-temporal distribution of armed conflict occurrences in Myanmar between 2019 and 2023</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(mmr_admin1) <span class="sc">+</span> <span class="fu">tm_polygons</span>() <span class="sc">+</span> <span class="fu">tm_shape</span>(acled_mya_sf) <span class="sc">+</span> <span class="fu">tm_dots</span>(<span class="at">size =</span> <span class="fl">0.1</span>) <span class="sc">+</span> <span class="fu">tm_facets</span>(<span class="at">by=</span><span class="st">"Quarter"</span>, <span class="at">free.coords=</span><span class="cn">FALSE</span>, <span class="at">drop.units=</span><span class="cn">TRUE</span>, <span class="at">ncol=</span><span class="dv">3</span>, <span class="at">nrow=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb116"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb116-1"><a href="#cb116-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(mmr_admin1) <span class="sc">+</span> <span class="fu">tm_polygons</span>() <span class="sc">+</span> <span class="fu">tm_shape</span>(acled_mya_sf) <span class="sc">+</span> <span class="fu">tm_dots</span>(<span class="at">size =</span> <span class="fl">0.1</span>) <span class="sc">+</span> <span class="fu">tm_facets</span>(<span class="at">by=</span><span class="st">"Quarter"</span>, <span class="at">free.coords=</span><span class="cn">FALSE</span>, <span class="at">drop.units=</span><span class="cn">TRUE</span>, <span class="at">ncol=</span><span class="dv">3</span>, <span class="at">nrow=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="take-home-1_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -612,7 +1167,7 @@ as a different character</code></pre>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="take-home-1_files/figure-html/unnamed-chunk-11-2.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-12-2.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -622,7 +1177,7 @@ as a different character</code></pre>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="take-home-1_files/figure-html/unnamed-chunk-11-3.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-12-3.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -632,7 +1187,7 @@ as a different character</code></pre>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="take-home-1_files/figure-html/unnamed-chunk-11-4.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-12-4.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -642,7 +1197,7 @@ as a different character</code></pre>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="take-home-1_files/figure-html/unnamed-chunk-11-5.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-12-5.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -652,7 +1207,7 @@ as a different character</code></pre>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="take-home-1_files/figure-html/unnamed-chunk-11-6.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-12-6.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -662,7 +1217,7 @@ as a different character</code></pre>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="take-home-1_files/figure-html/unnamed-chunk-11-7.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="take-home-1_files/figure-html/unnamed-chunk-12-7.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>

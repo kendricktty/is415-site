@@ -68,7 +68,7 @@ mmr_admin1 <- mmr_admin1 %>% st_transform(crs = 32647)
 tm_shape(mmr_admin1) + tm_polygons() + tm_shape(acled_mya_sf) + tm_dots(size = 0.05)
 ```
 
-Additionally, since the data is timestamped, we are able to plot and compare the frequency of conflict events *over time*. Before we do, though, we need to standardise the date stamps, then compartmentalise them into their year, month and day components, so that we can perform spatial-temporal point patterns analysis (STPPA) later. 
+Additionally, since the data is timestamped, we are able to plot and compare the frequency of conflict events *over time*. Before we do, though, we need to standardise the date stamps, then compartmentalise them into their year, month and day components, so that we can perform spatial-temporal point patterns analysis (STPPA) later. We will also aim to segregate events by whether or not they occurred before the coup on **February 1, 2021**.
 
 A visualisation of the spatial-temporial distribution of points can be found in **Annex A**. Notice the consistent appearance throughout the entire study period of a large cluster of points towards the west of the country - roughly the location of Rahkine state on the border with Bangladesh.
 
@@ -78,8 +78,10 @@ acled_mya_sf <- acled_mya_sf %>%
     mutate(DayOfYear = yday(event_date)) %>%
     mutate(Month_num = format(event_date, "%Y-%m")) %>%  # Year-Month format
     mutate(Month_fac = factor(format(event_date, "%B %Y"))) %>% # Full month
-    mutate(Quarter = paste0(year(event_date), "-", quarter(event_date), "Q"))  # Quarter format
+    mutate(Quarter = paste0(year(event_date), "-", quarter(event_date), "Q")) %>%  # Quarter format
+    mutate(BeforeCoup = ifelse(event_date < as.Date("2021-02-01"), "Before", "After"))
 acled_mya_sf
+beforeAfterCoup <- unique(acled_mya_sf$BeforeCoup)
 quarters <- unique(acled_mya_sf$Quarter)
 print(length(quarters))
 quarters
@@ -99,7 +101,20 @@ plot(mmr_admin1_owin)
 
 #### TH1.3.4.2 Creating quarterly `ppp` objects for KDE and merging `owin`
 
-The code chunk below will extract quarterly 
+The code chunk below will create `ppp` objects for each quarter within the study period, as well as before and after the coup. Each object will be combined with the Myanmar `owin` object and rescaled from metres to kilometres for KDE calculation.
+
+```{r}
+# Extract quarterly armed conflict events and save to a list
+acled_ppp_beforeAfterCoup_list <- list()
+for (coupStatus in beforeAfterCoup) {
+  print(coupStatus)
+  acled_mya_beforeCoup_subset <- subset(acled_mya_sf, acled_mya_sf$BeforeCoup == coupStatus)
+  acled_mya_beforeCoup_ppp <- as.ppp(acled_mya_beforeCoup_subset)
+  acled_mya_beforeCoup_ppp <- acled_mya_beforeCoup_ppp[mmr_admin1_owin]
+  acled_ppp_beforeAfterCoup_list[[as.character(quarter)]] <- acled_mya_beforeCoup_ppp
+  plot(acled_mya_beforeCoup_ppp, main=paste("Armed conflict ppp object ", coupStatus, " coup"))
+}
+```
 
 ```{r}
 # Extract quarterly armed conflict events and save to a list
@@ -109,30 +124,19 @@ for (quarter in quarters) {
   acled_mya_quarters_subset <- subset(acled_mya_sf, acled_mya_sf$Quarter == quarter)
   acled_mya_quarter_ppp <- as.ppp(acled_mya_quarters_subset)
   acled_mya_quarter_ppp <- acled_mya_quarter_ppp[mmr_admin1_owin]
-  acled_ppp_list[[as.character(quarter)]]
-  plot(acled_mya_quarter_ppp)
+  acled_ppp_list[[as.character(quarter)]] <- acled_mya_quarter_ppp
+  plot(acled_mya_quarter_ppp, main=paste("Armed conflict ppp object for ", quarter))
 }
+```
 
+Finally, the process will be repeated but for the entire set at once.
+```{r}
 # Create all-encompassing ppp
-acled_mya_ppp <- as.ppp(acled_mya_sf)
-acled_mya_ppp <- acled_mya_ppp[mmr_admin1_owin]
-plot(acled_mya_ppp)
-acled_mya_ppp
-```
-
-#### TH1.3.4.3 Handling duplicates
-
-First, we check if there are duplicated points in the ACLED `ppp`.
-```{r}
-# any(duplicated(acled_mya_ppp))
-# sum(multiplicity(acled_mya_ppp) > 1)
-```
-
-#### TH1.3.4.4 Combining point events object and `owin`
-
-```{r}
-# acled_mya_ppp = acled_mya_ppp[mmr_admin1_owin]
+# acled_mya_ppp <- as.ppp(acled_mya_sf)
+# acled_mya_ppp <- acled_mya_ppp[mmr_admin1_owin]
+# acled_mya_ppp.km <- rescale.ppp(acled_mya_ppp, 1000, "km")
 # plot(acled_mya_ppp)
+# acled_mya_ppp
 ```
 
 ## TH1.4 Interlude: A brief history of Myanmar's ethnic groups
@@ -141,25 +145,138 @@ First, we check if there are duplicated points in the ACLED `ppp`.
 
 Kernel density estimation (KDE) serves to compute the *intensity* of a point distribution. It has two general steps: first to compute the point intensity, followed by spatial interpolation using a kernel function. Using KDE, we can determine the general region of Myanmar with the highest incidence of armed conflict.
 
+### TH1.5.1 Overall Fixed-Bandwidth KDE
+
 ```{r}
-acled_mya_ppp.km <- rescale.ppp(acled_mya_ppp, 1000, "km")
-kde <- density(acled_mya_ppp.km, sigma=bw.diggle, edge=TRUE, kernel="gaussian")
-plot(kde)
+# overall_fixed_kde <- density(acled_mya_ppp.km, sigma=bw.diggle, edge=TRUE, kernel="gaussian")
+# plot(overall_fixed_kde, main="Overall fixed bandwidth KDE")
+```
+### TH1.5.2 Overall adaptive-bandwidth KDE
+```{r}
+# overall_adaptive_kde <- adaptive.density(acled_mya_ppp.km, method="kernel")
+# plot(overall_adaptive_kde, main="Overall adaptive bandwidth KDE")
+```
 
+### TH1.5.3 Quarterly fixed-bandwidth KDE
+
+```{r}
 # Create a list to store KDE results and track quarters for each quarter
-kde_results <- list()
-
-for (i in length(quarters)) {
-  ppp_item <- acled_ppp_list[i]
+fixed_kde <- list()
+for (quarter in quarters) {
+  print(quarter)
+  ppp_item <- acled_ppp_list[[as.character(quarter)]]
+  ppp_item <- rescale.ppp(ppp_item, 1000, "km")
   ppp_item
   # Compute KDE and append to list
-  kde_results[[as.character(quarters[i])]] <- density(ppp_item, sigma=0.6, edge=TRUE, kernel="gaussian")
+  each_kde <- density(ppp_item, sigma=bw.diggle, edge=TRUE, kernel="gaussian")
+  fixed_kde[[as.character(quarter)]] <- each_kde
+}
+selected_quarters = c("2023-4Q", "2021-1Q", "2020-2Q", "2019-1Q")
+for (quarter in selected_quarters) {
+  plot(fixed_kde[[as.character(quarter)]], main = paste("Fixed bandwidth KDE for ", quarter))
 }
 
+```
+### TH1.5.4 Quarterly adaptive-bandwidth KDE
+
+```{r}
+# Create a list to store adaptive KDE results and track quarters for each quarter
+adaptive_kde <- list()
 for (quarter in quarters) {
-  plot(kde_results[[as.character(quarter)]], main = paste("KDE for ", quarter))
+  print(quarter)
+  ppp_item <- acled_ppp_list[[as.character(quarter)]]
+  ppp_item <- rescale.ppp(ppp_item, 1000, "km")
+  ppp_item
+  # Compute KDE and append to list
+  each_kde <- adaptive.density(ppp_item, method="kernel")
+  adaptive_kde[[as.character(quarter)]] <- each_kde
+}
+
+for (quarter in selected_quarters) {
+  plot(adaptive_kde[[as.character(quarter)]], main = paste("Adaptive bandwidth KDE for ", quarter))
 }
 ```
+
+
+## TH1.6 First-order SPPA: Nearest Neighbour Analysis
+
+To determine whether the plotted armed conflict events are clustered, dispersed or random, we can use the Clark-Evans test. Since tensions between Myanmar's different ethnic groups already existed before the 2021 coup, it would be a good idea to run the test on the subsets of data both before and after the coup.
+
+```{r}
+for (coupStatus in beforeAfterCoup) {
+  print(paste(coupStatus, " coup"))
+  ppp_item <- acled_ppp_beforeAfterCoup_list[[as.character(coupStatus)]]
+  clarkevans.test(ppp_item, correction = "none", clipregion = "mmr_admin1_owin", alternative = c("clustered"), nsim = 99)
+}
+```
+
+## TH1.7 Second-order SPPA
+
+Second order SPPA deals with variations in observations due to the way they interact with one another. The methods used for second order SPPA are the F-, G-, K- and L-functions. In this section, we will perform second-order SPPA on the conflict dataset, applying the F-, G-, K- and L-functions on subsets of the data before and after the 2021 coup.
+
+### TH1.7.1 F-function
+
+```{r}
+for (coupStatus in beforeAfterCoup) {
+  print(paste(coupStatus, " coup"))
+  ppp_item <- acled_ppp_beforeAfterCoup_list[[as.character(coupStatus)]]
+  F_function <- Fest(ppp_item)
+  plot(F_function, main = paste("F function ", coupStatus, " coup"))
+  
+  # Perform complete spatial randomness test
+  csr <- envelope(ppp_item, Fest, nsim=999)
+  plot(csr, main = paste("Complete spatial randomness test for F function ", coupStatus, " coup"))
+}
+```
+
+### TH1.7.2 G-function
+
+```{r}
+for (coupStatus in beforeAfterCoup) {
+  print(paste(coupStatus, " coup"))
+  ppp_item <- acled_ppp_beforeAfterCoup_list[[as.character(coupStatus)]]
+  G_function <- Gest(ppp_item, correction = "border")
+  plot(G_function, xlim=c(0, 500), main = paste("G function ", coupStatus, " coup"))
+  
+  # Perform complete spatial randomness test
+  csr <- envelope(ppp_item, Gest, nsim=999)
+  plot(csr, main = paste("Complete spatial randomness test for G function ", coupStatus, " coup"))
+}
+```
+
+### TH1.7.3 K-function
+
+```{r}
+for (coupStatus in beforeAfterCoup) {
+  print(paste(coupStatus, " coup"))
+  ppp_item <- acled_ppp_beforeAfterCoup_list[[as.character(coupStatus)]]
+  K_function <- Kest(ppp_item, correction = "Ripley")
+  plot(K_function, . -r ~ r, ylab= "K(d)-r", xlab = "d(m)", main = paste("G function ", coupStatus, " coup"))
+  
+  # Perform complete spatial randomness test
+  csr <- envelope(ppp_item, Kest, nsim=999, rank=1, glocal=TRUE)
+  plot(csr, . - r ~ r, xlab="d", ylab="K(d)-r", main = paste("Complete spatial randomness test for K function ", coupStatus, " coup"))
+}
+```
+
+### TH1.7.4 L-function
+
+```{r}
+for (coupStatus in beforeAfterCoup) {
+  print(paste(coupStatus, " coup"))
+  ppp_item <- acled_ppp_beforeAfterCoup_list[[as.character(coupStatus)]]
+  L_function <- Lest(ppp_item, correction = "Ripley")
+  plot(L_function, . -r ~ r, ylab= "L(d)-r", xlab = "d(m)", main = paste("G function ", coupStatus, " coup"))
+  
+  # Perform complete spatial randomness test
+  csr <- envelope(ppp_item, Kest, nsim=999, rank=1, glocal=TRUE)
+  plot(csr, . - r ~ r, xlab="d", ylab="L(d)-r", main = paste("Complete spatial randomness test for L function ", coupStatus, " coup"))
+}
+```
+
+## TH1.8 First-order STPPA: Spatio-temporal KDE
+
+## TH1.9 Second-order STPPA
 
 ## References
 
@@ -169,4 +286,20 @@ for (quarter in quarters) {
 
 ```{r}
 tm_shape(mmr_admin1) + tm_polygons() + tm_shape(acled_mya_sf) + tm_dots(size = 0.1) + tm_facets(by="Quarter", free.coords=FALSE, drop.units=TRUE, ncol=3, nrow=1)
+```
+
+## Annex B: All quarterly fixed-bandwidth KDE plots
+
+```{r}
+for (quarter in quarters) {
+  plot(fixed_kde[[as.character(quarter)]], main = paste("Fixed bandwidth KDE for ", quarter))
+}
+```
+
+## Annex C: All quarterly adaptive-bandwidth KDE plots
+
+```{r}
+for (quarter in quarters) {
+  plot(adaptive_kde[[as.character(quarter)]], main = paste("Adaptive bandwidth KDE for ", quarter))
+}
 ```
