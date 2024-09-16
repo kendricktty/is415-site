@@ -150,6 +150,14 @@ Finally, the process will be repeated but for the entire set at once.
 
 ## TH1.4 Interlude: A brief history of Myanmar's ethnic groups
 
+## TH1.5 First Order STPPA - Spatial-Temporal KDE
+
+Our approach today will be to identify areas of consistently high conflict using spatial-temporal kernel density estimation (KDE). We can then zoom in on these areas for deeper research on why this is the case.
+
+In addition, 
+
+--- OLD ---
+
 ## TH1.5 First Order SPPA - KDE
 
 Kernel density estimation (KDE) serves to compute the *intensity* of a point distribution. It has two general steps: first to compute the point intensity, followed by spatial interpolation using a kernel function. Using KDE, we can determine the general region of Myanmar with the highest incidence of armed conflict.
