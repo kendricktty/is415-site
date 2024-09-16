@@ -12,6 +12,7 @@ website:
         - href: "InClass/ICE2/in-class-2.qmd"
         - href: "InClass/ICE3/in-class-3.qmd"
         - href: "InClass/ICE4/in-class-4.qmd"
+        - href: "InClass/ICE5/in-class-5.qmd"
       - text: "Hands-On Exercises"
         menu:
         - href: "HandsOn/Hands-on_Ex01/hands-on-1.qmd"

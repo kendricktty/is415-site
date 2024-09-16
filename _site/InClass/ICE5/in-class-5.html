@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.56">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Kendrick Teo">
+<meta name="dcterms.date" content="2024-09-16">
+
+<title>CE5: Geographically-weighted statistics with gwModel – IS415 - Kendrick</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">IS415 - Kendrick</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html"> 
+<span class="menu-text">About me</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-in-class-exercises" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">In-Class Exercises</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-in-class-exercises">    
+        <li>
+    <a class="dropdown-item" href="../../InClass/ICE1/in-class-1.html">
+ <span class="dropdown-text">CE1: Geospatial Data Science</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../InClass/ICE2/in-class-2.html">
+ <span class="dropdown-text">CE2: Working with Master Plan Planning Subzone Data</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../InClass/ICE3/in-class-3.html">
+ <span class="dropdown-text">CE3: Spatial Point Patterns Analysis</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../InClass/ICE4/in-class-4.html">
+ <span class="dropdown-text">CE4/H4: Spatial-Temporal Point Patterns Analysis</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../InClass/ICE5/in-class-5.html">
+ <span class="dropdown-text">CE5: Geographically-weighted statistics with gwModel</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-hands-on-exercises" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Hands-On Exercises</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-hands-on-exercises">    
+        <li>
+    <a class="dropdown-item" href="../../HandsOn/Hands-on_Ex01/hands-on-1.html">
+ <span class="dropdown-text">H1: Geospatial Data Wrangling with R</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../HandsOn/Hands-on_Ex02/hands-on-2.html">
+ <span class="dropdown-text">H2: Thematic Mapping and GeoVisualisation with R</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../HandsOn/Hands-on_Ex03/hands-on-3.html">
+ <span class="dropdown-text">H3: Spatial Point Patterns Analysis</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../InClass/ICE4/in-class-4.html">
+ <span class="dropdown-text">CE4/H4: Spatial-Temporal Point Patterns Analysis</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../HandsOn/Hands-on_Ex05/hands-on-5.html">
+ <span class="dropdown-text">H5: Spatial Weights and Appliations</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-take-home-exercises" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Take-home Exercises</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-take-home-exercises">    
+        <li>
+    <a class="dropdown-item" href="../../TakeHome/TakeHome1/take-home-1.html">
+ <span class="dropdown-text">TH1: Geospatial Analytics for Social Good</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#ce5.1-loading-packages" id="toc-ce5.1-loading-packages" class="nav-link active" data-scroll-target="#ce5.1-loading-packages">CE5.1 Loading Packages</a></li>
+  <li><a href="#ce5.2-preparing-data" id="toc-ce5.2-preparing-data" class="nav-link" data-scroll-target="#ce5.2-preparing-data">CE5.2 Preparing data</a>
+  <ul class="collapse">
+  <li><a href="#ce5.2.1-importing-hunan-data-shapefile" id="toc-ce5.2.1-importing-hunan-data-shapefile" class="nav-link" data-scroll-target="#ce5.2.1-importing-hunan-data-shapefile">CE5.2.1 Importing Hunan data shapefile</a></li>
+  <li><a href="#ce5.2.2-importing-hunan-2012-census-data" id="toc-ce5.2.2-importing-hunan-2012-census-data" class="nav-link" data-scroll-target="#ce5.2.2-importing-hunan-2012-census-data">CE5.2.2 Importing Hunan 2012 Census Data</a></li>
+  <li><a href="#ce5.2.3-relational-join" id="toc-ce5.2.3-relational-join" class="nav-link" data-scroll-target="#ce5.2.3-relational-join">CE5.2.3 Relational Join</a></li>
+  <li><a href="#ce5.2.4-saveload-joined-data" id="toc-ce5.2.4-saveload-joined-data" class="nav-link" data-scroll-target="#ce5.2.4-saveload-joined-data">CE5.2.4 Save/load joined data</a></li>
+  </ul></li>
+  <li><a href="#ce5.3-converting-to-spatialpolygondataframe" id="toc-ce5.3-converting-to-spatialpolygondataframe" class="nav-link" data-scroll-target="#ce5.3-converting-to-spatialpolygondataframe">CE5.3 Converting to SpatialPolygonDataFrame</a></li>
+  <li><a href="#ce5.4-geographically-weighted-summary-statistics-with-adaptive-bandwidth" id="toc-ce5.4-geographically-weighted-summary-statistics-with-adaptive-bandwidth" class="nav-link" data-scroll-target="#ce5.4-geographically-weighted-summary-statistics-with-adaptive-bandwidth">CE5.4 Geographically weighted summary statistics with <strong>adaptive</strong> bandwidth</a>
+  <ul class="collapse">
+  <li><a href="#ce5.4.1-aic" id="toc-ce5.4.1-aic" class="nav-link" data-scroll-target="#ce5.4.1-aic">CE5.4.1 AIC</a></li>
+  <li><a href="#ce5.4.2-cross-validation" id="toc-ce5.4.2-cross-validation" class="nav-link" data-scroll-target="#ce5.4.2-cross-validation">CE5.4.2 Cross-validation</a></li>
+  </ul></li>
+  <li><a href="#ce5.5-geographically-weighted-summary-statistics-with-fixed-bandwidth" id="toc-ce5.5-geographically-weighted-summary-statistics-with-fixed-bandwidth" class="nav-link" data-scroll-target="#ce5.5-geographically-weighted-summary-statistics-with-fixed-bandwidth">CE5.5 Geographically weighted summary statistics with <strong>fixed</strong> bandwidth</a>
+  <ul class="collapse">
+  <li><a href="#ce5.5.1-aic" id="toc-ce5.5.1-aic" class="nav-link" data-scroll-target="#ce5.5.1-aic">CE5.5.1 AIC</a></li>
+  <li><a href="#ce5.5.2-cross-validation" id="toc-ce5.5.2-cross-validation" class="nav-link" data-scroll-target="#ce5.5.2-cross-validation">CE5.5.2 Cross-validation</a></li>
+  <li><a href="#ce5.5.3-computing-geographically-weighted-summary-statistics" id="toc-ce5.5.3-computing-geographically-weighted-summary-statistics" class="nav-link" data-scroll-target="#ce5.5.3-computing-geographically-weighted-summary-statistics">CE5.5.3 Computing geographically weighted summary statistics</a></li>
+  </ul></li>
+  <li><a href="#ce5.6-visualising-geographically-weighted-summary-statistics" id="toc-ce5.6-visualising-geographically-weighted-summary-statistics" class="nav-link" data-scroll-target="#ce5.6-visualising-geographically-weighted-summary-statistics">CE5.6 Visualising geographically-weighted summary statistics</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">CE5: Geographically-weighted statistics with gwModel</h1>
+<p class="subtitle lead">In-class Exercise 5</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Kendrick Teo </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">September 16, 2024</p>
+    </div>
+  </div>
+  
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">September 16, 2024</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="ce5.1-loading-packages" class="level2">
+<h2 class="anchored" data-anchor-id="ce5.1-loading-packages">CE5.1 Loading Packages</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sf, spdep, tmap, tidyverse, knitr, GWmodel)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="ce5.2-preparing-data" class="level2">
+<h2 class="anchored" data-anchor-id="ce5.2-preparing-data">CE5.2 Preparing data</h2>
+<section id="ce5.2.1-importing-hunan-data-shapefile" class="level3">
+<h3 class="anchored" data-anchor-id="ce5.2.1-importing-hunan-data-shapefile">CE5.2.1 Importing Hunan data shapefile</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>hunan <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="at">dsn =</span> <span class="st">"data/geospatial"</span>,</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">layer =</span> <span class="st">"Hunan"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Reading layer `Hunan' from data source 
+  `/Users/kendricktty/Gits/SMU_CS/is415-site/InClass/ICE5/data/geospatial' 
+  using driver `ESRI Shapefile'
+Simple feature collection with 88 features and 7 fields
+Geometry type: POLYGON
+Dimension:     XY
+Bounding box:  xmin: 108.7831 ymin: 24.6342 xmax: 114.2544 ymax: 30.12812
+Geodetic CRS:  WGS 84</code></pre>
+</div>
+</div>
+</section>
+<section id="ce5.2.2-importing-hunan-2012-census-data" class="level3">
+<h3 class="anchored" data-anchor-id="ce5.2.2-importing-hunan-2012-census-data">CE5.2.2 Importing Hunan 2012 Census Data</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>dev_2012 <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/aspatial/Hunan_2012.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 88 Columns: 29
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr  (2): County, City
+dbl (27): avg_wage, deposite, FAI, Gov_Rev, Gov_Exp, GDP, GDPPC, GIO, Loan, ...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+</div>
+</section>
+<section id="ce5.2.3-relational-join" class="level3">
+<h3 class="anchored" data-anchor-id="ce5.2.3-relational-join">CE5.2.3 Relational Join</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>hunan <span class="ot">&lt;-</span> <span class="fu">left_join</span>(hunan, dev_2012) <span class="sc">%&gt;%</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="dv">7</span>, <span class="dv">15</span>, <span class="dv">16</span>, <span class="dv">31</span>, <span class="dv">32</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Joining with `by = join_by(County)`</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Only selects fields we are interested in, in this case GDP per capita</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="ce5.2.4-saveload-joined-data" class="level3">
+<h3 class="anchored" data-anchor-id="ce5.2.4-saveload-joined-data">CE5.2.4 Save/load joined data</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># To save the need to regenerate the table later</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">write_rds</span>(hunan, <span class="st">"data/rds/hunan_sf.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>hunan <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"data/rds/hunan_sf.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="ce5.3-converting-to-spatialpolygondataframe" class="level2">
+<h2 class="anchored" data-anchor-id="ce5.3-converting-to-spatialpolygondataframe">CE5.3 Converting to SpatialPolygonDataFrame</h2>
+<p><code>GWmodel</code>, being a relatively older package, requires spatial data to be represented as <code>sp</code> objects.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>hunan_sp <span class="ot">&lt;-</span> hunan <span class="sc">%&gt;%</span> <span class="fu">as_Spatial</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="ce5.4-geographically-weighted-summary-statistics-with-adaptive-bandwidth" class="level2">
+<h2 class="anchored" data-anchor-id="ce5.4-geographically-weighted-summary-statistics-with-adaptive-bandwidth">CE5.4 Geographically weighted summary statistics with <strong>adaptive</strong> bandwidth</h2>
+<section id="ce5.4.1-aic" class="level3">
+<h3 class="anchored" data-anchor-id="ce5.4.1-aic">CE5.4.1 AIC</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>bw_AIC <span class="ot">&lt;-</span> <span class="fu">bw.gwr</span>(GDPPC <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> hunan_sp, <span class="at">approach=</span><span class="st">"AIC"</span>, <span class="at">adaptive=</span><span class="cn">TRUE</span>, <span class="at">kernel=</span><span class="st">"bisquare"</span>, <span class="at">longlat=</span>T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Adaptive bandwidth (number of nearest neighbours): 62 AICc value: 1923.156 
+Adaptive bandwidth (number of nearest neighbours): 46 AICc value: 1920.469 
+Adaptive bandwidth (number of nearest neighbours): 36 AICc value: 1917.324 
+Adaptive bandwidth (number of nearest neighbours): 29 AICc value: 1916.661 
+Adaptive bandwidth (number of nearest neighbours): 26 AICc value: 1914.897 
+Adaptive bandwidth (number of nearest neighbours): 22 AICc value: 1914.045 
+Adaptive bandwidth (number of nearest neighbours): 22 AICc value: 1914.045 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>bw_AIC</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 22</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># GDPPC ~ 1: Defines the independent variable</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="ce5.4.2-cross-validation" class="level3">
+<h3 class="anchored" data-anchor-id="ce5.4.2-cross-validation">CE5.4.2 Cross-validation</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>bw_CV <span class="ot">&lt;-</span> <span class="fu">bw.gwr</span>(GDPPC <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> hunan_sp, <span class="at">approach=</span><span class="st">"CV"</span>, <span class="at">adaptive=</span><span class="cn">FALSE</span>, <span class="at">kernel=</span><span class="st">"bisquare"</span>, <span class="at">longlat=</span>T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Fixed bandwidth: 357.4897 CV score: 16265191728 
+Fixed bandwidth: 220.985 CV score: 14954930931 
+Fixed bandwidth: 136.6204 CV score: 14134185837 
+Fixed bandwidth: 84.48025 CV score: 13693362460 
+Fixed bandwidth: 52.25585 CV score: Inf 
+Fixed bandwidth: 104.396 CV score: 13891052305 
+Fixed bandwidth: 72.17162 CV score: 13577893677 
+Fixed bandwidth: 64.56447 CV score: 14681160609 
+Fixed bandwidth: 76.8731 CV score: 13444716890 
+Fixed bandwidth: 79.77877 CV score: 13503296834 
+Fixed bandwidth: 75.07729 CV score: 13452450771 
+Fixed bandwidth: 77.98296 CV score: 13457916138 
+Fixed bandwidth: 76.18716 CV score: 13442911302 
+Fixed bandwidth: 75.76323 CV score: 13444600639 
+Fixed bandwidth: 76.44916 CV score: 13442994078 
+Fixed bandwidth: 76.02523 CV score: 13443285248 
+Fixed bandwidth: 76.28724 CV score: 13442844774 
+Fixed bandwidth: 76.34909 CV score: 13442864995 
+Fixed bandwidth: 76.24901 CV score: 13442855596 
+Fixed bandwidth: 76.31086 CV score: 13442847019 
+Fixed bandwidth: 76.27264 CV score: 13442846793 
+Fixed bandwidth: 76.29626 CV score: 13442844829 
+Fixed bandwidth: 76.28166 CV score: 13442845238 
+Fixed bandwidth: 76.29068 CV score: 13442844678 
+Fixed bandwidth: 76.29281 CV score: 13442844691 
+Fixed bandwidth: 76.28937 CV score: 13442844698 
+Fixed bandwidth: 76.2915 CV score: 13442844676 
+Fixed bandwidth: 76.292 CV score: 13442844679 
+Fixed bandwidth: 76.29119 CV score: 13442844676 
+Fixed bandwidth: 76.29099 CV score: 13442844676 
+Fixed bandwidth: 76.29131 CV score: 13442844676 
+Fixed bandwidth: 76.29138 CV score: 13442844676 
+Fixed bandwidth: 76.29126 CV score: 13442844676 
+Fixed bandwidth: 76.29123 CV score: 13442844676 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>bw_CV</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 76.29126</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="ce5.5-geographically-weighted-summary-statistics-with-fixed-bandwidth" class="level2">
+<h2 class="anchored" data-anchor-id="ce5.5-geographically-weighted-summary-statistics-with-fixed-bandwidth">CE5.5 Geographically weighted summary statistics with <strong>fixed</strong> bandwidth</h2>
+<section id="ce5.5.1-aic" class="level3">
+<h3 class="anchored" data-anchor-id="ce5.5.1-aic">CE5.5.1 AIC</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>bw_AIC <span class="ot">&lt;-</span> <span class="fu">bw.gwr</span>(GDPPC <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> hunan_sp, <span class="at">approach=</span><span class="st">"AIC"</span>, <span class="at">adaptive=</span><span class="cn">FALSE</span>, <span class="at">kernel=</span><span class="st">"bisquare"</span>, <span class="at">longlat=</span>T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Fixed bandwidth: 357.4897 AICc value: 1927.631 
+Fixed bandwidth: 220.985 AICc value: 1921.547 
+Fixed bandwidth: 136.6204 AICc value: 1919.993 
+Fixed bandwidth: 84.48025 AICc value: 1940.603 
+Fixed bandwidth: 168.8448 AICc value: 1919.457 
+Fixed bandwidth: 188.7606 AICc value: 1920.007 
+Fixed bandwidth: 156.5362 AICc value: 1919.41 
+Fixed bandwidth: 148.929 AICc value: 1919.527 
+Fixed bandwidth: 161.2377 AICc value: 1919.392 
+Fixed bandwidth: 164.1433 AICc value: 1919.403 
+Fixed bandwidth: 159.4419 AICc value: 1919.393 
+Fixed bandwidth: 162.3475 AICc value: 1919.394 
+Fixed bandwidth: 160.5517 AICc value: 1919.391 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>bw_AIC</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 160.5517</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># GDPPC ~ 1: Defines the independent variable</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="ce5.5.2-cross-validation" class="level3">
+<h3 class="anchored" data-anchor-id="ce5.5.2-cross-validation">CE5.5.2 Cross-validation</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>bw_CV <span class="ot">&lt;-</span> <span class="fu">bw.gwr</span>(GDPPC <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> hunan_sp, <span class="at">approach=</span><span class="st">"CV"</span>, <span class="at">adaptive=</span><span class="cn">FALSE</span>, <span class="at">kernel=</span><span class="st">"bisquare"</span>, <span class="at">longlat=</span>T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Fixed bandwidth: 357.4897 CV score: 16265191728 
+Fixed bandwidth: 220.985 CV score: 14954930931 
+Fixed bandwidth: 136.6204 CV score: 14134185837 
+Fixed bandwidth: 84.48025 CV score: 13693362460 
+Fixed bandwidth: 52.25585 CV score: Inf 
+Fixed bandwidth: 104.396 CV score: 13891052305 
+Fixed bandwidth: 72.17162 CV score: 13577893677 
+Fixed bandwidth: 64.56447 CV score: 14681160609 
+Fixed bandwidth: 76.8731 CV score: 13444716890 
+Fixed bandwidth: 79.77877 CV score: 13503296834 
+Fixed bandwidth: 75.07729 CV score: 13452450771 
+Fixed bandwidth: 77.98296 CV score: 13457916138 
+Fixed bandwidth: 76.18716 CV score: 13442911302 
+Fixed bandwidth: 75.76323 CV score: 13444600639 
+Fixed bandwidth: 76.44916 CV score: 13442994078 
+Fixed bandwidth: 76.02523 CV score: 13443285248 
+Fixed bandwidth: 76.28724 CV score: 13442844774 
+Fixed bandwidth: 76.34909 CV score: 13442864995 
+Fixed bandwidth: 76.24901 CV score: 13442855596 
+Fixed bandwidth: 76.31086 CV score: 13442847019 
+Fixed bandwidth: 76.27264 CV score: 13442846793 
+Fixed bandwidth: 76.29626 CV score: 13442844829 
+Fixed bandwidth: 76.28166 CV score: 13442845238 
+Fixed bandwidth: 76.29068 CV score: 13442844678 
+Fixed bandwidth: 76.29281 CV score: 13442844691 
+Fixed bandwidth: 76.28937 CV score: 13442844698 
+Fixed bandwidth: 76.2915 CV score: 13442844676 
+Fixed bandwidth: 76.292 CV score: 13442844679 
+Fixed bandwidth: 76.29119 CV score: 13442844676 
+Fixed bandwidth: 76.29099 CV score: 13442844676 
+Fixed bandwidth: 76.29131 CV score: 13442844676 
+Fixed bandwidth: 76.29138 CV score: 13442844676 
+Fixed bandwidth: 76.29126 CV score: 13442844676 
+Fixed bandwidth: 76.29123 CV score: 13442844676 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>bw_CV</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 76.29126</code></pre>
+</div>
+</div>
+</section>
+<section id="ce5.5.3-computing-geographically-weighted-summary-statistics" class="level3">
+<h3 class="anchored" data-anchor-id="ce5.5.3-computing-geographically-weighted-summary-statistics">CE5.5.3 Computing geographically weighted summary statistics</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>gwstat <span class="ot">&lt;-</span> <span class="fu">gwss</span>(<span class="at">data=</span>hunan_sp, <span class="at">vars=</span><span class="st">"GDPPC"</span>, <span class="at">bw=</span>bw_AIC, <span class="at">kernel=</span><span class="st">"bisquare"</span>, <span class="at">adaptive=</span><span class="cn">TRUE</span>, <span class="at">longlat=</span>T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="ce5.5.3.1-preparing-the-output-data" class="level4">
+<h4 class="anchored" data-anchor-id="ce5.5.3.1-preparing-the-output-data">CE5.5.3.1 Preparing the output data</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>gwstat_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(gwstat<span class="sc">$</span>SDF)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><code>cbind()</code> is then used to append the newly derived dataframe to <code>hunan_sf</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>hunan_gstat <span class="ot">&lt;-</span> <span class="fu">cbind</span>(hunan, gwstat_df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="ce5.6-visualising-geographically-weighted-summary-statistics" class="level2">
+<h2 class="anchored" data-anchor-id="ce5.6-visualising-geographically-weighted-summary-statistics">CE5.6 Visualising geographically-weighted summary statistics</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(hunan_gstat) <span class="sc">+</span> <span class="fu">tm_fill</span>(<span class="st">"GDPPC_LM"</span>, <span class="at">n=</span><span class="dv">5</span>, <span class="at">style=</span><span class="st">"quantile"</span>) <span class="sc">+</span> <span class="fu">tm_borders</span>(<span class="at">alpha=</span><span class="fl">0.5</span>) <span class="sc">+</span> <span class="fu">tm_layout</span>(<span class="at">main.title=</span><span class="st">"Distribution of geographically weighted mean"</span>, <span class="at">main.title.position =</span> <span class="st">"center"</span>, <span class="at">main.title.size =</span> <span class="dv">1</span>, <span class="at">legend.text.size =</span> <span class="fl">0.5</span>, <span class="at">legend.height =</span> <span class="fl">1.5</span>, <span class="at">legend.width =</span> <span class="fl">1.5</span>, <span class="at">frame =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="in-class-5_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

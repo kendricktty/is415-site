@@ -1,0 +1,114 @@
+---
+title: "CE5: Geographically-weighted statistics with gwModel"
+subtitle: "In-class Exercise 5"
+author: "Kendrick Teo"
+date: "2024-09-16"
+date-modified: "last-modified"
+
+execute: 
+  eval: true
+  echo: true
+  freeze: true
+---
+
+## CE5.1 Loading Packages
+
+```{r}
+pacman::p_load(sf, spdep, tmap, tidyverse, knitr, GWmodel)
+```
+
+## CE5.2 Preparing data
+
+### CE5.2.1 Importing Hunan data shapefile
+
+```{r}
+hunan <- st_read(dsn = "data/geospatial",
+                 layer = "Hunan")
+```
+
+### CE5.2.2 Importing Hunan 2012 Census Data
+
+```{r}
+dev_2012 <- read_csv("data/aspatial/Hunan_2012.csv")
+```
+
+### CE5.2.3 Relational Join
+
+```{r}
+hunan <- left_join(hunan, dev_2012) %>%
+  select(1:3, 7, 15, 16, 31, 32)
+  # Only selects fields we are interested in, in this case GDP per capita
+```
+
+### CE5.2.4 Save/load joined data
+
+```{r}
+# To save the need to regenerate the table later
+write_rds(hunan, "data/rds/hunan_sf.rds")
+```
+
+```{r}
+hunan <- read_rds("data/rds/hunan_sf.rds")
+```
+
+## CE5.3 Converting to SpatialPolygonDataFrame
+
+`GWmodel`, being a relatively older package, requires spatial data to be represented as `sp` objects.
+
+```{r}
+hunan_sp <- hunan %>% as_Spatial()
+```
+
+## CE5.4 Geographically weighted summary statistics with **adaptive** bandwidth
+
+### CE5.4.1 AIC
+
+```{r}
+bw_AIC <- bw.gwr(GDPPC ~ 1, data = hunan_sp, approach="AIC", adaptive=TRUE, kernel="bisquare", longlat=T)
+bw_AIC
+# GDPPC ~ 1: Defines the independent variable
+```
+
+### CE5.4.2 Cross-validation
+```{r}
+bw_CV <- bw.gwr(GDPPC ~ 1, data = hunan_sp, approach="CV", adaptive=FALSE, kernel="bisquare", longlat=T)
+bw_CV
+```
+
+## CE5.5 Geographically weighted summary statistics with **fixed** bandwidth
+
+### CE5.5.1 AIC
+
+```{r}
+bw_AIC <- bw.gwr(GDPPC ~ 1, data = hunan_sp, approach="AIC", adaptive=FALSE, kernel="bisquare", longlat=T)
+bw_AIC
+# GDPPC ~ 1: Defines the independent variable
+```
+
+### CE5.5.2 Cross-validation
+```{r}
+bw_CV <- bw.gwr(GDPPC ~ 1, data = hunan_sp, approach="CV", adaptive=FALSE, kernel="bisquare", longlat=T)
+bw_CV
+```
+
+### CE5.5.3 Computing geographically weighted summary statistics
+
+```{r}
+gwstat <- gwss(data=hunan_sp, vars="GDPPC", bw=bw_AIC, kernel="bisquare", adaptive=TRUE, longlat=T)
+```
+
+#### CE5.5.3.1 Preparing the output data
+
+```{r}
+gwstat_df <- as.data.frame(gwstat$SDF)
+```
+`cbind()` is then used to append the newly derived dataframe to `hunan_sf`.
+
+```{r}
+hunan_gstat <- cbind(hunan, gwstat_df)
+```
+
+## CE5.6 Visualising geographically-weighted summary statistics
+```{r}
+tm_shape(hunan_gstat) + tm_fill("GDPPC_LM", n=5, style="quantile") + tm_borders(alpha=0.5) + tm_layout(main.title="Distribution of geographically weighted mean", main.title.position = "center", main.title.size = 1, legend.text.size = 0.5, legend.height = 1.5, legend.width = 1.5, frame = TRUE)
+```

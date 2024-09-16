@@ -36,6 +36,7 @@ The `R` packages we will use today are:
 - `sf`
 - `tmap`
 - `spatstat`
+- `sparr`
 - `raster`
 - `maptools`
 
@@ -43,8 +44,8 @@ The `R` packages we will use today are:
 
 
 ```{r}
-pacman::p_load(sf, raster, spatstat, tmap, tidyverse)
-acled_mya <- read_csv("data/ACLED_Myanmar.csv")
+pacman::p_load(sf, raster, spatstat, sparr, tmap, tidyverse)
+acled_mya <- read_csv("data/2021-01-01-2024-09-16-Southeast_Asia-Myanmar.csv")
 head(acled_mya)
 ```
 
@@ -108,13 +109,21 @@ acled_mya_sf <- acled_mya_sf %>%
     mutate(DayOfYear = yday(event_date)) %>%
     mutate(Month_num = format(event_date, "%Y-%m")) %>%  # Year-Month format
     mutate(Month_fac = factor(format(event_date, "%B %Y"))) %>% # Full month
-    mutate(Quarter = paste0(year(event_date), "-", quarter(event_date), "Q")) %>%  # Quarter format
-    mutate(BeforeCoup = ifelse(event_date < as.Date("2021-02-01"), "Before", "After"))
+    mutate(Quarter_num = year(event_date) * 10 + quarter(event_date)) %>%
+    mutate(Quarter = paste0(year(event_date), "-", quarter(event_date), "Q"))  # Quarter format
+    # mutate(BeforeCoup = ifelse(event_date < as.Date("2021-02-01"), "Before", "After"))
 acled_mya_sf
-beforeAfterCoup <- unique(acled_mya_sf$BeforeCoup)
+# beforeAfterCoup <- unique(acled_mya_sf$BeforeCoup)
 quarters <- unique(acled_mya_sf$Quarter)
 print(length(quarters))
 quarters
+```
+
+```{r}
+tm_shape(mmr_admin1) + tm_polygons() + tm_shape(acled_mya_sf) + tm_dots(size = 0.05) + tm_facets(by="Quarter_num", free.coords=FALSE, drop.units = TRUE)
+
+# Select quarters to plot STKDE so that it runs faster
+selected_quarters = c("2024-3Q", "2023-1Q", "2021-2Q", "2021-1Q")
 ```
 
 
@@ -147,15 +156,15 @@ The code chunk below will create `ppp` objects for each quarter within the study
 
 ```{r}
 # Extract quarterly armed conflict events and save to a list
-acled_ppp_beforeAfterCoup_list <- list()
-for (coupStatus in beforeAfterCoup) {
-  print(coupStatus)
-  acled_mya_beforeCoup_subset <- subset(acled_mya_sf, acled_mya_sf$BeforeCoup == coupStatus)
-  acled_mya_beforeCoup_ppp <- as.ppp(acled_mya_beforeCoup_subset)
-  acled_mya_beforeCoup_ppp <- acled_mya_beforeCoup_ppp[mmr_admin1_owin]
-  acled_ppp_beforeAfterCoup_list[[as.character(coupStatus)]] <- acled_mya_beforeCoup_ppp
-  plot(acled_mya_beforeCoup_ppp, main=paste("Armed conflict ppp object ", coupStatus, " coup"))
-}
+# acled_ppp_beforeAfterCoup_list <- list()
+# for (coupStatus in beforeAfterCoup) {
+#   print(coupStatus)
+#   acled_mya_beforeCoup_subset <- subset(acled_mya_sf, acled_mya_sf$BeforeCoup == coupStatus)
+#   acled_mya_beforeCoup_ppp <- as.ppp(acled_mya_beforeCoup_subset)
+#   acled_mya_beforeCoup_ppp <- acled_mya_beforeCoup_ppp[mmr_admin1_owin]
+#   acled_ppp_beforeAfterCoup_list[[as.character(coupStatus)]] <- acled_mya_beforeCoup_ppp
+#   plot(acled_mya_beforeCoup_ppp, main=paste("Armed conflict ppp object ", coupStatus, " coup"))
+# }
 ```
 
 ```{r}
@@ -179,6 +188,7 @@ Finally, the process will be repeated but for the entire set at once.
 
 
 ```{r}
+#| echo: false
 # Create all-encompassing ppp
 # acled_mya_ppp <- as.ppp(acled_mya_sf)
 # acled_mya_ppp <- acled_mya_ppp[mmr_admin1_owin]
@@ -228,7 +238,7 @@ Kernel density estimation (KDE) serves to compute the *intensity* of a point dis
 ```{r}
 # Create a list to store KDE results and track quarters for each quarter
 fixed_kde <- list()
-for (quarter in quarters) {
+for (quarter in selected_quarters) {
   print(quarter)
   ppp_item <- acled_ppp_list[[as.character(quarter)]]
   ppp_item <- rescale.ppp(ppp_item, 1000, "km")
@@ -237,7 +247,6 @@ for (quarter in quarters) {
   each_kde <- density(ppp_item, sigma=bw.diggle, edge=TRUE, kernel="gaussian")
   fixed_kde[[as.character(quarter)]] <- each_kde
 }
-selected_quarters = c("2023-4Q", "2021-1Q", "2020-2Q", "2019-1Q")
 for (quarter in selected_quarters) {
   plot(fixed_kde[[as.character(quarter)]], main = paste("Fixed bandwidth KDE for ", quarter))
 }
@@ -254,7 +263,7 @@ for (quarter in selected_quarters) {
 ```{r}
 # Create a list to store adaptive KDE results and track quarters for each quarter
 adaptive_kde <- list()
-for (quarter in quarters) {
+for (quarter in selected_quarters) {
   print(quarter)
   ppp_item <- acled_ppp_list[[as.character(quarter)]]
   ppp_item <- rescale.ppp(ppp_item, 1000, "km")
@@ -263,17 +272,42 @@ for (quarter in quarters) {
   each_kde <- adaptive.density(ppp_item, method="kernel")
   adaptive_kde[[as.character(quarter)]] <- each_kde
 }
+```
 
+```{r}
 for (quarter in selected_quarters) {
-  plot(adaptive_kde[[as.character(quarter)]], main = paste("Adaptive bandwidth KDE for ", quarter))
+  plot(adaptive_kde[[as.character(quarter)]], main = paste("Adaptive bandwidth KDE for", quarter))
 }
 ```
 
 
 
 
+## TH1.6 First Order STPPA: Spatio-temporal KDE
 
-## TH1.6 First-order SPPA: Nearest Neighbour Analysis
+
+
+
+```{r}
+acled_mya_sf_quarters <- acled_mya_sf %>% select(Quarter_num)
+acled_mya_quarters_ppp <- as.ppp(acled_mya_sf_quarters)
+acled_mya_quarters_ppp <- acled_mya_quarters_ppp[mmr_admin1_owin]
+plot(acled_mya_quarters_ppp)
+
+st_kde <- spattemp.density(acled_mya_quarters_ppp)
+summary(st_kde)
+```
+
+```{r}
+for (quarter in quarters) {
+  plot(st_kde, override.par=FALSE, fix.range=TRUE, main=paste("Spatial-temporal KDE for", quarter))
+}
+```
+
+
+
+
+## TH1.7 First-order SPPA: Nearest Neighbour Analysis
 
 To determine whether the plotted armed conflict events are clustered, dispersed or random, we can use the Clark-Evans test. Since tensions between Myanmar's different ethnic groups already existed before the 2021 coup, it would be a good idea to run the test on the subsets of data both before and after the coup.
 
@@ -283,13 +317,13 @@ To determine whether the plotted armed conflict events are clustered, dispersed 
 ```{r}
 ppp_item <- acled_ppp_beforeAfterCoup_list[[as.character("Before")]]
 print("Clark Evans Test: Before Coup")
-clarkevans.test(ppp_item, correction = "none", clipregion = "mmr_admin1_owin", alternative = c("clustered"), nsim = 99)
+clarkevans.test(ppp_item, correction = "none", clipregion = "mmr_admin1_owin", alternative = c("clustered"), nsim = 9)
 ```
 
 ```{r}
 ppp_item <- acled_ppp_beforeAfterCoup_list[[as.character("After")]]
 print("Clark Evans Test: After Coup")
-clarkevans.test(ppp_item, correction = "none", clipregion = "mmr_admin1_owin", alternative = c("clustered"), nsim = 99)
+clarkevans.test(ppp_item, correction = "none", clipregion = "mmr_admin1_owin", alternative = c("clustered"), nsim = 9)
 ```
 
 
@@ -305,15 +339,15 @@ Second order SPPA deals with variations in observations due to the way they inte
 
 
 ```{r}
-for (coupStatus in beforeAfterCoup) {
-  print(paste(coupStatus, " coup"))
-  ppp_item <- acled_ppp_beforeAfterCoup_list[[as.character(coupStatus)]]
+for (quarter in selected_quarters) {
+  print(quarter)
+  ppp_item <- acled_ppp_beforeAfterCoup_list[[as.character(quarter)]]
   F_function <- Fest(ppp_item)
-  plot(F_function, main = paste("F function ", coupStatus, " coup"))
+  plot(F_function, main = paste("F function for", quarter))
   
   # Perform complete spatial randomness test
-  csr <- envelope(ppp_item, Fest, nsim=49)
-  plot(csr, main = paste("Complete spatial randomness test for F function ", coupStatus, " coup"))
+  csr <- envelope(ppp_item, Fest, nsim=9)
+  plot(csr, main = paste("Complete spatial randomness test for F function for", quarter))
 }
 ```
 
@@ -326,15 +360,15 @@ for (coupStatus in beforeAfterCoup) {
 
 
 ```{r}
-for (coupStatus in beforeAfterCoup) {
+for (quarter in selected_quarters) {
   print(paste(coupStatus, " coup"))
-  ppp_item <- acled_ppp_beforeAfterCoup_list[[as.character(coupStatus)]]
+  ppp_item <- acled_ppp_beforeAfterCoup_list[[as.character(quarter)]]
   G_function <- Gest(ppp_item, correction = "border")
-  plot(G_function, xlim=c(0, 500), main = paste("G function ", coupStatus, " coup"))
+  plot(G_function, xlim=c(0, 500), main = paste("G function for", quarter))
   
   # Perform complete spatial randomness test
-  csr <- envelope(ppp_item, Gest, nsim=49)
-  plot(csr, main = paste("Complete spatial randomness test for G function ", coupStatus, " coup"))
+  csr <- envelope(ppp_item, Gest, nsim=9)
+  plot(csr, main = paste("Complete spatial randomness test for G function for", quarter))
 }
 ```
 
@@ -347,15 +381,15 @@ for (coupStatus in beforeAfterCoup) {
 
 
 ```{r}
-for (coupStatus in beforeAfterCoup) {
+for (quarter in selected_quarters) {
   print(paste(coupStatus, " coup"))
-  ppp_item <- acled_ppp_beforeAfterCoup_list[[as.character(coupStatus)]]
+  ppp_item <- acled_ppp_beforeAfterCoup_list[[as.character(quarter)]]
   K_function <- Kest(ppp_item, correction = "Ripley")
-  plot(K_function, . -r ~ r, ylab= "K(d)-r", xlab = "d(m)", main = paste("G function ", coupStatus, " coup"))
+  plot(K_function, . -r ~ r, ylab= "K(d)-r", xlab = "d(m)", main = paste("K function for", quarter))
   
   # Perform complete spatial randomness test
-  csr <- envelope(ppp_item, Kest, nsim=49, rank=1, glocal=TRUE)
-  plot(csr, . - r ~ r, xlab="d", ylab="K(d)-r", main = paste("Complete spatial randomness test for K function ", coupStatus, " coup"))
+  csr <- envelope(ppp_item, Kest, nsim=9, rank=1, glocal=TRUE)
+  plot(csr, . - r ~ r, xlab="d", ylab="K(d)-r", main = paste("Complete spatial randomness test for K function for", quarter))
 }
 ```
 
@@ -368,24 +402,20 @@ for (coupStatus in beforeAfterCoup) {
 
 
 ```{r}
-for (coupStatus in beforeAfterCoup) {
+for (quarter in selected_quarters) {
   print(paste(coupStatus," coup"))
-  ppp_item <- acled_ppp_beforeAfterCoup_list[[as.character(coupStatus)]]
+  ppp_item <- acled_ppp_beforeAfterCoup_list[[as.character(quarter)]]
   L_function <- Lest(ppp_item, correction = "Ripley")
-  plot(L_function, . -r ~ r, ylab= "L(d)-r", xlab = "d(m)", main = paste("G function ", coupStatus, " coup"))
+  plot(L_function, . -r ~ r, ylab= "L(d)-r", xlab = "d(m)", main = paste("L function for", quarter))
   
   # Perform complete spatial randomness test
-  csr <- envelope(ppp_item, Kest, nsim=49, rank=1, glocal=TRUE)
-  plot(csr, . - r ~ r, xlab="d", ylab="L(d)-r", main = paste("Complete spatial randomness test for L function ", coupStatus, " coup"))
+  csr <- envelope(ppp_item, Kest, nsim=9, rank=1, glocal=TRUE)
+  plot(csr, . - r ~ r, xlab="d", ylab="L(d)-r", main = paste("Complete spatial randomness test for L function for", quarter))
 }
 ```
 
 
 
-
-## TH1.8 First-order STPPA: Spatio-temporal KDE
-
-## TH1.9 Second-order STPPA
 
 ## References
 
