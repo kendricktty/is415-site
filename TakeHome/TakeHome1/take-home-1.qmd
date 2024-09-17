@@ -70,13 +70,15 @@ acled_mya_sf <- st_as_sf(acled_mya, coords = c("longitude", "latitude"), crs = 4
 
 The second largest country in Southeast Asia at 676,578 square kilometres and a member state of the **Association of Southeast Asian Nations (ASEAN)**, **Myanmar** features fertile tropical deltas in the south and the rugged Himalayan foothills to its north. It shares borders with China to the north and northeast, Laos and Thailand to the east and Southeast, and Bangladesh and India to the west and northwest.
 
-Myanmar is organised into seven **states**, seven **regions**, and one union territory encompassing the capital **Naypyitaw**. The following code chunk plots the administrative divisions of Myanmar into an interactive map.
+Myanmar is organised into seven **states**, seven **regions**, and one union territory - its capital, **Naypyitaw**, located at the country's centre. The following code chunk plots the administrative divisions of Myanmar into an interactive map.
 
 ```{r}
 tmap_mode('view')
 tm_shape(mmr_admin1) + tm_polygons()
 tmap_mode('plot')
 ```
+
+Crucially, Myanmar also boast significant ethnic diversity. 
 
 ## TH1.4 Data wrangling
 
@@ -91,6 +93,8 @@ tm_shape(mmr_admin1) + tm_polygons() + tm_shape(acled_mya_sf) + tm_dots(size = 0
 ```
 
 ### TH1.4.2 Data cleansing
+
+#### TH1.4.2.1 Feature engineering
 
 The ACLED dataset splits the conflict incidents in **Shan state** into *North*, *South* and *East*, and incidents in the **Bago region** into *East* and *West*. We need to combine these
 
@@ -132,6 +136,10 @@ tm_shape(mmr_admin1) + tm_polygons() + tm_shape(acled_mya_sf) + tm_dots(size = 0
 ```
 ```{r}
 tm_shape(mmr_admin1) + tm_polygons() + tm_shape(acled_mya_sf) + tm_dots(size = 0.05) + tm_facets(by="Quarter_num", free.coords=FALSE, drop.units = TRUE)
+```
+```{r}
+unique_type <- unique(acled_mya_sf$event_type)
+unique_type
 ```
 
 ### TH1.4.3 Using `owin` to confine study area within Myanmar borders
