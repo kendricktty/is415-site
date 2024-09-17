@@ -68,9 +68,9 @@ acled_mya_sf <- st_as_sf(acled_mya, coords = c("longitude", "latitude"), crs = 4
 
 ## TH1.3 A brief summary of Myanmar and the Myanmar Conflict
 
-The second largest country in Southeast Asia at 676,578 square kilometres and a member state of the **Association of Southeast Asian Nations (ASEAN)**, **Myanmar** features fertile tropical deltas in the south and the rugged Himalayan foothills to its north. It shares borders with China to the north and northeast, Laos and Thailand to the east and Southeast, and Bangladesh and India to the west and northwest. Despite having a 2800km coastline providing access to deep-sea ports and an abundance in natural resources including arable land, forests, minerals and natural gas, conflict-ridden Myanmar is considered a **least developed country**, with a GNP per capita of US$1144 (2011) (Myanmar Information Management Unit, n.d.) and a HDI of 0.6 (UNDP, 2024). Consequently, agriculture accounts for 36% of GDP and 60-70% of employment.
+The second largest country in Southeast Asia at 676,578 square kilometres and an [ASEAN](https://en.wikipedia.org/wiki/ASEAN) member state, **Myanmar** features fertile tropical deltas in the south and the rugged Himalayan foothills to its north. It shares borders with China to the north and northeast, Laos and Thailand to the east and Southeast, and Bangladesh and India to the west and northwest. Despite having a 2800km coastline providing access to deep-sea ports and an abundance in natural resources including arable land, forests, minerals and natural gas, conflict-ridden Myanmar is considered a **least developed country**, with a GNP per capita of US$1144 (2011) (Myanmar Information Management Unit, n.d.) and a HDI of 0.6 (UNDP, 2024). Consequently, agriculture accounts for 36% of GDP and 60-70% of employment.
 
-Myanmar is organised into seven **states**, seven **regions**, and one **union territory** - its capital, **Naypyitaw**, located at around the country's geographic centre. The states - Chin, Kachin, Kayah, Kyain, Mon, Rakhine and Shan - are largely populated by the national ethnic communities, while most of the inhabitants of its regions *regions* - Ayeyarwady, Bago, Mandalay, Sagaing, Tanintharyi and largest city [Yangon](https://en.wikipedia.org/wiki/Yangon) - are of the majority Bamar (Burmese) ethnicity. The following code chunk plots the states and regions of Myanmar into an interactive map.
+Myanmar is organised into seven **states**, seven **regions**, and one **union territory** - its capital, **Naypyitaw**, located at around the country's geographic centre. The states - Chin, Kachin, Kayah, Kyain, Mon, Rakhine and Shan - are largely populated by the national ethnic communities, while most of the inhabitants of its *regions* - Ayeyarwady, Bago, Mandalay, Sagaing, Tanintharyi and largest city [Yangon](https://en.wikipedia.org/wiki/Yangon) - are of the majority Bamar (Burmese) ethnicity. The following code chunk plots the states and regions of Myanmar into an interactive map.
 
 ```{r}
 tmap_mode('view')
@@ -78,7 +78,7 @@ tm_shape(mmr_admin1) + tm_polygons()
 tmap_mode('plot')
 ```
 
-Crucially, Myanmar is one of the world's most ethnically diverse countries, with as many as 135 different ethnic groups boasting a rich tapestry of culture and religious history (Maizland, 2022). While this may paint a rosy picture of harmony on the surface, this is far from the case in the country. While the majority Bamar enjoy a privileged position in society and have held of government and military positions, many of the country's minority groups have faced systemic discrimination, lack of economic opportunity and development, minimum representation in government, and abuses at the hands of the military.
+Crucially, Myanmar is one of the world's most ethnically diverse countries, with as many as 135 different ethnic groups boasting a rich tapestry of culture and religious history (Maizland, 2022). While this may paint a rosy picture of harmony on the surface, this is far from the case in the country. While the majority Bamar enjoy a privileged position in society and have held of government and military positions, many of the country's minority groups grapple with systemic discrimination, lack of economic opportunity and development, minimum representation in government, and abuses at the hands of the military.
 
 The code chunk below visualises Myanmar's ethnic breakdown in a pie chart, based on data from the US CIA World Factbook and presented by Maizland (2022).
 
@@ -91,10 +91,10 @@ y <- paste(y, x)
 y <- paste(y, "%", sep="")
 
 pie(x, labels = y, main = "Composition of Ethnic Groups in Myanmar (Maizland, 2022)", col = c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7"))
-legend("topright", y, cex = 0.8, fill = c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7"))
+# legend("topright", y, cex = 0.8, fill = c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7"))
 
 ```
-Because of this disparity and partially as a result of the divide-and-conquer strategy used by the British during colonial rule, lengthy armed conflicts have ensued since Myanmar's independence between the ethnic groups (comprising ethnic armed organisations and smaller militias) and the Tatmadaw, the military, producing what has become known as the world's longest continuing civil war (Rieffel, 2019), over issues from greater autonomy to control of natural resources. Even before the 2021 coup, the country still experienced armed conflict - since 2017, the Tatmadaw had been mounting a brutal campaign against the ethnic Rohingya (Albert & Maizland, 2020). While the administration of the now-deposed state chancellor Aung San Suu Kyi defended their actions, restricting press freedoms in the process, rights groups and UN officials claim the Tatmadaw's actions amounted to genocide.
+Because of this disparity and partially as a result of the divide-and-conquer strategy used by the British during colonial rule, lengthy armed conflicts have ensued since Myanmar's independence between the ethnic groups (comprising ethnic armed organisations and smaller militias) and the Tatmadaw, the military, producing what has become known as the world's longest continuing civil war (Rieffel, 2019), over issues from greater autonomy to control of natural resources. Even before the 2021 coup, the country still experienced armed conflict - since 2017, the Tatmadaw had been mounting a brutal campaign against the ethnic Rohingya (Albert & Maizland, 2020). While the administration of then-state chancellor Aung San Suu Kyi defended their actions, restricting press freedoms in the process, rights groups and UN officials claim the Tatmadaw's actions amounted to genocide.
 
 ## TH1.4 Data wrangling
 
@@ -132,17 +132,17 @@ acled_mya_sf <- acled_mya_sf %>%
 acled_mya_sf
 ```
 ```{r}
-# | echo: false
+#| echo: false
 admin1_unique <- unique(acled_mya_sf$admin1)
 admin1_unique
 ```
 ```{r}
-# | echo: false
+#| echo: false
 quarter_numbers <- unique(acled_mya_sf$Quarter_num)
 quarter_numbers
 ```
 ```{r}
-# | echo: false
+#| echo: false
 quarters <- unique(acled_mya_sf$Quarter) %>% unlist()
 print(length(quarters))
 quarters
@@ -170,7 +170,7 @@ plot(mmr_admin1_owin)
 
 ### TH1.5.2 Overarching Spatial-Temporal KDE
 
-Our first order of business is to identify areas of consistently high conflict using spatial-temporal kernel density estimation (KDE). We can then zoom in on these areas for deeper research on why this is the case.
+The next step will be kernel density estimation (KDE). We can then zoom in on these areas for deeper research on why this is the case.
 
 As always, we start by creating `ppp` objects out of our `sf` objects, and checking for duplicates.
 
