@@ -129,7 +129,6 @@ acled_mya_sf <- acled_mya_sf %>%
       admin1 %in% c("Bago-East", "Bago-West") ~ "Bago",
       TRUE ~ admin1
     ))
-acled_mya_sf
 ```
 ```{r}
 #| echo: false
@@ -154,6 +153,9 @@ tm_shape(mmr_admin1) + tm_polygons() + tm_shape(acled_mya_sf) + tm_dots(size = 0
 ```{r}
 tm_shape(mmr_admin1) + tm_polygons() + tm_shape(acled_mya_sf) + tm_dots(size = 0.05) + tm_facets(by="Quarter_num", free.coords=FALSE, drop.units = TRUE)
 ```
+```{r}
+acled_mya_sf
+```
 ### TH1.4.3 Using `owin` to confine study area within Myanmar borders
 
 Finally, we need to create an `owin` object that will be combined with any `ppp` objects we create later for SPPA.
@@ -166,7 +168,22 @@ plot(mmr_admin1_owin)
 
 ## TH1.5 Preliminary analysis
 
-### TH1.5.1 Exploratory Data Analysis
+### TH1.5.1 Exploratory Data Analysis (EDA)
+
+We can quickly gain some meaningful insights from our dataset using basic EDA techniques.
+
+For instance, we can use a histogram to plot the distribution of fatalities by quarter.
+
+#### TH1.5.1.1 Plotting number of fatalities by quarter
+
+```{r}
+acled_mya_fatalities_by_quarter <- acled_mya_sf %>%
+  group_by(Quarter_num) %>%
+  summarise(`FAT` = sum(`fatalities`)) %>%
+  ungroup() %>%
+  pivot_wider(names_from = Quarter_num, values_from = FAT)
+acled_mya_fatalities_by_quarter
+```
 
 ### TH1.5.2 Overarching Spatial-Temporal KDE
 
