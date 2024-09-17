@@ -132,14 +132,17 @@ acled_mya_sf <- acled_mya_sf %>%
 acled_mya_sf
 ```
 ```{r}
+# | echo: false
 admin1_unique <- unique(acled_mya_sf$admin1)
 admin1_unique
 ```
 ```{r}
+# | echo: false
 quarter_numbers <- unique(acled_mya_sf$Quarter_num)
 quarter_numbers
 ```
 ```{r}
+# | echo: false
 quarters <- unique(acled_mya_sf$Quarter) %>% unlist()
 print(length(quarters))
 quarters
@@ -163,7 +166,9 @@ plot(mmr_admin1_owin)
 
 ## TH1.5 Preliminary analysis
 
-## TH1.5.1 Overarching Spatial-Temporal KDE
+### TH1.5.1 Exploratory Data Analysis
+
+### TH1.5.2 Overarching Spatial-Temporal KDE
 
 Our first order of business is to identify areas of consistently high conflict using spatial-temporal kernel density estimation (KDE). We can then zoom in on these areas for deeper research on why this is the case.
 
@@ -185,7 +190,6 @@ Finally, we join the `owin` object mapping the borders of Myanmar to the `ppp` o
 ```{r}
 acled_mya_quarters_ppp <- acled_mya_quarters_ppp[mmr_admin1_owin]
 plot(acled_mya_quarters_ppp)
-summary(acled_mya_quarters_ppp)
 ```
 
 We can now perform spatial-temporal KDE (STKDE).
@@ -198,13 +202,34 @@ After performing STKDE, we are able to plot the quarterly STKDE objects between 
 i = 15
 plot(st_kde, quarter_numbers[i], override.par=FALSE, fix.range=TRUE, main=paste("Spatial-temporal KDE for", quarters[i]))
 ```
-## TH1.5.3 STKDE on Data Subset
+### TH1.5.3 STKDE on Data Subset
 
 The ACLED classifies armed conflict events by mode and intensity of attack and by whether civilians are targeted. Knowing that a significant part of the armed violence in Myanmar is due to systemic discrimination on the part of the government or military, it would make sense to repeat the process and plot STKDEs on the subset of the data concerning violence against civilians.
 
 ```{r}
 unique_type <- unique(acled_mya_sf$event_type)
 unique_type
+```
+
+```{r}
+acled_sf_againstCivilians <- acled_mya_sf %>% filter(event_type == "Violence against civilians")
+acled_sf_againstCivilians
+acled_sf_againstCivilians <- acled_sf_againstCivilians %>% select(Quarter_num)
+```
+```{r}
+acled_mya_againstCivilians_ppp <- as.ppp(acled_sf_againstCivilians)
+any(duplicated(acled_mya_againstCivilians_ppp))
+acled_mya_againstCivilians_ppp <- rjitter(acled_mya_againstCivilians_ppp, retry=TRUE, nsim=1, drop=TRUE)
+any(duplicated(acled_mya_againstCivilians_ppp))
+acled_mya_againstCivilians_ppp <- acled_mya_againstCivilians_ppp[mmr_admin1_owin]
+plot(acled_mya_againstCivilians_ppp)
+```
+```{r}
+st_kde_againstCivilians <- spattemp.density(acled_mya_quarters_ppp)
+summary(st_kde_againstCivilians)
+for (i in 1: length(quarter_numbers)) {
+  plot(st_kde_againstCivilians, quarter_numbers[i], override.par=FALSE, fix.range=TRUE, main=paste("Spatial-temporal KDE for violence against civilians events in quarter", quarters[i]))
+}
 ```
 
 ## TH1.6 Zooming in
