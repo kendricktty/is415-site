@@ -180,14 +180,17 @@ We can now perform spatial-temporal KDE (STKDE).
 st_kde <- spattemp.density(acled_mya_quarters_ppp)
 summary(st_kde)
 ```
-After performing STKDE, we are able to plot the quarterly STKDE objects between 2021 and September 2024.
+After performing STKDE, we are able to plot the quarterly STKDE objects between 2021 and September 2024. The full set of plots can be found in Annex A, but the plot for Q1 2021 (id 15) is of particular interest.
 ```{r}
-for (i in 1: length(quarter_numbers)) {
-  plot(st_kde, quarter_numbers[i], override.par=FALSE, fix.range=TRUE, main=paste("Spatial-temporal KDE for", quarters[i]))
-}
+i = 15
+plot(st_kde, quarter_numbers[i], override.par=FALSE, fix.range=TRUE, main=paste("Spatial-temporal KDE for", quarters[i]))
 ```
 
 ## TH1.6 High Conflict Areas of Interest
+
+The preliminary KDE plot identified large clusters of armed conflict in the **Yangon** area in the south off the Andaman sea, as well as the **Saigaing** and **Chin** areas to the central-west. These indications make good candidates for further investigation.
+
+Additionally, we will be exploring the **Rakhine** area bordering Bangladesh, and the *Kra Isthmus*, the narrow isthmus linking central Thailand to Peninsula Malaysia. Rakhine state is the epicentre of the Rohingya migrant crisis, 
 
 ### TH1.6.1 Fixed-bandwidth KDE
 
@@ -227,6 +230,15 @@ for (i in 1: length(quarter_numbers)) {
 
 1. Myanmar Information Management Unit. (n.d.). Country Overview. Retrieved 16 September 2024, from https://www.themimu.info/country-overview
 2. Raleigh, C., Kishi, R. & Linke, A. Political instability patterns are obscured by conflict dataset scope conditions, sources, and coding choices. Humanit Soc Sci Commun 10, 74 (2023). https://doi.org/10.1057/s41599-023-01559-4
+
+## Annex A: Full Quarterly STKDE Plots for Jan 2021- Sep 2024
+
+```{r}
+for (i in 1: length(quarter_numbers)) {
+  plot(st_kde, quarter_numbers[i], override.par=FALSE, fix.range=TRUE, main=paste("Spatial-temporal KDE for", quarters[i]))
+}
+```
+
 
 --- OLD ---
 
