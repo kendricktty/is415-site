@@ -94,13 +94,11 @@ tm_shape(mmr_admin1) + tm_polygons() + tm_shape(acled_mya_sf) + tm_dots(size = 0
 
 ### TH1.4.2 Data cleansing
 
-#### TH1.4.2.1 Feature engineering
-
-The ACLED dataset splits the conflict incidents in **Shan state** into *North*, *South* and *East*, and incidents in the **Bago region** into *East* and *West*. We need to combine these
-
-Additionally, since the data is timestamped, we are able to plot and compare the frequency of conflict events *over time*. Before we do, though, we need to standardise the date stamps, then compartmentalise them into their year, month and day components, so that we can perform spatial-temporal point patterns analysis (STPPA) later. We will also aim to segregate events by whether or not they occurred before the coup on **February 1, 2021**.
+Since the data is timestamped, we are able to plot and compare the frequency of conflict events *over time*. Before we do, though, we need to standardise the date stamps, then compartmentalise them into their year, month and day components, so that we can perform spatial-temporal point patterns analysis (STPPA) later. We will also aim to segregate events by whether or not they occurred before the coup on **February 1, 2021**.
 
 A visualisation of the spatial-temporial distribution of points can be found in **Annex A**. Notice the consistent appearance throughout the entire study period of a large cluster of points towards the west of the country - roughly the location of Rahkine state on the border with Bangladesh.
+
+Additionally, the ACLED dataset splits the conflict incidents in **Shan state** into *North*, *South* and *East*, and incidents in the **Bago region** into *East* and *West*. We need to combine these into 
 
 ```{r}
 acled_mya_sf <- acled_mya_sf %>%
