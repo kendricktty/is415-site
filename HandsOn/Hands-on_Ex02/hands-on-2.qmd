@@ -1,12 +1,12 @@
 ---
-title: "H2: Thematic Mapping and GeoVisualisation with R"
+title: "H2: Thematic Mapping and Geospatial visualisation with R"
 subtitle: "Hands-On Exercise 2"
 author: "Kendrick Teo"
 date: "2024-08-19"
 date-modified: "last-modified"
 
 execute: 
-  eval: true
+  eval: false
   echo: true
   freeze: true
 ---
