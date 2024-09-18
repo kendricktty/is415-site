@@ -108,7 +108,7 @@ mmr_admin1 <- mmr_admin1 %>% st_transform(crs = 32647)
 tm_shape(mmr_admin1) + tm_polygons() + tm_shape(acled_mya_sf) + tm_dots(size = 0.05)
 ```
 
-### TH1.4.2 Data cleansing
+### TH1.4.2 Feature creation
 
 Since the data is timestamped, we are able to plot and compare the frequency of conflict events *over time*. Before we do, though, we need to standardise the date stamps, then compartmentalise them into their year, month and day components, so that we can perform spatial-temporal point patterns analysis (STPPA) later. We will also aim to segregate events by whether or not they occurred before the coup on **February 1, 2021**.
 
@@ -179,10 +179,17 @@ For instance, we can use a histogram to plot the distribution of fatalities by q
 ```{r}
 acled_mya_fatalities_by_quarter <- acled_mya_sf %>%
   group_by(Quarter_num) %>%
-  summarise(`FAT` = sum(`fatalities`)) %>%
-  ungroup() %>%
-  pivot_wider(names_from = Quarter_num, values_from = FAT)
+  summarise(`All fatalities` = sum(fatalities)) %>%
+  ungroup()
 acled_mya_fatalities_by_quarter
+```
+```{r}
+ggplot(acled_mya_fatalities_by_quarter, aes(x=Quarter_num, y=`All fatalities`)) +     
+  geom_bar(stat = "identity", fill = "steelblue") +
+    labs(title = "Total Fatalities by Year",
+         x = "Quarter",
+         y = "All Fatalities") +
+    theme_minimal()
 ```
 
 ### TH1.5.2 Overarching Spatial-Temporal KDE
