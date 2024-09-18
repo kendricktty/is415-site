@@ -170,11 +170,9 @@ plot(mmr_admin1_owin)
 
 ### TH1.5.1 Exploratory Data Analysis (EDA)
 
-We can quickly gain some meaningful insights from our dataset using basic EDA techniques.
+We can quickly gain some meaningful insights from our dataset using basic EDA techniques. For instance, by 
 
-For instance, we can use a histogram to plot the distribution of fatalities by quarter.
-
-#### TH1.5.1.1 Plotting number of fatalities by quarter
+#### TH1.5.1.1 Plotting quarterly distribution of fatalities
 
 ```{r}
 acled_mya_fatalities_by_quarter <- acled_mya_sf %>%
@@ -185,12 +183,15 @@ acled_mya_fatalities_by_quarter
 ```
 ```{r}
 ggplot(acled_mya_fatalities_by_quarter, aes(x=Quarter_num, y=`All fatalities`)) +     
-  geom_bar(stat = "identity", fill = "steelblue") +
-    labs(title = "Total Fatalities by Year",
+  geom_bar(stat = "identity", fill = "red4") +
+    labs(title = "Total Fatalities from the Armed Conflict in Myanmar by Quarter", subtitle = "1 = Q1 2021, 15 = Q3 2024",
          x = "Quarter",
          y = "All Fatalities") +
     theme_minimal()
 ```
+There were fewer deaths from armed conflict in the first three quarters of 2021 - at the very start of the conflict - than Q4 2021 onwards.
+
+We can also plot 
 
 ### TH1.5.2 Overarching Spatial-Temporal KDE
 
