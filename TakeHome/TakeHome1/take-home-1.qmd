@@ -22,12 +22,12 @@ Geospatial analtyics holds the potential to address complex problems facing soci
 
 The `R` packages we will use today are:
 
-- `sf`
-- `tmap`
-- `spatstat`
-- `sparr`
-- `raster`
-- `maptools`
+-   `sf`
+-   `tmap`
+-   `spatstat`
+-   `sparr`
+-   `raster`
+-   `maptools`
 
 ```{r}
 pacman::p_load(sf, raster, spatstat, sparr, tmap, tidyverse)
@@ -68,7 +68,7 @@ acled_mya_sf <- st_as_sf(acled_mya, coords = c("longitude", "latitude"), crs = 4
 
 ## TH1.3 A brief summary of Myanmar and the Myanmar Conflict
 
-The second largest country in Southeast Asia at 676,578 square kilometres and an [ASEAN](https://en.wikipedia.org/wiki/ASEAN) member state, **Myanmar** features fertile tropical deltas in the south and the rugged Himalayan foothills to its north. It shares borders with China to the north and northeast, Laos and Thailand to the east and Southeast, and Bangladesh and India to the west and northwest. Despite having a 2800km coastline providing access to deep-sea ports and an abundance in natural resources including arable land, forests, minerals and natural gas, conflict-ridden Myanmar is considered a **least developed country**, with a GNP per capita of US$1144 (2011) (Myanmar Information Management Unit, n.d.) and a HDI of 0.6 (UNDP, 2024). Consequently, agriculture accounts for 36% of GDP and 60-70% of employment.
+The second largest country in Southeast Asia at 676,578 square kilometres and an [ASEAN](https://en.wikipedia.org/wiki/ASEAN) member state, **Myanmar** features fertile tropical deltas in the south and the rugged Himalayan foothills to its north. It shares borders with China to the north and northeast, Laos and Thailand to the east and Southeast, and Bangladesh and India to the west and northwest. Despite having a 2800km coastline providing access to deep-sea ports and an abundance in natural resources including arable land, forests, minerals and natural gas, conflict-ridden Myanmar is considered a **least developed country**, with a GNP per capita of US\$1144 (2011) (Myanmar Information Management Unit, n.d.) and a HDI of 0.6 (UNDP, 2024). Consequently, agriculture accounts for 36% of GDP and 60-70% of employment.
 
 Myanmar is organised into seven **states**, seven **regions**, and one **union territory** - its capital, **Naypyitaw**, located at around the country's geographic centre. The states - Chin, Kachin, Kayah, Kyain, Mon, Rakhine and Shan - are largely populated by the national ethnic communities, while most of the inhabitants of its *regions* - Ayeyarwady, Bago, Mandalay, Sagaing, Tanintharyi and largest city [Yangon](https://en.wikipedia.org/wiki/Yangon) - are of the majority Bamar (Burmese) ethnicity. The following code chunk plots the states and regions of Myanmar into an interactive map.
 
@@ -94,6 +94,7 @@ pie(x, labels = y, main = "Composition of Ethnic Groups in Myanmar (Maizland, 20
 # legend("topright", y, cex = 0.8, fill = c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7"))
 
 ```
+
 Because of this disparity and partially as a result of the divide-and-conquer strategy used by the British during colonial rule, lengthy armed conflicts have ensued since Myanmar's independence between the ethnic groups (comprising ethnic armed organisations and smaller militias) and the Tatmadaw, the military, producing what has become known as the world's longest continuing civil war (Rieffel, 2019), over issues from greater autonomy to control of natural resources. This did not stop even after the country underwent a democratic reform in the early 2010s - since 2017, the Tatmadaw had been mounting a brutal campaign against the ethnic Rohingya (Albert & Maizland, 2020). While the administration of then-state chancellor Aung San Suu Kyi defended their actions, restricting press freedoms in the process, rights groups and UN officials claim the Tatmadaw's actions amounted to genocide.
 
 ## TH1.4 Data wrangling
@@ -114,7 +115,7 @@ Since the data is timestamped, we are able to plot and compare the frequency of 
 
 A visualisation of the spatial-temporial distribution of points can be found in **Annex A**. Notice the consistent appearance throughout the entire study period of a large cluster of points towards the west of the country - roughly the location of Rahkine state on the border with Bangladesh.
 
-Additionally, the ACLED dataset splits the conflict incidents in **Shan state** into *North*, *South* and *East*, and incidents in the **Bago region** into *East* and *West*. We need to combine these into 
+Additionally, the ACLED dataset splits the conflict incidents in **Shan state** into *North*, *South* and *East*, and incidents in the **Bago region** into *East* and *West*. We need to combine these into
 
 ```{r}
 acled_mya_sf <- acled_mya_sf %>%
@@ -130,16 +131,19 @@ acled_mya_sf <- acled_mya_sf %>%
       TRUE ~ admin1
     ))
 ```
+
 ```{r}
 #| echo: false
 admin1_unique <- unique(acled_mya_sf$admin1)
 admin1_unique
 ```
+
 ```{r}
 #| echo: false
 quarter_numbers <- unique(acled_mya_sf$Quarter_num)
 quarter_numbers
 ```
+
 ```{r}
 #| echo: false
 quarters <- unique(acled_mya_sf$Quarter) %>% unlist()
@@ -150,12 +154,15 @@ quarters
 ```{r}
 tm_shape(mmr_admin1) + tm_polygons() + tm_shape(acled_mya_sf) + tm_dots(size = 0.05)
 ```
+
 ```{r}
 tm_shape(mmr_admin1) + tm_polygons() + tm_shape(acled_mya_sf) + tm_dots(size = 0.05) + tm_facets(by="Quarter_num", free.coords=FALSE, drop.units = TRUE)
 ```
+
 ```{r}
 tail(acled_mya_sf)
 ```
+
 ### TH1.4.3 Using `owin` to confine study area within Myanmar borders
 
 Finally, we need to create an `owin` object that will be combined with any `ppp` objects we create later for SPPA.
@@ -182,9 +189,11 @@ acled_mya_fatalities_by_quarter <- acled_mya_sf %>%
 acled_mya_fatalities_by_quarter
 summary(acled_mya_fatalities_by_quarter)
 ```
+
 We can establish that 3935 people die from the armed violence each quarter.
 
 #### TH1.5.1.2 Plotting quarterly distribution of fatalities as a line chart
+
 ```{r}
 ggplot(acled_mya_fatalities_by_quarter, aes(x=Quarter_num, y=`All fatalities`)) +     
   # geom_bar(stat = "identity", fill = "red4") +
@@ -194,6 +203,7 @@ ggplot(acled_mya_fatalities_by_quarter, aes(x=Quarter_num, y=`All fatalities`)) 
          y = "All Fatalities") +
     theme_minimal()
 ```
+
 There were fewer deaths from armed conflict in the first three quarters of 2021 - at the very start of the conflict - than Q4 2021 onwards.
 
 #### TH1.5.1.3 Getting quarterly distribution of incidents involving civilian targeting
@@ -220,6 +230,7 @@ ggplot(acled_mya_civilianTargeting_by_quarter, aes(x=Quarter_num, y=Percentage_i
          y = "Incidents with civilian targeting") +
     theme_minimal()
 ```
+
 The percentage of violent conflict incidents targeting civilians trended upwards throughout the study duration.
 
 #### TH1.5.1.4 Plotting proportion of fatalities by type of conflict
@@ -237,6 +248,7 @@ acled_mya_fatalities_by_event_type <- acled_mya_sf %>%
   ungroup()
 acled_mya_fatalities_by_event_type
 ```
+
 ```{r}
 ggplot(acled_mya_fatalities_by_event_type, aes(x=event_type, y=`All fatalities`)) +
   geom_bar(stat = "identity", fill = "red4") +
@@ -245,6 +257,7 @@ ggplot(acled_mya_fatalities_by_event_type, aes(x=event_type, y=`All fatalities`)
          y = "All Fatalities") +
     theme_minimal()
 ```
+
 ```{r}
 total_fatalities <- sum(acled_mya_fatalities_by_event_type$`All fatalities`)
 percentages <- 100 * acled_mya_fatalities_by_event_type$`All fatalities` / total_fatalities
@@ -260,6 +273,7 @@ pie(acled_mya_fatalities_by_event_type$`All fatalities`, labels = paste0(round(p
     
 legend("topright", paste(acled_mya_fatalities_by_event_type$event_type, ":", round(percentages, 1), "%"), fill = rainbow(length(acled_mya_fatalities_by_event_type$event_type)), cex = 0.7)
 ```
+
 We can further narrow down the scope of this analysis by limiting our data to a certain year, and to events where the `civilian_targeting` column is filled. The year 2022 saw the highest fatality numbers across the entire study period, so we will take a closer look.
 
 ```{r}
@@ -277,6 +291,7 @@ ggplot(acled_mya_fatalities_by_event_type_2022, aes(x=event_type, y=`All fatalit
          y = "All Fatalities") +
     theme_minimal()
 ```
+
 #### TH1.5.1.5 Mapping fatalities and violence against civilians
 
 Finally, we can plot choropleth maps displaying 2 crucial pieces of information: the locations with the greatest number of fatalities, and the locations where civilians are targeted in the violence the most in 2022. In the code chunks we will write to create the plots, we have to refer to the original `tibble` objects instead of the `sf` objects.
@@ -298,12 +313,14 @@ tm_shape(combined) +
   tm_borders(alpha = 0.5) + 
   tm_layout(title = "admin1 by number of fatalities, 2022", legend.outside = TRUE)
 ```
+
 The above map shows **Sagaing** *region* as the location with the highest number of fatalities in 2022, followed by **Magaway** *region*.
 
 ```{r}
 #|echo: false
 combined
 ```
+
 ```{r}
 acled_mya_civiliansTargeted_by_admin1_2022 <- acled_mya %>%
   filter(year == 2022) %>%
@@ -327,6 +344,7 @@ tm_shape(combined) +
   tm_borders(alpha = 0.5) + 
   tm_layout(title = "admin1 by % of incidents targeting civilians, 2022", legend.outside = TRUE)
 ```
+
 The above map shows that the highest proportion of armed conflicts in the westernmost **Rakhine** *state* and easternmost **Shan** *state* involves violence against civilians. This state is the epicentre of the 2017 Rohingya crisis facing the eponymous Muslim ethnic group, discrimination against whom, in fact, goes as far back as the 1970s (Albert & Maizland, 2020). In joint second are the *regions* of **Bago** and **Yangon**.
 
 ### TH1.5.2 Overarching Spatial-Temporal KDE
@@ -340,27 +358,33 @@ any(duplicated(acled_mya_quarters_ppp))
 ```
 
 Since there are duplicates, we need to handle them using jittering.
+
 ```{r}
 acled_mya_quarters_ppp <- rjitter(acled_mya_quarters_ppp, retry=TRUE, nsim=1, drop=TRUE)
 any(duplicated(acled_mya_quarters_ppp))
 ```
 
 Finally, we join the `owin` object mapping the borders of Myanmar to the `ppp` object.
+
 ```{r}
 acled_mya_quarters_ppp <- acled_mya_quarters_ppp[mmr_admin1_owin]
 plot(acled_mya_quarters_ppp)
 ```
 
 We can now perform spatial-temporal KDE (STKDE).
+
 ```{r}
 st_kde <- spattemp.density(acled_mya_quarters_ppp)
 summary(st_kde)
 ```
+
 After performing STKDE, we are able to plot the quarterly STKDE objects between 2021 and September 2024. The full set of plots can be found in Annex A, but the plot for Q1 2021 (id 15) is of particular interest because of the larger than usual densities around the **Sagaing** and **Chin** areas, as well as near **Yangon**.
+
 ```{r}
 i = 15
 plot(st_kde, quarter_numbers[i], override.par=FALSE, fix.range=TRUE, main=paste("Spatial-temporal KDE for", quarters[i]))
 ```
+
 ### TH1.5.3 STKDE on Data Subset
 
 Knowing that a significant part of the armed violence in Myanmar is due to systemic discrimination on the part of the government or military, it would make sense to repeat the process and plot STKDEs on the subset of the data concerning violence against civilians.
@@ -375,6 +399,7 @@ acled_sf_againstCivilians <- acled_mya_sf %>% filter(event_type == "Violence aga
 acled_sf_againstCivilians
 acled_sf_againstCivilians <- acled_sf_againstCivilians %>% select(Quarter_num)
 ```
+
 ```{r}
 acled_mya_againstCivilians_ppp <- as.ppp(acled_sf_againstCivilians)
 any(duplicated(acled_mya_againstCivilians_ppp))
@@ -383,6 +408,7 @@ any(duplicated(acled_mya_againstCivilians_ppp))
 acled_mya_againstCivilians_ppp <- acled_mya_againstCivilians_ppp[mmr_admin1_owin]
 plot(acled_mya_againstCivilians_ppp)
 ```
+
 ```{r}
 st_kde_againstCivilians <- spattemp.density(acled_mya_quarters_ppp)
 summary(st_kde_againstCivilians)
@@ -457,6 +483,7 @@ for (study_name in study_names) {
        main = paste("Adaptive-bandwidth KDE for", study_name))
 }
 ```
+
 Fixed bandwidth KDE using `bw.scott` and the `gaussian` kernel returned a more meaningful result than adaptive bandwidth KDE.
 
 Just for completeness, we will now attempt to map the results of fixed-bandwidth KDE for Rakhine state by creating a `RasterLayer`.
@@ -465,10 +492,18 @@ Just for completeness, we will now attempt to map the results of fixed-bandwidth
 rakhine_kde <- fixed_bandwidth_kde_acled[["Rakhine"]]
 gridded <- as(rakhine_kde, "SpatialGridDataFrame")
 spplot(gridded)
+```
 
+```{r}
 raster <- raster(rakhine_kde)
+raster
 projection(raster) <- CRS("+init=EPSG:32647")
-tm_shape(raster) + tm_raster("layer", palette = "viridis") + tm_layout(legend.position = c("left", "bottom"), frame = FALSE)
+raster
+```
+
+```{r}
+tm_shape(raster) + tm_raster("layer", palette = "viridis") 
++ tm_layout(legend.position = c("left", "bottom"), frame = FALSE)
 ```
 
 ### TH1.7.4 Spatial-temporal KDE
@@ -495,13 +530,20 @@ for (study_name in study_names) {
   print(clarkevans.test(ppp, correction = "none", clipregion = NULL, alternative = c("clustered"), nsim = 99))
 }
 ```
+
 The nearest neighbour analyses for all our regions returned identical *p*-values of `2.2e-16`. Thus, we can conclude that the spatial point patterns for all our target regions are **clustered**. We can corroborate this test result with the fixed-bandwidth KDE visualisations, which indicate the presence of densely-packed conflict areas.
 
 ## TH1.8 Second order spatial point patterns analysis
 
+Second order SPPA investigates variations in observations due to the way they interact with one another. In this section, we will use the F, G, K and L-functions to analyse the spatial point patterns in our 6 selected regions.
+
 ### TH1.8.1 Sagaing Region
 
 #### TH1.8.1.1 G-function
+
+```{r}
+
+```
 
 #### TH1.8.1.2 F-function
 
@@ -561,14 +603,14 @@ The nearest neighbour analyses for all our regions returned identical *p*-values
 
 ## References
 
-1. Albert, E., & Maizland, L. (2020, January 23). What forces are fueling Myanmar’s Rohingya crisis? Council on Foreign Relations. [https://www.cfr.org/backgrounder/rohingya-crisis](https://www.cfr.org/backgrounder/rohingya-crisis)
-2. Maizland, L. (2022, January 31). Myanmar’s troubled history: Coups, military rule, and ethnic conflict. Council on Foreign Relations. [https://www.cfr.org/backgrounder/myanmar-history-coup-military-rule-ethnic-conflict-rohingya](https://www.cfr.org/backgrounder/myanmar-history-coup-military-rule-ethnic-conflict-rohingya)
-3. Myanmar Information Management Unit. (n.d.). Country Overview. Retrieved 16 September 2024, from [https://www.themimu.info/country-overview](https://www.themimu.info/country-overview)
-4. Raleigh, C., Kishi, R. & Linke, A. Political instability patterns are obscured by conflict dataset scope conditions, sources, and coding choices. Humanit Soc Sci Commun 10, 74 (2023). [https://doi.org/10.1057/s41599-023-01559-4](https://doi.org/10.1057/s41599-023-01559-4)
-5. Rieffel, L. (2019, December 6). Peace and war in Myanmar. Brookings. [https://www.brookings.edu/articles/peace-and-war-in-myanmar/](https://www.brookings.edu/articles/peace-and-war-in-myanmar/)
-6. Smith, M. (1999). Burma: Insurgency and the politics of ethnicity (2. (updated) ed). Univ. Press [u.a.].
-7. Sullivan, D. P. (2021, October 21). Dire consequences: Addressing the humanitarian fallout from myanmar’s coup. Refugees International; Refugees International. [https://www.refugeesinternational.org/reports-briefs/dire-consequences-addressing-the-humanitarian-fallout-from-myanmars-coup/](https://www.refugeesinternational.org/reports-briefs/dire-consequences-addressing-the-humanitarian-fallout-from-myanmars-coup/)
-8. UNDP (Ed.). (2024). Breaking the gridlock: Reimagining cooperation in a polarized world. United Nations Development Programme (UNDP).
+1.  Albert, E., & Maizland, L. (2020, January 23). What forces are fueling Myanmar’s Rohingya crisis? Council on Foreign Relations. <https://www.cfr.org/backgrounder/rohingya-crisis>
+2.  Maizland, L. (2022, January 31). Myanmar’s troubled history: Coups, military rule, and ethnic conflict. Council on Foreign Relations. <https://www.cfr.org/backgrounder/myanmar-history-coup-military-rule-ethnic-conflict-rohingya>
+3.  Myanmar Information Management Unit. (n.d.). Country Overview. Retrieved 16 September 2024, from <https://www.themimu.info/country-overview>
+4.  Raleigh, C., Kishi, R. & Linke, A. Political instability patterns are obscured by conflict dataset scope conditions, sources, and coding choices. Humanit Soc Sci Commun 10, 74 (2023). <https://doi.org/10.1057/s41599-023-01559-4>
+5.  Rieffel, L. (2019, December 6). Peace and war in Myanmar. Brookings. <https://www.brookings.edu/articles/peace-and-war-in-myanmar/>
+6.  Smith, M. (1999). Burma: Insurgency and the politics of ethnicity (2. (updated) ed). Univ. Press \[u.a.\].
+7.  Sullivan, D. P. (2021, October 21). Dire consequences: Addressing the humanitarian fallout from myanmar’s coup. Refugees International; Refugees International. <https://www.refugeesinternational.org/reports-briefs/dire-consequences-addressing-the-humanitarian-fallout-from-myanmars-coup/>
+8.  UNDP (Ed.). (2024). Breaking the gridlock: Reimagining cooperation in a polarized world. United Nations Development Programme (UNDP).
 
 ## Annex A: Full Quarterly STKDE Plots for Jan 2021- Sep 2024
 
@@ -614,7 +656,9 @@ Kernel density estimation (KDE) serves to compute the *intensity* of a point dis
 # overall_fixed_kde <- density(acled_mya_ppp.km, sigma=bw.diggle, edge=TRUE, kernel="gaussian")
 # plot(overall_fixed_kde, main="Overall fixed bandwidth KDE")
 ```
+
 ### TH1.5.2 Overall adaptive-bandwidth KDE
+
 ```{r}
 #| echo: false
 #| eval: false
@@ -643,6 +687,7 @@ for (quarter in selected_quarters) {
 }
 
 ```
+
 ### TH1.5.4 Quarterly adaptive-bandwidth KDE
 
 ```{r}
@@ -660,6 +705,7 @@ for (quarter in selected_quarters) {
   adaptive_kde[[as.character(quarter)]] <- each_kde
 }
 ```
+
 ```{r}
 #| echo: false
 #| eval: false
@@ -681,6 +727,7 @@ plot(acled_mya_quarters_ppp)
 st_kde <- spattemp.density(acled_mya_quarters_ppp)
 summary(st_kde)
 ```
+
 ```{r}
 #| echo: false
 #| eval: false
@@ -700,6 +747,7 @@ ppp_item <- acled_ppp_beforeAfterCoup_list[[as.character("Before")]]
 print("Clark Evans Test: Before Coup")
 clarkevans.test(ppp_item, correction = "none", clipregion = "mmr_admin1_owin", alternative = c("clustered"), nsim = 9)
 ```
+
 ```{r}
 #| echo: false
 #| eval: false
