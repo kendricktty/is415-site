@@ -499,33 +499,65 @@ The nearest neighbour analyses for all our regions returned identical *p*-values
 
 ## TH1.8 Second order spatial point patterns analysis
 
-### TH1.8.1 Sagaing region
+### TH1.8.1 Sagaing Region
 
-#### TH1.6.5.1 F-function
+#### TH1.8.1.1 G-function
 
-#### TH1.6.5.2 G-function
+#### TH1.8.1.2 F-function
 
-#### TH1.6.5.3 K-function
+#### TH1.8.1.3 K-function
 
-#### TH1.6.5.4 L-function
+#### TH1.8.1.4 L-function
 
-## TH1.7 Rakhine State
+### TH1.8.2 Shan State
 
-### TH1.7.1 Fixed-bandwidth KDE
+#### TH1.8.2.1 G-function
 
-### TH1.7.2 Adaptive-bandwidth KDE
+#### TH1.8.2.2 F-function
 
-### TH1.7.3 Nearest neighbour analysis
+#### TH1.8.2.3 K-function
 
-### TH1.7.4 Second order spatial point patterns analysis
+#### TH1.8.2.4 L-function
 
-#### TH1.7.4.1 F-function
+### TH1.8.3 Rakhine State
 
-#### TH1.7.4.2 G-function
+#### TH1.8.3.1 G-function
 
-#### TH1.7.4.3 K-function
+#### TH1.8.3.2 F-function
 
-#### TH1.7.4.4 L-function
+#### TH1.8.3.3 K-function
+
+#### TH1.8.3.4 L-function
+
+### TH1.8.4 Chin State
+
+#### TH1.8.4.1 G-function
+
+#### TH1.8.4.2 F-function
+
+#### TH1.8.4.3 K-function
+
+#### TH1.8.4.4 L-function
+
+### TH1.8.5 Yangon Region
+
+#### TH1.8.5.1 G-function
+
+#### TH1.8.5.2 F-function
+
+#### TH1.8.5.3 K-function
+
+#### TH1.8.5.4 L-function
+
+### TH1.8.6 Tanintharyi Region
+
+#### TH1.8.6.1 G-function
+
+#### TH1.8.6.2 F-function
+
+#### TH1.8.6.3 K-function
+
+#### TH1.8.6.4 L-function
 
 ## References
 
