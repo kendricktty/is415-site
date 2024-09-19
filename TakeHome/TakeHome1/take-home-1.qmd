@@ -502,8 +502,7 @@ raster
 ```
 
 ```{r}
-tm_shape(raster) + tm_raster("layer", palette = "viridis") 
-+ tm_layout(legend.position = c("left", "bottom"), frame = FALSE)
+tm_shape(raster) + tm_raster("layer", palette = "viridis") + tm_layout(legend.position = c("left", "bottom"), frame = FALSE)
 ```
 
 ### TH1.7.4 Spatial-temporal KDE
