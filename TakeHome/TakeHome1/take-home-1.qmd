@@ -582,27 +582,6 @@ F_csr <- envelope(ppp, Fest, nsim = 99)
 plot(F_csr, main = paste("F function test for spatial randomness for", study_name))
 ```
 
-#### TH1.8.1.3 K-function
-
-```{r}
-K_function <- Kest(study_ppps_2022[[study_name]], correction = "Ripley")
-plot(K_function, main = paste("K-function estimation for", study_name), . -r ~ r, ylab= "K(d)-r", xlab = "d(m)")
-
-K_csr <- envelope(ppp, Kest, nsim = 99, rank = 1, glocal=TRUE)
-plot(K_csr, main = paste("K function test for spatial randomness for", study_name), . - r ~ r, xlab="d", ylab="K(d)-r")
-```
-
-#### TH1.8.1.4 L-function
-
-```{r}
-L_function <- Lest(study_ppps_2022[[study_name]], correction = "Ripley")
-plot(L_function, main = paste("L-function estimation for", study_name), . -r ~ r, 
-     ylab= "L(d)-r", xlab = "d(m)")
-
-L_csr <- envelope(ppp, Lest, nsim = 99, rank = 1, glocal=TRUE)
-plot(L_csr, main = paste("L function test for spatial randomness for", study_name), . - r ~ r, xlab="d", ylab="L(d)-r")
-```
-
 ### TH1.8.2 Shan State
 
 #### TH1.8.2.1 G-function
@@ -624,27 +603,6 @@ plot(F_function, main = paste("F-function estimation for", study_name))
 
 F_csr <- envelope(ppp, Fest, nsim = 99)
 plot(F_csr, main = paste("F function test for spatial randomness for", study_name))
-```
-
-#### TH1.8.2.3 K-function
-
-```{r}
-K_function <- Kest(study_ppps_original[[study_name]], correction = "Ripley")
-plot(K_function, main = paste("K-function estimation for", study_name), . -r ~ r, ylab= "K(d)-r", xlab = "d(m)")
-
-K_csr <- envelope(ppp, Kest, nsim = 99, rank = 1, glocal=TRUE)
-plot(K_csr, main = paste("K function test for spatial randomness for", study_name), . - r ~ r, xlab="d", ylab="K(d)-r")
-```
-
-#### TH1.8.2.4 L-function
-
-```{r}
-L_function <- Lest(study_ppps_original[[study_name]], correction = "Ripley")
-plot(L_function, main = paste("L-function estimation for", study_name), . -r ~ r, 
-     ylab= "L(d)-r", xlab = "d(m)")
-
-L_csr <- envelope(ppp, Lest, nsim = 99, rank = 1, glocal=TRUE)
-plot(L_csr, main = paste("L function test for spatial randomness for", study_name), . - r ~ r, xlab="d", ylab="L(d)-r")
 ```
 
 ### TH1.8.3 Rakhine State
@@ -670,27 +628,6 @@ F_csr <- envelope(ppp, Fest, nsim = 99)
 plot(F_csr, main = paste("F function test for spatial randomness for", study_name))
 ```
 
-#### TH1.8.3.3 K-function
-
-```{r}
-K_function <- Kest(study_ppps_original[[study_name]], correction = "Ripley")
-plot(K_function, main = paste("K-function estimation for", study_name), . -r ~ r, ylab= "K(d)-r", xlab = "d(m)")
-
-K_csr <- envelope(ppp, Kest, nsim = 99, rank = 1, glocal=TRUE)
-plot(K_csr, main = paste("K function test for spatial randomness for", study_name), . - r ~ r, xlab="d", ylab="K(d)-r")
-```
-
-#### TH1.8.3.4 L-function
-
-```{r}
-L_function <- Lest(study_ppps_original[[study_name]], correction = "Ripley")
-plot(L_function, main = paste("L-function estimation for", study_name), . -r ~ r, 
-     ylab= "L(d)-r", xlab = "d(m)")
-
-L_csr <- envelope(ppp, Lest, nsim = 99, rank = 1, glocal=TRUE)
-plot(L_csr, main = paste("L function test for spatial randomness for", study_name), . - r ~ r, xlab="d", ylab="L(d)-r")
-```
-
 ### TH1.8.4 Chin State
 
 #### TH1.8.4.1 G-function
@@ -712,27 +649,6 @@ plot(F_function, main = paste("F-function estimation for", study_name))
 
 F_csr <- envelope(ppp, Fest, nsim = 99)
 plot(F_csr, main = paste("F function test for spatial randomness for", study_name))
-```
-
-#### TH1.8.4.3 K-function
-
-```{r}
-K_function <- Kest(study_ppps_original[[study_name]], correction = "Ripley")
-plot(K_function, main = paste("K-function estimation for", study_name), . -r ~ r, ylab= "K(d)-r", xlab = "d(m)")
-
-K_csr <- envelope(ppp, Kest, nsim = 99, rank = 1, glocal=TRUE)
-plot(K_csr, main = paste("K function test for spatial randomness for", study_name), . - r ~ r, xlab="d", ylab="K(d)-r")
-```
-
-#### TH1.8.4.4 L-function
-
-```{r}
-L_function <- Lest(study_ppps_original[[study_name]], correction = "Ripley")
-plot(L_function, main = paste("L-function estimation for", study_name), . -r ~ r, 
-     ylab= "L(d)-r", xlab = "d(m)")
-
-L_csr <- envelope(ppp, Lest, nsim = 99, rank = 1, glocal=TRUE)
-plot(L_csr, main = paste("L function test for spatial randomness for", study_name), . - r ~ r, xlab="d", ylab="L(d)-r")
 ```
 
 ### TH1.8.5 Yangon Region
@@ -758,27 +674,6 @@ F_csr <- envelope(ppp, Fest, nsim = 99)
 plot(F_csr, main = paste("F function test for spatial randomness for", study_name))
 ```
 
-#### TH1.8.5.3 K-function
-
-```{r}
-K_function <- Kest(study_ppps_original[[study_name]], correction = "Ripley")
-plot(K_function, main = paste("K-function estimation for", study_name), . -r ~ r, ylab= "K(d)-r", xlab = "d(m)")
-
-K_csr <- envelope(ppp, Kest, nsim = 99, rank = 1, glocal=TRUE)
-plot(K_csr, main = paste("K function test for spatial randomness for", study_name), . - r ~ r, xlab="d", ylab="K(d)-r")
-```
-
-#### TH1.8.5.4 L-function
-
-```{r}
-L_function <- Lest(study_ppps_original[[study_name]], correction = "Ripley")
-plot(L_function, main = paste("L-function estimation for", study_name), . -r ~ r, 
-     ylab= "L(d)-r", xlab = "d(m)")
-
-L_csr <- envelope(ppp, Lest, nsim = 99, rank = 1, glocal=TRUE)
-plot(L_csr, main = paste("L function test for spatial randomness for", study_name), . - r ~ r, xlab="d", ylab="L(d)-r")
-```
-
 ### TH1.8.6 Tanintharyi Region
 
 #### TH1.8.6.1 G-function
@@ -800,27 +695,6 @@ plot(F_function, main = paste("F-function estimation for", study_name))
 
 F_csr <- envelope(ppp, Fest, nsim = 99)
 plot(F_csr, main = paste("F function test for spatial randomness for", study_name))
-```
-
-#### TH1.8.6.3 K-function
-
-```{r}
-K_function <- Kest(study_ppps_original[[study_name]], correction = "Ripley")
-plot(K_function, main = paste("K-function estimation for", study_name), . -r ~ r, ylab= "K(d)-r", xlab = "d(m)")
-
-K_csr <- envelope(ppp, Kest, nsim = 99, rank = 1, glocal=TRUE)
-plot(K_csr, main = paste("K function test for spatial randomness for", study_name), . - r ~ r, xlab="d", ylab="K(d)-r")
-```
-
-#### TH1.8.6.4 L-function
-
-```{r}
-L_function <- Lest(study_ppps_original[[study_name]], correction = "Ripley")
-plot(L_function, main = paste("L-function estimation for", study_name), . -r ~ r, 
-     ylab= "L(d)-r", xlab = "d(m)")
-
-L_csr <- envelope(ppp, Lest, nsim = 99, rank = 1, glocal=TRUE)
-plot(L_csr, main = paste("L function test for spatial randomness for", study_name), . - r ~ r, xlab="d", ylab="L(d)-r")
 ```
 
 ## References
