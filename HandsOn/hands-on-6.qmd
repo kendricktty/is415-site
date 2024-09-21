@@ -193,11 +193,13 @@ plot(GC_corr)
 print(GC_corr)
 ```
 
-### HX6.8 Local Measures of Spatial Autocorrelation
+## HX6.8 Local Measures of Spatial Autocorrelation
 
 **Local measures of spatial autocorrelation (LMSA)** focuses on the relationships between each observation and its surroundings, unlike global measures of spatial autocorrelation where a single summary of these relationships is investigated across the map. In this sense, LMSA does not generate summary statistics, but rather, scores that allow us to learn more about the saptial structure in our data.
 
-**Local Indicators of spatial association (LISA)** are statistics that evaluate the existence of clusters and/or outliers in the spatial arrangement of a given variable. For instance if we are studying distribution of GDP per capita of Hunan Provice, People Republic of China, local clusters in GDP per capita mean that there are counties that have higher or lower rates than is to be expected by chance alone; that is, the values occurring are above or below those of a random distribution in space.
+#### HX6.8.0.1 Local Indicators of Spatial Association
+
+**Local indicators of spatial association (LISA)** are statistics that evaluate the existence of clusters and/or outliers in the spatial arrangement of a given variable. If we are studying GDP per capita, for instance, local clusters in GDP per capita mean that there are areas that have higher or lower rates than is to be expected by chance alone; that is, the values occurring are above or below those of a random distribution in space.
 
 ### HX6.8.1 Computing Local Moran's I
 
@@ -357,3 +359,160 @@ tm_shape(hunan.localMI) +
   tm_view(set.zoom.limits = c(11,17)) +
   tm_borders(alpha=0.5)
 ```
+
+For a more effective interpretation, it is good practice to plot our basemap, local Moran's I values map and p-value map side by side.
+
+```{r}
+gdppc <- qtm(hunan, "GDPPC")
+
+hunan.localMI$quadrant <- quadrant
+colors <- c("#ffffff", "#2c7bb6", "#abd9e9", "#fdae61", "#d7191c")
+clusters <- c("insignificant", "low-low", "low-high", "high-low", "high-high")
+
+LISAmap <- tm_shape(hunan.localMI) +
+  tm_fill(col = "quadrant", 
+          style = "cat", 
+          palette = colors[c(sort(unique(quadrant)))+1], 
+          labels = clusters[c(sort(unique(quadrant)))+1],
+          popup.vars = c("")) +
+  tm_view(set.zoom.limits = c(11,17)) +
+  tm_borders(alpha=0.5)
+
+tmap_arrange(gdppc, LISAmap, 
+             asp=1, ncol=2)
+```
+
+## HX6.10 Hot Spot and Cold Spot Areas Analysis
+
+Localised spatial statistics can also be used to detect **hot spot** and/or **cold spot** areas. One way to do this is by creating Getis and Ord's G-Statistics. It looks at neighbours within a defined proximity to identify whether either high or low values cluster spatially. The analysis consists of three steps:
+
+1. Deriving spatial weight matrix
+2. Computing Gi statistics
+3. Mapping Gi statistics
+
+### HX6.10.1 Deriving distance-based weight matrix
+
+First, we need to define a new set of neighbours based on distance. There are two types of distance-based proximity matrices: fixed-distance, and adaptive-distance.
+
+#### HX6.10.1.1 Deriving the centroid
+
+We will need points to associate with each polygon before we can create our connectivity graph. It will be a little more complicated than just running `st_centroid()` on the sf object; we need the coordinates in a separate data frame for this to work. To do this we will use a mapping function. The mapping function applies a given function to each element of a vector and returns a vector of the same length. Our input vector will be the geometry column of us.bound. Our function will be `st_centroid()`.
+
+To get our longitude values we map the st_centroid() function over the geometry column of us.bound and access the longitude value through double bracket notation [[]] and 1. This allows us to get only the longitude, which is the first value in each centroid.
+
+```{r}
+longitude <- map_dbl(hunan$geometry, ~st_centroid(.x)[[1]])
+```
+
+We do the same for latitude with one key difference. We access the second value per each centroid with `[[2]]`.
+
+```{r}
+latitude <- map_dbl(hunan$geometry, ~st_centroid(.x)[[2]])
+```
+
+Now that we have latitude and longitude, we can use `cbind` to put longitude and latitude into the same object.
+
+```{r}
+coords <- cbind(longitude, latitude)
+```
+
+#### HX6.10.1.2 Determining the cutoff distance
+
+We now need to determine the upper limit for our distance band.
+
+```{r}
+k1 <- knn2nb(knearneigh(coords))
+k1dists <- unlist(nbdists(k1, coords, longlat = TRUE))
+summary(k1dists)
+```
+
+The summary report shows that the largest first nearest neighbour distance is 61.79 km, so using this as the upper threshold gives certainty that all units will have at least one neighbour.
+
+#### HX6.10.1.3 Computing fixed-distance weight matrix
+
+We can now compute our distance weight matrix with `dnearneigh()`, and spatial weights object with `nb2listw()`.
+
+```{r}
+wm_d62 <- dnearneigh(coords, 0, 62, longlat = TRUE)
+wm_d62
+wm62_lw <- nb2listw(wm_d62, style = 'B')
+summary(wm62_lw)
+```
+
+### HX6.10.2 Computing adaptive distance weight matrix
+
+A fixed distance weight matrix can cause more densely settled areas (usually urban areas) to have more neighbours, and less densly settled areas (usually rural areas) to have fewer neighbours. Having many neighbours smoothes the neighbour relationship across more neighbours.
+
+It is possible to control the numbers of neighbours directly using k-nearest neighbours, either accepting asymmetric neighbours or imposing symmetry.
+
+```{r}
+knn <- knn2nb(knearneigh(coords, k=8))
+knn
+knn_lw <- nb2listw(knn, style = 'B')
+summary(knn_lw)
+```
+
+### HX6.10.3 Computing Gi statistics
+
+Gi-statistics show us where features with either high (i.e. hot spots) or low (i.e. cold spots) cluster spatially. **Hot spot areas** are areas that are significant and positive if location i is associated with relatively high values of the surrounding locations, while **cold spot areas** are areas that are significant and negative if location i is associated with relatively low values in surrounding locations.
+
+#### HX6.10.3.1 Gi statistics using fixed distance
+
+```{r}
+fips <- order(hunan$County)
+gi.fixed <- localG(hunan$GDPPC, wm62_lw)
+gi.fixed
+```
+
+The Gi statistics are represented as a Z-score. Higher Z-scores represent a greater intensity of clustering, while the direction (positive or negative) indicates high or low clusters.
+
+Now, we will join the Gi values to the `hunan` dataframe.
+
+```{r}
+hunan.gi <- cbind(hunan, as.matrix(gi.fixed)) %>%
+  rename(gstat_fixed = as.matrix.gi.fixed.)
+```
+
+#### HX6.10.3.2 Mapping Gi values with fixed distance weights
+
+```{r}
+gdppc <- qtm(hunan, "GDPPC")
+
+Gimap <-tm_shape(hunan.gi) +
+  tm_fill(col = "gstat_fixed", 
+          style = "pretty",
+          palette="-RdBu",
+          title = "local Gi") +
+  tm_borders(alpha = 0.5)
+
+tmap_arrange(gdppc, Gimap, asp=1, ncol=2)
+```
+
+#### HX6.10.3.3 Gi statistics with adaptive distance
+
+```{r}
+fips <- order(hunan$County)
+gi.adaptive <- localG(hunan$GDPPC, knn_lw)
+hunan.gi <- cbind(hunan, as.matrix(gi.adaptive)) %>%
+  rename(gstat_adaptive = as.matrix.gi.adaptive.)
+```
+
+#### HX6.10.3.4 Mapping Gi values with adaptive distance weights
+
+```{r}
+gdppc<- qtm(hunan, "GDPPC")
+
+Gimap <- tm_shape(hunan.gi) + 
+  tm_fill(col = "gstat_adaptive", 
+          style = "pretty", 
+          palette="-RdBu", 
+          title = "local Gi") + 
+  tm_borders(alpha = 0.5)
+
+tmap_arrange(gdppc, 
+             Gimap, 
+             asp=1, 
+             ncol=2)
+```
+
+The hot spot areas are the high GDP per capta areas clustered towards the northeast of the study region, while the cold spot areas are clustered towards the south and southwest.
