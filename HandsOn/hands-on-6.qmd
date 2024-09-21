@@ -6,7 +6,7 @@ date: "2024-09-21"
 date-modified: "last-modified"
 
 execute: 
-  eval: false
+  eval: true
   echo: true
   freeze: true
 ---
@@ -15,7 +15,7 @@ execute:
 
 In spatial policy, a development objective of local government and planners is to ensure **equal distribution of development**. The appropriate spatial statistical methods can be applied to discover if development is evenly distributed, and if not, to find out if and where there are signs of *spatial clustering*.
 
-Today, we return to Hunan province in the People's Republic of China to examine the spatial distribution of **GDP per capita**. Just like the previous exercise, we will import the Hunan province administrative boundaries, and 2012 development indicators.
+Today, we return to [Hunan](https://en.wikipedia.org/wiki/Hunan) province in the People's Republic of China to examine the spatial distribution of **GDP per capita**. Just like the previous exercise, we will import the Hunan province administrative boundaries, and 2012 development indicators.
 
 ### HX6.2 Importing packages and data
 
@@ -40,6 +40,7 @@ hunan2012 <- read_csv("data/aspatial/Hunan_2012.csv")
 ### HX6.2.4 Relational join
 
 Here, we will **left join** the attribute fields of the Hunan dataframe with the geographical boundaries of Hunan province.
+
 ```{r}
 hunan <- left_join(hunan, hunan2012) %>% select(1:4, 7, 15)
 ```
@@ -52,9 +53,9 @@ Before performing any analysis, it is a good practice to create some basic visua
 equal <- tm_shape(hunan) +
   tm_fill("GDPPC",
           n = 5,
-          style = "gaussian") +
+          style = "equal") +
   tm_borders(alpha = 0.5) +
-  tm_layout(main.title = "Equal Gaussian classification")
+  tm_layout(main.title = "Equal interval classification")
 
 quantile <- tm_shape(hunan) +
   tm_fill("GDPPC",
@@ -92,4 +93,267 @@ Following this, we need to assign weights to each neighbouring polygon. In our c
 ```{r}
 rswm_q <- nb2listw(wm_q, style="W", zero.policy = TRUE)
 rswm_q
+```
+
+## HX6.5 Moran's I
+
+**Moran's I** describes how features differ from the values in the study area as a whole. Positive (`I > 0`) values indicate clustering, with observations tending to be similar, while negative (`I` \< 0) values indicate dispersion, where observations tend to be dissimilar. When `I` is approximately 0, it indicates observations are randomly arranged in space. Moran's I approaches `1` when similar values are clustered, and approaches `-1` when dissimilar values tend to cluster.
+
+Moran's I statistics testing can be conducted using `moran.test()` from the `spdep` package.
+
+```{r}
+moran.test(hunan$GDPPC, 
+           listw=rswm_q, 
+           zero.policy = TRUE, 
+           na.action=na.omit)
+```
+
+The Moran's I statistic is approximately `0.3007`, which indicates a tendency for similar values to be clustered together in space. This means regions with high GDP per capita are likely to be near other similar regions, and vice-versa.
+
+Furthermore, the standard deviate is `4.74` and the p-value is `1.095e-06`. We can reject the null hypothesis that there is no spatial autocorrelation, and since there is significant evidence of positive spatial autocorrelation, we accept this alternative hypothesis.
+
+### HX6.5.1 Monte Carlo on Moran's I
+
+We can perform a Monte Carlo permutation test for the Moran's I statistic using `moran.mc()` and visualise the results.
+
+```{r}
+set.seed(1234)
+bperm= moran.mc(hunan$GDPPC, 
+                listw=rswm_q, 
+                nsim=999, 
+                zero.policy = TRUE, 
+                na.action=na.omit)
+bperm
+
+summary(bperm$res[1:999])
+hist(bperm$res, 
+     freq=TRUE, 
+     breaks=20, 
+     xlab="Simulated Moran's I")
+abline(v=0, 
+       col="red") 
+```
+
+The Moran's I statistic is `0.30075`. Since the p-value is `0.001`, this shows that the result is statistically significant. Since we have a slightly left-skewed distribution of simulated values, this high level of clustering is unlikely to occur by chance.
+
+## HX6.6 Geary's C
+
+**Geary's C** describes how features differ from their immediate neighbours. When `C > 1`, the points are dispersed, and while `C < 1`, the points are clustered. A `C` value of `1` indicates observations are randomly arranged in space. **Geary's C** approaches `0` when similar values are clustered, and approaches `3` when dissimilar values are clustered. Geary's C is inversely proportional to Moran's I, so higher `C`s correspond to lower `I`s.
+
+Geary's C testing can be performed by calling `geary.test()`, also from `spdedp`.
+
+```{r}
+geary.test(hunan$GDPPC, listw=rswm_q)
+```
+
+The C statistic is `0.6907`, which suggests positive spatial autocorrelation. With a very low p-value of `0.0001`, we can reject the null hypothesis that there is no spatial autocorrelation.
+
+### HX6.6.1 Monte Carlo on Geary's C
+
+Similar to Moran's I, we can perform a Monte Carlo permutation test on Geary's C and visualise the results.
+
+```{r}
+set.seed(1234)
+bperm=geary.mc(hunan$GDPPC, 
+               listw=rswm_q, 
+               nsim=999)
+bperm
+summary(bperm$res[1:999])
+hist(bperm$res, freq=TRUE, breaks=20, xlab="Simulated Geary c")
+abline(v=1, col="red") 
+```
+
+The distribution of the simulated values indicates a high tendancy towards C-values of 1 or greater, indicating a tendency towards no or negative spatial autocorrelation under random correlations.
+
+## HX6.7 Spatial Correlograms
+
+Spatial correlograms help us examine patterns of spatial autocorrelation. We can create correlograms for both Moran's I and Geary's C.
+
+### HX6.7.1 Moran's I
+
+```{r}
+MI_corr <- sp.correlogram(wm_q, 
+                          hunan$GDPPC, 
+                          order=6, 
+                          method="I", 
+                          style="W")
+plot(MI_corr)
+print(MI_corr)
+```
+
+### HX6.7.2 Geary's C
+
+```{r}
+GC_corr <- sp.correlogram(wm_q, 
+                          hunan$GDPPC, 
+                          order=6, 
+                          method="C", 
+                          style="W")
+plot(GC_corr)
+print(GC_corr)
+```
+
+### HX6.8 Local Measures of Spatial Autocorrelation
+
+**Local measures of spatial autocorrelation (LMSA)** focuses on the relationships between each observation and its surroundings, unlike global measures of spatial autocorrelation where a single summary of these relationships is investigated across the map. In this sense, LMSA does not generate summary statistics, but rather, scores that allow us to learn more about the saptial structure in our data.
+
+**Local Indicators of spatial association (LISA)** are statistics that evaluate the existence of clusters and/or outliers in the spatial arrangement of a given variable. For instance if we are studying distribution of GDP per capita of Hunan Provice, People Republic of China, local clusters in GDP per capita mean that there are counties that have higher or lower rates than is to be expected by chance alone; that is, the values occurring are above or below those of a random distribution in space.
+
+### HX6.8.1 Computing Local Moran's I
+
+The Moran's I statistic can be calculated locally, giving us `li` values given a set of `zi` values and a `listw` object providing neighbour weighting information for the polygon associated with the `zi` values.
+
+We can compute and list the values of the derived Moran's I matrix using the code chunk below.
+
+```{r}
+fips <- order(hunan$County)
+localMI <- localmoran(hunan$GDPPC, rswm_q)
+head(localMI)
+
+printCoefmat(data.frame(
+  localMI[fips,], 
+  row.names=hunan$County[fips]),
+  check.names=FALSE)
+```
+
+### HX6.8.1 Mapping Local Moran's I
+
+Once we have our matrix, we are able to plot these values on a `tmap`. Before mapping the Moran's I matrix, it is wise to append the dataframe onto the Hunan polygon featureset.
+
+```{r}
+hunan.localMI <- cbind(hunan,localMI) %>%
+  rename(Pr.Ii = Pr.z....E.Ii..)
+tm_shape(hunan.localMI) +
+  tm_fill(col = "Ii", 
+          style = "pretty",
+          palette = "RdBu",
+          title = "local moran statistics") +
+  tm_borders(alpha = 0.5)
+```
+
+#### HX6.8.1.1 Mapping p-values
+
+The choropleth map shows evidence of both positive and negative `Ii` values. However, it is useful to also consider the p-values for each of these values.
+
+```{r}
+tm_shape(hunan.localMI) +
+  tm_fill(col = "Pr.Ii", 
+          breaks=c(-Inf, 0.001, 0.01, 0.05, 0.1, Inf),
+          palette="-Blues", 
+          title = "local Moran's I p-values") +
+  tm_borders(alpha = 0.5)
+```
+
+#### HX6.8.1.2 Plotting them together
+
+We can also plot both maps side by side with the following code chunk.
+
+```{r}
+localMI.map <- tm_shape(hunan.localMI) +
+  tm_fill(col = "Ii", 
+          style = "pretty", 
+          title = "local moran statistics") +
+  tm_borders(alpha = 0.5)
+
+pvalue.map <- tm_shape(hunan.localMI) +
+  tm_fill(col = "Pr.Ii", 
+          breaks=c(-Inf, 0.001, 0.01, 0.05, 0.1, Inf),
+          palette="-Blues", 
+          title = "local Moran's I p-values") +
+  tm_borders(alpha = 0.5)
+
+tmap_arrange(localMI.map, pvalue.map, asp=1, ncol=2)
+```
+
+## HX6.9 Creating a LISA cluster map
+
+LISA cluster maps show significant locations colour-coded by type of spatial autocorrelation.
+
+### HX6.9.1 Plotting Moran scatterplot
+
+Before creating a LISA cluster map, we should first create a Moran scatterplot. This scatterplot illustrates the relationship between the values of our chosen attribute at each location and the average value of the same attribute at neighbouring locations. We can plot a Moran scatterplot for **GDP per capita in 2012** using the `moran.plot()` from `spdep`.
+
+```{r}
+nci <- moran.plot(hunan$GDPPC, rswm_q,
+                  labels=as.character(hunan$County), 
+                  xlab="GDPPC 2012", 
+                  ylab="Spatially Lagged GDPPC 2012")
+```
+
+Notice that the plot is split in 4 quadrants. The top right corner corresponds to areas that have high GDP per capita and are surrounded by other areas that have the average level of GDP per capita (i.e. positive autocorrelation - clustering).
+
+### HX6.9.2 Plotting Moran scatterplot with standardised variable
+
+We can use `scale()` to center and scale our variable. Here centering is done by subtracting the mean (omitting NAs) the corresponding columns, and scaling is done by dividing the (centered) variable by their standard deviations.
+
+```{r}
+hunan$Z.GDPPC <- scale(hunan$GDPPC) %>% 
+  as.vector 
+# Ensures we get a vector that maps neatly into our dataframe
+
+nci2 <- moran.plot(hunan$Z.GDPPC, rswm_q,
+                   labels=as.character(hunan$County),
+                   xlab="z-GDPPC 2012", 
+                   ylab="Spatially Lag z-GDPPC 2012")
+```
+
+### HX6.9.3 Preparing LISA map classes
+
+The code chunks below showcase the steps to prepare a LISA cluster map.
+
+```{r}         
+quadrant <- vector(mode="numeric",length=nrow(localMI))
+```
+
+Next, we derive the spatially lagged variable of interest (i.e. `GDPPC`) and centers the spatially lagged variable around its mean.
+
+```{r}      
+hunan$lag_GDPPC <- lag.listw(rswm_q, hunan$GDPPC)
+DV <- hunan$lag_GDPPC - mean(hunan$lag_GDPPC)     
+```
+
+This is followed by centering the local Moran’s around the mean.
+
+```{r}      
+LM_I <- localMI[,1] - mean(localMI[,1])    
+```
+
+Next, we set a statistical significance level for the local Moran.
+
+```{r}      
+signif <- 0.05       
+```
+
+These four lines define the low-low (`1`), low-high (`2`), high-low (`3`) and high-high (`4`) categories.
+
+```{r}      
+quadrant[DV <0 & LM_I>0] <- 1
+quadrant[DV >0 & LM_I<0] <- 2
+quadrant[DV <0 & LM_I<0] <- 3  
+quadrant[DV >0 & LM_I>0] <- 4      
+```
+
+Lastly, we place the non-significant Moran in the category 0.
+
+```{r}      
+quadrant[localMI[,5]>signif] <- 0
+```
+
+### HX6.9.4 Plotting LISA map
+
+Finally, we can build our LISA map as below.
+
+```{r}
+hunan.localMI$quadrant <- quadrant
+colors <- c("#ffffff", "#2c7bb6", "#abd9e9", "#fdae61", "#d7191c")
+clusters <- c("insignificant", "low-low", "low-high", "high-low", "high-high")
+
+tm_shape(hunan.localMI) +
+  tm_fill(col = "quadrant", 
+          style = "cat", 
+          palette = colors[c(sort(unique(quadrant)))+1], 
+          labels = clusters[c(sort(unique(quadrant)))+1],
+          popup.vars = c("")) +
+  tm_view(set.zoom.limits = c(11,17)) +
+  tm_borders(alpha=0.5)
 ```

@@ -24,6 +24,7 @@ website:
         - href: "HandsOn/Hands-on_Ex03/hands-on-3.qmd"
         - href: "InClass/ICE4/in-class-4.qmd"
         - href: "HandsOn/Hands-on_Ex05/hands-on-5.qmd"
+        - href: "HandsOn/hands-on-6.qmd"
       - text: "Take-home Exercises"
         menu:
         - href: "TakeHome/TakeHome1/take-home-1.qmd"
