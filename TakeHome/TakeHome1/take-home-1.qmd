@@ -35,7 +35,7 @@ pacman::p_load(sf, raster, spatstat, sparr, tmap, tidyverse)
 
 ## TH1.2 The Data
 
-Armed conflict data in Myanmar between 2010 and 2023 was downloaded from the [Armed Conflict Location & Event Database (ACLED)](https://acleddata.com/), an independent, impartial, international non-profit organization collecting data on violent conflicts and protests in all countries and territories in the world. We will be superimposing these locations with the geogrpahical boundary and subdivisions of the country, from the **Myanmar Information Management Unit** (MIMU).
+Armed conflict data in Myanmar between 2010 and 2023 was downloaded from the [Armed Conflict Location & Event Database (ACLED)](https://acleddata.com/), an independent, impartial, international non-profit organization collecting data on violent conflicts and protests in all countries and territories in the world (Raleigh et al., 2023). We will be superimposing these locations with the geogrpahical boundary and subdivisions of the country, from the **Myanmar Information Management Unit** (MIMU).
 
 We are interested in conflict events from 2019 onwards - starting from a year before the COVID-19 pandemic and 2 years before the 2021 coup - cumulating into the civil war of today.
 
@@ -115,7 +115,7 @@ Since the data is timestamped, we are able to plot and compare the frequency of 
 
 A visualisation of the spatial-temporial distribution of points can be found in **Annex A**. Notice the consistent appearance throughout the entire study period of a large cluster of points towards the west of the country - roughly the location of Rahkine state on the border with Bangladesh.
 
-Additionally, the ACLED dataset splits the conflict incidents in **Shan state** into *North*, *South* and *East*, and incidents in the **Bago region** into *East* and *West*. We need to combine these into
+Additionally, the ACLED dataset splits the conflict incidents in **Shan state** into *North*, *South* and *East*, and incidents in the **Bago region** into *East* and *West*. We need to combine these into their representations in the polygon set.
 
 ```{r}
 acled_mya_sf <- acled_mya_sf %>%
@@ -152,14 +152,12 @@ quarters
 ```
 
 ```{r}
-tm_shape(mmr_admin1) + tm_polygons() + tm_shape(acled_mya_sf) + tm_dots(size = 0.05)
-```
-
-```{r}
+# Plot points by quarter
 tm_shape(mmr_admin1) + tm_polygons() + tm_shape(acled_mya_sf) + tm_dots(size = 0.05) + tm_facets(by="Quarter_num", free.coords=FALSE, drop.units = TRUE)
 ```
 
 ```{r}
+#| echo: false
 tail(acled_mya_sf)
 ```
 
@@ -186,7 +184,7 @@ acled_mya_fatalities_by_quarter <- acled_mya_sf %>%
   group_by(Quarter_num) %>%
   summarise(`All fatalities` = sum(fatalities)) %>%
   ungroup()
-acled_mya_fatalities_by_quarter
+# acled_mya_fatalities_by_quarter
 summary(acled_mya_fatalities_by_quarter)
 ```
 
@@ -219,7 +217,7 @@ acled_mya_civilianTargeting_by_quarter <- acled_mya_sf %>%
   ) %>%
   mutate(Percentage_incidents_civilians_targeting = (Civilians_targeted / Count) * 100) %>%
   ungroup()
-acled_mya_civilianTargeting_by_quarter
+# acled_mya_civilianTargeting_by_quarter
 summary(acled_mya_civilianTargeting_by_quarter)
 
 ggplot(acled_mya_civilianTargeting_by_quarter, aes(x=Quarter_num, y=Percentage_incidents_civilians_targeting)) +     
@@ -230,8 +228,7 @@ ggplot(acled_mya_civilianTargeting_by_quarter, aes(x=Quarter_num, y=Percentage_i
          y = "% Incidents with civilian targeting") +
     theme_minimal()
 ```
-
-The percentage of violent conflict incidents targeting civilians trended upwards throughout the study duration.
+The percentage of violent conflict incidents targeting civilians trended upwards throughout the study duration. On average, 19.6% of all armed conflict incidents throughout the study period targeted civilians.
 
 #### TH1.5.1.4 Plotting proportion of fatalities by type of conflict
 
@@ -246,7 +243,7 @@ acled_mya_fatalities_by_event_type <- acled_mya_sf %>%
   group_by(event_type) %>%
   summarise(`All fatalities` = sum(fatalities)) %>%
   ungroup()
-acled_mya_fatalities_by_event_type
+summary(acled_mya_fatalities_by_event_type)
 ```
 
 ```{r}
@@ -336,15 +333,14 @@ acled_mya_civiliansTargeted_by_admin1_2022 <- acled_mya %>%
   )%>%
   ungroup() %>%
   mutate(`%_with_Civilian_Targeting` = (`Civilians_targeted` / `count`) * 100)
-acled_mya_civiliansTargeted_by_admin1_2022
+# acled_mya_civiliansTargeted_by_admin1_2022
 combined <- left_join(mmr_admin1, acled_mya_civiliansTargeted_by_admin1_2022, by = c("ST" = "admin1"))
-combined
+# combined
 tm_shape(combined) + 
   tm_fill("%_with_Civilian_Targeting", n = 8, style = "kmeans") + 
   tm_borders(alpha = 0.5) + 
   tm_layout(title = "admin1 by % of incidents targeting civilians, 2022", legend.outside = TRUE)
 ```
-
 The above map shows that the highest proportion of armed conflicts in the westernmost **Rakhine** *state* and easternmost **Shan** *state* involves violence against civilians. This state is the epicentre of the 2017 Rohingya crisis facing the eponymous Muslim ethnic group, discrimination against whom, in fact, goes as far back as the 1970s (Albert & Maizland, 2020). In joint second are the *regions* of **Bago** and **Yangon**.
 
 ### TH1.5.2 Overarching Spatial-Temporal KDE
@@ -391,13 +387,14 @@ plot(st_kde, quarter_numbers[i], override.par=FALSE, fix.range=TRUE, main=paste(
 Knowing that a significant part of the armed violence in Myanmar is due to systemic discrimination on the part of the government or military, it would make sense to repeat the process and plot STKDEs on the subset of the data concerning violence against civilians.
 
 ```{r}
+#| echo: false
 unique_type <- unique(acled_mya_sf$event_type)
 unique_type
 ```
 
 ```{r}
 acled_sf_againstCivilians <- acled_mya_sf %>% filter(event_type == "Violence against civilians")
-acled_sf_againstCivilians
+# acled_sf_againstCivilians
 acled_sf_againstCivilians <- acled_sf_againstCivilians %>% select(Quarter_num)
 ```
 
@@ -474,6 +471,14 @@ for (study_name in study_names) {
        main = paste("Fixed-bandwidth KDE for", study_name))
 }
 ```
+The fixed-bandwidth KDE returned dense clusters at the following areas for each state or region:
+
+- Sagaing region: toward the south and southwest
+- Shan state: towards the northwest, with a secondary cluster towards the southwest
+- Rakhine state: one large cluster towards the northwest
+- Chin state: one cluster in the central-north and southeast
+- Yangon region: one dense cluster towards the south coast
+- Tanintharyi region: one dense cluster skirting the northwest coast
 
 ### TH1.7.3 Adaptive-bandwidth KDE
 
@@ -490,6 +495,8 @@ for (study_name in study_names) {
 ```
 
 Fixed bandwidth KDE using `bw.scott` and the `gaussian` kernel returned a more meaningful result than adaptive bandwidth KDE.
+
+The `bw.scott` method applies **Scott's Rule for Bandwidth Selection for Kernel Density**, which calculates a bandwidth $\sigma$ that is proportional to $n^{\frac{-1}{d-4}}$, for number of points $n$ and number of spatial dimension $d$. This rule is fast to compute and, as we've seen, was able to produce a larger bandwidth than the mean-square error criterion defined with the `bw.diggle()` method (Diggle, 1985)
 
 Just for completeness, we will now attempt to map the results of fixed-bandwidth KDE for Rakhine state by creating a `RasterLayer`.
 
@@ -541,7 +548,7 @@ The nearest neighbour analyses for all our regions returned identical *p*-values
 
 Second order SPPA investigates variations in observations due to the way they interact with one another. In this section, we will use the **F-** and **G-functions** to analyse the spatial point patterns in our 6 selected regions.
 
-Ripley's K-function valuates the distribution of points over a range of distances, giving insight into spatial clustering or dispersion at different scales. In contrast, the **F-function** (nearest neighbor distribution) and **G-function** (empty space function) are limited to analyzing specific distances or single-scale proximity between points. This makes Ripley's K-function a more comprehensive analysis of spatial point patterns at multiple spatial scales, but more computationally complex.
+Ripley's K-function valuates the distribution of points over a range of distances, giving insight into spatial clustering or dispersion at different scales. In contrast, the **F-function** (nearest neighbor distribution) and **G-function** (empty space function) are limited to analyzing specific distances or single-scale proximity between points. This makes Ripley's K-function a more comprehensive analysis of spatial point patterns at multiple spatial scales, but supposedly more computationally complex. An attempt to run Ripley's K-function on armed conflict data in Sagaing - both for the entire study area and just in 2022 - led to a half-hour long freeze, so it will be omitted.
 
 ### TH1.8.1 Extracting study period
 
@@ -697,18 +704,28 @@ F_csr <- envelope(ppp, Fest, nsim = 99)
 plot(F_csr, main = paste("F function test for spatial randomness for", study_name))
 ```
 
-Since all F-functions lie entirely below the envelope, and all G-functions lie entirely above the envelope, we can conclude that 
+Since all F-functions lie entirely below the envelope, and all G-functions lie entirely above the envelope, we can conclude that the armed conflict areas exhibit **clustering**. This is backed up by the KDE plots, which show the presence of dense clusters.
+
+### TH1.9 Concluding thoughts
+
+In conclusion, we have explored different spatial point pattern analysis methods using armed conflict data in Myanmar. We attempted spatial-temporal KDE on the entire study period and identified dense areas around the **Sagaing** and **Chin** areas. Following that, we identified a subset of states and regions for deeper analysis based on exploratory data analysis and the STKDE plots and attempted fixed- and adaptive-bandwidth KDE on these areas, as well as second-order SPPA using the F- and G-functions. We have found `bw.scott()` to be more effective in performing KDE on this dataset than the usual `bw.diggle()`, and the conflict points in all regions to exhibit **clustering**.
+
+Now that we know how the points behave and where they are clustered, one possible extension of this study could be to do deeper research on Myanmar's municipalities, townships and diverse ethnic groups, and repeat the SPPA process with the `admin2` or `admin3` plots. This is so that we better identify the needs and desires of each ethnic group, helping diplomats and policymakers formulate more targeted solutions for the ethnic divide and conflict in the country. In addition, Ripley's K- function, as well as Besag's L-function, could be attempted again given more time and computing power, along with the incorporation of other data sources, such as economic data, which could enhance our understanding of the relationship between the conflict and the country's overall economic development.  It is worth noting, however, that no amount of geospatial analytics or field studies will be effective without a strong, morally upright and benevolent government in Myanmar, with the political will and know-how to formulate and implement sound policies in response to analyses such as this one, for the betterment of their people and country.
+
+As a long-time Python programmer and learner of data analytics, this exercise has been a rigourous introduction not only to R programming, but to wrangling and analysing 
 
 ## References
 
 1.  Albert, E., & Maizland, L. (2020, January 23). What forces are fueling Myanmar’s Rohingya crisis? Council on Foreign Relations. <https://www.cfr.org/backgrounder/rohingya-crisis>
-2.  Maizland, L. (2022, January 31). Myanmar’s troubled history: Coups, military rule, and ethnic conflict. Council on Foreign Relations. <https://www.cfr.org/backgrounder/myanmar-history-coup-military-rule-ethnic-conflict-rohingya>
-3.  Myanmar Information Management Unit. (n.d.). Country Overview. Retrieved 16 September 2024, from <https://www.themimu.info/country-overview>
-4.  Raleigh, C., Kishi, R. & Linke, A. Political instability patterns are obscured by conflict dataset scope conditions, sources, and coding choices. Humanit Soc Sci Commun 10, 74 (2023). <https://doi.org/10.1057/s41599-023-01559-4>
-5.  Rieffel, L. (2019, December 6). Peace and war in Myanmar. Brookings. <https://www.brookings.edu/articles/peace-and-war-in-myanmar/>
-6.  Smith, M. (1999). Burma: Insurgency and the politics of ethnicity (2. (updated) ed). Univ. Press \[u.a.\].
-7.  Sullivan, D. P. (2021, October 21). Dire consequences: Addressing the humanitarian fallout from myanmar’s coup. Refugees International; Refugees International. <https://www.refugeesinternational.org/reports-briefs/dire-consequences-addressing-the-humanitarian-fallout-from-myanmars-coup/>
-8.  UNDP (Ed.). (2024). Breaking the gridlock: Reimagining cooperation in a polarized world. United Nations Development Programme (UNDP).
+2.  Diggle, P.J. (1985). A kernel method for smoothing point process data. Applied Statistics (Journal of the Royal Statistical Society, Series C), 34, 138–147.
+3.  Maizland, L. (2022, January 31). Myanmar’s troubled history: Coups, military rule, and ethnic conflict. Council on Foreign Relations. <https://www.cfr.org/backgrounder/myanmar-history-coup-military-rule-ethnic-conflict-rohingya>
+4.  Myanmar Information Management Unit. (n.d.). Country Overview. Retrieved 16 September 2024, from <https://www.themimu.info/country-overview>
+5.  Raleigh, C., Kishi, R. & Linke, A. Political instability patterns are obscured by conflict dataset scope conditions, sources, and coding choices. Humanit Soc Sci Commun 10, 74 (2023). <https://doi.org/10.1057/s41599-023-01559-4>
+6.  Rieffel, L. (2019, December 6). Peace and war in Myanmar. Brookings. <https://www.brookings.edu/articles/peace-and-war-in-myanmar/>
+7.  Scott, D.W. (1992). Multivariate Density Estimation. Theory, Practice and Visualization. New York: Wiley.
+8.  Smith, M. (1999). Burma: Insurgency and the politics of ethnicity (2. (updated) ed). Univ. Press \[u.a.\].
+9.  Sullivan, D. P. (2021, October 21). Dire consequences: Addressing the humanitarian fallout from myanmar’s coup. Refugees International; Refugees International. <https://www.refugeesinternational.org/reports-briefs/dire-consequences-addressing-the-humanitarian-fallout-from-myanmars-coup/>
+10.  UNDP (Ed.). (2024). Breaking the gridlock: Reimagining cooperation in a polarized world. United Nations Development Programme (UNDP).
 
 ## Annex A: Full Quarterly STKDE Plots for Jan 2021- Sep 2024
 
