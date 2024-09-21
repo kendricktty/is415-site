@@ -706,7 +706,7 @@ plot(F_csr, main = paste("F function test for spatial randomness for", study_nam
 
 Since all F-functions lie entirely below the envelope, and all G-functions lie entirely above the envelope, we can conclude that the armed conflict areas exhibit **clustering**. This is backed up by the KDE plots, which show the presence of dense clusters.
 
-### TH1.9 Concluding thoughts
+## TH1.9 Concluding thoughts
 
 In conclusion, we have explored different spatial point pattern analysis methods using armed conflict data in Myanmar. We attempted spatial-temporal KDE on the entire study period and identified dense areas around the **Sagaing** and **Chin** areas. Following that, we identified a subset of states and regions for deeper analysis based on exploratory data analysis and the STKDE plots and attempted fixed- and adaptive-bandwidth KDE on these areas, as well as second-order SPPA using the F- and G-functions. We have found `bw.scott()` to be more effective in performing KDE on this dataset than the usual `bw.diggle()`, and the conflict points in all regions to exhibit **clustering**.
 
