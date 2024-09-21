@@ -198,7 +198,7 @@ We can establish that 3935 people die from the armed violence each quarter.
 ggplot(acled_mya_fatalities_by_quarter, aes(x=Quarter_num, y=`All fatalities`)) +     
   # geom_bar(stat = "identity", fill = "red4") +
   geom_line(color = "red4") + geom_point() +
-    labs(title = "Total Fatalities from the Armed Conflict in Myanmar by Quarter", subtitle = "1 = Q1 2021, 15 = Q3 2024",
+    labs(title = "Total Fatalities from the Armed Conflict in Myanmar by Quarter", subtitle = "1 = Q1 2021, 6 = Q2 2022, 11 = Q3 2023, 15 = Q3 2024",
          x = "Quarter",
          y = "All Fatalities") +
     theme_minimal()
@@ -225,9 +225,9 @@ summary(acled_mya_civilianTargeting_by_quarter)
 ggplot(acled_mya_civilianTargeting_by_quarter, aes(x=Quarter_num, y=Percentage_incidents_civilians_targeting)) +     
   # geom_bar(stat = "identity", fill = "red4") +
   geom_line(color = "skyblue1") + geom_point() +
-    labs(title = "Incidents involving civilian targeting in Myanmar by Quarter", subtitle = "1 = Q1 2021, 15 = Q3 2024",
+    labs(title = "Percentage of Incidents involving civilian targeting in Myanmar by Quarter", subtitle = "1 = Q1 2021, 6 = Q2 2022, 11 = Q3 2023, 15 = Q3 2024",
          x = "Quarter",
-         y = "Incidents with civilian targeting") +
+         y = "% Incidents with civilian targeting") +
     theme_minimal()
 ```
 
@@ -545,7 +545,7 @@ Ripley's K-function valuates the distribution of points over a range of distance
 
 ### TH1.8.1 Extracting study period
 
-The K- and L-functions run slower when fed with more data. Hence, we need to extract a smaller study period. Since the year 2022 saw more fatalities, it makes sense to extract only the events that occurred in 2022.
+The functions run slower when fed with more data. Hence, we need to extract a smaller study period. Since the year 2022 saw more fatalities, it makes sense to extract only the events that occurred in 2022.
 
 ```{r}
 acled_mya_2022_sf <- acled_mya_sf %>% filter(Quarter_num >= 5 & Quarter_num < 7) %>% select(Quarter_num)
@@ -576,7 +576,7 @@ plot(G_csr, main = paste("G function test for spatial randomness for", study_nam
 
 ```{r}
 F_function <- Fest(study_ppps_2022[[study_name]])
-plot(F_function, main = paste("F-function estimation for", study_name))
+plot(F_function, xlim=c(0,500), main = paste("F-function estimation for", study_name))
 
 F_csr <- envelope(ppp, Fest, nsim = 99)
 plot(F_csr, main = paste("F function test for spatial randomness for", study_name))
@@ -588,7 +588,7 @@ plot(F_csr, main = paste("F function test for spatial randomness for", study_nam
 
 ```{r}
 study_name = "Shan"
-G_function <- Gest(study_ppps_original[[study_name]], correction = "border")
+G_function <- Gest(study_ppps_2022[[study_name]], correction = "border")
 plot(G_function, xlim=c(0,500), main = paste("G-function estimation for", study_name))
 
 G_csr <- envelope(ppp, Gest, nsim = 99)
@@ -598,8 +598,8 @@ plot(G_csr, main = paste("G function test for spatial randomness for", study_nam
 #### TH1.8.2.2 F-function
 
 ```{r}
-F_function <- Fest(study_ppps_original[[study_name]])
-plot(F_function, main = paste("F-function estimation for", study_name))
+F_function <- Fest(study_ppps_2022[[study_name]])
+plot(F_function, xlim=c(0,500), main = paste("F-function estimation for", study_name))
 
 F_csr <- envelope(ppp, Fest, nsim = 99)
 plot(F_csr, main = paste("F function test for spatial randomness for", study_name))
@@ -611,7 +611,7 @@ plot(F_csr, main = paste("F function test for spatial randomness for", study_nam
 
 ```{r}
 study_name = "Rakhine"
-G_function <- Gest(study_ppps_original[[study_name]], correction = "border")
+G_function <- Gest(study_ppps_2022[[study_name]], correction = "border")
 plot(G_function, xlim=c(0,500), main = paste("G-function estimation for", study_name))
 
 G_csr <- envelope(ppp, Gest, nsim = 99, rank = 1, glocal=TRUE)
@@ -621,8 +621,8 @@ plot(G_csr, main = paste("G function test for spatial randomness for", study_nam
 #### TH1.8.3.2 F-function
 
 ```{r}
-F_function <- Fest(study_ppps_original[[study_name]])
-plot(F_function, main = paste("F-function estimation for", study_name))
+F_function <- Fest(study_ppps_2022[[study_name]])
+plot(F_function, xlim=c(0,500), main = paste("F-function estimation for", study_name))
 
 F_csr <- envelope(ppp, Fest, nsim = 99)
 plot(F_csr, main = paste("F function test for spatial randomness for", study_name))
@@ -634,7 +634,7 @@ plot(F_csr, main = paste("F function test for spatial randomness for", study_nam
 
 ```{r}
 study_name = "Chin"
-G_function <- Gest(study_ppps_original[[study_name]], correction = "border")
+G_function <- Gest(study_ppps_2022[[study_name]], correction = "border")
 plot(G_function, xlim=c(0,500), main = paste("G-function estimation for", study_name))
 
 G_csr <- envelope(ppp, Gest, nsim = 99)
@@ -644,8 +644,8 @@ plot(G_csr, main = paste("G function test for spatial randomness for", study_nam
 #### TH1.8.4.2 F-function
 
 ```{r}
-F_function <- Fest(study_ppps_original[[study_name]])
-plot(F_function, main = paste("F-function estimation for", study_name))
+F_function <- Fest(study_ppps_2022[[study_name]])
+plot(F_function, xlim=c(0,500), main = paste("F-function estimation for", study_name))
 
 F_csr <- envelope(ppp, Fest, nsim = 99)
 plot(F_csr, main = paste("F function test for spatial randomness for", study_name))
@@ -657,7 +657,7 @@ plot(F_csr, main = paste("F function test for spatial randomness for", study_nam
 
 ```{r}
 study_name = "Yangon"
-G_function <- Gest(study_ppps_original[[study_name]], correction = "border")
+G_function <- Gest(study_ppps_2022[[study_name]], correction = "border")
 plot(G_function, xlim=c(0,500), main = paste("G-function estimation for", study_name))
 
 G_csr <- envelope(ppp, Gest, nsim = 99)
@@ -667,8 +667,8 @@ plot(G_csr, main = paste("G function test for spatial randomness for", study_nam
 #### TH1.8.5.2 F-function
 
 ```{r}
-F_function <- Fest(study_ppps_original[[study_name]])
-plot(F_function, main = paste("F-function estimation for", study_name))
+F_function <- Fest(study_ppps_2022[[study_name]])
+plot(F_function, xlim=c(0,500), main = paste("F-function estimation for", study_name))
 
 F_csr <- envelope(ppp, Fest, nsim = 99)
 plot(F_csr, main = paste("F function test for spatial randomness for", study_name))
@@ -680,7 +680,7 @@ plot(F_csr, main = paste("F function test for spatial randomness for", study_nam
 
 ```{r}
 study_name = "Tanintharyi"
-G_function <- Gest(study_ppps_original[[study_name]], correction = "border")
+G_function <- Gest(study_ppps_2022[[study_name]], correction = "border")
 plot(G_function, xlim=c(0,500), main = paste("G-function estimation for", study_name))
 
 G_csr <- envelope(ppp, Gest, nsim = 99)
@@ -690,12 +690,14 @@ plot(G_csr, main = paste("G function test for spatial randomness for", study_nam
 #### TH1.8.6.2 F-function
 
 ```{r}
-F_function <- Fest(study_ppps_original[[study_name]])
-plot(F_function, main = paste("F-function estimation for", study_name))
+F_function <- Fest(study_ppps_2022[[study_name]])
+plot(F_function, xlim=c(0,500), main = paste("F-function estimation for", study_name))
 
 F_csr <- envelope(ppp, Fest, nsim = 99)
 plot(F_csr, main = paste("F function test for spatial randomness for", study_name))
 ```
+
+Since all F-functions lie entirely below the envelope, and all G-functions lie entirely above the envelope, we can conclude that 
 
 ## References
 

@@ -1,0 +1,95 @@
+---
+title: "HX6: Spatial Autocorrelation"
+subtitle: "Hands-On Exercise 6"
+author: "Kendrick Teo"
+date: "2024-09-21"
+date-modified: "last-modified"
+
+execute: 
+  eval: false
+  echo: true
+  freeze: true
+---
+
+## HX6.1 The analytical question
+
+In spatial policy, a development objective of local government and planners is to ensure **equal distribution of development**. The appropriate spatial statistical methods can be applied to discover if development is evenly distributed, and if not, to find out if and where there are signs of *spatial clustering*.
+
+Today, we return to Hunan province in the People's Republic of China to examine the spatial distribution of **GDP per capita**. Just like the previous exercise, we will import the Hunan province administrative boundaries, and 2012 development indicators.
+
+### HX6.2 Importing packages and data
+
+### HX6.2.1 Importing packages
+
+```{r}
+pacman::p_load(sf, spdep, tmap, tidyverse)
+```
+
+### HX6.2.2 Importing geospatial data
+
+```{r}
+hunan <- st_read(dsn="data/geospatial", layer="Hunan")
+```
+
+### HX6.2.3 Importing aspatial data
+
+```{r}
+hunan2012 <- read_csv("data/aspatial/Hunan_2012.csv")
+```
+
+### HX6.2.4 Relational join
+
+Here, we will **left join** the attribute fields of the Hunan dataframe with the geographical boundaries of Hunan province.
+```{r}
+hunan <- left_join(hunan, hunan2012) %>% select(1:4, 7, 15)
+```
+
+## HX6.3 Basic visualisation
+
+Before performing any analysis, it is a good practice to create some basic visualisations.
+
+```{r}
+equal <- tm_shape(hunan) +
+  tm_fill("GDPPC",
+          n = 5,
+          style = "gaussian") +
+  tm_borders(alpha = 0.5) +
+  tm_layout(main.title = "Equal Gaussian classification")
+
+quantile <- tm_shape(hunan) +
+  tm_fill("GDPPC",
+          n = 5,
+          style = "quantile") +
+  tm_borders(alpha = 0.5) +
+  tm_layout(main.title = "Equal quantile classification")
+
+tmap_arrange(equal, 
+             quantile, 
+             asp=1, 
+             ncol=2)
+```
+
+## HX6.4 Global Measures of Spatial Autocorrelation
+
+Before computing any global spatial autocorrelation statistics, we first need to construct the spatial weights of the study area. These are used to define the neighbourhood relationships between the geographical units in the study area.
+
+### HX6.4.1 Contiguity Spatial Weights
+
+In the code chunk below, `poly2nb()` from the `spdep` pckage is used to compute contiguity weight matrices for the study area. Today, we will create a QUEEN contiguity weight matrix.
+
+```{r}
+wm_q <- poly2nb(hunan, 
+                queen=TRUE)
+summary(wm_q)
+```
+
+### HX6.4.2 Creating Row-standardised Weights Matrix
+
+Following this, we need to assign weights to each neighbouring polygon. In our case, we will assign each neighbouring polygon an equal weight, by taking the inverse of the number of neighbours, using `style="W"` for simplicity.
+
+> More options, such as `style="B"`, are available.
+
+```{r}
+rswm_q <- nb2listw(wm_q, style="W", zero.policy = TRUE)
+rswm_q
+```
