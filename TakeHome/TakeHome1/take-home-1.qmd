@@ -12,7 +12,7 @@ execute:
   freeze: true
 ---
 
-## TH1.1 Setting the Scene
+## TH1.1 Introduction
 
 Millions of people have their lives shattered by armed conflict every year. One of these is the [**Myanmar Civil War**](https://en.wikipedia.org/wiki/Myanmar_civil_war_(2021%E2%80%93present)), a significant escalation of the long-running [Myanmar Conflict](https://en.wikipedia.org/wiki/Myanmar_conflict) in response to the [2021 coup d'etat](https://en.wikipedia.org/wiki/2021_Myanmar_coup_d%27%C3%A9tat).
 
@@ -35,13 +35,11 @@ pacman::p_load(sf, raster, spatstat, sparr, tmap, tidyverse)
 
 ## TH1.2 The Data
 
-Armed conflict data in Myanmar between 2010 and 2023 was downloaded from the [Armed Conflict Location & Event Database (ACLED)](https://acleddata.com/), an independent, impartial, international non-profit organization collecting data on violent conflicts and protests in all countries and territories in the world (Raleigh et al., 2023). We will be superimposing these locations with the geogrpahical boundary and subdivisions of the country, from the **Myanmar Information Management Unit** (MIMU).
-
-We are interested in conflict events from 2019 onwards - starting from a year before the COVID-19 pandemic and 2 years before the 2021 coup - cumulating into the civil war of today.
+Armed conflict data in Myanmar between **January 2021 and September 2024** was downloaded from the [Armed Conflict Location & Event Database (ACLED)](https://acleddata.com/), an independent, impartial, international non-profit organization collecting data on violent conflicts and protests in all countries and territories in the world (Raleigh et al., 2023). We will be superimposing these locations with the geogrpahical boundary and subdivisions of the country, from the **Myanmar Information Management Unit** (MIMU).
 
 ### TH1.2.1 Loading armed conflict data into `tibble` object
 
-Here we load our *aspatial* armed conflict data into a `tibble` object.
+First, we load our *aspatial* armed conflict data into a `tibble` object.
 
 ```{r}
 acled_mya <- read_csv("data/2021-01-01-2024-09-16-Southeast_Asia-Myanmar.csv")
@@ -50,7 +48,7 @@ head(acled_mya)
 
 ### TH1.2.2 Loading administrative boundaries into `sf` object
 
-Three representations of Myanmar's geography exist on the MIMU repository - `Admin1` subdivides the country into its states and regions only, while `Admin2` subdivides the country by its smaller districts, and `Admin3` its townships. Further, the ACLED labels each incident with all 3 representations. For simplicity and ease of understanding, we shall use the `Admin1` representation.
+Three representations of Myanmar's geography exist on the MIMU repository - `Admin1` subdivides the country into its states and regions only, while `Admin2` subdivides the country by its smaller districts, and `Admin3` its townships. Further, the ACLED labels each incident with all 3 representations. For simplicity and ease of initial understanding, we shall use the `Admin1` representation.
 
 ```{r}
 mmr_admin1 <- st_read(dsn = "data/mmr_polbnda_adm1_250k_mimu_1", layer = "mmr_polbnda_adm1_250k_mimu_1")
@@ -68,9 +66,11 @@ acled_mya_sf <- st_as_sf(acled_mya, coords = c("longitude", "latitude"), crs = 4
 
 ## TH1.3 A brief summary of Myanmar and the Myanmar Conflict
 
+We have imported our R packages and loaded our datasets, but before we move on, it is useful to present a brief introduction to the country of Myanmar and the evolution of its longstanding conflict to the state it is today.
+
 The second largest country in Southeast Asia at 676,578 square kilometres and an [ASEAN](https://en.wikipedia.org/wiki/ASEAN) member state, **Myanmar** features fertile tropical deltas in the south and the rugged Himalayan foothills to its north. It shares borders with China to the north and northeast, Laos and Thailand to the east and Southeast, and Bangladesh and India to the west and northwest. Despite having a 2800km coastline providing access to deep-sea ports and an abundance in natural resources including arable land, forests, minerals and natural gas, conflict-ridden Myanmar is considered a **least developed country**, with a GNP per capita of US\$1144 (2011) (Myanmar Information Management Unit, n.d.) and a HDI of 0.6 (UNDP, 2024). Consequently, agriculture accounts for 36% of GDP and 60-70% of employment.
 
-Myanmar is organised into seven **states**, seven **regions**, and one **union territory** - its capital, **Naypyitaw**, located at around the country's geographic centre. The states - Chin, Kachin, Kayah, Kyain, Mon, Rakhine and Shan - are largely populated by the national ethnic communities, while most of the inhabitants of its *regions* - Ayeyarwady, Bago, Mandalay, Sagaing, Tanintharyi and largest city [Yangon](https://en.wikipedia.org/wiki/Yangon) - are of the majority Bamar (Burmese) ethnicity. The following code chunk plots the states and regions of Myanmar into an interactive map.
+Myanmar is organised into seven **states**, seven **regions** including its largest city **Yangon**, and one **union territory** - its capital, **Naypyitaw**, located at around the country's geographic centre. The states - Chin, Kachin, Kayah, Kyain, Mon, Rakhine and Shan - are largely populated by the national ethnic communities, while most of the inhabitants of its *regions* - Ayeyarwady, Bago, Mandalay, Sagaing, Tanintharyi and largest city [Yangon](https://en.wikipedia.org/wiki/Yangon) - are of the majority Bamar (Burmese) ethnicity. The following code chunk plots the states and regions of Myanmar into an interactive map.
 
 ```{r}
 tmap_mode('view')
@@ -78,7 +78,7 @@ tm_shape(mmr_admin1) + tm_polygons()
 tmap_mode('plot')
 ```
 
-Crucially, Myanmar is one of the world's most ethnically diverse countries, with as many as 135 different ethnic groups boasting a rich tapestry of culture and religious history (Maizland, 2022). While this may paint a rosy picture of harmony on the surface, this is far from the case in the country. While the majority Bamar enjoy a privileged position in society and have held of government and military positions, many of the country's minority groups grapple with systemic discrimination, lack of economic opportunity and development, minimum representation in government, and abuses at the hands of the military.
+Crucially, Myanmar is one of the world's most ethnically diverse countries, with as many as 135 different ethnic groups boasting a rich tapestry of culture and religious history (Maizland, 2022). While this may paint a rosy picture of cultural beauty on the surface, this is far from reality in the country. While the majority Bamar enjoy a privileged position in society and have held of government and military positions, many of the country's minority groups grapple with systemic discrimination, lack of economic opportunity and development, minimum representation in government, and abuses at the hands of the military.
 
 The code chunk below visualises Myanmar's ethnic breakdown in a pie chart, based on data from the US CIA World Factbook and presented by Maizland (2022).
 
@@ -95,7 +95,7 @@ pie(x, labels = y, main = "Composition of Ethnic Groups in Myanmar (Maizland, 20
 
 ```
 
-Because of this disparity and partially as a result of the divide-and-conquer strategy used by the British during colonial rule, lengthy armed conflicts have ensued since Myanmar's independence between the ethnic groups (comprising ethnic armed organisations and smaller militias) and the Tatmadaw, the military, producing what has become known as the world's longest continuing civil war (Rieffel, 2019), over issues from greater autonomy to control of natural resources. This did not stop even after the country underwent a democratic reform in the early 2010s - since 2017, the Tatmadaw had been mounting a brutal campaign against the ethnic Rohingya (Albert & Maizland, 2020). While the administration of then-state chancellor Aung San Suu Kyi defended their actions, restricting press freedoms in the process, rights groups and UN officials claim the Tatmadaw's actions amounted to genocide.
+Because of this disparity - and partially as a result of the British using a divide-and-conquer strategy during the colonial era - lengthy armed conflicts have ensued since Myanmar's independence between the ethnic groups (comprising ethnic armed organisations and smaller militias) and the Tatmadaw, the military, creating what is perhaps the world's longest continuing civil war (Rieffel, 2019). The different ethnic groups of Myanmar fight over many issues, from greater autonomy to control over natural resources. This did not stop even after the country underwent a democratic reform in the early 2010s - since 2017, the Tatmadaw had been mounting a brutal campaign against the ethnic Rohingya (Albert & Maizland, 2020). While the administration of since-deposed state chancellor Aung San Suu Kyi defended their actions, restricting press freedoms in the process, rights groups and UN officials fervently claim the Tatmadaw's actions have amounted to genocide. The Tatmadaw has since unseated Aung San Suu Kyi in 2021 and re-established the military junta, significantly escalating tensions within the country.
 
 ## TH1.4 Data wrangling
 
@@ -111,9 +111,7 @@ tm_shape(mmr_admin1) + tm_polygons() + tm_shape(acled_mya_sf) + tm_dots(size = 0
 
 ### TH1.4.2 Feature creation
 
-Since the data is timestamped, we are able to plot and compare the frequency of conflict events *over time*. Before we do, though, we need to standardise the date stamps, then compartmentalise them into their year, month and day components, so that we can perform spatial-temporal point patterns analysis (STPPA) later. We will also aim to segregate events by whether or not they occurred before the coup on **February 1, 2021**.
-
-A visualisation of the spatial-temporial distribution of points can be found in **Annex A**. Notice the consistent appearance throughout the entire study period of a large cluster of points towards the west of the country - roughly the location of Rahkine state on the border with Bangladesh.
+Since the data is timestamped, we are able to plot and compare the frequency of conflict events *over time*. Before we do, though, we need to standardise the date stamps, then compartmentalise them into their year, month and day components, so that we can perform spatial-temporal point patterns analysis (STPPA) later.
 
 Additionally, the ACLED dataset splits the conflict incidents in **Shan state** into *North*, *South* and *East*, and incidents in the **Bago region** into *East* and *West*. We need to combine these into their representations in the polygon set.
 
@@ -177,7 +175,7 @@ plot(mmr_admin1_owin)
 
 We can quickly gain some meaningful insights from our dataset using basic EDA techniques. For instance, with the following code chunk, we can retrieve the total number of fatalities from the armed violence during the study period on a quarterly basis, and print its corresponding summary statistics.
 
-#### TH1.5.1.1 Getting quarterly distribution of fatalities and summary statistics
+#### TH1.5.1.1 Getting yearly and quarterly distribution of fatalities and summary statistics
 
 ```{r}
 acled_mya_fatalities_by_quarter <- acled_mya_sf %>%
@@ -188,9 +186,23 @@ acled_mya_fatalities_by_quarter <- acled_mya_sf %>%
 summary(acled_mya_fatalities_by_quarter)
 ```
 
-We can establish that 3935 people die from the armed violence each quarter.
+On average, we can establish that 3935 people die from the armed violence each quarter.
 
-#### TH1.5.1.2 Plotting quarterly distribution of fatalities as a line chart
+```{r}
+acled_mya_fatalities_by_year <- acled_mya_sf %>%
+  group_by(year) %>%
+  summarise(`All fatalities` = sum(fatalities)) %>%
+  ungroup()
+
+ggplot(acled_mya_fatalities_by_year, aes(x=year, y=`All fatalities`)) +
+  geom_bar(stat = "identity", fill = "darkgreen") +
+      labs(title = "Fatalities by year in Myanmar",
+         x = "Year",
+         y = "All Fatalities") +
+    theme_minimal()
+```
+
+#### TH1.5.1.2 Plotting yearly and quarterly distribution of fatalities as a line chart
 
 ```{r}
 ggplot(acled_mya_fatalities_by_quarter, aes(x=Quarter_num, y=`All fatalities`)) +     
@@ -232,7 +244,7 @@ The percentage of violent conflict incidents targeting civilians trended upwards
 
 #### TH1.5.1.4 Plotting proportion of fatalities by type of conflict
 
-We can also plot the proportion of fatalities by the type of conflict. The ACLED classifies armed conflict events by mode and intensity of attack and by whether civilians are targeted. From the graph and pie chart below, the largest proportion of fatalities comes from battles, closely followed by explosions and remote violence. However, violence against civilians makes up a sizeable 11.4% of fatalities over the study period.
+We can also plot the proportion of fatalities by the type of conflict. The ACLED classifies armed conflict events by mode and intensity of attack and by whether civilians are targeted. From the graph and pie chart below, the largest proportion of fatalities comes from battles, closely followed by explosions and remote violence. However, violence against civilians makes up a sizable 11.4% of fatalities over the study period.
 
 ```{r}
 unique(acled_mya_sf$event_type)
@@ -250,7 +262,7 @@ summary(acled_mya_fatalities_by_event_type)
 ggplot(acled_mya_fatalities_by_event_type, aes(x=event_type, y=`All fatalities`)) +
   geom_bar(stat = "identity", fill = "red4") +
       labs(title = "Fatalities by event type in Myanmar",
-         x = "Quarter",
+         x = "Event type",
          y = "All Fatalities") +
     theme_minimal()
 ```
@@ -271,7 +283,7 @@ pie(acled_mya_fatalities_by_event_type$`All fatalities`, labels = paste0(round(p
 legend("topright", paste(acled_mya_fatalities_by_event_type$event_type, ":", round(percentages, 1), "%"), fill = rainbow(length(acled_mya_fatalities_by_event_type$event_type)), cex = 0.7)
 ```
 
-We can further narrow down the scope of this analysis by limiting our data to a certain year, and to events where the `civilian_targeting` column is filled. The year 2022 saw the highest fatality numbers across the entire study period, so we will take a closer look.
+We can further narrow down the scope of this analysis by limiting our data to a certain year, and to events where the `civilian_targeting` column is filled. The year 2022 saw the highest fatality numbers across the entire study period, so we shall take a closer look.
 
 ```{r}
 acled_mya_fatalities_by_event_type_2022 <- acled_mya_sf %>%
@@ -345,7 +357,7 @@ The above map shows that the highest proportion of armed conflicts in the wester
 
 ### TH1.5.2 Overarching Spatial-Temporal KDE
 
-Next, we can try spatial-temporal kernel density estimation (STKDE) on the entire study area. As always, we start by creating `ppp` objects out of our `sf` objects, and checking for duplicates.
+Next, we can try spatial-temporal kernel density estimation (STKDE) on the entire study area and period. As always, we start by creating `ppp` objects out of our `sf` objects, and checking for duplicates.
 
 ```{r}
 acled_mya_sf_quarters <- acled_mya_sf %>% select(Quarter_num)
@@ -375,7 +387,7 @@ st_kde <- spattemp.density(acled_mya_quarters_ppp)
 summary(st_kde)
 ```
 
-After performing STKDE, we are able to plot the quarterly STKDE objects between 2021 and September 2024. The full set of plots can be found in Annex A, but the plot for Q1 2021 (id 15) is of particular interest because of the larger than usual densities around the **Sagaing** and **Chin** areas, as well as near **Yangon**.
+After performing STKDE, we are able to plot the quarterly STKDE objects between January 2021 and September 2024. The full set of plots can be found in **Annex A**, but the plot for **Q1 2021** (`id` `15`) is of particular interest because of the larger than usual densities around the **Sagaing** and **Chin** areas, as well as near **Yangon**.
 
 ```{r}
 i = 15
@@ -384,7 +396,7 @@ plot(st_kde, quarter_numbers[i], override.par=FALSE, fix.range=TRUE, main=paste(
 
 ### TH1.5.3 STKDE on Data Subset
 
-Knowing that a significant part of the armed violence in Myanmar is due to systemic discrimination on the part of the government or military, it would make sense to repeat the process and plot STKDEs on the subset of the data concerning violence against civilians.
+Knowing that a significant part of the armed violence in Myanmar is due to systemic discrimination on the part of the government or military, it would make sense to repeat the process and plot STKDEs on the subset of the data concerning violence against civilians. The full plots can also be found in **Annex A**.
 
 ```{r}
 #| echo: false
@@ -415,11 +427,9 @@ plot(st_kde_againstCivilians, quarter_numbers[15], override.par=FALSE, fix.range
 
 ## TH1.6 Zooming in
 
-The next step will be to perform spatial point pattern analysis (SPPA) and spatial-temporal point patterns analysis (STPPA). To do this effectively we need to select certain regions to analyse.
+STKDE on the entire country has not been able to yield satisfactory results thus far. Despite this, though, the preliminary KDE plot identified large clusters of armed conflict in the **Yangon** area in the south off the Andaman sea, as well as the **Sagaing** region and **Chin** state to the central-west. At the same time, from the chropleth maps, Yangon was shown as the area with the second highest degree of civilian targeting, while Sagaing had the most fatalities from the conflict.
 
-While not entirely effective, the preliminary KDE plot identified large clusters of armed conflict in the **Yangon** area in the south off the Andaman sea, as well as the **Sagaing** region and **Chin** state to the central-west. From the chropleth maps, Yangon was shown as the area with the second highest degree of civilian targeting, while Sagaing had the most fatalities from the conflict.
-
-Therefore, it makes sense to focus on **Sagaing**, **Shan**, **Rakhine** and **Chin**. Additionally, an analysis on the **Tanintharyi** *region* will cover the *Kra Isthmus*, the narrow isthmus linking central Thailand to Peninsula Malaysia, to study the scale of the part of the conflict that is geographically closest to the more stable and prosperous Malaysia and Singapore.
+It might be more effective to select a subset of regions and perform SPPA and STPPA by region. From our EDA and overarching STKDE, focusing on **Sagaing**, **Shan**, **Rakhine**, **Chin** and **Yangon** makes the most sense. Additionally, an analysis on the **Tanintharyi** *region* will cover the *Kra Isthmus*, the narrow isthmus linking central Thailand to Peninsula Malaysia, to study the scale of the part of the conflict that is geographically closest to the more stable and prosperous Malaysia and Singapore.
 
 ## TH1.7 First-order Spatial Point Patterns Analysis
 
@@ -496,7 +506,7 @@ for (study_name in study_names) {
 
 Fixed bandwidth KDE using `bw.scott` and the `gaussian` kernel returned a more meaningful result than adaptive bandwidth KDE.
 
-The `bw.scott` method applies **Scott's Rule for Bandwidth Selection for Kernel Density**, which calculates a bandwidth $\sigma$ that is proportional to $n^{\frac{-1}{d-4}}$, for number of points $n$ and number of spatial dimension $d$. This rule is fast to compute and, as we've seen, was able to produce a larger bandwidth than the mean-square error criterion defined with the `bw.diggle()` method (Diggle, 1985)
+The `bw.scott` method applies **Scott's Rule for Bandwidth Selection for Kernel Density** (Scott, 1992), which calculates a bandwidth $\sigma$ that is proportional to $n^{\frac{-1}{d-4}}$, for number of points $n$ and number of spatial dimension $d$. This rule is fast to compute and, as we've seen, was able to produce a larger bandwidth than the mean-square error criterion defined with the `bw.diggle()` method (Diggle, 1985)
 
 Just for completeness, we will now attempt to map the results of fixed-bandwidth KDE for Rakhine state by creating a `RasterLayer`.
 
@@ -519,7 +529,14 @@ tm_shape(raster) + tm_raster("layer", palette = "viridis") + tm_layout(legend.po
 
 ### TH1.7.4 Spatial-temporal KDE
 
-We can also plot spatial-temporal KDEs for each of our selected regions. The full plots can be found in **Annex B**.
+We can also plot spatial-temporal KDEs for each of our selected regions. The full plots can be found in **Annex B**, but the results can be summarised as follows:
+
+- In **Sagaing region**, the bulk of the fighting took place in 2022 towards the south, before dying down thereafter.
+- In **Shan state**, fierce fighting took place towards the northwest at the start of the conflict in 2021 and gradually died down, surging again in 4Q 2023 and again in 3Q 2024.
+- **Rakhine state** saw little fighting from 2021 until 4Q 2023, when fighting intensified primarily towards the northwest, bordering Bangladesh.
+- **Chin state** witnessed the most fighting throughout the state in 1Q 2021.
+- **Yangon** saw brief periods of conflict in the first half of 2021, and
+- **Tanintharyi region** is largely spared, with small pockets towards its northwest.
 
 ```{r}
 stkde_six_regions <- list()
@@ -548,7 +565,7 @@ The nearest neighbour analyses for all our regions returned identical *p*-values
 
 Second order SPPA investigates variations in observations due to the way they interact with one another. In this section, we will use the **F-** and **G-functions** to analyse the spatial point patterns in our 6 selected regions.
 
-Ripley's K-function valuates the distribution of points over a range of distances, giving insight into spatial clustering or dispersion at different scales. In contrast, the **F-function** (nearest neighbor distribution) and **G-function** (empty space function) are limited to analyzing specific distances or single-scale proximity between points. This makes Ripley's K-function a more comprehensive analysis of spatial point patterns at multiple spatial scales, but supposedly more computationally complex. An attempt to run Ripley's K-function on armed conflict data in Sagaing - both for the entire study area and just in 2022 - led to a half-hour long freeze, so it will be omitted.
+The **F-function** (nearest neighbor distribution) and **G-function** (empty space function) are limited to analyzing specific distances or single-scale proximity between points. Ripley's K-function overcomes this issue among others- it valuates the distribution of points over a range of distances, giving insight into spatial clustering or dispersion at different scales. This makes it a more comprehensive analysis of spatial point patterns at multiple spatial scales, at the exepense of it being more computationally complex. An attempt to run Ripley's K-function on armed conflict data in Sagaing - both for the entire study period and just in 2022 - led to a half-hour long freeze, so it will be omitted.
 
 ### TH1.8.1 Extracting study period
 
