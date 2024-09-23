@@ -1,0 +1,49 @@
+---
+title: "TH2: Application of Geospatial Analysis Methods to Discover Thailand Drug Abuse at the Province Level"
+image: "../../_site/HandsOn/Hands-on_Ex03/hands-on-3_files/figure-html/unnamed-chunk-42-1.png"
+subtitle: "Take Home Exercise 2"
+author: "Kendrick Teo"
+date: "2024-09-07"
+date-modified: "last-modified"
+
+execute: 
+  eval: true
+  echo: true
+  freeze: true
+---
+
+## TH2.1 Setting the Scene
+
+Drug abuse brings with it significant negative health, financial and social consequences. Yet, illicit drug consumption remains highly prevalent and continues to be a growing problem worldwide. The UNODC has reported an increase in the number of people using illicit drugs to 292 million people worldwide in the decade leading up to 2022. Of these, 228 million people consumed cannabis, 60 million people consumed opiods, 30 million used amphetamines, 23 million used cocaine and 20 million took ecstasy. Further, they found an **increase in overdose deaths following the emergence of nitazenes**, which is a group of synthetic opioids potentially more dangerous than fentanyl – in several high-income countries. (World Drug Day Report Highlights Spike in Drug Use, Increased Trafficking | UN News, 2024).
+
+The aim of today's study is to discover:
+
+- If the key indicators of drug abuse in **Thailand** are independent from space,
+- If the indicators of drug abuse are indeed spatially-dependent, and if so, where the clusters, outliers and hotspots are located,
+- How the observations above evolve over time.
+
+## TH2.2 The Drug Problem in Thailand
+
+**Thailand** (2024 GDP per capita - PPP: $23,401; Gini coefficient: 35.1 - medium; HDI: 0.083 - very high) (International Monetary Fund, 2024) (World Bank, n.d.) (United Nations Development Programme, 2024) is located in close proximity to the Golden Triangle, 
+
+## TH2.3 Importing data and R packages
+
+The `R` packages we will use today are:
+
+-   `sf`
+-   `tmap`
+-   `spatstat`
+-   `sparr`
+-   `raster`
+-   `maptools`
+
+```{r}
+pacman::p_load(sf, raster, spatstat, spdep, sparr, tmap, tidyverse)
+```
+
+## References
+
+1. International Monetary Fund. (2024, April 16). World Economic Outlook Database, April 2024 Edition: Thailand. https://www.imf.org/en/Publications/WEO/weo-database/2024/April 
+2. United Nations Development Programme. (2024, March 13). Human Development Report 2023/2024 (PDF). Retrieved September 23, 2024, from https://hdr.undp.org/sites/default/files/reports/3503/hdr2023-24reporten.pdf
+3. World Bank. (n.d.). Gini index. Retrieved September 23, 2024, from https://www.worldbank.org/en/topic/poverty/brief/gini-index
+4. World Drug Day report highlights spike in drug use, increased trafficking | UN News. (2024, June 26). United Nations. https://news.un.org/en/story/2024/06/1151446

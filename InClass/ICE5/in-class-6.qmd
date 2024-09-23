@@ -1,0 +1,12 @@
+---
+title: "CE6: Geographically-weighted statistics with gwModel"
+subtitle: "In-class Exercise 5"
+author: "Kendrick Teo"
+date: "2024-09-16"
+date-modified: "last-modified"
+
+execute: 
+  eval: true
+  echo: true
+  freeze: true
+---
