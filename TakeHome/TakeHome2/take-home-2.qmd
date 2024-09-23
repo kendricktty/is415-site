@@ -26,6 +26,8 @@ The aim of today's study is to discover:
 
 **Thailand** (2024 GDP per capita - PPP: $23,401; Gini coefficient: 35.1 - medium; HDI: 0.083 - very high) (International Monetary Fund, 2024) (World Bank, n.d.) (United Nations Development Programme, 2024) is located in close proximity to the Golden Triangle, 
 
+The penalty for drug trafficking in Thailand, much like its neighbours such as Malaysia and Singapore, is death. (Thailand, n.d.)
+
 ## TH2.3 Importing data and R packages
 
 The `R` packages we will use today are:
@@ -44,6 +46,7 @@ pacman::p_load(sf, raster, spatstat, spdep, sparr, tmap, tidyverse)
 ## References
 
 1. International Monetary Fund. (2024, April 16). World Economic Outlook Database, April 2024 Edition: Thailand. https://www.imf.org/en/Publications/WEO/weo-database/2024/April 
-2. United Nations Development Programme. (2024, March 13). Human Development Report 2023/2024 (PDF). Retrieved September 23, 2024, from https://hdr.undp.org/sites/default/files/reports/3503/hdr2023-24reporten.pdf
-3. World Bank. (n.d.). Gini index. Retrieved September 23, 2024, from https://www.worldbank.org/en/topic/poverty/brief/gini-index
-4. World Drug Day report highlights spike in drug use, increased trafficking | UN News. (2024, June 26). United Nations. https://news.un.org/en/story/2024/06/1151446
+2. Thailand. (n.d.). Hands-Off Cain. Retrieved 23 September 2024, from https://www.handsoffcain.info/bancadati/asia-middle-east-australia-and-oceania/thailand-17000464
+3. United Nations Development Programme. (2024, March 13). Human Development Report 2023/2024 (PDF). Retrieved September 23, 2024, from https://hdr.undp.org/sites/default/files/reports/3503/hdr2023-24reporten.pdf
+4. World Bank. (n.d.). Gini index. Retrieved September 23, 2024, from https://www.worldbank.org/en/topic/poverty/brief/gini-index
+5. World Drug Day report highlights spike in drug use, increased trafficking | UN News. (2024, June 26). United Nations. https://news.un.org/en/story/2024/06/1151446
