@@ -13,6 +13,7 @@ website:
         - href: "InClass/ICE3/in-class-3.qmd"
         - href: "InClass/ICE4/in-class-4.qmd"
         - href: "InClass/ICE5/in-class-5.qmd"
+        - href: "InClass/ICE5/in-class-6.qmd"
       - text: "Hands-On Exercises"
         menu:
         - href: "HandsOn/Hands-on_Ex01/hands-on-1.qmd"
@@ -28,6 +29,7 @@ website:
       - text: "Take-home Exercises"
         menu:
         - href: "TakeHome/TakeHome1/take-home-1.qmd"
+        - href: "TakeHome/TakeHome2/take-home-2.qmd"
 
 format:
   html:

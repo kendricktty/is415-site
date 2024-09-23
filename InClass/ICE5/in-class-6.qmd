@@ -1,6 +1,6 @@
 ---
-title: "CE6: Geographically-weighted statistics with gwModel"
-subtitle: "In-class Exercise 5"
+title: "CE6: Measures of Spatial Autocorrelation"
+subtitle: "In-class Exercise 6"
 author: "Kendrick Teo"
 date: "2024-09-16"
 date-modified: "last-modified"
@@ -10,3 +10,137 @@ execute:
   echo: true
   freeze: true
 ---
+
+## CE6.1 Import packages
+
+```{r}
+pacman::p_load(sf, sfdep, spdep, tmap, tidyverse)
+```
+
+## CE6.2 Preparing data
+
+### CE6.2.1 Importing Hunan data shapefile
+
+```{r}
+hunan <- st_read(dsn = "data/geospatial",
+                 layer = "Hunan")
+```
+
+### CE6.2.2 Importing Hunan 2012 Census Data
+
+```{r}
+dev_2012 <- read_csv("data/aspatial/Hunan_2012.csv")
+```
+
+### CE6.2.3 Performing relational join
+
+```{r}
+hunan <- left_join(hunan, dev_2012) %>%
+  select(1:4, 7, 15)
+  # Only selects fields we are interested in, in this case GDP per capita
+```
+
+## CE6.3 Deriving continuity weights: QUEEN method
+
+```{r}
+wm_q <- hunan %>%
+    mutate(nb = st_contiguity(geometry),
+            wt = st_weights(nb, style = "W"),
+            .before = 1) # Insert into the front - easier to examine later
+wm_q
+```
+
+## CE6.4 Computing Global Moran's I
+
+```{r}
+moranI <- global_moran(wm_q$GDPPC, wm_q$nb, wm_q$wt)
+glimpse(moranI)
+# K = average neighbours found
+```
+
+## CE6.5 Performing Global Moran's I Test
+
+```{r}
+# Frequentist method
+global_moran_test(wm_q$GDPPC, wm_q$nb, wm_q$wt)
+# If p < a (usually 0.05), reject null hypothesis H0
+```
+
+## CE6.6 Permutation Test
+
+```{r}
+# Bayesian vs frequentist inference
+set.seed(1234)
+global_moran_perm(wm_q$GDPPC, wm_q$nb, wm_q$wt, nsim = 999) # Try to run as many trials as possible
+```
+
+## CE6.7 Computing Local Moran's I
+
+```{r}
+lisa <- wm_q %>% mutate(local_moran = local_moran(GDPPC, nb, wt, nsim = 999), .before = 1) %>%
+        unnest(local_moran) # Create one single table
+lisa
+# p_folded_sim: k-fold replacement
+# p_ii_sim: Moran's I sim
+# Mean, median, skewness:
+# Left skewed/right skewed: use MEDIAN
+# Close to 0: use MEAN
+```
+
+## CE6.8 Visualising Local Moran's I and p-values
+
+```{r}
+tmap_mode("plot")
+local_moran_map <- tm_shape(lisa) + tm_fill("ii") + tm_borders(alpha = 0.5) + tm_view(set.zoom.limits = c(7, 8)) + tm_layout(main.title = "Local Moran's I of GDPPC", main.title.size = 1)
+```
+
+## CE6.9 Visualising p-values
+
+```{r}
+tmap_mode("plot")
+p_value_map <- tm_shape(lisa) + tm_fill("p_ii_sim") + tm_borders(alpha = 0.5) + tm_view(set.zoom.limits = c(7, 8)) + tm_layout(main.title = "Local Moran's I of GDPPC", main.title.size = 1)
+
+# To plot 2 maps side by side, save the maps to an output and refer to them
+# using tmap_arrange()
+tmap_arrange(local_moran_map, p_value_map, ncol = 2)
+```
+
+## CE5.10 LISA map
+
+```{r}
+lisa_sig <- lisa %>% filter(p_ii < 0.05) # Significant
+tm_shape(lisa) + tm_polygons() + tm_borders(alpha = 0.5) + tm_shape(lisa_sig) + tm_fill("mean") + tm_borders(alpha = 0.4)
+
+# Purple: low-high outlier
+# Green: low-low cluster
+# Red: high-high cluster
+```
+
+## CE5.11 Computing local Gi* statistics
+
+```{r}
+# Gstat methods give us hot spots and cold spots
+# LISAs give us clusters and outliers
+wm_idw <- hunan %>% 
+    mutate(nb = st_contiguity(geometry),
+            wts = st_inverse_distance(nb, geometry, scale = 1, alpha = 1),
+            .before = 1)
+wm_idw
+
+HCSA <- wm_idw %>% mutate(local_Gi = local_gstar_perm(GDPPC, nb, wt, nsim = 999), .before = 1) %>%
+unnest(local_Gi)
+HCSA
+```
+
+## CE5.12 Visualising Gi* statistics
+
+```{r}
+tm_shape(HCSA) + tm_fill("gi_star") + tm_borders(alpha = 0.5) + tm_view(set.zoom.limits = c(6, 8))
+```
+
+## CE5.13 Visualising hot and cold spot areas
+
+```{r}
+HCSA_sig <- HCSA %>% filter(p_sim < 0.05)
+tm_shape(HCSA) + tm_polygons() + tm_borders(alpha = 0.5) + tm_shape(HCSA_sig) + tm_fill("gi_star") + tm_borders(alpha = 0.4)
+```

@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Kendrick Teo">
+<meta name="dcterms.date" content="2024-09-07">
 
-<title>About me – IS415 - Kendrick</title>
+<title>TH2: Application of Geospatial Analysis Methods to Discover Thailand Drug Abuse at the Province Level – IS415 - Kendrick</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,25 +22,59 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-html/quarto.js"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -68,7 +104,7 @@ ul.task-list li input[type="checkbox"] {
 }</script>
 
 
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../../styles.css">
 </head>
 
 <body class="nav-fixed">
@@ -78,7 +114,7 @@ ul.task-list li input[type="checkbox"] {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">IS415 - Kendrick</span>
     </a>
   </div>
@@ -89,7 +125,7 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="./about.html" aria-current="page"> 
+    <a class="nav-link" href="../../about.html"> 
 <span class="menu-text">About me</span></a>
   </li>  
   <li class="nav-item dropdown ">
@@ -98,27 +134,27 @@ ul.task-list li input[type="checkbox"] {
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-in-class-exercises">    
         <li>
-    <a class="dropdown-item" href="./InClass/ICE1/in-class-1.html">
+    <a class="dropdown-item" href="../../InClass/ICE1/in-class-1.html">
  <span class="dropdown-text">CE1: Geospatial Data Science</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./InClass/ICE2/in-class-2.html">
+    <a class="dropdown-item" href="../../InClass/ICE2/in-class-2.html">
  <span class="dropdown-text">CE2: Working with Master Plan Planning Subzone Data</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./InClass/ICE3/in-class-3.html">
+    <a class="dropdown-item" href="../../InClass/ICE3/in-class-3.html">
  <span class="dropdown-text">CE3: Spatial Point Patterns Analysis</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./InClass/ICE4/in-class-4.html">
+    <a class="dropdown-item" href="../../InClass/ICE4/in-class-4.html">
  <span class="dropdown-text">CE4/H4: Spatial-Temporal Point Patterns Analysis</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./InClass/ICE5/in-class-5.html">
+    <a class="dropdown-item" href="../../InClass/ICE5/in-class-5.html">
  <span class="dropdown-text">CE5: Geographically-weighted statistics with gwModel</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./InClass/ICE5/in-class-6.html">
+    <a class="dropdown-item" href="../../InClass/ICE5/in-class-6.html">
  <span class="dropdown-text">CE6: Measures of Spatial Autocorrelation</span></a>
   </li>  
     </ul>
@@ -129,27 +165,27 @@ ul.task-list li input[type="checkbox"] {
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-hands-on-exercises">    
         <li>
-    <a class="dropdown-item" href="./HandsOn/Hands-on_Ex01/hands-on-1.html">
+    <a class="dropdown-item" href="../../HandsOn/Hands-on_Ex01/hands-on-1.html">
  <span class="dropdown-text">H1: Geospatial Data Wrangling with R</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./HandsOn/Hands-on_Ex02/hands-on-2.html">
+    <a class="dropdown-item" href="../../HandsOn/Hands-on_Ex02/hands-on-2.html">
  <span class="dropdown-text">H2: Thematic Mapping and Geospatial visualisation with R</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./HandsOn/Hands-on_Ex03/hands-on-3.html">
+    <a class="dropdown-item" href="../../HandsOn/Hands-on_Ex03/hands-on-3.html">
  <span class="dropdown-text">H3: Spatial Point Patterns Analysis</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./InClass/ICE4/in-class-4.html">
+    <a class="dropdown-item" href="../../InClass/ICE4/in-class-4.html">
  <span class="dropdown-text">CE4/H4: Spatial-Temporal Point Patterns Analysis</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./HandsOn/Hands-on_Ex05/hands-on-5.html">
+    <a class="dropdown-item" href="../../HandsOn/Hands-on_Ex05/hands-on-5.html">
  <span class="dropdown-text">H5: Spatial Weights and Appliations</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./HandsOn/hands-on-6.html">
+    <a class="dropdown-item" href="../../HandsOn/hands-on-6.html">
  <span class="dropdown-text">HX6: Spatial Autocorrelation</span></a>
   </li>  
     </ul>
@@ -160,11 +196,11 @@ ul.task-list li input[type="checkbox"] {
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-take-home-exercises">    
         <li>
-    <a class="dropdown-item" href="./TakeHome/TakeHome1/take-home-1.html">
+    <a class="dropdown-item" href="../../TakeHome/TakeHome1/take-home-1.html">
  <span class="dropdown-text">TH1: Geospatial Analytics for Social Good</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./TakeHome/TakeHome2/take-home-2.html">
+    <a class="dropdown-item" href="../../TakeHome/TakeHome2/take-home-2.html">
  <span class="dropdown-text">TH2: Application of Geospatial Analysis Methods to Discover Thailand Drug Abuse at the Province Level</span></a>
   </li>  
     </ul>
@@ -180,23 +216,52 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#th2.1-setting-the-scene" id="toc-th2.1-setting-the-scene" class="nav-link active" data-scroll-target="#th2.1-setting-the-scene">TH2.1 Setting the Scene</a></li>
+  <li><a href="#th2.2-the-drug-problem-in-thailand" id="toc-th2.2-the-drug-problem-in-thailand" class="nav-link" data-scroll-target="#th2.2-the-drug-problem-in-thailand">TH2.2 The Drug Problem in Thailand</a></li>
+  <li><a href="#th2.3-importing-data-and-r-packages" id="toc-th2.3-importing-data-and-r-packages" class="nav-link" data-scroll-target="#th2.3-importing-data-and-r-packages">TH2.3 Importing data and R packages</a></li>
+  <li><a href="#th2.4" id="toc-th2.4" class="nav-link" data-scroll-target="#th2.4">TH2.4</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">About me</h1>
+<h1 class="title">TH2: Application of Geospatial Analysis Methods to Discover Thailand Drug Abuse at the Province Level</h1>
+<p class="subtitle lead">Take Home Exercise 2</p>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Kendrick Teo </p>
+          </div>
+  </div>
     
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">September 7, 2024</p>
+    </div>
+  </div>
   
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">September 23, 2024</p>
+    </div>
+  </div>
     
   </div>
   
@@ -205,11 +270,51 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>Hi there! My name is <strong>Kendrick Teo</strong>, and I’m a final-year student of <strong>Singapore Management University</strong> (SMU).</p>
-<p>The purpose of this website is to document my learning journey in the course: <strong>IS415: Geospatial Analytics and Applications</strong> under professor <strong>Kam Tin Seong</strong>. Follow along with my coursework below as I explore the vast world of data analytics, geospatial analytics and urban planning.</p>
-<p>If you’re liking this site so far, I would most appreciate it if you could connect with me on <a href="https://www.linkedin.com/in/kendricktty/">LinkedIn</a>!</p>
+<section id="th2.1-setting-the-scene" class="level2">
+<h2 class="anchored" data-anchor-id="th2.1-setting-the-scene">TH2.1 Setting the Scene</h2>
+<p>Drug abuse brings with it significant negative health, financial and social consequences. Yet, illicit drug consumption remains highly prevalent and continues to be a growing problem worldwide. The UNODC has reported an increase in the number of people using illicit drugs to 292 million people worldwide in the decade leading up to 2022. Of these, 228 million people consumed cannabis, 60 million people consumed opiods, 30 million used amphetamines, 23 million used cocaine and 20 million took ecstasy. Further, they found an <strong>increase in overdose deaths following the emergence of nitazenes</strong>, which is a group of synthetic opioids potentially more dangerous than fentanyl – in several high-income countries. (World Drug Day Report Highlights Spike in Drug Use, Increased Trafficking | UN News, 2024).</p>
+<p>The aim of today’s study is to discover:</p>
+<ul>
+<li>If the key indicators of drug abuse in <strong>Thailand</strong> are independent from space,</li>
+<li>If the indicators of drug abuse are indeed spatially-dependent, and if so, where the clusters, outliers and hotspots are located,</li>
+<li>How the observations above evolve over time.</li>
+</ul>
+</section>
+<section id="th2.2-the-drug-problem-in-thailand" class="level2">
+<h2 class="anchored" data-anchor-id="th2.2-the-drug-problem-in-thailand">TH2.2 The Drug Problem in Thailand</h2>
+<p><strong>Thailand</strong> (2024 GDP per capita - PPP: $23,401; Gini coefficient: 35.1 - <span style="color:orange;">medium</span>; HDI: 0.083 - <span style="color:darkgreen;">very high</span>) (International Monetary Fund, 2024) (World Bank, n.d.) (United Nations Development Programme, 2024) is located in close proximity to the <a href="https://en.wikipedia.org/wiki/Golden_Triangle_(Southeast_Asia)">Golden Triangle</a>, which comprises the northern part of the country along with northern Myanmar and Laos. In 2018, 39% of Thais aged between 15 and 24 are involved in ilicit drugs. Of youth aged between 15 and 19, there are 300000 who need treatment, and a significant majority attend vocational schools (as opposed to grade schools). Kongjareon et al.&nbsp;(2022) found</p>
+<p>The penalty for drug trafficking in Thailand, much like neighbouring Laos, Malaysia and Singapore, is <a href="https://en.wikipedia.org/wiki/Capital_punishment_for_drug_trafficking">death</a>. (Thailand, n.d.)</p>
+</section>
+<section id="th2.3-importing-data-and-r-packages" class="level2">
+<h2 class="anchored" data-anchor-id="th2.3-importing-data-and-r-packages">TH2.3 Importing data and R packages</h2>
+<p>The <code>R</code> packages we will use today are:</p>
+<ul>
+<li><code>sf</code></li>
+<li><code>tmap</code></li>
+<li><code>spatstat</code></li>
+<li><code>spdep</code></li>
+<li><code>sparr</code></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sf, raster, spatstat, spdep, sparr, tmap, tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="th2.4" class="level2">
+<h2 class="anchored" data-anchor-id="th2.4">TH2.4</h2>
+</section>
+<section id="references" class="level2">
+<h2 class="anchored" data-anchor-id="references">References</h2>
+<ol type="1">
+<li>International Monetary Fund. (2024, April 16). World Economic Outlook Database, April 2024 Edition: Thailand. https://www.imf.org/en/Publications/WEO/weo-database/2024/April</li>
+<li>Kongjareon, Y., Samoh, N., Peerawaranun, P. et al.&nbsp;Pride-based violence, intoxicated sex and poly-drug use: a vocational school-based study of heterosexual and LGBT students in Bangkok. BMC Psychiatry 22, 148 (2022). https://doi.org/10.1186/s12888-022-03777-7</li>
+<li>Thailand. (n.d.). Hands-Off Cain. Retrieved 23 September 2024, from https://www.handsoffcain.info/bancadati/asia-middle-east-australia-and-oceania/thailand-17000464</li>
+<li>United Nations Development Programme. (2024, March 13). Human Development Report 2023/2024 (PDF). Retrieved September 23, 2024, from https://hdr.undp.org/sites/default/files/reports/3503/hdr2023-24reporten.pdf</li>
+<li>World Bank. (n.d.). Gini index. Retrieved September 23, 2024, from https://www.worldbank.org/en/topic/poverty/brief/gini-index</li>
+<li>World Drug Day report highlights spike in drug use, increased trafficking | UN News. (2024, June 26). United Nations. https://news.un.org/en/story/2024/06/1151446</li>
+</ol>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
