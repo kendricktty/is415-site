@@ -259,7 +259,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">September 23, 2024</p>
+      <p class="date-modified">September 24, 2024</p>
     </div>
   </div>
     
@@ -282,8 +282,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="th2.2-the-drug-problem-in-thailand" class="level2">
 <h2 class="anchored" data-anchor-id="th2.2-the-drug-problem-in-thailand">TH2.2 The Drug Problem in Thailand</h2>
-<p><strong>Thailand</strong> (2024 GDP per capita - PPP: $23,401; Gini coefficient: 35.1 - <span style="color:orange;">medium</span>; HDI: 0.083 - <span style="color:darkgreen;">very high</span>) (International Monetary Fund, 2024) (World Bank, n.d.) (United Nations Development Programme, 2024) is located in close proximity to the <a href="https://en.wikipedia.org/wiki/Golden_Triangle_(Southeast_Asia)">Golden Triangle</a>, which comprises the northern part of the country along with northern Myanmar and Laos. In 2018, 39% of Thais aged between 15 and 24 are involved in ilicit drugs. Of youth aged between 15 and 19, there are 300000 who need treatment, and a significant majority attend vocational schools (as opposed to grade schools). Kongjareon et al.&nbsp;(2022) found</p>
-<p>The penalty for drug trafficking in Thailand, much like neighbouring Laos, Malaysia and Singapore, is <a href="https://en.wikipedia.org/wiki/Capital_punishment_for_drug_trafficking">death</a>. (Thailand, n.d.)</p>
+<p><strong>Thailand</strong> (2024 GDP per capita - PPP: $23,401; Gini coefficient: 35.1 - <span style="color:orange;">medium</span>; HDI: 0.083 - <span style="color:darkgreen;">very high</span>) (International Monetary Fund, 2024) (World Bank, n.d.) (United Nations Development Programme, 2024) is located in close proximity to the <a href="https://en.wikipedia.org/wiki/Golden_Triangle_(Southeast_Asia)">Golden Triangle</a>, which comprises the northern part of the country along with northern Myanmar and Laos. In 2021, its drug trafficking situation remained critical, with 337,186 drug cases in total. While seizures of ketamine decreased between 2020 and 2021, seizures of methamphetamine, ice and heroin increased in the same period, with heroin seeing the biggest increase from 1873kg in 2020 to 4520kg in 2021 (Kongjareon et al., 2022).</p>
+<p>The maximum penalty for drug trafficking in Thailand, as is neighbouring Laos, Malaysia and Singapore, being <a href="https://en.wikipedia.org/wiki/Capital_punishment_for_drug_trafficking">death</a> (Thailand, n.d.). Despite this, drug trafficking persists in the country, with smugglers finding new routes through the north and northern borders of the country, even going so far as to hide shipments in cargo vessels bound for the likes of Singapore, New Zealand, Australia and South Korea. 575 smuggling cases by sea occured in 2021, in which 4554kg of heroin, 2.4 times more than the previous year, were seized (Kongjareon et al., 2022).</p>
+<p>Drug <em>use</em> in the country is as problematic. In 2018, 39% of Thais aged between 15 and 24 were involved in ilicit drugs. Of youth aged between 15 and 19, there are 300000 who need treatment, and a significant majority attend vocational schools (as opposed to grade schools). Kongjareon et al.&nbsp;(2022) found in a study of 638 students in four vocational schools, 11.3% reported poly-drug use. Among LGBT students this figure was 20.2%, and among hetrosexual students 9.8%. Factors contributing to the former’s use of drugs include, among other things, counselling needs, intoxicated sex and GPA.</p>
 </section>
 <section id="th2.3-importing-data-and-r-packages" class="level2">
 <h2 class="anchored" data-anchor-id="th2.3-importing-data-and-r-packages">TH2.3 Importing data and R packages</h2>
@@ -292,12 +293,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><code>sf</code></li>
 <li><code>tmap</code></li>
 <li><code>spatstat</code></li>
-<li><code>spdep</code></li>
+<li><code>spdep</code> for measures of spatial autocorrelation, and</li>
 <li><code>sparr</code></li>
 </ul>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sf, raster, spatstat, spdep, sparr, tmap, tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>The datasets we will use today are:</p>
 </section>
 <section id="th2.4" class="level2">
 <h2 class="anchored" data-anchor-id="th2.4">TH2.4</h2>
@@ -307,6 +309,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ol type="1">
 <li>International Monetary Fund. (2024, April 16). World Economic Outlook Database, April 2024 Edition: Thailand. https://www.imf.org/en/Publications/WEO/weo-database/2024/April</li>
 <li>Kongjareon, Y., Samoh, N., Peerawaranun, P. et al.&nbsp;Pride-based violence, intoxicated sex and poly-drug use: a vocational school-based study of heterosexual and LGBT students in Bangkok. BMC Psychiatry 22, 148 (2022). https://doi.org/10.1186/s12888-022-03777-7</li>
+<li>Kanato, M., Sarasiri, R., &amp; Leyatikul, P. (Eds.). (2022). ASEAN drug monitoring report 2021. ASEAN Narcotics Cooperation Center.</li>
 <li>Thailand. (n.d.). Hands-Off Cain. Retrieved 23 September 2024, from https://www.handsoffcain.info/bancadati/asia-middle-east-australia-and-oceania/thailand-17000464</li>
 <li>United Nations Development Programme. (2024, March 13). Human Development Report 2023/2024 (PDF). Retrieved September 23, 2024, from https://hdr.undp.org/sites/default/files/reports/3503/hdr2023-24reporten.pdf</li>
 <li>World Bank. (n.d.). Gini index. Retrieved September 23, 2024, from https://www.worldbank.org/en/topic/poverty/brief/gini-index</li>
