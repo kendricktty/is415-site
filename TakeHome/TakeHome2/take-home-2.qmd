@@ -18,7 +18,7 @@ Drug abuse brings with it significant negative health, financial and social cons
 
 The aim of today's study is to discover:
 
-- If the key indicators of drug abuse in **Thailand** are independent from space,
+- If the key indicators of drug abuse in **[Thailand](https://en.wikipedia.org/wiki/Thailand)** are independent from space,
 - If the indicators of drug abuse are indeed spatially-dependent, and if so, where the clusters, outliers and hotspots are located,
 - How the observations above evolve over time.
 
@@ -44,7 +44,12 @@ The `R` packages we will use today are:
 pacman::p_load(sf, raster, spatstat, spdep, sparr, tmap, tidyverse)
 ```
 
-The datasets we will use today are:
+We will be examining a dataset of drug offences in Thailand between 2017 and 2022, superimposed against the provincial boundaries of the country.
+
+```{r}
+thailand <- st_read(dsn="data/geospatial", layer="tha_admbnda_adm1_rtsd_20220121")
+thailand_drug <- read_csv("data/aspatial/thai_drug_offenses_2017_2022.csv")
+```
 
 ## TH2.4
 
