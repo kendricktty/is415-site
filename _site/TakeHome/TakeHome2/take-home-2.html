@@ -224,7 +224,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#th2.1-setting-the-scene" id="toc-th2.1-setting-the-scene" class="nav-link active" data-scroll-target="#th2.1-setting-the-scene">TH2.1 Setting the Scene</a></li>
   <li><a href="#th2.2-the-drug-problem-in-thailand" id="toc-th2.2-the-drug-problem-in-thailand" class="nav-link" data-scroll-target="#th2.2-the-drug-problem-in-thailand">TH2.2 The Drug Problem in Thailand</a></li>
   <li><a href="#th2.3-importing-data-and-r-packages" id="toc-th2.3-importing-data-and-r-packages" class="nav-link" data-scroll-target="#th2.3-importing-data-and-r-packages">TH2.3 Importing data and R packages</a></li>
-  <li><a href="#th2.4" id="toc-th2.4" class="nav-link" data-scroll-target="#th2.4">TH2.4</a></li>
+  <li><a href="#th2.4-data-exploration-and-preprocessing" id="toc-th2.4-data-exploration-and-preprocessing" class="nav-link" data-scroll-target="#th2.4-data-exploration-and-preprocessing">TH2.4 Data exploration and preprocessing</a></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
 </nav>
@@ -312,7 +312,49 @@ Dimension:     XY
 Bounding box:  xmin: 97.34336 ymin: 5.613038 xmax: 105.637 ymax: 20.46507
 Geodetic CRS:  WGS 84</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>thailand_drug <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/aspatial/thai_drug_offenses_2017_2022.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>thailand</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simple feature collection with 77 features and 16 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: 97.34336 ymin: 5.613038 xmax: 105.637 ymax: 20.46507
+Geodetic CRS:  WGS 84
+First 10 features:
+   Shape_Leng Shape_Area                  ADM1_EN       ADM1_TH ADM1_PCODE
+1    2.417227 0.13133873                  Bangkok  กรุงเทพมหานคร       TH10
+2    1.695100 0.07926199             Samut Prakan    สมุทรปราการ       TH11
+3    1.251111 0.05323766               Nonthaburi         นนทบุรี       TH12
+4    1.884945 0.12698345             Pathum Thani        ปทุมธานี       TH13
+5    3.041716 0.21393797 Phra Nakhon Si Ayutthaya พระนครศรีอยุธยา       TH14
+6    1.739908 0.07920961                Ang Thong        อ่างทอง       TH15
+7    5.693342 0.54578838                 Lop Buri          ลพบุรี       TH16
+8    1.778326 0.06872655                Sing Buri         สิงห์บุรี       TH17
+9    2.896316 0.20907828                 Chai Nat         ชัยนาท       TH18
+10   4.766446 0.29208711                 Saraburi         สระบุรี       TH19
+   ADM1_REF ADM1ALT1EN ADM1ALT2EN ADM1ALT1TH ADM1ALT2TH  ADM0_EN   ADM0_TH
+1      &lt;NA&gt;       &lt;NA&gt;       &lt;NA&gt;       &lt;NA&gt;       &lt;NA&gt; Thailand ประเทศไทย
+2      &lt;NA&gt;       &lt;NA&gt;       &lt;NA&gt;       &lt;NA&gt;       &lt;NA&gt; Thailand ประเทศไทย
+3      &lt;NA&gt;       &lt;NA&gt;       &lt;NA&gt;       &lt;NA&gt;       &lt;NA&gt; Thailand ประเทศไทย
+4      &lt;NA&gt;       &lt;NA&gt;       &lt;NA&gt;       &lt;NA&gt;       &lt;NA&gt; Thailand ประเทศไทย
+5      &lt;NA&gt;       &lt;NA&gt;       &lt;NA&gt;       &lt;NA&gt;       &lt;NA&gt; Thailand ประเทศไทย
+6      &lt;NA&gt;       &lt;NA&gt;       &lt;NA&gt;       &lt;NA&gt;       &lt;NA&gt; Thailand ประเทศไทย
+7      &lt;NA&gt;       &lt;NA&gt;       &lt;NA&gt;       &lt;NA&gt;       &lt;NA&gt; Thailand ประเทศไทย
+8      &lt;NA&gt;       &lt;NA&gt;       &lt;NA&gt;       &lt;NA&gt;       &lt;NA&gt; Thailand ประเทศไทย
+9      &lt;NA&gt;       &lt;NA&gt;       &lt;NA&gt;       &lt;NA&gt;       &lt;NA&gt; Thailand ประเทศไทย
+10     &lt;NA&gt;       &lt;NA&gt;       &lt;NA&gt;       &lt;NA&gt;       &lt;NA&gt; Thailand ประเทศไทย
+   ADM0_PCODE       date    validOn validTo                       geometry
+1          TH 2019-02-18 2022-01-22    &lt;NA&gt; MULTIPOLYGON (((100.6139 13...
+2          TH 2019-02-18 2022-01-22    &lt;NA&gt; MULTIPOLYGON (((100.7306 13...
+3          TH 2019-02-18 2022-01-22    &lt;NA&gt; MULTIPOLYGON (((100.3415 14...
+4          TH 2019-02-18 2022-01-22    &lt;NA&gt; MULTIPOLYGON (((100.8916 14...
+5          TH 2019-02-18 2022-01-22    &lt;NA&gt; MULTIPOLYGON (((100.5131 14...
+6          TH 2019-02-18 2022-01-22    &lt;NA&gt; MULTIPOLYGON (((100.3332 14...
+7          TH 2019-02-18 2022-01-22    &lt;NA&gt; MULTIPOLYGON (((101.3453 15...
+8          TH 2019-02-18 2022-01-22    &lt;NA&gt; MULTIPOLYGON (((100.3691 15...
+9          TH 2019-02-18 2022-01-22    &lt;NA&gt; MULTIPOLYGON (((100.1199 15...
+10         TH 2019-02-18 2022-01-22    &lt;NA&gt; MULTIPOLYGON (((101.3994 15...</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>thailand_drug <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/aspatial/thai_drug_offenses_2017_2022.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Rows: 7392 Columns: 5
 ── Column specification ────────────────────────────────────────────────────────
@@ -323,10 +365,53 @@ dbl (2): fiscal_year, no_cases
 ℹ Use `spec()` to retrieve the full column specification for this data.
 ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 </div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>thailand_drug</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 7,392 × 5
+   fiscal_year types_of_drug_offenses no_cases province_th   province_en        
+         &lt;dbl&gt; &lt;chr&gt;                     &lt;dbl&gt; &lt;chr&gt;         &lt;chr&gt;              
+ 1        2017 drug_use_cases            11871 กรุงเทพมหานคร  Bangkok            
+ 2        2017 drug_use_cases              200 ชัยนาท         Chai Nat           
+ 3        2017 drug_use_cases              553 นนทบุรี         Nonthaburi         
+ 4        2017 drug_use_cases              450 ปทุมธานี        Pathum Thani       
+ 5        2017 drug_use_cases              378 พระนครศรีอยุธยา Phra Nakhon Si Ayu…
+ 6        2017 drug_use_cases              727 ลพบุรี          Loburi             
+ 7        2017 drug_use_cases              820 สมุทรปราการ    Samut Prakan       
+ 8        2017 drug_use_cases               69 สระบุรี         Saraburi           
+ 9        2017 drug_use_cases              127 สิงห์บุรี         Sing Buri          
+10        2017 drug_use_cases              208 อ่างทอง        Ang Thong          
+# ℹ 7,382 more rows</code></pre>
+</div>
 </div>
 </section>
-<section id="th2.4" class="level2">
-<h2 class="anchored" data-anchor-id="th2.4">TH2.4</h2>
+<section id="th2.4-data-exploration-and-preprocessing" class="level2">
+<h2 class="anchored" data-anchor-id="th2.4-data-exploration-and-preprocessing">TH2.4 Data exploration and preprocessing</h2>
+<p>The code chunk below prints the unique types of drug offence cases.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>unique_drug <span class="ot">&lt;-</span> thailand_drug <span class="sc">%&gt;%</span> <span class="fu">distinct</span>(types_of_drug_offenses)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>unique_drug</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 16 × 1
+   types_of_drug_offenses                                
+   &lt;chr&gt;                                                 
+ 1 drug_use_cases                                        
+ 2 suspects_in_drug_use_cases                            
+ 3 possession_cases                                      
+ 4 suspects_in_possession_cases                          
+ 5 possession_with_intent_to_distribute_cases            
+ 6 suspects_in_possession_with_intent_to_distribute_cases
+ 7 trafficking_cases                                     
+ 8 suspects_in_trafficking_cases                         
+ 9 production_cases                                      
+10 suspects_in_production_cases                          
+11 import_cases                                          
+12 suspects_in_import_cases                              
+13 export_cases                                          
+14 suspects_in_export_cases                              
+15 conspiracy_cases                                      
+16 suspects_in_conspiracy_cases                          </code></pre>
+</div>
+</div>
 </section>
 <section id="references" class="level2">
 <h2 class="anchored" data-anchor-id="references">References</h2>

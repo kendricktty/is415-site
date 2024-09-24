@@ -48,10 +48,19 @@ We will be examining a dataset of drug offences in Thailand between 2017 and 202
 
 ```{r}
 thailand <- st_read(dsn="data/geospatial", layer="tha_admbnda_adm1_rtsd_20220121")
+thailand
 thailand_drug <- read_csv("data/aspatial/thai_drug_offenses_2017_2022.csv")
+thailand_drug
 ```
 
-## TH2.4
+## TH2.4 Data exploration and preprocessing
+
+The code chunk below prints the unique types of drug offence cases.
+
+```{r}
+unique_drug <- thailand_drug %>% distinct(types_of_drug_offenses)
+unique_drug
+```
 
 ## References
 
