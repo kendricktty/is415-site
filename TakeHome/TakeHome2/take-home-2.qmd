@@ -49,18 +49,18 @@ We will be examining a dataset of drug offences in Thailand between 2017 and 202
 ```{r}
 thailand <- st_read(dsn="data/geospatial", layer="tha_admbnda_adm1_rtsd_20220121")
 thailand
-thailand_drug <- read_csv("data/aspatial/thai_drug_offenses_2017_2022.csv")
+thailand_drug <- read_csv("data/aspatial/thai_drug_offenses_2017_2022.csv") %>% select(fiscal_year, types_of_drug_offenses, no_cases, province_en)
 thailand_drug
 ```
 
 ## TH2.4 Exploratory Data Analysis
 
-The code chunk below prints the unique types of drug offence cases.
+The code chunk below prints the unique types of drug offence cases without saving it as a variable.
 
 ```{r}
-unique_drug <- thailand_drug %>% distinct(types_of_drug_offenses)
-unique_drug
+thailand_drug %>% distinct(types_of_drug_offenses)
 ```
+There are a total of 8 different types of cases, with another 8 unique values dedicated to suspected instances of cases.
 
 ## References
 
