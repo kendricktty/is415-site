@@ -18,8 +18,8 @@ Drug abuse brings with it significant negative health, financial and social cons
 
 The aim of today's study is to discover:
 
-- If the key indicators of drug abuse in **[Thailand](https://en.wikipedia.org/wiki/Thailand)** are independent from space,
-- If the indicators of drug abuse are indeed spatially-dependent, and if so, where the clusters, outliers and hotspots are located,
+- If the key indicators of drug abuse and trafficking in **[Thailand](https://en.wikipedia.org/wiki/Thailand)** are independent from space,
+- If the indicators of drug abuse and trafficking are indeed spatially-dependent, and if so, where the clusters, outliers and hotspots are located,
 - How the observations above evolve over time.
 
 ## TH2.2 The Drug Problem in Thailand
@@ -65,6 +65,23 @@ There are a total of 8 different types of cases, with another 8 unique values de
 
 We are particularly interested in drug use and drug trafficking cases, so we will now attempt to plot the changes in the number of each type of case between 2017 and 2022.
 
+### TH2.4.1 Plotting changes in drug trafficking cases by time
+
+```{r}
+thailand_drug_trafficking <- thailand_drug %>% filter(types_of_drug_offenses == 'trafficking_cases') %>%
+  group_by(fiscal_year) %>%
+  summarise(total_cases = sum(no_cases)) %>%
+  ungroup()
+thailand_drug_trafficking
+
+ggplot() +     
+  # geom_bar(stat = "identity", fill = "red4") +
+  geom_line(color = "skyblue1", data = thailand_drug_trafficking, aes(x = fiscal_year, y = total_cases)) + geom_point() +
+    labs(title = "Percentage of Incidents involving civilian targeting in Myanmar by Quarter", subtitle = "1 = Q1 2021, 6 = Q2 2022, 11 = Q3 2023, 15 = Q3 2024",
+         x = "Quarter",
+         y = "% Incidents with civilian targeting") +
+    theme_minimal()
+```
 
 ## References
 
