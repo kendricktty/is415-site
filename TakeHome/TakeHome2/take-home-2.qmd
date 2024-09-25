@@ -55,12 +55,14 @@ thailand_drug
 
 ## TH2.4 Exploratory Data Analysis
 
-The code chunk below prints the unique types of drug offence cases without saving it as a variable.
+The code chunk below prints the total number of each unique type of drug offence cases.
 
 ```{r}
-thailand_drug %>% distinct(types_of_drug_offenses)
+thailand_drug_analysis <- thailand_drug %>% group_by(types_of_drug_offenses) %>% summarise(total_cases = sum(no_cases)) %>% ungroup()
+thailand_drug_analysis
 ```
 There are a total of 8 different types of cases, with another 8 unique values dedicated to suspected instances of cases.
+
 
 ## References
 
