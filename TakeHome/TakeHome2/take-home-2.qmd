@@ -44,7 +44,7 @@ The `R` packages we will use today are:
 pacman::p_load(sf, raster, spatstat, spdep, sparr, tmap, tidyverse)
 ```
 
-We will be examining a dataset of drug offences in Thailand between 2017 and 2022, superimposed against the provincial boundaries of the country.
+We will be examining a dataset of drug offences in Thailand between 2017 and 2022 retrieved from Kaggle, superimposed against the provincial boundaries of the country.
 
 ```{r}
 thailand <- st_read(dsn="data/geospatial", layer="tha_admbnda_adm1_rtsd_20220121")
@@ -62,6 +62,8 @@ thailand_drug_analysis <- thailand_drug %>% group_by(types_of_drug_offenses) %>%
 thailand_drug_analysis
 ```
 There are a total of 8 different types of cases, with another 8 unique values dedicated to suspected instances of cases.
+
+We are particularly interested in drug use and drug trafficking cases, so we will now attempt to plot the changes in the number of each type of case between 2017 and 2022.
 
 
 ## References
