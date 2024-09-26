@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Kendrick Teo">
-<meta name="dcterms.date" content="2024-09-07">
+<meta name="dcterms.date" content="2024-09-23">
 
 <title>TH2: Application of Geospatial Analysis Methods to Discover Thailand Drug Abuse at the Province Level – IS415 - Kendrick</title>
 <style>
@@ -224,7 +224,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#th2.1-setting-the-scene" id="toc-th2.1-setting-the-scene" class="nav-link active" data-scroll-target="#th2.1-setting-the-scene">TH2.1 Setting the Scene</a></li>
   <li><a href="#th2.2-the-drug-problem-in-thailand" id="toc-th2.2-the-drug-problem-in-thailand" class="nav-link" data-scroll-target="#th2.2-the-drug-problem-in-thailand">TH2.2 The Drug Problem in Thailand</a></li>
   <li><a href="#th2.3-importing-data-and-r-packages" id="toc-th2.3-importing-data-and-r-packages" class="nav-link" data-scroll-target="#th2.3-importing-data-and-r-packages">TH2.3 Importing data and R packages</a></li>
-  <li><a href="#th2.4-data-exploration-and-preprocessing" id="toc-th2.4-data-exploration-and-preprocessing" class="nav-link" data-scroll-target="#th2.4-data-exploration-and-preprocessing">TH2.4 Data exploration and preprocessing</a></li>
+  <li><a href="#th2.4-exploratory-data-analysis" id="toc-th2.4-exploratory-data-analysis" class="nav-link" data-scroll-target="#th2.4-exploratory-data-analysis">TH2.4 Exploratory Data Analysis</a>
+  <ul class="collapse">
+  <li><a href="#th2.4.1-plotting-changes-in-drug-trafficking-cases-by-time" id="toc-th2.4.1-plotting-changes-in-drug-trafficking-cases-by-time" class="nav-link" data-scroll-target="#th2.4.1-plotting-changes-in-drug-trafficking-cases-by-time">TH2.4.1 Plotting changes in drug trafficking cases by time</a></li>
+  <li><a href="#th2.4.1-plotting-changes-in-drug-use-cases-by-time" id="toc-th2.4.1-plotting-changes-in-drug-use-cases-by-time" class="nav-link" data-scroll-target="#th2.4.1-plotting-changes-in-drug-use-cases-by-time">TH2.4.1 Plotting changes in drug use cases by time</a></li>
+  </ul></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
 </nav>
@@ -252,14 +256,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">September 7, 2024</p>
+      <p class="date">September 23, 2024</p>
     </div>
   </div>
   
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">September 24, 2024</p>
+      <p class="date-modified">September 26, 2024</p>
     </div>
   </div>
     
@@ -275,15 +279,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Drug abuse brings with it significant negative health, financial and social consequences. Yet, illicit drug consumption remains highly prevalent and continues to be a growing problem worldwide. The UNODC has reported an increase in the number of people using illicit drugs to 292 million people worldwide in the decade leading up to 2022. Of these, 228 million people consumed cannabis, 60 million people consumed opiods, 30 million used amphetamines, 23 million used cocaine and 20 million took ecstasy. Further, they found an <strong>increase in overdose deaths following the emergence of nitazenes</strong>, which is a group of synthetic opioids potentially more dangerous than fentanyl – in several high-income countries. (World Drug Day Report Highlights Spike in Drug Use, Increased Trafficking | UN News, 2024).</p>
 <p>The aim of today’s study is to discover:</p>
 <ul>
-<li>If the key indicators of drug abuse in <strong><a href="https://en.wikipedia.org/wiki/Thailand">Thailand</a></strong> are independent from space,</li>
-<li>If the indicators of drug abuse are indeed spatially-dependent, and if so, where the clusters, outliers and hotspots are located,</li>
+<li>If the key indicators of drug abuse and trafficking in <strong><a href="https://en.wikipedia.org/wiki/Thailand">Thailand</a></strong> are independent from space,</li>
+<li>If the indicators of drug abuse and trafficking are indeed spatially-dependent, and if so, where the clusters, outliers and hotspots are located,</li>
 <li>How the observations above evolve over time.</li>
 </ul>
 </section>
 <section id="th2.2-the-drug-problem-in-thailand" class="level2">
 <h2 class="anchored" data-anchor-id="th2.2-the-drug-problem-in-thailand">TH2.2 The Drug Problem in Thailand</h2>
-<p><strong>Thailand</strong> (2024 GDP per capita - PPP: $23,401; Gini coefficient: 35.1 - <span style="color:orange;">medium</span>; HDI: 0.083 - <span style="color:darkgreen;">very high</span>) (International Monetary Fund, 2024) (World Bank, n.d.) (United Nations Development Programme, 2024) is located in close proximity to the <a href="https://en.wikipedia.org/wiki/Golden_Triangle_(Southeast_Asia)">Golden Triangle</a>, which comprises the northern part of the country along with northern Myanmar and Laos. In 2021, its drug trafficking situation remained critical, with 337,186 drug cases in total. While seizures of ketamine decreased between 2020 and 2021, seizures of methamphetamine, ice and heroin increased in the same period, with heroin seeing the biggest increase from 1873kg in 2020 to 4520kg in 2021 (Kongjareon et al., 2022).</p>
-<p>The maximum penalty for drug trafficking in Thailand, as is neighbouring Laos, Malaysia and Singapore, is <a href="https://en.wikipedia.org/wiki/Capital_punishment_for_drug_trafficking">death</a> (Thailand, n.d.). Despite this, drug trafficking persists in the country, with smugglers finding new routes through the north and northern borders of the country, even going so far as to hide shipments in cargo vessels bound for the likes of Singapore, New Zealand, Australia and South Korea. 575 smuggling cases by sea occured in 2021, in which 4554kg of heroin, 2.4 times more than the previous year, were seized (Kongjareon et al., 2022).</p>
+<p><strong>Thailand</strong> (2024 GDP per capita - PPP: $23,401; Gini coefficient: 35.1 - <span style="color:orange;">medium</span>; HDI: 0.083 - <span style="color:darkgreen;">very high</span>) (International Monetary Fund, 2024) (World Bank, n.d.) (United Nations Development Programme, 2024) is located in close proximity to the <a href="https://en.wikipedia.org/wiki/Golden_Triangle_(Southeast_Asia)">Golden Triangle</a>, which comprises the northern part of the country along with northern Myanmar and Laos. In 2021, its drug trafficking situation remained critical, with 337,186 drug cases in total. While seizures of ketamine decreased between 2020 and 2021, seizures of methamphetamine, ice and heroin increased in the same period, with heroin seeing the biggest increase from 1873kg in 2020 to 4520kg in 2021 (Kanato et al., 2022).</p>
+<p>The maximum penalty for drug trafficking in Thailand, as is neighbouring Laos, Malaysia and Singapore, is <a href="https://en.wikipedia.org/wiki/Capital_punishment_for_drug_trafficking">death</a> (Thailand, n.d.). Despite this, smugglers have innovated on new routes, through the north and northern borders of the country, and even go so far as to hide shipments in cargo vessels bound for the likes of Singapore, New Zealand, Australia and South Korea. 575 smuggling cases by sea occured in 2021, in which 4554kg of heroin, 2.4 times more than the previous year, were seized (Kanato et al., 2022).</p>
 <p>Drug <em>use</em> in the country is as problematic. In 2018, 39% of Thais aged between 15 and 24 were involved in ilicit drugs. Of youth aged between 15 and 19, there are 300000 who need treatment, and a significant majority attend vocational schools (as opposed to grade schools). Kongjareon et al.&nbsp;(2022) found in a study of 638 students in four vocational schools, 11.3% reported poly-drug use. Among LGBT students this figure was 20.2%, and among hetrosexual students 9.8%. Factors contributing to the former’s use of drugs include, among other things, counselling needs, intoxicated sex and GPA.</p>
 </section>
 <section id="th2.3-importing-data-and-r-packages" class="level2">
@@ -297,14 +301,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><code>sparr</code></li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sf, raster, spatstat, spdep, sparr, tmap, tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sf, raster, spatstat, spdep, sparr, tmap, tidyverse, gridExtra)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>We will be examining a dataset of drug offences in Thailand between 2017 and 2022, superimposed against the provincial boundaries of the country.</p>
+<p>We will be examining a dataset of drug offences in Thailand between 2017 and 2022 retrieved from Kaggle, superimposed against the provincial boundaries of the country.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>thailand <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="at">dsn=</span><span class="st">"data/geospatial"</span>, <span class="at">layer=</span><span class="st">"tha_admbnda_adm1_rtsd_20220121"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Reading layer `tha_admbnda_adm1_rtsd_20220121' from data source 
-  `/Users/kendricktty/Gits/SMU_CS/is415-site/TakeHome/TakeHome2/data/geospatial' 
+  `/Users/kendricktty/Gits/smu_cs/is415-site/TakeHome/TakeHome2/data/geospatial' 
   using driver `ESRI Shapefile'
 Simple feature collection with 77 features and 16 fields
 Geometry type: MULTIPOLYGON
@@ -354,7 +358,7 @@ First 10 features:
 9          TH 2019-02-18 2022-01-22    &lt;NA&gt; MULTIPOLYGON (((100.1199 15...
 10         TH 2019-02-18 2022-01-22    &lt;NA&gt; MULTIPOLYGON (((101.3994 15...</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>thailand_drug <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/aspatial/thai_drug_offenses_2017_2022.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>thailand_drug <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/aspatial/thai_drug_offenses_2017_2022.csv"</span>) <span class="sc">%&gt;%</span> <span class="fu">select</span>(fiscal_year, types_of_drug_offenses, no_cases, province_en)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Rows: 7392 Columns: 5
 ── Column specification ────────────────────────────────────────────────────────
@@ -367,51 +371,188 @@ dbl (2): fiscal_year, no_cases
 </div>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>thailand_drug</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 7,392 × 5
-   fiscal_year types_of_drug_offenses no_cases province_th   province_en        
-         &lt;dbl&gt; &lt;chr&gt;                     &lt;dbl&gt; &lt;chr&gt;         &lt;chr&gt;              
- 1        2017 drug_use_cases            11871 กรุงเทพมหานคร  Bangkok            
- 2        2017 drug_use_cases              200 ชัยนาท         Chai Nat           
- 3        2017 drug_use_cases              553 นนทบุรี         Nonthaburi         
- 4        2017 drug_use_cases              450 ปทุมธานี        Pathum Thani       
- 5        2017 drug_use_cases              378 พระนครศรีอยุธยา Phra Nakhon Si Ayu…
- 6        2017 drug_use_cases              727 ลพบุรี          Loburi             
- 7        2017 drug_use_cases              820 สมุทรปราการ    Samut Prakan       
- 8        2017 drug_use_cases               69 สระบุรี         Saraburi           
- 9        2017 drug_use_cases              127 สิงห์บุรี         Sing Buri          
-10        2017 drug_use_cases              208 อ่างทอง        Ang Thong          
+<pre><code># A tibble: 7,392 × 4
+   fiscal_year types_of_drug_offenses no_cases province_en             
+         &lt;dbl&gt; &lt;chr&gt;                     &lt;dbl&gt; &lt;chr&gt;                   
+ 1        2017 drug_use_cases            11871 Bangkok                 
+ 2        2017 drug_use_cases              200 Chai Nat                
+ 3        2017 drug_use_cases              553 Nonthaburi              
+ 4        2017 drug_use_cases              450 Pathum Thani            
+ 5        2017 drug_use_cases              378 Phra Nakhon Si Ayutthaya
+ 6        2017 drug_use_cases              727 Loburi                  
+ 7        2017 drug_use_cases              820 Samut Prakan            
+ 8        2017 drug_use_cases               69 Saraburi                
+ 9        2017 drug_use_cases              127 Sing Buri               
+10        2017 drug_use_cases              208 Ang Thong               
 # ℹ 7,382 more rows</code></pre>
 </div>
 </div>
 </section>
-<section id="th2.4-data-exploration-and-preprocessing" class="level2">
-<h2 class="anchored" data-anchor-id="th2.4-data-exploration-and-preprocessing">TH2.4 Data exploration and preprocessing</h2>
-<p>The code chunk below prints the unique types of drug offence cases.</p>
+<section id="th2.4-exploratory-data-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="th2.4-exploratory-data-analysis">TH2.4 Exploratory Data Analysis</h2>
+<p>The code chunk below prints the total number of each unique type of drug offence cases.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>unique_drug <span class="ot">&lt;-</span> thailand_drug <span class="sc">%&gt;%</span> <span class="fu">distinct</span>(types_of_drug_offenses)</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>unique_drug</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>thailand_drug_analysis <span class="ot">&lt;-</span> thailand_drug <span class="sc">%&gt;%</span> </span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(types_of_drug_offenses) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">total_cases =</span> <span class="fu">sum</span>(no_cases)) <span class="sc">%&gt;%</span> <span class="fu">ungroup</span>()</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>thailand_drug_analysis</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 16 × 1
-   types_of_drug_offenses                                
-   &lt;chr&gt;                                                 
- 1 drug_use_cases                                        
- 2 suspects_in_drug_use_cases                            
- 3 possession_cases                                      
- 4 suspects_in_possession_cases                          
- 5 possession_with_intent_to_distribute_cases            
- 6 suspects_in_possession_with_intent_to_distribute_cases
- 7 trafficking_cases                                     
- 8 suspects_in_trafficking_cases                         
- 9 production_cases                                      
-10 suspects_in_production_cases                          
-11 import_cases                                          
-12 suspects_in_import_cases                              
-13 export_cases                                          
-14 suspects_in_export_cases                              
-15 conspiracy_cases                                      
-16 suspects_in_conspiracy_cases                          </code></pre>
+<pre><code># A tibble: 16 × 2
+   types_of_drug_offenses                                 total_cases
+   &lt;chr&gt;                                                        &lt;dbl&gt;
+ 1 conspiracy_cases                                               920
+ 2 drug_use_cases                                              915529
+ 3 export_cases                                                    84
+ 4 import_cases                                                   860
+ 5 possession_cases                                            538893
+ 6 possession_with_intent_to_distribute_cases                  341283
+ 7 production_cases                                             56892
+ 8 suspects_in_conspiracy_cases                                  2332
+ 9 suspects_in_drug_use_cases                                  930768
+10 suspects_in_export_cases                                       102
+11 suspects_in_import_cases                                      1066
+12 suspects_in_possession_cases                                566999
+13 suspects_in_possession_with_intent_to_distribute_cases      386946
+14 suspects_in_production_cases                                 66247
+15 suspects_in_trafficking_cases                                79997
+16 trafficking_cases                                            68379</code></pre>
 </div>
 </div>
+<p>There are a total of 8 different types of cases, with another 8 unique values dedicated to suspected instances of cases.</p>
+<p>We are particularly interested in drug use, possession and trafficking cases, so we will now attempt to plot the changes in the number of each type of case between 2017 and 2022. This analysis will help us select study periods to analyse later.</p>
+<section id="th2.4.1-plotting-changes-in-drug-trafficking-cases-by-time" class="level3">
+<h3 class="anchored" data-anchor-id="th2.4.1-plotting-changes-in-drug-trafficking-cases-by-time">TH2.4.1 Plotting changes in drug trafficking cases by time</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>thailand_drug_trafficking <span class="ot">&lt;-</span> thailand_drug <span class="sc">%&gt;%</span> <span class="fu">filter</span>(types_of_drug_offenses <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"trafficking_cases"</span>, <span class="st">"suspects_in_trafficking_cases"</span>, <span class="st">"possession_with_intent_to_distribute_cases"</span>, <span class="st">"suspects_in_possession_with_intent_to_distribute_cases"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(fiscal_year) <span class="sc">%&gt;%</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">total_cases =</span> <span class="fu">sum</span>(no_cases[types_of_drug_offenses <span class="sc">==</span> <span class="st">"trafficking_cases"</span>]),</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">total_suspect_cases =</span> <span class="fu">sum</span>(no_cases[types_of_drug_offenses <span class="sc">==</span> <span class="st">"suspects_in_trafficking_cases"</span>]),</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">total_posession_intent_cases =</span> <span class="fu">sum</span>(no_cases[types_of_drug_offenses <span class="sc">==</span> <span class="st">"possession_with_intent_to_distribute_cases"</span>]),</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">total_suspect_posession_intent_cases =</span> <span class="fu">sum</span>(no_cases[types_of_drug_offenses <span class="sc">==</span> <span class="st">"suspects_in_possession_with_intent_to_distribute_cases"</span>])) <span class="sc">%&gt;%</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>thailand_drug_trafficking</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 5
+  fiscal_year total_cases total_suspect_cases total_posession_intent_cases
+        &lt;dbl&gt;       &lt;dbl&gt;               &lt;dbl&gt;                        &lt;dbl&gt;
+1        2017       13089               15603                        55644
+2        2018       12034               14630                        64205
+3        2019       11366               13498                        63194
+4        2020       12248               13918                        67014
+5        2021       10847               12395                        68681
+6        2022        8795                9953                        22545
+# ℹ 1 more variable: total_suspect_posession_intent_cases &lt;dbl&gt;</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> thailand_drug_trafficking, <span class="fu">aes</span>(<span class="at">x =</span> fiscal_year)) <span class="sc">+</span>     </span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> total_cases, <span class="at">color =</span> <span class="st">"trafficking_cases"</span>), <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span> </span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> total_cases, <span class="at">color =</span> <span class="st">"trafficking_cases"</span>), <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> total_suspect_cases, <span class="at">color =</span> <span class="st">"suspects_in_trafficking_cases"</span>), <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span> </span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> total_suspect_cases, <span class="at">color =</span> <span class="st">"suspects_in_trafficking_cases"</span>), <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Trafficking Cases and Suspects"</span>,</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Year"</span>,</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Number of cases"</span>) <span class="sc">+</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"trafficking_cases"</span> <span class="ot">=</span> <span class="st">"purple3"</span>, <span class="st">"suspects_in_trafficking_cases"</span> <span class="ot">=</span> <span class="st">"plum"</span>)) <span class="sc">+</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>, </span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.justification =</span> <span class="st">"right"</span>) <span class="sc">+</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">color =</span> <span class="fu">guide_legend</span>(<span class="at">title =</span> <span class="st">"Legend"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+ℹ Please use `linewidth` instead.</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-2_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> thailand_drug_trafficking, <span class="fu">aes</span>(<span class="at">x =</span> fiscal_year)) <span class="sc">+</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> total_posession_intent_cases, <span class="at">color =</span> <span class="st">"possession_with_intent_to_distribute_cases"</span>), <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span> </span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> total_posession_intent_cases, <span class="at">color =</span> <span class="st">"possession_with_intent_to_distribute_cases"</span>), <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> total_suspect_posession_intent_cases, <span class="at">color =</span> <span class="st">"suspects_in_possession_with_intent_to_distribute_cases"</span>), <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span> </span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> total_suspect_posession_intent_cases, <span class="at">color =</span> <span class="st">"suspects_in_possession_with_intent_to_distribute_cases"</span>), <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Possession with Intent to Distribute Cases and Suspects"</span>,</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Year"</span>,</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Number of cases"</span>) <span class="sc">+</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"possession_with_intent_to_distribute_cases"</span> <span class="ot">=</span> <span class="st">"black"</span>, </span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>                                <span class="st">"suspects_in_possession_with_intent_to_distribute_cases"</span> <span class="ot">=</span> <span class="st">"gray"</span>)) <span class="sc">+</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>, </span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.justification =</span> <span class="st">"right"</span>) <span class="sc">+</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">color =</span> <span class="fu">guide_legend</span>(<span class="at">title =</span> <span class="st">"Legend"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-2_files/figure-html/unnamed-chunk-4-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># grid.arrange(plot1, plot2, ncol = 2)</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ggplot(data = thailand_drug_trafficking, aes(x = fiscal_year)) +     </span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   # geom_bar(stat = "identity", fill = "red4") +</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   geom_line(aes(x = fiscal_year, y = total_cases, color = "trafficking_cases"), size = 1) + geom_point(aes(x = fiscal_year, y = total_cases, color = "trafficking_cases"), size = 2) +</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   geom_line(aes(x = fiscal_year, y = total_suspect_cases, color = "suspects_in_trafficking_cases"), size = 1) + geom_point(aes(x = fiscal_year, y = total_suspect_cases, color = "suspects_in_trafficking_cases"), size = 2) +</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="co">#   geom_line(aes(x = fiscal_year, y = total_posession_intent_cases, color = "possession_with_intent_to_distribute_cases"), size = 1) + geom_point(aes(x = fiscal_year, y = total_posession_intent_cases, color = "possession_with_intent_to_distribute_cases"), size = 2) +</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="co">#   geom_line(aes(x = fiscal_year, y = total_suspect_posession_intent_cases, color = "suspects_in_possession_with_intent_to_distribute_cases"), size = 1) + geom_point(aes(x = fiscal_year, y = total_suspect_posession_intent_cases, color = "suspects_in_possession_with_intent_to_distribute_cases"), size = 2) +</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="co">#     labs(title = "Drug trafficking and suspected cases by year",</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="co">#          x = "Year",</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="co">#          y = "Number of cases") +</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a><span class="co">#     scale_color_manual(values = c("trafficking_cases" = "purple3", "suspects_in_trafficking_cases" = "plum", "possession_with_intent_to_distribute_cases" = "black", "suspects_in_possession_with_intent_to_distribute_cases" = "gray")) +</span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a><span class="co">#     theme_minimal() +</span></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a><span class="co">#   theme(legend.position = "bottom", </span></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a><span class="co">#         legend.justification = "right") +</span></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a><span class="co">#   guides(color = guide_legend(title = "Legend"))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The number of trafficking cases generally trended downwards between 2017 and 2022, though there was a momentary increase between 2019 and 2020. Meanwhile the number of posession cases with intent to distribute rose steadily until 2021, before plunging in 2022.</p>
+</section>
+<section id="th2.4.1-plotting-changes-in-drug-use-cases-by-time" class="level3">
+<h3 class="anchored" data-anchor-id="th2.4.1-plotting-changes-in-drug-use-cases-by-time">TH2.4.1 Plotting changes in drug use cases by time</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>thailand_drug_trafficking <span class="ot">&lt;-</span> thailand_drug <span class="sc">%&gt;%</span> <span class="fu">filter</span>(types_of_drug_offenses <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"drug_use_cases"</span>, <span class="st">"suspects_in_drug_use_cases"</span>, <span class="st">"possession_cases"</span>, <span class="st">"suspects_in_possession_cases"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(fiscal_year) <span class="sc">%&gt;%</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">total_use_cases =</span> <span class="fu">sum</span>(no_cases[types_of_drug_offenses <span class="sc">==</span> <span class="st">"drug_use_cases"</span>]),</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">total_suspect_use_cases =</span> <span class="fu">sum</span>(no_cases[types_of_drug_offenses <span class="sc">==</span> <span class="st">"suspects_in_drug_use_cases"</span>]),</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">total_posession_cases =</span> <span class="fu">sum</span>(no_cases[types_of_drug_offenses <span class="sc">==</span> <span class="st">"possession_cases"</span>]),</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">total_suspect_posession_cases =</span> <span class="fu">sum</span>(no_cases[types_of_drug_offenses <span class="sc">==</span> <span class="st">"suspects_in_possession_cases"</span>])) <span class="sc">%&gt;%</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>thailand_drug_trafficking</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 5
+  fiscal_year total_use_cases total_suspect_use_cases total_posession_cases
+        &lt;dbl&gt;           &lt;dbl&gt;                   &lt;dbl&gt;                 &lt;dbl&gt;
+1        2017           91444                   93895                 90845
+2        2018          146761                  150049                100941
+3        2019          177078                  179823                104365
+4        2020          141570                  141761                 87997
+5        2021          231406                  235803                 93976
+6        2022          127270                  129437                 60769
+# ℹ 1 more variable: total_suspect_posession_cases &lt;dbl&gt;</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> thailand_drug_trafficking, <span class="fu">aes</span>(<span class="at">x =</span> fiscal_year)) <span class="sc">+</span>     </span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># geom_bar(stat = "identity", fill = "red4") +</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> fiscal_year, <span class="at">y =</span> total_use_cases, <span class="at">color =</span> <span class="st">"drug_use"</span>), <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> fiscal_year, <span class="at">y =</span> total_use_cases, <span class="at">color =</span> <span class="st">"drug_use"</span>), <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> fiscal_year, <span class="at">y =</span> total_suspect_use_cases, <span class="at">color =</span> <span class="st">"suspects_in_drug_use_cases"</span>), <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> fiscal_year, <span class="at">y =</span> total_suspect_use_cases, <span class="at">color =</span> <span class="st">"suspects_in_drug_use_cases"</span>), <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> fiscal_year, <span class="at">y =</span> total_posession_cases, <span class="at">color =</span> <span class="st">"possession_cases"</span>), <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> fiscal_year, <span class="at">y =</span> total_posession_cases, <span class="at">color =</span> <span class="st">"possession_cases"</span>), <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> fiscal_year, <span class="at">y =</span> total_suspect_posession_cases, <span class="at">color =</span> <span class="st">"suspects_in_possession_cases"</span>), <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> fiscal_year, <span class="at">y =</span> total_suspect_posession_cases, <span class="at">color =</span> <span class="st">"suspects_in_possession_cases"</span>), <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Drug use and suspected cases by year"</span>,</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">x =</span> <span class="st">"Year"</span>,</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">y =</span> <span class="st">"Number of cases"</span>) <span class="sc">+</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"drug_use"</span> <span class="ot">=</span> <span class="st">"skyblue1"</span>, <span class="st">"suspects_in_drug_use_cases"</span> <span class="ot">=</span> <span class="st">"green3"</span>, <span class="st">"possession_cases"</span> <span class="ot">=</span> <span class="st">"red2"</span>, <span class="st">"suspects_in_possession_cases"</span> <span class="ot">=</span> <span class="st">"yellow3"</span>)) <span class="sc">+</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">color =</span> <span class="fu">guide_legend</span>(<span class="at">title =</span> <span class="st">"Legend"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-2_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Drug use and suspected use cases</p>
+</section>
 </section>
 <section id="references" class="level2">
 <h2 class="anchored" data-anchor-id="references">References</h2>
