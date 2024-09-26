@@ -70,10 +70,10 @@ We are particularly interested in drug use and drug trafficking cases, so we wil
 ### TH2.4.1 Plotting changes in drug trafficking cases by time
 
 ```{r}
-thailand_drug_trafficking <- thailand_drug %>% filter(types_of_drug_offenses == 'trafficking_cases' & types_of_drug_offenses == 'suspects_in_trafficking_cases') %>%
-  group_by(types_of_drug_offenses, fiscal_year) %>%
-  summarise(total_cases = sum(no_cases)) %>%
-  summarise(total_suspected_cases = sum(no_cases)) %>%
+thailand_drug_trafficking <- thailand_drug %>% filter(types_of_drug_offenses %in% c("trafficking_cases", "suspects_in_trafficking_cases")) %>%
+  group_by(fiscal_year) %>%
+  summarise(total_cases = sum(no_cases[types_of_drug_offenses == "trafficking_cases"]),
+    total_suspect_cases = sum(no_cases[types_of_drug_offenses == "suspects_in_trafficking_cases"])) %>%
   ungroup()
 thailand_drug_trafficking
 
