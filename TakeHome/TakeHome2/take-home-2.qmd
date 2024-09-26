@@ -58,7 +58,9 @@ thailand_drug
 The code chunk below prints the total number of each unique type of drug offence cases.
 
 ```{r}
-thailand_drug_analysis <- thailand_drug %>% group_by(types_of_drug_offenses) %>% summarise(total_cases = sum(no_cases)) %>% ungroup()
+thailand_drug_analysis <- thailand_drug %>% 
+  group_by(types_of_drug_offenses) %>% 
+  summarise(total_cases = sum(no_cases)) %>% ungroup()
 thailand_drug_analysis
 ```
 There are a total of 8 different types of cases, with another 8 unique values dedicated to suspected instances of cases.
@@ -68,18 +70,19 @@ We are particularly interested in drug use and drug trafficking cases, so we wil
 ### TH2.4.1 Plotting changes in drug trafficking cases by time
 
 ```{r}
-thailand_drug_trafficking <- thailand_drug %>% filter(types_of_drug_offenses == 'trafficking_cases') %>%
-  group_by(fiscal_year) %>%
+thailand_drug_trafficking <- thailand_drug %>% filter(types_of_drug_offenses == 'trafficking_cases' & types_of_drug_offenses == 'suspects_in_trafficking_cases') %>%
+  group_by(types_of_drug_offenses, fiscal_year) %>%
   summarise(total_cases = sum(no_cases)) %>%
+  summarise(total_suspected_cases = sum(no_cases)) %>%
   ungroup()
 thailand_drug_trafficking
 
 ggplot() +     
   # geom_bar(stat = "identity", fill = "red4") +
-  geom_line(color = "skyblue1", data = thailand_drug_trafficking, aes(x = fiscal_year, y = total_cases)) + geom_point() +
-    labs(title = "Percentage of Incidents involving civilian targeting in Myanmar by Quarter", subtitle = "1 = Q1 2021, 6 = Q2 2022, 11 = Q3 2023, 15 = Q3 2024",
-         x = "Quarter",
-         y = "% Incidents with civilian targeting") +
+  geom_line(color = "purple4", data = thailand_drug_trafficking, aes(x = fiscal_year, y = total_cases)) + geom_point() +
+    labs(title = "Drug trafficking and suspected cases by year", subtitle = "1 = Q1 2021, 6 = Q2 2022, 11 = Q3 2023, 15 = Q3 2024",
+         x = "Year",
+         y = "Number of cases") +
     theme_minimal()
 ```
 
