@@ -18,13 +18,13 @@ Drug abuse brings with it significant negative health, financial and social cons
 
 The aim of today's study is to discover:
 
-- If the key indicators of drug abuse and trafficking in **[Thailand](https://en.wikipedia.org/wiki/Thailand)** are independent from space,
+- If the key indicators of drug abuse and trafficking in Thailand are independent from space,
 - If the indicators of drug abuse and trafficking are indeed spatially-dependent, and if so, where the clusters, outliers and hotspots are located,
 - How the observations above evolve over time.
 
 ## TH2.2 The Drug Problem in Thailand
 
-**Thailand** (2024 GDP per capita - PPP: $23,401; Gini coefficient: 35.1 - <span style="color:orange;">medium</span>; HDI: 0.083 - <span style="color:darkgreen;">very high</span>) (International Monetary Fund, 2024) (World Bank, n.d.) (United Nations Development Programme, 2024) is located in close proximity to the [Golden Triangle](https://en.wikipedia.org/wiki/Golden_Triangle_(Southeast_Asia)), which comprises the northern part of the country along with northern Myanmar and Laos. In 2021, its drug trafficking situation remained critical, with 337,186 drug cases in total. While seizures of ketamine decreased between 2020 and 2021, seizures of methamphetamine, ice and heroin increased in the same period, with heroin seeing the biggest increase from 1873kg in 2020 to 4520kg in 2021 (Kanato et al., 2022).
+**[Thailand](https://en.wikipedia.org/wiki/Thailand)** (2024 GDP per capita - PPP: $23,401; Gini coefficient: 35.1 - <span style="color:orange;">medium</span>; HDI: 0.083 - <span style="color:darkgreen;">very high</span>) (International Monetary Fund, 2024) (World Bank, n.d.) (United Nations Development Programme, 2024) is located in close proximity to the [Golden Triangle](https://en.wikipedia.org/wiki/Golden_Triangle_(Southeast_Asia)), which comprises the northern part of the country along with northern Myanmar and Laos. In 2021, its drug trafficking situation remained critical, with 337,186 drug cases in total. While seizures of ketamine decreased between 2020 and 2021, seizures of methamphetamine, ice and heroin increased in the same period, with heroin seeing the biggest increase from 1873kg in 2020 to 4520kg in 2021 (Kanato et al., 2022).
 
 The maximum penalty for drug trafficking in Thailand, as is neighbouring Laos, Malaysia and Singapore, is [death](https://en.wikipedia.org/wiki/Capital_punishment_for_drug_trafficking) (Thailand, n.d.). Despite this, smugglers have innovated on new routes, through the north and northern borders of the country, and even go so far as to hide shipments in cargo vessels bound for the likes of Singapore, New Zealand, Australia and South Korea. 575 smuggling cases by sea occured in 2021, in which 4554kg of heroin, 2.4 times more than the previous year, were seized (Kanato et al., 2022).
 
@@ -109,7 +109,9 @@ ggplot(data = thailand_drug_trafficking, aes(x = fiscal_year)) +
   guides(color = guide_legend(title = "Legend"))
 
 # grid.arrange(plot1, plot2, ncol = 2)
-
+```
+```{r}
+#| echo: false
 # ggplot(data = thailand_drug_trafficking, aes(x = fiscal_year)) +     
 #   # geom_bar(stat = "identity", fill = "red4") +
 #   geom_line(aes(x = fiscal_year, y = total_cases, color = "trafficking_cases"), size = 1) + geom_point(aes(x = fiscal_year, y = total_cases, color = "trafficking_cases"), size = 2) +
@@ -127,7 +129,7 @@ ggplot(data = thailand_drug_trafficking, aes(x = fiscal_year)) +
 ```
 The number of trafficking cases generally trended downwards between 2017 and 2022, though there was a momentary increase between 2019 and 2020. Meanwhile the number of posession cases with intent to distribute rose steadily until 2021, before plunging in 2022.
 
-### TH2.4.1 Plotting changes in drug use cases by time
+### TH2.4.2 Plotting changes in drug use cases by time
 
 ```{r}
 thailand_drug_trafficking <- thailand_drug %>% filter(types_of_drug_offenses %in% c("drug_use_cases", "suspects_in_drug_use_cases", "possession_cases", "suspects_in_possession_cases")) %>%
@@ -153,7 +155,19 @@ ggplot(data = thailand_drug_trafficking, aes(x = fiscal_year)) +
   theme(legend.position = "bottom") +
   guides(color = guide_legend(title = "Legend"))
 ```
-Drug use and suspected use cases
+There was a spike in the number of drug use cases in 2021 in an otherwise variable set of data. Meanwhile, drug possession cases generally declined after 2019, though there was a slight increase in 2021.
+
+It therefore makes sense to select the drug use and drug possession cases in 2021 for further analysis. The year 2021 coincided with a rise in the country's unemployment rate to 1.2% from 0.7% two years prior (World Bank Open Data, n.d.), as the Thai economy was still recovering from the COVID-19 pandemic. Unemployment increases susceptibility to, among other negative effects, drug use.
+
+## TH2.4.3 Creating filtered table for 2021 observations
+
+```{r}
+thailand_2021_drug <- thailand_drug %>% filter(fiscal_year == "2021")
+distinct(thailand_2021_drug, fiscal_year)
+thailand_2021 <- left_join(thailand, thailand_2021_drug, by = c("ADM1_EN" = "province_en"))
+thailand_2021
+tm_fill("no_cases", n = 5, style = "equal") + tm_borders(alpha = 0.5)
+```
 
 ## References
 
@@ -163,4 +177,5 @@ Drug use and suspected use cases
 4. Thailand. (n.d.). Hands-Off Cain. Retrieved 23 September 2024, from https://www.handsoffcain.info/bancadati/asia-middle-east-australia-and-oceania/thailand-17000464
 5. United Nations Development Programme. (2024, March 13). Human Development Report 2023/2024 (PDF). Retrieved September 23, 2024, from https://hdr.undp.org/sites/default/files/reports/3503/hdr2023-24reporten.pdf
 6. World Bank. (n.d.). Gini index. Retrieved September 23, 2024, from https://www.worldbank.org/en/topic/poverty/brief/gini-index
+7. World Bank Open Data. (n.d.). Unemployment, total (% of total labor force) (national estimate) - Thailand. Retrieved 27 September 2024, from https://data.worldbank.org/indicator/SL.UEM.TOTL.NE.ZS?end=2023&locations=TH
 7. World Drug Day report highlights spike in drug use, increased trafficking | UN News. (2024, June 26). United Nations. https://news.un.org/en/story/2024/06/1151446
