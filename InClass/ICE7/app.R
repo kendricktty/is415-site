@@ -40,7 +40,8 @@ ui <- fluidPage(
     ),
     mainPanel(
       tmapOutput(
-        "mapPlot", width = "100%", height = 580
+        "mapPlot",
+        width = "100%", height = 580
       )
     )
   )
@@ -49,7 +50,20 @@ ui <- fluidPage(
 # Server function
 # Contains instructions needed to build the app
 server <- function(input, output) {
-
+  output$mapPlot <- renderTmap({
+    tmap_options(check.and.fix = TRUE) +
+      tm_shape(hunan_profile) +
+      tm_fill(
+        input$variable,
+        n = input$classes,
+        style = "quantile",
+        palette = blues9
+      ) +
+      tm_borders(
+        lwd = 0.1,
+        alpha = 1
+      )
+  })
 }
 
 # shinyApp()
