@@ -1,0 +1,13 @@
+name: ICE7
+title: ICE7
+username: is415-geoanalyticswithkendrick
+account: is415-geoanalyticswithkendrick
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 12867823
+bundleId: 9161212
+url: https://is415-geoanalyticswithkendrick.shinyapps.io/ICE7/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: .env|app_mine.R|ICE7.qmd|Rplots.pdf
