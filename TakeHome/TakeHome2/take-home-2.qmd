@@ -48,7 +48,9 @@ We will be examining a dataset of drug offences in Thailand between 2017 and 202
 
 ```{r}
 thailand <- st_read(dsn="data/geospatial", layer="tha_admbnda_adm1_rtsd_20220121")
-thailand
+tmap_mode('view')
+tm_shape(thailand) + tm_polygons()
+tmap_mode('plot')
 thailand_drug <- read_csv("data/aspatial/thai_drug_offenses_2017_2022.csv") %>% select(fiscal_year, types_of_drug_offenses, no_cases, province_en)
 thailand_drug
 ```
@@ -162,11 +164,27 @@ It therefore makes sense to select the drug use and drug possession cases in 202
 ## TH2.4.3 Creating filtered table for 2021 observations
 
 ```{r}
-thailand_2021_drug <- thailand_drug %>% filter(fiscal_year == "2021")
-distinct(thailand_2021_drug, fiscal_year)
+thailand_2021_drug <- thailand_drug %>% 
+  filter(fiscal_year == "2021") %>% 
+  filter(types_of_drug_offenses %in% c("drug_use_cases", "suspects_in_drug_use_cases", "possession_cases", "suspects_in_possession_cases", "trafficking_cases", "possession_with_intent_to_distribute_cases")) %>%
+  group_by(province_en) %>%
+  summarise(total_use_cases = sum(no_cases[types_of_drug_offenses == "drug_use_cases"]),
+    total_suspect_use_cases = sum(no_cases[types_of_drug_offenses == "suspects_in_drug_use_cases"]),
+    total_posession_cases = sum(no_cases[types_of_drug_offenses == "possession_cases"]),
+    total_suspect_posession_cases = sum(no_cases[types_of_drug_offenses == "suspects_in_possession_cases"]),
+    total_trafficking_cases = sum(no_cases[types_of_drug_offenses == "trafficking_cases"]),
+    total_suspect_cases = sum(no_cases[types_of_drug_offenses == "suspects_in_trafficking_cases"]),
+    total_posession_intent_cases = sum(no_cases[types_of_drug_offenses == "possession_with_intent_to_distribute_cases"]),
+    total_suspect_posession_intent_cases = sum(no_cases[types_of_drug_offenses == "suspects_in_possession_with_intent_to_distribute_cases"])
+)
+thailand_2021_drug
 thailand_2021 <- left_join(thailand, thailand_2021_drug, by = c("ADM1_EN" = "province_en"))
 thailand_2021
-tm_fill("no_cases", n = 5, style = "equal") + tm_borders(alpha = 0.5)
+```
+```{r}
+drug_usage_2021 <- tm_shape(thailand_2021) + tm_fill("total_use_cases", n = 8, style = "quantile") + tm_borders(alpha = 0.5)
+drug_trafficking_2021 <- tm_shape(thailand_2021) + tm_fill("total_trafficking_cases", n = 8, style = "quantile") + tm_borders(alpha = 0.5)
+
 ```
 
 ## References
