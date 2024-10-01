@@ -48,6 +48,169 @@ We will be examining a dataset of drug offences in Thailand between 2017 and 202
 
 ```{r}
 thailand <- st_read(dsn="data/geospatial", layer="tha_admbnda_adm1_rtsd_20220121")
+thailand
+thailand_drug <- read_csv("data/aspatial/thai_drug_offenses_2017_2022.csv") %>% select(fiscal_year, types_of_drug_offenses, no_cases, province_en)
+thailand_drug
+```
+
+## TH2.4 Exploratory Data Analysis
+
+The code chunk below prints the total number of each unique type of drug offence cases.
+
+```{r}
+thailand_drug_analysis <- thailand_drug %>% 
+  group_by(types_of_drug_offenses) %>% 
+  summarise(total_cases = sum(no_cases)) %>% ungroup()
+thailand_drug_analysis
+```
+There are a total of 8 different types of cases, with another 8 unique values dedicated to suspected instances of cases.
+
+We are particularly interested in drug use, possession and trafficking cases, so we will now attempt to plot the changes in the number of each type of case between 2017 and 2022. This analysis will help us select study periods to analyse later.
+
+### TH2.4.1 Plotting changes in drug trafficking cases by time
+
+```{r}
+thailand_drug_trafficking <- thailand_drug %>% filter(types_of_drug_offenses %in% c("trafficking_cases", "suspects_in_trafficking_cases", "possession_with_intent_to_distribute_cases", "suspects_in_possession_with_intent_to_distribute_cases")) %>%
+  group_by(fiscal_year) %>%
+  summarise(total_cases = sum(no_cases[types_of_drug_offenses == "trafficking_cases"]),
+    total_suspect_cases = sum(no_cases[types_of_drug_offenses == "suspects_in_trafficking_cases"]),
+    total_posession_intent_cases = sum(no_cases[types_of_drug_offenses == "possession_with_intent_to_distribute_cases"]),
+    total_suspect_posession_intent_cases = sum(no_cases[types_of_drug_offenses == "suspects_in_possession_with_intent_to_distribute_cases"])) %>%
+  ungroup()
+thailand_drug_trafficking
+
+ggplot(data = thailand_drug_trafficking, aes(x = fiscal_year)) +     
+  geom_line(aes(y = total_cases, color = "trafficking_cases"), size = 1) + 
+  geom_point(aes(y = total_cases, color = "trafficking_cases"), size = 2) +
+  geom_line(aes(y = total_suspect_cases, color = "suspects_in_trafficking_cases"), size = 1) + 
+  geom_point(aes(y = total_suspect_cases, color = "suspects_in_trafficking_cases"), size = 2) +
+  labs(title = "Trafficking Cases and Suspects",
+       x = "Year",
+       y = "Number of cases") +
+  scale_color_manual(values = c("trafficking_cases" = "purple3", "suspects_in_trafficking_cases" = "plum")) +
+  theme_minimal() +
+  theme(legend.position = "bottom", 
+        legend.justification = "right") +
+  guides(color = guide_legend(title = "Legend"))
+
+ggplot(data = thailand_drug_trafficking, aes(x = fiscal_year)) +
+  geom_line(aes(y = total_posession_intent_cases, color = "possession_with_intent_to_distribute_cases"), size = 1) + 
+  geom_point(aes(y = total_posession_intent_cases, color = "possession_with_intent_to_distribute_cases"), size = 2) +
+  geom_line(aes(y = total_suspect_posession_intent_cases, color = "suspects_in_possession_with_intent_to_distribute_cases"), size = 1) + 
+  geom_point(aes(y = total_suspect_posession_intent_cases, color = "suspects_in_possession_with_intent_to_distribute_cases"), size = 2) +
+  labs(title = "Possession with Intent to Distribute Cases and Suspects",
+       x = "Year",
+       y = "Number of cases") +
+  scale_color_manual(values = c("possession_with_intent_to_distribute_cases" = "black", 
+                                "suspects_in_possession_with_intent_to_distribute_cases" = "gray")) +
+  theme_minimal() +
+  theme(legend.position = "bottom", 
+        legend.justification = "right") +
+  guides(color = guide_legend(title = "Legend"))
+
+# grid.arrange(plot1, plot2, ncol = 2)
+```
+```{r}
+#| echo: false
+# ggplot(data = thailand_drug_trafficking, aes(x = fiscal_year)) +     
+#   # geom_bar(stat = "identity", fill = "red4") +
+#   geom_line(aes(x = fiscal_year, y = total_cases, color = "trafficking_cases"), size = 1) + geom_point(aes(x = fiscal_year, y = total_cases, color = "trafficking_cases"), size = 2) +
+#   geom_line(aes(x = fiscal_year, y = total_suspect_cases, color = "suspects_in_trafficking_cases"), size = 1) + geom_point(aes(x = fiscal_year, y = total_suspect_cases, color = "suspects_in_trafficking_cases"), size = 2) +
+#   geom_line(aes(x = fiscal_year, y = total_posession_intent_cases, color = "possession_with_intent_to_distribute_cases"), size = 1) + geom_point(aes(x = fiscal_year, y = total_posession_intent_cases, color = "possession_with_intent_to_distribute_cases"), size = 2) +
+#   geom_line(aes(x = fiscal_year, y = total_suspect_posession_intent_cases, color = "suspects_in_possession_with_intent_to_distribute_cases"), size = 1) + geom_point(aes(x = fiscal_year, y = total_suspect_posession_intent_cases, color = "suspects_in_possession_with_intent_to_distribute_cases"), size = 2) +
+#     labs(title = "Drug trafficking and suspected cases by year",
+#          x = "Year",
+#          y = "Number of cases") +
+#     scale_color_manual(values = c("trafficking_cases" = "purple3", "suspects_in_trafficking_cases" = "plum", "possession_with_intent_to_distribute_cases" = "black", "suspects_in_possession_with_intent_to_distribute_cases" = "gray")) +
+#     theme_minimal() +
+#   theme(legend.position = "bottom", 
+#         legend.justification = "right") +
+#   guides(color = guide_legend(title = "Legend"))
+```
+The number of trafficking cases generally trended downwards between 2017 and 2022, though there was a momentary increase between 2019 and 2020. Meanwhile the number of posession cases with intent to distribute rose steadily until 2021, before plunging in 2022.
+
+### TH2.4.2 Plotting changes in drug use cases by time
+
+```{r}
+thailand_drug_trafficking <- thailand_drug %>% filter(types_of_drug_offenses %in% c("drug_use_cases", "suspects_in_drug_use_cases", "possession_cases", "suspects_in_possession_cases")) %>%
+  group_by(fiscal_year) %>%
+  summarise(total_use_cases = sum(no_cases[types_of_drug_offenses == "drug_use_cases"]),
+    total_suspect_use_cases = sum(no_cases[types_of_drug_offenses == "suspects_in_drug_use_cases"]),
+    total_posession_cases = sum(no_cases[types_of_drug_offenses == "possession_cases"]),
+    total_suspect_posession_cases = sum(no_cases[types_of_drug_offenses == "suspects_in_possession_cases"])) %>%
+  ungroup()
+thailand_drug_trafficking
+
+ggplot(data = thailand_drug_trafficking, aes(x = fiscal_year)) +     
+  # geom_bar(stat = "identity", fill = "red4") +
+  geom_line(aes(x = fiscal_year, y = total_use_cases, color = "drug_use"), size = 1) + geom_point(aes(x = fiscal_year, y = total_use_cases, color = "drug_use"), size = 2) +
+  geom_line(aes(x = fiscal_year, y = total_suspect_use_cases, color = "suspects_in_drug_use_cases"), size = 1) + geom_point(aes(x = fiscal_year, y = total_suspect_use_cases, color = "suspects_in_drug_use_cases"), size = 2) +
+  geom_line(aes(x = fiscal_year, y = total_posession_cases, color = "possession_cases"), size = 1) + geom_point(aes(x = fiscal_year, y = total_posession_cases, color = "possession_cases"), size = 2) +
+  geom_line(aes(x = fiscal_year, y = total_suspect_posession_cases, color = "suspects_in_possession_cases"), size = 1) + geom_point(aes(x = fiscal_year, y = total_suspect_posession_cases, color = "suspects_in_possession_cases"), size = 2) +
+    labs(title = "Drug use and suspected cases by year",
+         x = "Year",
+         y = "Number of cases") +
+    scale_color_manual(values = c("drug_use" = "skyblue1", "suspects_in_drug_use_cases" = "green3", "possession_cases" = "red2", "suspects_in_possession_cases" = "yellow3")) +
+    theme_minimal() +
+  theme(legend.position = "bottom") +
+  guides(color = guide_legend(title = "Legend"))
+```
+There was a spike in the number of drug use cases in 2021 in an otherwise variable set of data. Meanwhile, drug possession cases generally declined after 2019, though there was a slight increase in 2021.
+
+It therefore makes sense to select the drug use and drug possession cases in 2021 for further analysis. The year 2021 coincided with a rise in the country's unemployment rate to 1.2% from 0.7% two years prior (World Bank Open Data, n.d.), as the Thai economy was still recovering from the COVID-19 pandemic. Unemployment increases susceptibility to, among other negative effects, drug use.
+
+## TH2.4.3 Creating filtered table for 2021 observations
+
+```{r}
+thailand_2021_drug <- thailand_drug %>%
+  filter(fiscal_year == "2021") %>%
+  filter(types_of_drug_offenses %in% c("drug_use_cases", "trafficking_cases")) %>%
+  group_by(province_en) %>%
+  summarise(total_use_cases = sum(no_cases[types_of_drug_offenses == "drug_use_cases"]),
+            total_trafficking_cases = sum(no_cases[types_of_drug_offenses == "trafficking_cases"])) %>%
+  ungroup()
+
+thailand_2021_drug
+thailand_2021 <- left_join(thailand, thailand_2021_drug, by = c("ADM1_EN" = "province_en"))
+thailand_2021
+```
+```{r}
+tm_fill("no_cases", n = 5, style = "equal") + tm_borders(alpha = 0.5)
+```
+
+## References
+
+1. International Monetary Fund. (2024, April 16). World Economic Outlook Database, April 2024 Edition: Thailand. https://www.imf.org/en/Publications/WEO/weo-database/2024/April
+2. Kongjareon, Y., Samoh, N., Peerawaranun, P. et al. Pride-based violence, intoxicated sex and poly-drug use: a vocational school-based study of heterosexual and LGBT students in Bangkok. BMC Psychiatry 22, 148 (2022). https://doi.org/10.1186/s12888-022-03777-7
+3. Kanato, M., Sarasiri, R., & Leyatikul, P. (Eds.). (2022). ASEAN drug monitoring report 2021. ASEAN Narcotics Cooperation Center.
+4. Thailand. (n.d.). Hands-Off Cain. Retrieved 23 September 2024, from https://www.handsoffcain.info/bancadati/asia-middle-east-australia-and-oceania/thailand-17000464
+5. United Nations Development Programme. (2024, March 13). Human Development Report 2023/2024 (PDF). Retrieved September 23, 2024, from https://hdr.undp.org/sites/default/files/reports/3503/hdr2023-24reporten.pdf
+6. World Bank. (n.d.). Gini index. Retrieved September 23, 2024, from https://www.worldbank.org/en/topic/poverty/brief/gini-index
+7. World Bank Open Data. (n.d.). Unemployment, total (% of total labor force) (national estimate) - Thailand. Retrieved 27 September 2024, from https://data.worldbank.org/indicator/SL.UEM.TOTL.NE.ZS?end=2023&locations=TH
+7. World Drug Day report highlights spike in drug use, increased trafficking | UN News. (2024, June 26). United Nations. https://news.un.org/en/story/2024/06/1151446biggest increase from 1873kg in 2020 to 4520kg in 2021 (Kanato et al., 2022).
+
+The maximum penalty for drug trafficking in Thailand, as is neighbouring Laos, Malaysia and Singapore, is [death](https://en.wikipedia.org/wiki/Capital_punishment_for_drug_trafficking) (Thailand, n.d.). Despite this, smugglers have innovated on new routes, through the north and northern borders of the country, and even go so far as to hide shipments in cargo vessels bound for the likes of Singapore, New Zealand, Australia and South Korea. 575 smuggling cases by sea occured in 2021, in which 4554kg of heroin, 2.4 times more than the previous year, were seized (Kanato et al., 2022).
+
+Drug *use* in the country is as problematic. In 2018, 39% of Thais aged between 15 and 24 were involved in ilicit drugs. Of youth aged between 15 and 19, there are 300000 who need treatment, and a significant majority attend vocational schools (as opposed to grade schools). Kongjareon et al. (2022) found in a study of 638 students in four vocational schools, 11.3% reported poly-drug use. Among LGBT students this figure was 20.2%, and among hetrosexual students 9.8%. Factors contributing to the former's use of drugs include, among other things, counselling needs, intoxicated sex and GPA.
+
+## TH2.3 Importing data and R packages
+
+The `R` packages we will use today are:
+
+-   `sf`
+-   `tmap`
+-   `spatstat`
+-   `spdep` for measures of spatial autocorrelation, and
+-   `sparr`
+
+```{r}
+pacman::p_load(sf, raster, spatstat, spdep, sparr, tmap, tidyverse, gridExtra)
+```
+
+We will be examining a dataset of drug offences in Thailand between 2017 and 2022 retrieved from Kaggle, superimposed against the provincial boundaries of the country.
+
+```{r}
+thailand <- st_read(dsn="data/geospatial", layer="tha_admbnda_adm1_rtsd_20220121")
 tmap_mode('view')
 tm_shape(thailand) + tm_polygons()
 tmap_mode('plot')
