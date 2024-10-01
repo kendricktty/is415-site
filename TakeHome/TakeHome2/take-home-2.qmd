@@ -28,7 +28,7 @@ The aim of today's study is to discover:
 
 The maximum penalty for drug trafficking in Thailand, as is neighbouring Laos, Malaysia and Singapore, is [death](https://en.wikipedia.org/wiki/Capital_punishment_for_drug_trafficking) (Thailand, n.d.). Despite this, smugglers have innovated on new routes, through the north and northern borders of the country, and even go so far as to hide shipments in cargo vessels bound for the likes of Singapore, New Zealand, Australia and South Korea. 575 smuggling cases by sea occured in 2021, in which 4554kg of heroin, 2.4 times more than the previous year, were seized (Kanato et al., 2022).
 
-Drug *use* in the country is as problematic. In 2018, 39% of Thais aged between 15 and 24 were involved in ilicit drugs. Of youth aged between 15 and 19, there are 300000 who need treatment, and a significant majority attend vocational schools (as opposed to grade schools). Kongjareon et al. (2022) found in a study of 638 students in four vocational schools, 11.3% reported poly-drug use. Among LGBT students this figure was 20.2%, and among hetrosexual students 9.8%. Factors contributing to the former's use of drugs include, among other things, counselling needs, intoxicated sex and GPA.
+Drug *use* in the country is as problematic. In 2018, 39% of Thais aged between 15 and 24 were involved in ilicit drugs. Of youth aged between 15 and 19, there are 300000 who need treatment, and a significant majority attend vocational schools (as opposed to grade schools). Kongjareon et al. (2022) found in a study of 638 students in four vocational schools, that 11.3% of them reported poly-drug use. Among LGBT students this figure was 20.2%, and among hetrosexual students 9.8%. Factors contributing to the former's use of drugs include, among other things, counselling needs, intoxicated sex and GPA.
 
 ## TH2.3 Importing data and R packages
 
@@ -191,12 +191,27 @@ Tobler (1970)'s first law of geography states that everything is related to ever
 
 Before computing any global spatial autocorrelation statistics, we first need to construct the spatial weights of the study area. The first step in doing so will be to compute QUEEN contiguity spatial weights.
 
-We will create 2 spatial weights matrices - one for our drug use statistics and another for drug trafficking statistics.
+We will create 2 row-standardised spatial weights matrices - one for our drug use statistics and another for drug trafficking statistics.
 
 ```{r}
 thailand_2021_use <- thailand_2021 %>% select(1:3, 17)
 thailand_2021_trafficking <- thailand_2021 %>% select(1:3, 18)
-wm_q <- poly2nb(thailand_2021_use, queen=TRUE)
+wm_q_use <- poly2nb(thailand_2021_use, queen=TRUE)
+wm_q_tr <- poly2nb(thailand_2021_trafficking, queen=TRUE)
+```
+```{r}
+print("Weights matrix for drug use cases")
+summary(wm_q_use)
+print("Weights matrix for drug trafficking cases")
+summary(wm_q_tr)
+```
+```{r}
+rswm_q_use <- nb2listw(wm_q_use, style = "W", zero.policy = TRUE)
+rswm_q_tr <- nb2listw(wm_q_tr, style = "W", zero.policy = TRUE)
+```
+```{r}
+rswm_q_use
+rswm_q_tr
 ```
 
 ## References
