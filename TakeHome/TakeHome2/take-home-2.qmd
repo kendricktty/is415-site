@@ -157,7 +157,7 @@ ggplot(data = thailand_drug_trafficking, aes(x = fiscal_year)) +
 ```
 There was a spike in the number of drug use cases in 2021 in an otherwise variable set of data. Meanwhile, drug possession cases generally declined after 2019, though there was a slight increase in 2021.
 
-It therefore makes sense to select the drug use and drug possession cases in 2021 for further analysis. The year 2021 coincided with a rise in the country's unemployment rate to 1.2% from 0.7% two years prior (World Bank Open Data, n.d.), as the Thai economy was still recovering from the COVID-19 pandemic. Unemployment increases susceptibility to, among other negative effects, drug use.
+From both analysis steps, it makes sense to select the drug use and drug possession cases in 2021 for further analysis. The year 2021 coincided with a rise in the country's unemployment rate to 1.2% from 0.7% two years prior (World Bank Open Data, n.d.), as the Thai economy was still recovering from the COVID-19 pandemic. Unemployment increases susceptibility to, among other negative effects, drug use.
 
 ## TH2.4.3 Creating filtered table for 2021 observations
 
@@ -175,8 +175,13 @@ thailand_2021 <- left_join(thailand, thailand_2021_drug, by = c("ADM1_EN" = "pro
 thailand_2021
 ```
 ```{r}
-tm_fill("no_cases", n = 5, style = "equal") + tm_borders(alpha = 0.5)
+use_map <- tm_shape(thailand_2021) + tm_fill("total_use_cases", n = 8, style = "quantile") + tm_borders(alpha = 0.5)
+trafficking_map <- tm_shape(thailand_2021) + tm_fill("total_trafficking_cases", n = 8, style = "equal") + tm_borders(alpha = 0.5)
+tmap_arrange(use_map, trafficking_map, asp = 1, ncol = 2)
 ```
+The provinces with the highest number of drug use cases appear clustered to the northeast, around Sakon Nakhon, and north, around Chiang Mai and Chiang Rai, with pockets of high use around the capital Bangkok and the southern provinces. Meanwhile, the eastern province of Ubon Ratchatani sees the largest number of *trafficking* cases overall.
+
+We will now proceed to rigourously verify these observations using spatial autocorrelation techniques.
 
 ## References
 
