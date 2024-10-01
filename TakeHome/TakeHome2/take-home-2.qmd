@@ -221,7 +221,14 @@ With our matrices constructed, we can calculate our global spatial correlation s
 The code chunk below computes Moran's I on both our drug use and drug trafficking datasets, subsequently performing a Monte Carlo test.
 
 ```{r}
-moran.test(thailand_2021$total_use_cases, listw=wm_q_use, zero.policy = TRUE, na.action=na.omit)
+moran.test(thailand_2021$total_use_cases, listw=rswm_q_use, zero.policy = TRUE, na.action=na.omit)
+set.seed(1234)
+bperm_use <- moran.mc(thailand_2021$total_use_cases, 
+                listw=rswm_q_use, 
+                nsim=999, 
+                zero.policy = TRUE, 
+                na.action=na.omit)
+bperm
 ```
 
 ## References
