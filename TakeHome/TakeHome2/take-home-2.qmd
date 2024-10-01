@@ -179,13 +179,25 @@ use_map <- tm_shape(thailand_2021) + tm_fill("total_use_cases", n = 8, style = "
 trafficking_map <- tm_shape(thailand_2021) + tm_fill("total_trafficking_cases", n = 8, style = "equal") + tm_borders(alpha = 0.5)
 tmap_arrange(use_map, trafficking_map, asp = 1, ncol = 2)
 ```
-The provinces with the highest number of drug use cases appear clustered to the northeast, around Sakon Nakhon, and north, around Chiang Mai and Chiang Rai, with pockets of high use around the capital Bangkok and the southern provinces such as Songkhla province. Meanwhile, the eastern province of Ubon Ratchatani sees the largest number of *trafficking* cases overall, with northern provinces also seeing higher than usual numbers of trafficking cases.
+Considering only confirmed cases of use and trafficking (and ignoring *suspected* ones), the provinces with the highest number of drug use cases appear clustered to the northeast, around Sakon Nakhon, and north, around Chiang Mai and Chiang Rai, with pockets of high use around the capital Bangkok and the southern provinces such as Songkhla province. Meanwhile, the eastern province of Ubon Ratchatani sees the largest number of *trafficking* cases overall, with northern provinces also seeing higher than usual numbers of trafficking cases.
 
 We will now proceed to rigourously verify these observations using global and local spatial autocorrelation techniques.
 
 ## TH2.5 Deriving Global Measures of Spatial Autocorrelation
 
 Tobler (1970)'s first law of geography states that everything is related to everything else, but near things are more related than distant things. Spatial autocorrelation seeks to determine 
+
+### TH2.5.1 Data Preparation - Spatial Weights
+
+Before computing any global spatial autocorrelation statistics, we first need to construct the spatial weights of the study area. The first step in doing so will be to compute QUEEN contiguity spatial weights.
+
+We will create 2 spatial weights matrices - one for our drug use statistics and another for drug trafficking statistics.
+
+```{r}
+thailand_2021_use <- thailand_2021 %>% select(1:3, 17)
+thailand_2021_trafficking <- thailand_2021 %>% select(1:3, 18)
+wm_q <- poly2nb(thailand_2021_use, queen=TRUE)
+```
 
 ## References
 
