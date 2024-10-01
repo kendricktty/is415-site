@@ -19,12 +19,11 @@ Drug abuse brings with it significant negative health, financial and social cons
 The aim of today's study is to discover:
 
 - If the key indicators of drug abuse and trafficking in Thailand are independent from space,
-- If the indicators of drug abuse and trafficking are indeed spatially-dependent, and if so, where the clusters, outliers and hotspots are located,
-- How the observations above evolve over time.
+- If the indicators of drug abuse and trafficking are indeed spatially-dependent, and if so, where the clusters, outliers and hotspots are located.
 
 ## TH2.2 The Drug Problem in Thailand
 
-**[Thailand](https://en.wikipedia.org/wiki/Thailand)** (2024 GDP per capita - PPP: $23,401; Gini coefficient: 35.1 - <span style="color:orange;">medium</span>; HDI: 0.083 - <span style="color:darkgreen;">very high</span>) (International Monetary Fund, 2024) (World Bank, n.d.) (United Nations Development Programme, 2024) is located in close proximity to the [Golden Triangle](https://en.wikipedia.org/wiki/Golden_Triangle_(Southeast_Asia)), which comprises the northern part of the country along with northern Myanmar and Laos. In 2021, its drug trafficking situation remained critical, with 337,186 drug cases in total. While seizures of ketamine decreased between 2020 and 2021, seizures of methamphetamine, ice and heroin increased in the same period, with heroin seeing the biggest increase from 1873kg in 2020 to 4520kg in 2021 (Kanato et al., 2022).
+**[Thailand](https://en.wikipedia.org/wiki/Thailand)** (2024 GDP per capita - PPP: $23,401; Gini coefficient: 35.1 - <span style="color:orange;">medium</span>; HDI: 0.083 - <span style="color:darkgreen;">very high</span>) (International Monetary Fund, 2024) (World Bank, n.d.) (United Nations Development Programme, 2024) is located in close proximity to the [Golden Triangle](https://en.wikipedia.org/wiki/Golden_Triangle_(Southeast_Asia)), which comprises the northern part of the country along with northern Myanmar and Laos. In 2021, its drug trafficking situation remained critical, with 337,186 drug cases in total. While seizures of ketamine decreased between 2020 and 2021, seizures of methamphetamine, ice and heroin increased in the same period, with heroin seeing the biggest increase from 1873kg in 2020 to 4520kg in 2021 (Kanato et al., 2022). Considering that the *COVID-19 pandemic* - which caused a global economic depression among other socio-economic effects - occurred around this time, it can be theorised that those who encountered economic hardship as a result of the pandemic might turn to drug trafficking to support themselves and their families.
 
 The maximum penalty for drug trafficking in Thailand, as is neighbouring Laos, Malaysia and Singapore, is [death](https://en.wikipedia.org/wiki/Capital_punishment_for_drug_trafficking) (Thailand, n.d.). Despite this, smugglers have innovated on new routes, through the north and northern borders of the country, and even go so far as to hide shipments in cargo vessels bound for the likes of Singapore, New Zealand, Australia and South Korea. 575 smuggling cases by sea occured in 2021, in which 4554kg of heroin, 2.4 times more than the previous year, were seized (Kanato et al., 2022).
 
@@ -157,7 +156,7 @@ ggplot(data = thailand_drug_trafficking, aes(x = fiscal_year)) +
 ```
 There was a spike in the number of drug use cases in 2021 in an otherwise variable set of data. Meanwhile, drug possession cases generally declined after 2019, though there was a slight increase in 2021.
 
-From both analysis steps, it makes sense to select the drug use and drug possession cases in 2021 for further analysis. The year 2021 coincided with a rise in the country's unemployment rate to 1.2% from 0.7% two years prior (World Bank Open Data, n.d.), as the Thai economy was still recovering from the COVID-19 pandemic. Unemployment increases susceptibility to, among other negative effects, drug use.
+From both analysis steps, it makes sense to select the drug use cases trafficking cases in 2021 for further analysis. The year 2021 coincided with a rise in the country's unemployment rate to 1.2% from 0.7% two years prior (World Bank Open Data, n.d.), as the Thai economy was still recovering from the COVID-19 pandemic. Unemployment increases susceptibility to, among other negative effects, drug use.
 
 ## TH2.4.3 Creating filtered table for 2021 observations
 
@@ -179,19 +178,23 @@ use_map <- tm_shape(thailand_2021) + tm_fill("total_use_cases", n = 8, style = "
 trafficking_map <- tm_shape(thailand_2021) + tm_fill("total_trafficking_cases", n = 8, style = "equal") + tm_borders(alpha = 0.5)
 tmap_arrange(use_map, trafficking_map, asp = 1, ncol = 2)
 ```
-Considering only confirmed cases of use and trafficking (and ignoring *suspected* ones), the provinces with the highest number of drug use cases appear clustered to the northeast, around Sakon Nakhon, and north, around Chiang Mai and Chiang Rai, with pockets of high use around the capital Bangkok and the southern provinces such as Songkhla province. Meanwhile, the eastern province of Ubon Ratchatani sees the largest number of *trafficking* cases overall, with northern provinces also seeing higher than usual numbers of trafficking cases.
+Considering only confirmed cases of use and trafficking (and ignoring *suspected* ones), the provinces with the highest number of drug use cases appear clustered to the northeast, around Sakon Nakhon, and north, around Chiang Mai and Chiang Rai, with pockets of high use around Pattaya and the capital Bangkok near the Gulf of Thailand, and the southern provinces including Songkhla province on the border with Kedah, Malaysia. Surprisingly, provinces such as Kanchanaburi and Sing Buri see relatively muted drug use and trafficking.
 
-We will now proceed to rigourously verify these observations using global and local spatial autocorrelation techniques.
+Meanwhile, the eastern province of Ubon Ratchatani sees the largest number of *trafficking* cases overall. While one might expect the northern provinces to see equally frequent instances of trafficking, it turns out that, while still at least at or above the average, these areas close to the Golden Triangle do not see as many cases of trafficking as Ubon Ratchatani province.
+
+We will now proceed to rigourously verify these observations using global and local spatial autocorrelation techniques, such as global and local Moran's I, Geary's C and G-statistics. In particular, we want to verify if the indicators of drug abuse are indeed spatially dependent, i.e. provinces that see less drug use are clustered with one another and vice-versa, and if so, whether the high-use areas identified in the choropleth maps above are indeed hot spots.
 
 ## TH2.5 Deriving Global Measures of Spatial Autocorrelation
 
-Tobler (1970)'s first law of geography states that everything is related to everything else, but near things are more related than distant things. Spatial autocorrelation seeks to determine 
+Tobler's (1970) first law of geography states that everything is related to everything else, but near things are more related than distant things. Spatial autocorrelation seeks to determine the extent of Tobler's first law on a variable or measurement - in our case, the number of drug use and drug trafficking cases. As the illustration below (Khant, 2024) (Moraga, 2023) shows, positive spatial autocorrelation is when adjacent observations have similar data values. In contrast, negative spatial autocorrelation is when adjacent observations have contrasting values, and when the data values appear randomly distributed, no spatial autocorrelation occurs.
+
+![An illustration on the methods of spatial autocorrelation. (Moraga, 2023)](moraga.png)
 
 ### TH2.5.1 Data Preparation - Spatial Weights
 
-Before computing any global spatial autocorrelation statistics, we first need to construct the spatial weights of the study area. The first step in doing so will be to compute QUEEN contiguity spatial weights.
+Before computing any global spatial autocorrelation statistics, we first need to construct the spatial weights of the study area. The first step in doing so will be to compute the queen contiguity spatial weights. This means we will consider all neighbours for each province that share an edge and vertex, i.e. are horizontally, vertically and diagonally adjacent.
 
-We will create 2 row-standardised spatial weights matrices - one for our drug use statistics and another for drug trafficking statistics.
+We will create 2 row-standardised spatial weights matrices - one for our drug use statistics and another for our drug trafficking statistics. Row-standardisation will take the inverse of the number of neighbours each neighbour has.
 
 ```{r}
 thailand_2021_use <- thailand_2021 %>% select(1:3, 17)
@@ -218,7 +221,9 @@ rswm_q_tr
 
 With our matrices constructed, we can calculate our global spatial correlation statistics. Moran’s I describes how features differ from the values in the study area as a whole. It approaches 1 when similar values are clustered, and approaches -1 when dissimilar values tend to cluster.
 
-The code chunk below computes Moran's I on both our drug use and drug trafficking datasets, subsequently performing a Monte Carlo test.
+The code chunk below computes Moran's I on our *drug use* dataset, subsequently performing a Monte Carlo test and plotting the result in a histogram. We can use the histogram to visualise the permutation results and compare them to the expected value under null hypothesis.
+
+#### TH2.5.2.1 Moran's I on `drug_use` statistics
 
 ```{r}
 moran.test(thailand_2021$total_use_cases, listw=rswm_q_use, zero.policy = TRUE, na.action=na.omit)
@@ -228,27 +233,28 @@ bperm_use <- moran.mc(thailand_2021$total_use_cases,
                 nsim=999, 
                 zero.policy = TRUE, 
                 na.action=na.omit)
-bperm
+bperm_use
+hist(bperm_use$res, main = "Global Moran's I Simulation Results for drug_use", xlab="Monte-Carlo Results", ylab="Frequency") 
+abline(v = bperm_use$statistic, col = "green4")
 ```
+From the output above:
+
+- The Moran's I statistic is approximately `0.21`, which is significantly higher than the expected value of `-0.014`. This is a significant indicator of positive spatial autocorrelation, but only to a moderate degree.
+- With a standard deviation of `2.84` and p-value of `0.00224 < 0.05`, the test result is statistically significant. We can reject the null hypothesis of a lack of spatial autocorrelation.
+- After 1000 permutations, we get a similar Moran's I observation of `0.2081`, with a p-value of `0.003`. Therefore, our result is stable and statistically significant.
+
+This shows that provinces with high drug use in Thailand can, to a limited extent, be near one another.
 
 ## References
 
 1. International Monetary Fund. (2024, April 16). World Economic Outlook Database, April 2024 Edition: Thailand. https://www.imf.org/en/Publications/WEO/weo-database/2024/April
+2. Khant, M. N. (2024, February 10). Take-Home Exercise 02: Spatio-Temporal Analysis of Dengue Fever Outbreak in Tainan City, Taiwan. https://is415-geospatial-with-khant.netlify.app/take-home_ex/take-home_ex02/take-home_ex02
 2. Kongjareon, Y., Samoh, N., Peerawaranun, P. et al. Pride-based violence, intoxicated sex and poly-drug use: a vocational school-based study of heterosexual and LGBT students in Bangkok. BMC Psychiatry 22, 148 (2022). https://doi.org/10.1186/s12888-022-03777-7
 3. Kanato, M., Sarasiri, R., & Leyatikul, P. (Eds.). (2022). ASEAN drug monitoring report 2021. ASEAN Narcotics Cooperation Center.
-4. Thailand. (n.d.). Hands-Off Cain. Retrieved 23 September 2024, from https://www.handsoffcain.info/bancadati/asia-middle-east-australia-and-oceania/thailand-17000464
-5. United Nations Development Programme. (2024, March 13). Human Development Report 2023/2024 (PDF). Retrieved September 23, 2024, from https://hdr.undp.org/sites/default/files/reports/3503/hdr2023-24reporten.pdf
-6. World Bank. (n.d.). Gini index. Retrieved September 23, 2024, from https://www.worldbank.org/en/topic/poverty/brief/gini-index
-7. World Bank Open Data. (n.d.). Unemployment, total (% of total labor force) (national estimate) - Thailand. Retrieved 27 September 2024, from https://data.worldbank.org/indicator/SL.UEM.TOTL.NE.ZS?end=2023&locations=TH
-7. World Drug Day report highlights spike in drug use, increased trafficking | UN News. (2024, June 26). United Nations. https://news.un.org/en/story/2024/06/1151446biggest increase from 1873kg in 2020 to 4520kg in 2021 (Kanato et al., 2022).
-
-## References
-
-1. International Monetary Fund. (2024, April 16). World Economic Outlook Database, April 2024 Edition: Thailand. https://www.imf.org/en/Publications/WEO/weo-database/2024/April
-2. Kongjareon, Y., Samoh, N., Peerawaranun, P. et al. Pride-based violence, intoxicated sex and poly-drug use: a vocational school-based study of heterosexual and LGBT students in Bangkok. BMC Psychiatry 22, 148 (2022). https://doi.org/10.1186/s12888-022-03777-7
-3. Kanato, M., Sarasiri, R., & Leyatikul, P. (Eds.). (2022). ASEAN drug monitoring report 2021. ASEAN Narcotics Cooperation Center.
-4. Thailand. (n.d.). Hands-Off Cain. Retrieved 23 September 2024, from https://www.handsoffcain.info/bancadati/asia-middle-east-australia-and-oceania/thailand-17000464
-5. United Nations Development Programme. (2024, March 13). Human Development Report 2023/2024 (PDF). Retrieved September 23, 2024, from https://hdr.undp.org/sites/default/files/reports/3503/hdr2023-24reporten.pdf
-6. World Bank. (n.d.). Gini index. Retrieved September 23, 2024, from https://www.worldbank.org/en/topic/poverty/brief/gini-index
-7. World Bank Open Data. (n.d.). Unemployment, total (% of total labor force) (national estimate) - Thailand. Retrieved 27 September 2024, from https://data.worldbank.org/indicator/SL.UEM.TOTL.NE.ZS?end=2023&locations=TH
-7. World Drug Day report highlights spike in drug use, increased trafficking | UN News. (2024, June 26). United Nations. https://news.un.org/en/story/2024/06/1151446
+4. Moraga, P. (2024). Spatial neighbourhood matrices. In Spatial statistics for Data Science: Theory and practice with R (pp. 83–94). CRC Press.
+5. Thailand. (n.d.). Hands-Off Cain. Retrieved 23 September 2024, from https://www.handsoffcain.info/bancadati/asia-middle-east-australia-and-oceania/thailand-17000464
+6. Tobler, W. R. (1970). A computer movie simulating urban growth in the Detroit region. Economic Geography (Supplement: Proceedings, International Geographical Union. Commission on Quantitative Methods), 46, 234-240. https://doi.org/10.2307/143141
+7. United Nations Development Programme. (2024, March 13). Human Development Report 2023/2024 (PDF). Retrieved September 23, 2024, from https://hdr.undp.org/sites/default/files/reports/3503/hdr2023-24reporten.pdf
+8. World Bank. (n.d.). Gini index. Retrieved September 23, 2024, from https://www.worldbank.org/en/topic/poverty/brief/gini-index
+9. World Bank Open Data. (n.d.). Unemployment, total (% of total labor force) (national estimate) - Thailand. Retrieved 27 September 2024, from https://data.worldbank.org/indicator/SL.UEM.TOTL.NE.ZS?end=2023&locations=TH
+10. World Drug Day report highlights spike in drug use, increased trafficking | UN News. (2024, June 26). United Nations. https://news.un.org/en/story/2024/06/1151446biggest increase from 1873kg in 2020 to 4520kg in 2021 (Kanato et al., 2022).
