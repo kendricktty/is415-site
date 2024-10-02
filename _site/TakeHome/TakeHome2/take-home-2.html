@@ -103,6 +103,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../../styles.css">
 </head>
@@ -235,7 +264,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#th2.5.1-data-preparation---spatial-weights" id="toc-th2.5.1-data-preparation---spatial-weights" class="nav-link" data-scroll-target="#th2.5.1-data-preparation---spatial-weights">TH2.5.1 Data Preparation - Spatial Weights</a></li>
   <li><a href="#th2.5.2-morans-i" id="toc-th2.5.2-morans-i" class="nav-link" data-scroll-target="#th2.5.2-morans-i">TH2.5.2 Moran’s I</a></li>
   </ul></li>
-  <li><a href="#th2.6-gearys-c" id="toc-th2.6-gearys-c" class="nav-link" data-scroll-target="#th2.6-gearys-c">TH2.6 Geary’s C</a></li>
+  <li><a href="#th2.6-gearys-c" id="toc-th2.6-gearys-c" class="nav-link" data-scroll-target="#th2.6-gearys-c">TH2.6 Geary’s C</a>
+  <ul class="collapse">
+  <li><a href="#th2.6.1-gearys-c-on-drug_use-statistics" id="toc-th2.6.1-gearys-c-on-drug_use-statistics" class="nav-link" data-scroll-target="#th2.6.1-gearys-c-on-drug_use-statistics">TH2.6.1 Geary’s C on <code>drug_use</code> statistics</a></li>
+  <li><a href="#th2.6.2-gearys-c-on-drug_trafficking-statistics" id="toc-th2.6.2-gearys-c-on-drug_trafficking-statistics" class="nav-link" data-scroll-target="#th2.6.2-gearys-c-on-drug_trafficking-statistics">TH2.6.2 Geary’s C on <code>drug_trafficking</code> statistics</a></li>
+  </ul></li>
+  <li><a href="#th2.7-deriving-local-measures-of-spatial-autocorrelation" id="toc-th2.7-deriving-local-measures-of-spatial-autocorrelation" class="nav-link" data-scroll-target="#th2.7-deriving-local-measures-of-spatial-autocorrelation">TH2.7 Deriving Local Measures of Spatial Autocorrelation</a></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
 </nav>
@@ -314,7 +348,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>thailand <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="at">dsn=</span><span class="st">"data/geospatial"</span>, <span class="at">layer=</span><span class="st">"tha_admbnda_adm1_rtsd_20220121"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Reading layer `tha_admbnda_adm1_rtsd_20220121' from data source 
-  `/Users/kendricktty/Gits/SMU_CS/is415-site/TakeHome/TakeHome2/data/geospatial' 
+  `/Users/kendricktty/Gits/smu_cs/is415-site/TakeHome/TakeHome2/data/geospatial' 
   using driver `ESRI Shapefile'
 Simple feature collection with 77 features and 16 fields
 Geometry type: MULTIPOLYGON
@@ -630,9 +664,9 @@ First 10 features:
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>use_map <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(thailand_2021) <span class="sc">+</span> <span class="fu">tm_fill</span>(<span class="st">"total_use_cases"</span>, <span class="at">n =</span> <span class="dv">8</span>, <span class="at">style =</span> <span class="st">"quantile"</span>) <span class="sc">+</span> <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>)</span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>trafficking_map <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(thailand_2021) <span class="sc">+</span> <span class="fu">tm_fill</span>(<span class="st">"total_trafficking_cases"</span>, <span class="at">n =</span> <span class="dv">4</span>, <span class="at">style =</span> <span class="st">"quantile"</span>, <span class="at">colourRamp =</span> <span class="st">"blues"</span>) <span class="sc">+</span> <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>)</span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_arrange</span>(use_map, trafficking_map, <span class="at">asp =</span> <span class="dv">1</span>, <span class="at">ncol =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>use_map <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(thailand_2021) <span class="sc">+</span> <span class="fu">tm_fill</span>(<span class="st">"total_use_cases"</span>, <span class="at">n =</span> <span class="dv">8</span>, <span class="at">style =</span> <span class="st">"quantile"</span>) <span class="sc">+</span> <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span> <span class="fu">tm_layout</span>(<span class="at">main.title =</span> <span class="st">"Drug use across Thailand (quantile)"</span>)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>use_map_equal <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(thailand_2021) <span class="sc">+</span> <span class="fu">tm_fill</span>(<span class="st">"total_use_cases"</span>, <span class="at">n =</span> <span class="dv">6</span>, <span class="at">style =</span> <span class="st">"equal"</span>) <span class="sc">+</span> <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span> <span class="fu">tm_layout</span>(<span class="at">main.title =</span> <span class="st">"Drug use across Thailand (equal)"</span>)</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_arrange</span>(use_map, use_map_equal, <span class="at">asp =</span> <span class="dv">1</span>, <span class="at">ncol =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -641,8 +675,21 @@ First 10 features:
 </div>
 </div>
 </div>
-<p>Considering only confirmed cases of use and trafficking (and ignoring <em>suspected</em> ones), the provinces with the highest number of drug use cases appear clustered to the northeast, around Sakon Nakhon, and north, around Chiang Mai and Chiang Rai, with pockets of high use around Pattaya and the capital Bangkok near the Gulf of Thailand, and the southern provinces including Songkhla province on the border with Kedah, Malaysia. Surprisingly, provinces such as Kanchanaburi and Sing Buri see relatively muted drug use and trafficking.</p>
-<p>Meanwhile, the eastern province of Ubon Ratchatani sees the largest number of <em>trafficking</em> cases overall. While one might expect the northern provinces to see equally frequent instances of trafficking, it turns out that, while still at least at or above the average, these areas close to the Golden Triangle do not see as many cases of trafficking as Ubon Ratchatani province.</p>
+<p>Considering only confirmed cases of use and trafficking (and ignoring <em>suspected</em> ones), the provinces with the highest number of drug use cases appear clustered to the northeast, around Sakon Nakhon, and north, around Chiang Mai and Chiang Rai, with pockets of high use around Pattaya and the capital Bangkok near the Gulf of Thailand, and the southern provinces including Songkhla province on the border with Kedah, Malaysia. Surprisingly, provinces such as Kanchanaburi and Sing Buri see relatively muted drug use.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>trafficking_map <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(thailand_2021) <span class="sc">+</span> <span class="fu">tm_fill</span>(<span class="st">"total_trafficking_cases"</span>, <span class="at">n =</span> <span class="dv">8</span>, <span class="at">style =</span> <span class="st">"quantile"</span>) <span class="sc">+</span> <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span> <span class="fu">tm_layout</span>(<span class="at">main.title =</span> <span class="st">"Drug trafficking across Thailand (quantile)"</span>)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>trafficking_map_equal <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(thailand_2021) <span class="sc">+</span> <span class="fu">tm_fill</span>(<span class="st">"total_trafficking_cases"</span>, <span class="at">n =</span> <span class="dv">6</span>, <span class="at">style =</span> <span class="st">"equal"</span>) <span class="sc">+</span> <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span> <span class="fu">tm_layout</span>(<span class="at">main.title =</span> <span class="st">"Drug trafficking across Thailand (equal)"</span>)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_arrange</span>(trafficking_map, trafficking_map_equal, <span class="at">asp =</span> <span class="dv">1</span>, <span class="at">ncol =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-2_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The same general region also sees the highest concentration of drug <em>trafficking</em> cases throughout the country, with the eastern province of Ubon Ratchatani seeing the largest number of all.</p>
+<p>Data for two provinces is missing, but thankfully, the Moran’s I and Geary’s C functions contain provisions for handling missing data.</p>
 <p>We will now proceed to rigourously verify these observations using global and local spatial autocorrelation techniques, such as global and local Moran’s I, Geary’s C and G-statistics. In particular, we want to verify if the indicators of drug abuse are indeed spatially dependent, i.e.&nbsp;provinces that see less drug use are clustered with one another and vice-versa, and if so, whether the high-use areas identified in the choropleth maps above are indeed hot spots.</p>
 </section>
 <section id="th2.5-deriving-global-measures-of-spatial-autocorrelation" class="level2">
@@ -654,22 +701,23 @@ First 10 features:
 <figcaption>An illustration on the methods of spatial autocorrelation. (Moraga, 2023)</figcaption>
 </figure>
 </div>
+<p>We will first focus on the global measures of spatial autocorrelation: Moran’s I and Geary’s C. While both seek to determine if the measured variables (in this case, our drug use and drug trafficking statistics) are clustered, dispersed or random, the former looks at the study area as a whole, and the latter quantifies how different each subdivision (province) is different from its immediate neighbours.</p>
 <section id="th2.5.1-data-preparation---spatial-weights" class="level3">
 <h3 class="anchored" data-anchor-id="th2.5.1-data-preparation---spatial-weights">TH2.5.1 Data Preparation - Spatial Weights</h3>
 <p>Before computing any global spatial autocorrelation statistics, we first need to construct the spatial weights of the study area. The first step in doing so will be to compute the queen contiguity spatial weights. This means we will consider all neighbours for each province that share an edge and vertex, i.e.&nbsp;are horizontally, vertically and diagonally adjacent.</p>
-<p>We will create 2 row-standardised spatial weights matrices - one for our drug use statistics and another for our drug trafficking statistics. Row-standardisation will take the inverse of the number of neighbours each neighbour has.</p>
+<p>We will create 2 row-standardised spatial weights matrices <em>for confirmed cases only</em> - one for our drug use statistics and another for our drug trafficking statistics. Row-standardisation will take the inverse of the number of neighbours each province has, as derived from our vanilla queen contiguity spatial weights matrix.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>thailand_2021_use <span class="ot">&lt;-</span> thailand_2021 <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="dv">17</span>)</span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>thailand_2021_trafficking <span class="ot">&lt;-</span> thailand_2021 <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="dv">18</span>)</span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>wm_q_use <span class="ot">&lt;-</span> <span class="fu">poly2nb</span>(thailand_2021_use, <span class="at">queen=</span><span class="cn">TRUE</span>)</span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>wm_q_tr <span class="ot">&lt;-</span> <span class="fu">poly2nb</span>(thailand_2021_trafficking, <span class="at">queen=</span><span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>thailand_2021_use <span class="ot">&lt;-</span> thailand_2021 <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="dv">17</span>)</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>thailand_2021_trafficking <span class="ot">&lt;-</span> thailand_2021 <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="dv">18</span>)</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>wm_q_use <span class="ot">&lt;-</span> <span class="fu">poly2nb</span>(thailand_2021_use, <span class="at">queen=</span><span class="cn">TRUE</span>)</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>wm_q_tr <span class="ot">&lt;-</span> <span class="fu">poly2nb</span>(thailand_2021_trafficking, <span class="at">queen=</span><span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"Weights matrix for drug use cases"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"Weights matrix for drug use cases"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "Weights matrix for drug use cases"</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(wm_q_use)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(wm_q_use)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Neighbour list object:
 Number of regions: 77 
@@ -688,11 +736,11 @@ Link number distribution:
 2 most connected regions:
 29 51 with 9 links</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"Weights matrix for drug trafficking cases"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"Weights matrix for drug trafficking cases"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "Weights matrix for drug trafficking cases"</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(wm_q_tr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(wm_q_tr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Neighbour list object:
 Number of regions: 77 
@@ -713,11 +761,11 @@ Link number distribution:
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>rswm_q_use <span class="ot">&lt;-</span> <span class="fu">nb2listw</span>(wm_q_use, <span class="at">style =</span> <span class="st">"W"</span>, <span class="at">zero.policy =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>rswm_q_tr <span class="ot">&lt;-</span> <span class="fu">nb2listw</span>(wm_q_tr, <span class="at">style =</span> <span class="st">"W"</span>, <span class="at">zero.policy =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>rswm_q_use <span class="ot">&lt;-</span> <span class="fu">nb2listw</span>(wm_q_use, <span class="at">style =</span> <span class="st">"W"</span>, <span class="at">zero.policy =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>rswm_q_tr <span class="ot">&lt;-</span> <span class="fu">nb2listw</span>(wm_q_tr, <span class="at">style =</span> <span class="st">"W"</span>, <span class="at">zero.policy =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>rswm_q_use</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>rswm_q_use</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Characteristics of weights list object:
 Neighbour list object:
@@ -734,7 +782,7 @@ Weights constants summary:
    n   nn S0       S1      S2
 W 76 5776 76 36.26113 315.652</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>rswm_q_tr</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>rswm_q_tr</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Characteristics of weights list object:
 Neighbour list object:
@@ -752,6 +800,15 @@ Weights constants summary:
 W 76 5776 76 36.26113 315.652</code></pre>
 </div>
 </div>
+<p>We will also define our null and alternative hypotheses as such:</p>
+<ul>
+<li>**Null Hypotheses <span class="math inline">\(H_0_\)</span>: the tests indicate no spatial autocorrelation:
+<ul>
+<li>For <em>Moran’s I</em>: <span class="math inline">\(H_0_: I = E[I] = 0\)</span>, and;</li>
+<li>For <em>Geary’s C</em>:</li>
+</ul></li>
+<li>**Alternative Hypotheses</li>
+</ul>
 </section>
 <section id="th2.5.2-morans-i" class="level3">
 <h3 class="anchored" data-anchor-id="th2.5.2-morans-i">TH2.5.2 Moran’s I</h3>
@@ -760,7 +817,7 @@ W 76 5776 76 36.26113 315.652</code></pre>
 <section id="th2.5.2.1-morans-i-on-drug_use-statistics" class="level4">
 <h4 class="anchored" data-anchor-id="th2.5.2.1-morans-i-on-drug_use-statistics">TH2.5.2.1 Moran’s I on <code>drug_use</code> statistics</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">moran.test</span>(thailand_2021<span class="sc">$</span>total_use_cases, <span class="at">listw=</span>rswm_q_use, <span class="at">zero.policy =</span> <span class="cn">TRUE</span>, <span class="at">na.action=</span>na.omit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">moran.test</span>(thailand_2021<span class="sc">$</span>total_use_cases, <span class="at">listw=</span>rswm_q_use, <span class="at">zero.policy =</span> <span class="cn">TRUE</span>, <span class="at">na.action=</span>na.omit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
     Moran I test under randomisation
@@ -776,13 +833,13 @@ sample estimates:
 Moran I statistic       Expectation          Variance 
       0.208097782      -0.013698630       0.006094258 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
-<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>bperm_use <span class="ot">&lt;-</span> <span class="fu">moran.mc</span>(thailand_2021<span class="sc">$</span>total_use_cases, </span>
-<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">listw=</span>rswm_q_use, </span>
-<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">nsim=</span><span class="dv">999</span>, </span>
-<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">zero.policy =</span> <span class="cn">TRUE</span>, </span>
-<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">na.action=</span>na.omit)</span>
-<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>bperm_use</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>bperm_use <span class="ot">&lt;-</span> <span class="fu">moran.mc</span>(thailand_2021<span class="sc">$</span>total_use_cases, </span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">listw=</span>rswm_q_use, </span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">nsim=</span><span class="dv">999</span>, </span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">zero.policy =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">na.action=</span>na.omit)</span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>bperm_use</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
     Monte-Carlo simulation of Moran I
@@ -795,12 +852,12 @@ number of simulations + 1: 1000
 statistic = 0.2081, observed rank = 997, p-value = 0.003
 alternative hypothesis: greater</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(bperm_use<span class="sc">$</span>res, <span class="at">main =</span> <span class="st">"Global Moran's I Simulation Results for drug_use"</span>, <span class="at">xlab=</span><span class="st">"Monte-Carlo Results"</span>, <span class="at">ylab=</span><span class="st">"Frequency"</span>) </span>
-<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> bperm_use<span class="sc">$</span>statistic, <span class="at">col =</span> <span class="st">"green4"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(bperm_use<span class="sc">$</span>res, <span class="at">main =</span> <span class="st">"Global Moran's I Simulation Results for drug_use"</span>, <span class="at">xlab=</span><span class="st">"Monte-Carlo Results"</span>, <span class="at">ylab=</span><span class="st">"Frequency"</span>) </span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> bperm_use<span class="sc">$</span>statistic, <span class="at">col =</span> <span class="st">"green4"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="take-home-2_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="take-home-2_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -808,7 +865,7 @@ alternative hypothesis: greater</code></pre>
 <p>From the output above:</p>
 <ul>
 <li>The Moran’s I statistic is approximately <code>0.21</code>, which is significantly higher than the expected value of <code>-0.014</code>. This is a significant indicator of positive spatial autocorrelation, but only to a moderate degree.</li>
-<li>With a standard deviation of <code>2.84</code> and p-value of <code>0.00224 &lt; 0.05</code>, the test result is statistically significant. We can reject the null hypothesis of a lack of spatial autocorrelation.</li>
+<li>With a standard deviation of <code>2.84</code> and p-value of <code>0.00224 &lt; 0.05</code> at a 95% confidence level, the test result is statistically significant. We can reject the null hypothesis of a lack of spatial autocorrelation.</li>
 <li>After 1000 permutations, we get a similar Moran’s I observation of <code>0.2081</code>, with a p-value of <code>0.003</code>. Therefore, our result is stable and statistically significant.</li>
 </ul>
 <p>This shows that provinces with high drug use in Thailand can, to a limited extent, be near one another.</p>
@@ -816,7 +873,7 @@ alternative hypothesis: greater</code></pre>
 <section id="th2.5.2.2-morans-i-on-drug_trafficking-statistics" class="level4">
 <h4 class="anchored" data-anchor-id="th2.5.2.2-morans-i-on-drug_trafficking-statistics">TH2.5.2.2 Moran’s I on <code>drug_trafficking</code> statistics</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">moran.test</span>(thailand_2021<span class="sc">$</span>total_trafficking_cases, <span class="at">listw=</span>rswm_q_tr, <span class="at">zero.policy =</span> <span class="cn">TRUE</span>, <span class="at">na.action=</span>na.omit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">moran.test</span>(thailand_2021<span class="sc">$</span>total_trafficking_cases, <span class="at">listw=</span>rswm_q_tr, <span class="at">zero.policy =</span> <span class="cn">TRUE</span>, <span class="at">na.action=</span>na.omit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
     Moran I test under randomisation
@@ -832,13 +889,13 @@ sample estimates:
 Moran I statistic       Expectation          Variance 
       0.219471787      -0.013698630       0.005191187 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
-<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>bperm_tr <span class="ot">&lt;-</span> <span class="fu">moran.mc</span>(thailand_2021<span class="sc">$</span>total_trafficking_cases, </span>
-<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">listw=</span>rswm_q_tr, </span>
-<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">nsim=</span><span class="dv">999</span>, </span>
-<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">zero.policy =</span> <span class="cn">TRUE</span>, </span>
-<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">na.action=</span>na.omit)</span>
-<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>bperm_tr</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>bperm_tr <span class="ot">&lt;-</span> <span class="fu">moran.mc</span>(thailand_2021<span class="sc">$</span>total_trafficking_cases, </span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">listw=</span>rswm_q_tr, </span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">nsim=</span><span class="dv">999</span>, </span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">zero.policy =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">na.action=</span>na.omit)</span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a>bperm_tr</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
     Monte-Carlo simulation of Moran I
@@ -851,33 +908,151 @@ number of simulations + 1: 1000
 statistic = 0.21947, observed rank = 992, p-value = 0.008
 alternative hypothesis: greater</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(bperm_use<span class="sc">$</span>res, <span class="at">main =</span> <span class="st">"Global Moran's I Simulation Results for drug_trafficking"</span>, <span class="at">xlab=</span><span class="st">"Monte-Carlo Results"</span>, <span class="at">ylab=</span><span class="st">"Frequency"</span>) </span>
-<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> bperm_tr<span class="sc">$</span>statistic, <span class="at">col =</span> <span class="st">"purple4"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(bperm_use<span class="sc">$</span>res, <span class="at">main =</span> <span class="st">"Global Moran's I Simulation Results for drug_trafficking"</span>, <span class="at">xlab=</span><span class="st">"Monte-Carlo Results"</span>, <span class="at">ylab=</span><span class="st">"Frequency"</span>) </span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> bperm_tr<span class="sc">$</span>statistic, <span class="at">col =</span> <span class="st">"purple4"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="take-home-2_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="take-home-2_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 <p>The output for our <code>drug_trafficking</code> statistics is similar to that for our <code>drug_use</code> statistics, and can be interpreted as follows:</p>
 <ul>
-<li>The Moran’s I statistic is approximately <code>0.22</code>, which is significantly higher than the expected value of <code>-0.014</code>. This is a significant indicator of positive spatial autocorrelation, but only to a moderate degree.</li>
-<li>With a standard deviation of <code>3.24 and p-value of</code>0.006 &lt; 0.05`, the test result is statistically significant. We can reject the null hypothesis of a lack of spatial autocorrelation.</li>
+<li>The Moran’s I statistic is approximately <code>0.22</code>, which is significantly higher than the expected value of <code>-0.014</code>. This value is close to that obtained from our <code>drug_use</code> statistics, which indicates that both categories of drug crimes are similarly and moderately clustered.</li>
+<li>With a standard deviation of <code>3.24</code> and p-value of <code>0.006 &lt; 0.05</code> at a 95% confidence level, the test result is statistically significant. We can reject the null hypothesis of a lack of spatial autocorrelation.</li>
 <li>After 1000 permutations, we get a similar Moran’s I observation of <code>0.21947</code>, with a p-value of <code>0.008</code>. Therefore, our result is stable and statistically significant.</li>
 </ul>
-<p>Like drug use, the results show that provinces with high drug trafficking in Thailand can, to a limited extent, be near one another.</p>
+<p>Like drug use, using Moran’s I show that provinces with high drug trafficking in Thailand can, to a limited extent, be near one another.</p>
 </section>
 </section>
 </section>
 <section id="th2.6-gearys-c" class="level2">
 <h2 class="anchored" data-anchor-id="th2.6-gearys-c">TH2.6 Geary’s C</h2>
 <p>Geary’s C is another measure of global spatial autocorrelation that describes how features differ from their immediate neighbours. When <code>C &gt; 1</code>, the points are dispersed, and while <code>C &lt; 1</code>, the points are clustered. A <code>C</code> value of <code>1</code> indicates observations are randomly arranged in space. Geary’s C approaches <code>0</code> when similar values are clustered, and approaches <code>3</code> when dissimilar values are clustered. Geary’s C is inversely proportional to Moran’s I, so higher Cs correspond to lower Is.</p>
+<p>Just as before, we will now perform Geary’s C on both our <code>drug_use</code> and <code>drug_trafficking</code> statistics.</p>
+<section id="th2.6.1-gearys-c-on-drug_use-statistics" class="level3">
+<h3 class="anchored" data-anchor-id="th2.6.1-gearys-c-on-drug_use-statistics">TH2.6.1 Geary’s C on <code>drug_use</code> statistics</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">geary.test</span>(thailand_2021<span class="sc">$</span>total_use_cases, <span class="at">listw=</span>rswm_q_use, <span class="at">zero.policy =</span> <span class="cn">TRUE</span>, <span class="at">na.action =</span> na.omit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Geary C test under randomisation
+
+data:  thailand_2021$total_use_cases 
+weights: rswm_q_use 
+omitted: 7, 27 
+n reduced by no-neighbour observations 
+
+Geary C statistic standard deviate = 1.7539, p-value = 0.03973
+alternative hypothesis: Expectation greater than statistic
+sample estimates:
+Geary C statistic       Expectation          Variance 
+      0.844116310       1.000000000       0.007899682 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>bperm_use <span class="ot">&lt;-</span> <span class="fu">geary.mc</span>(thailand_2021<span class="sc">$</span>total_use_cases, </span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">listw=</span>rswm_q_use, </span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">nsim=</span><span class="dv">999</span>,</span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">zero.policy =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">na.action =</span> na.omit)</span>
+<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a>bperm_use</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Monte-Carlo simulation of Geary C
+
+data:  thailand_2021$total_use_cases 
+weights: rswm_q_use 
+omitted: 7, 27 
+number of simulations + 1: 1000 
+
+statistic = 0.84412, observed rank = 72, p-value = 0.072
+alternative hypothesis: greater</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(bperm_use<span class="sc">$</span>res, <span class="at">main =</span> <span class="st">"Geary's C Simulation Results for drug_use"</span>, <span class="at">xlab=</span><span class="st">"Monte-Carlo Results"</span>, <span class="at">ylab=</span><span class="st">"Frequency"</span>) </span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> bperm_use<span class="sc">$</span>statistic, <span class="at">col =</span> <span class="st">"green4"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-2_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>From the output above:</p>
+<ul>
+<li>The Geary’s C statistic is approximately <code>0.84</code>, which is lower than the expected value of <code>1.0</code>. Just as a high Moran’s I indicates positive spatial correlation, our Geary’s C statistic, which is less than <code>1</code>, indicates likewise. Similarly to the conclusion of our Moran’s I investigation, the Geary’s C statistic only indicates moderate positive spatial correlation.</li>
+<li>With a standard deviation of <code>3.24 and p-value of</code>0.04 &lt; 0.05`, the test result is statistically significant. If we were to only run the test once, we should be able to reject the null hypothesis of a lack of spatial autocorrelation.</li>
+<li>However, while running 1000 permutations yielded a similar Geary’s C observation of <code>0.84412</code>, this time, our p-value of <code>0.072</code> is <em>greater</em> than our threshold of <code>0.05</code> at the 95% confidence level. Had we only used Geary’s C, we would not have strong statistical evidence to reject our null hypothesis.</li>
+</ul>
+<p>Hence, the Geary’s C statistic on drug use cases in 2021 yielded inconclusive results.</p>
+</section>
+<section id="th2.6.2-gearys-c-on-drug_trafficking-statistics" class="level3">
+<h3 class="anchored" data-anchor-id="th2.6.2-gearys-c-on-drug_trafficking-statistics">TH2.6.2 Geary’s C on <code>drug_trafficking</code> statistics</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">geary.test</span>(thailand_2021<span class="sc">$</span>total_trafficking_cases, <span class="at">listw=</span>rswm_q_tr, <span class="at">zero.policy =</span> <span class="cn">TRUE</span>, <span class="at">na.action =</span> na.omit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Geary C test under randomisation
+
+data:  thailand_2021$total_trafficking_cases 
+weights: rswm_q_tr 
+omitted: 7, 27 
+n reduced by no-neighbour observations 
+
+Geary C statistic standard deviate = 2.277, p-value = 0.01139
+alternative hypothesis: Expectation greater than statistic
+sample estimates:
+Geary C statistic       Expectation          Variance 
+       0.74184058        1.00000000        0.01285472 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>bperm_tr <span class="ot">&lt;-</span> <span class="fu">geary.mc</span>(thailand_2021<span class="sc">$</span>total_trafficking_cases, </span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">listw=</span>rswm_q_tr, </span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">nsim=</span><span class="dv">999</span>, <span class="at">zero.policy =</span> <span class="cn">TRUE</span>, <span class="at">na.action =</span> na.omit)</span>
+<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a>bperm_tr</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Monte-Carlo simulation of Geary C
+
+data:  thailand_2021$total_trafficking_cases 
+weights: rswm_q_tr 
+omitted: 7, 27 
+number of simulations + 1: 1000 
+
+statistic = 0.74184, observed rank = 43, p-value = 0.043
+alternative hypothesis: greater</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(bperm_use<span class="sc">$</span>res, <span class="at">main =</span> <span class="st">"Global Geary's C Simulation Results for drug_trafficking"</span>, <span class="at">xlab=</span><span class="st">"Monte-Carlo Results"</span>, <span class="at">ylab=</span><span class="st">"Frequency"</span>) </span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> bperm_tr<span class="sc">$</span>statistic, <span class="at">col =</span> <span class="st">"purple4"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-2_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>When Geary’s C is run on the <code>drug_trafficking</code> statistics:</p>
+<ul>
+<li>The result yielded is approximately <code>0.74</code>, which is lower than the expected value of <code>1.0</code>. It is also lower than the Geary’s C for the drug use data, which indicates that the clustering of drug trafficking hotspots is stronger than that for drug use.</li>
+<li>With a standard deviation of <code>2.28</code> and p-value of <code>0.01 &lt; 0.05</code> for a 95% confidence level, the test result is statistically significant. If we were to only run the test once, we should be able to reject the null hypothesis of a lack of spatial autocorrelation.</li>
+<li>Now, running 1000 permutations yielded a similar Geary’s C observation of <code>0.74184</code> and a p-value of <code>0.043</code> is less than our threshold of <code>0.05</code> at the 95% confidence level. Even though the p-value is uncomfortably close to the threshold, we can still conclude that our derived Geary’s C for our drug trafficking data is statistically significant.</li>
+</ul>
+<p>Hence, the Geary’s C measure on drug trafficking cases in 2021 indicates mild positive spatial autocorrelation, albeit stronger than that observed on our drug use statistics.</p>
+</section>
+</section>
+<section id="th2.7-deriving-local-measures-of-spatial-autocorrelation" class="level2">
+<h2 class="anchored" data-anchor-id="th2.7-deriving-local-measures-of-spatial-autocorrelation">TH2.7 Deriving Local Measures of Spatial Autocorrelation</h2>
+<p>Both Global Moran’s I and Geary’s C only return a surface observation on how Thailand’s drug crime is distributed by province. To identify where the clusters are located, we need to use local indicators of spatial association (LISA), which indicate the extent of spatial clustering around each observation (Anselin, 1995) (Khant, 2024).</p>
+<p>An example of a LISA is local Moran’s I, which is essentially Moran’s I calculated for each geographical subdivision, in this case the provinces of Thailand. However, with these localised measures, we are able to visualise our findings on a choropleth map, and move on to detect hot and cold spot areas.</p>
+<p>As before, we will derive the local Moran’s I statistics for both our drug trafficking and drug use data.</p>
 </section>
 <section id="references" class="level2">
 <h2 class="anchored" data-anchor-id="references">References</h2>
 <ol type="1">
+<li>Anselin, L. (1995). Local indicators of spatial association—LISA. Geographical Analysis, 27(2), 93–115. https://doi.org/10.1111/j.1538-4632.1995.tb00338.x</li>
 <li>International Monetary Fund. (2024, April 16). World Economic Outlook Database, April 2024 Edition: Thailand. https://www.imf.org/en/Publications/WEO/weo-database/2024/April</li>
 <li>Khant, M. N. (2024, February 10). Take-Home Exercise 02: Spatio-Temporal Analysis of Dengue Fever Outbreak in Tainan City, Taiwan. https://is415-geospatial-with-khant.netlify.app/take-home_ex/take-home_ex02/take-home_ex02</li>
 <li>Kongjareon, Y., Samoh, N., Peerawaranun, P. et al.&nbsp;Pride-based violence, intoxicated sex and poly-drug use: a vocational school-based study of heterosexual and LGBT students in Bangkok. BMC Psychiatry 22, 148 (2022). https://doi.org/10.1186/s12888-022-03777-7</li>

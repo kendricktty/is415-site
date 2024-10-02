@@ -1,6 +1,5 @@
 ---
 title: "TH2: Application of Geospatial Analysis Methods to Discover Thailand Drug Abuse at the Province Level"
-image: "../../_site/HandsOn/Hands-on_Ex03/hands-on-3_files/figure-html/unnamed-chunk-42-1.png"
 subtitle: "Take Home Exercise 2"
 author: "Kendrick Teo"
 date: "2024-09-23"
@@ -174,13 +173,21 @@ thailand_2021 <- left_join(thailand, thailand_2021_drug, by = c("ADM1_EN" = "pro
 thailand_2021
 ```
 ```{r}
-use_map <- tm_shape(thailand_2021) + tm_fill("total_use_cases", n = 8, style = "quantile") + tm_borders(alpha = 0.5)
-trafficking_map <- tm_shape(thailand_2021) + tm_fill("total_trafficking_cases", n = 8, style = "equal") + tm_borders(alpha = 0.5)
-tmap_arrange(use_map, trafficking_map, asp = 1, ncol = 2)
+use_map <- tm_shape(thailand_2021) + tm_fill("total_use_cases", n = 8, style = "quantile") + tm_borders(alpha = 0.5) + tm_layout(main.title = "Drug use across Thailand (quantile)")
+use_map_equal <- tm_shape(thailand_2021) + tm_fill("total_use_cases", n = 6, style = "equal") + tm_borders(alpha = 0.5) + tm_layout(main.title = "Drug use across Thailand (equal)")
+tmap_arrange(use_map, use_map_equal, asp = 1, ncol = 2)
 ```
 Considering only confirmed cases of use and trafficking (and ignoring *suspected* ones), the provinces with the highest number of drug use cases appear clustered to the northeast, around Sakon Nakhon, and north, around Chiang Mai and Chiang Rai, with pockets of high use around Pattaya and the capital Bangkok near the Gulf of Thailand, and the southern provinces including Songkhla province on the border with Kedah, Malaysia. Surprisingly, provinces such as Kanchanaburi and Sing Buri see relatively muted drug use.
 
-The same provinces see the highest 
+```{r}
+trafficking_map <- tm_shape(thailand_2021) + tm_fill("total_trafficking_cases", n = 8, style = "quantile") + tm_borders(alpha = 0.5) + tm_layout(main.title = "Drug trafficking across Thailand (quantile)")
+trafficking_map_equal <- tm_shape(thailand_2021) + tm_fill("total_trafficking_cases", n = 6, style = "equal") + tm_borders(alpha = 0.5) + tm_layout(main.title = "Drug trafficking across Thailand (equal)")
+tmap_arrange(trafficking_map, trafficking_map_equal, asp = 1, ncol = 2)
+```
+
+The same general region also sees the highest concentration of drug *trafficking* cases throughout the country, with the eastern province of Ubon Ratchatani seeing the largest number of all.
+
+Data for two provinces is missing, but thankfully, the Moran's I and Geary's C functions contain provisions for handling missing data.
 
 We will now proceed to rigourously verify these observations using global and local spatial autocorrelation techniques, such as global and local Moran's I, Geary's C and G-statistics. In particular, we want to verify if the indicators of drug abuse are indeed spatially dependent, i.e. provinces that see less drug use are clustered with one another and vice-versa, and if so, whether the high-use areas identified in the choropleth maps above are indeed hot spots.
 
@@ -190,11 +197,13 @@ Tobler's (1970) first law of geography states that everything is related to ever
 
 ![An illustration on the methods of spatial autocorrelation. (Moraga, 2023)](moraga.png)
 
+We will first focus on the global measures of spatial autocorrelation: Moran's I and Geary's C. While both seek to determine if the measured variables (in this case, our drug use and drug trafficking statistics) are clustered, dispersed or random, the former looks at the study area as a whole, and the latter quantifies how different each subdivision (province) is different from its immediate neighbours.
+
 ### TH2.5.1 Data Preparation - Spatial Weights
 
 Before computing any global spatial autocorrelation statistics, we first need to construct the spatial weights of the study area. The first step in doing so will be to compute the queen contiguity spatial weights. This means we will consider all neighbours for each province that share an edge and vertex, i.e. are horizontally, vertically and diagonally adjacent.
 
-We will create 2 row-standardised spatial weights matrices - one for our drug use statistics and another for our drug trafficking statistics. Row-standardisation will take the inverse of the number of neighbours each neighbour has.
+We will create 2 row-standardised spatial weights matrices *for confirmed cases only* - one for our drug use statistics and another for our drug trafficking statistics. Row-standardisation will take the inverse of the number of neighbours each province has, as derived from our vanilla queen contiguity spatial weights matrix.
 
 ```{r}
 thailand_2021_use <- thailand_2021 %>% select(1:3, 17)
@@ -216,6 +225,12 @@ rswm_q_tr <- nb2listw(wm_q_tr, style = "W", zero.policy = TRUE)
 rswm_q_use
 rswm_q_tr
 ```
+We will also define our null and alternative hypotheses as such:
+
+- **Null Hypotheses $H_0_$: the tests indicate no spatial autocorrelation:
+  - For *Moran's I*: $H_0_: I = E[I] = 0$, and;
+  - For *Geary's C*:
+- **Alternative Hypotheses
 
 ### TH2.5.2 Moran's I
 
@@ -240,7 +255,7 @@ abline(v = bperm_use$statistic, col = "green4")
 From the output above:
 
 - The Moran's I statistic is approximately `0.21`, which is significantly higher than the expected value of `-0.014`. This is a significant indicator of positive spatial autocorrelation, but only to a moderate degree.
-- With a standard deviation of `2.84` and p-value of `0.00224 < 0.05`, the test result is statistically significant. We can reject the null hypothesis of a lack of spatial autocorrelation.
+- With a standard deviation of `2.84` and p-value of `0.00224 < 0.05` at a 95% confidence level, the test result is statistically significant. We can reject the null hypothesis of a lack of spatial autocorrelation.
 - After 1000 permutations, we get a similar Moran's I observation of `0.2081`, with a p-value of `0.003`. Therefore, our result is stable and statistically significant.
 
 This shows that provinces with high drug use in Thailand can, to a limited extent, be near one another.
@@ -261,11 +276,11 @@ abline(v = bperm_tr$statistic, col = "purple4")
 ```
 The output for our `drug_trafficking` statistics is similar to that for our `drug_use` statistics, and can be interpreted as follows:
 
-- The Moran's I statistic is approximately `0.22`, which is significantly higher than the expected value of `-0.014`. This is a significant indicator of positive spatial autocorrelation, but only to a moderate degree.
-- With a standard deviation of `3.24 and p-value of `0.006 < 0.05`, the test result is statistically significant. We can reject the null hypothesis of a lack of spatial autocorrelation.
+- The Moran's I statistic is approximately `0.22`, which is significantly higher than the expected value of `-0.014`. This value is close to that obtained from our `drug_use` statistics, which indicates that both categories of drug crimes are similarly and moderately clustered.
+- With a standard deviation of `3.24` and p-value of `0.006 < 0.05` at a 95% confidence level, the test result is statistically significant. We can reject the null hypothesis of a lack of spatial autocorrelation.
 - After 1000 permutations, we get a similar Moran's I observation of `0.21947`, with a p-value of `0.008`. Therefore, our result is stable and statistically significant.
 
-Like drug use, the results show that provinces with high drug trafficking in Thailand can, to a limited extent, be near one another.
+Like drug use, using Moran's I show that provinces with high drug trafficking in Thailand can, to a limited extent, be near one another.
 
 ## TH2.6 Geary's C
 
@@ -290,10 +305,10 @@ abline(v = bperm_use$statistic, col = "green4")
 From the output above:
 
 - The Geary's C statistic is approximately `0.84`, which is lower than the expected value of `1.0`. Just as a high Moran's I indicates positive spatial correlation, our Geary's C statistic, which is less than `1`, indicates likewise. Similarly to the conclusion of our Moran's I investigation, the Geary's C statistic only indicates moderate positive spatial correlation.
-- With a standard deviation of `3.24 and p-value of `0.04 < 0.05`, the test result is statistically significant. We can reject the null hypothesis of a lack of spatial autocorrelation.
-- After 1000 permutations, we get a similar Geary's C observation of `0.84412`, with a p-value of `0.072`.
+- With a standard deviation of `3.24 and p-value of `0.04 < 0.05`, the test result is statistically significant. If we were to only run the test once, we should be able to reject the null hypothesis of a lack of spatial autocorrelation.
+- However, while running 1000 permutations yielded a similar Geary's C observation of `0.84412`, this time, our p-value of `0.072` is *greater* than our threshold of `0.05` at the 95% confidence level. Had we only used Geary's C, we would not have strong statistical evidence to reject our null hypothesis.
 
-Like drug use, the results show that provinces with high drug trafficking in Thailand can, to a limited extent, be near one another.
+Hence, the Geary's C statistic on drug use cases in 2021 yielded inconclusive results.
 
 ### TH2.6.2 Geary's C on `drug_trafficking` statistics
 
@@ -307,18 +322,37 @@ bperm_tr
 hist(bperm_use$res, main = "Global Geary's C Simulation Results for drug_trafficking", xlab="Monte-Carlo Results", ylab="Frequency") 
 abline(v = bperm_tr$statistic, col = "purple4")
 ```
+When Geary's C is run on the `drug_trafficking` statistics:
 
+- The result yielded is approximately `0.74`, which is lower than the expected value of `1.0`. It is also lower than the Geary's C for the drug use data, which indicates that the clustering of drug trafficking hotspots is stronger than that for drug use.
+- With a standard deviation of `2.28` and p-value of `0.01 < 0.05` for a 95% confidence level, the test result is statistically significant. If we were to only run the test once, we should be able to reject the null hypothesis of a lack of spatial autocorrelation.
+- Now, running 1000 permutations yielded a similar Geary's C observation of `0.74184` and a p-value of `0.043` is less than our threshold of `0.05` at the 95% confidence level. Even though the p-value is uncomfortably close to the threshold, we can still conclude that our derived Geary's C for our drug trafficking data is statistically significant.
+
+Hence, the Geary's C measure on drug trafficking cases in 2021 indicates mild positive spatial autocorrelation, albeit stronger than that observed on our drug use statistics.
+
+## TH2.7 Deriving Local Measures of Spatial Autocorrelation
+
+Both Global Moran's I and Geary's C only return a surface observation on how Thailand's drug crime is distributed by province. To identify where the clusters are located, we need to use local indicators of spatial association (LISA), which indicate the extent of spatial clustering around each observation (Anselin, 1995) (Khant, 2024). 
+
+An example of a LISA is local Moran's I, which is essentially Moran's I calculated for each geographical subdivision, in this case the provinces of Thailand. However, with these localised measures, we are able to visualise our findings on a choropleth map, and move on to detect hot and cold spot areas.
+
+As before, we will derive the local Moran's I statistics for both our drug trafficking and drug use data.
+
+```{r}
+
+```
 
 ## References
 
-1. International Monetary Fund. (2024, April 16). World Economic Outlook Database, April 2024 Edition: Thailand. https://www.imf.org/en/Publications/WEO/weo-database/2024/April
-2. Khant, M. N. (2024, February 10). Take-Home Exercise 02: Spatio-Temporal Analysis of Dengue Fever Outbreak in Tainan City, Taiwan. https://is415-geospatial-with-khant.netlify.app/take-home_ex/take-home_ex02/take-home_ex02
-2. Kongjareon, Y., Samoh, N., Peerawaranun, P. et al. Pride-based violence, intoxicated sex and poly-drug use: a vocational school-based study of heterosexual and LGBT students in Bangkok. BMC Psychiatry 22, 148 (2022). https://doi.org/10.1186/s12888-022-03777-7
-3. Kanato, M., Sarasiri, R., & Leyatikul, P. (Eds.). (2022). ASEAN drug monitoring report 2021. ASEAN Narcotics Cooperation Center.
-4. Moraga, P. (2024). Spatial neighbourhood matrices. In Spatial statistics for Data Science: Theory and practice with R (pp. 83–94). CRC Press.
-5. Thailand. (n.d.). Hands-Off Cain. Retrieved 23 September 2024, from https://www.handsoffcain.info/bancadati/asia-middle-east-australia-and-oceania/thailand-17000464
-6. Tobler, W. R. (1970). A computer movie simulating urban growth in the Detroit region. Economic Geography (Supplement: Proceedings, International Geographical Union. Commission on Quantitative Methods), 46, 234-240. https://doi.org/10.2307/143141
-7. United Nations Development Programme. (2024, March 13). Human Development Report 2023/2024 (PDF). Retrieved September 23, 2024, from https://hdr.undp.org/sites/default/files/reports/3503/hdr2023-24reporten.pdf
-8. World Bank. (n.d.). Gini index. Retrieved September 23, 2024, from https://www.worldbank.org/en/topic/poverty/brief/gini-index
-9. World Bank Open Data. (n.d.). Unemployment, total (% of total labor force) (national estimate) - Thailand. Retrieved 27 September 2024, from https://data.worldbank.org/indicator/SL.UEM.TOTL.NE.ZS?end=2023&locations=TH
-10. World Drug Day report highlights spike in drug use, increased trafficking | UN News. (2024, June 26). United Nations. https://news.un.org/en/story/2024/06/1151446biggest increase from 1873kg in 2020 to 4520kg in 2021 (Kanato et al., 2022).
+1. Anselin, L. (1995). Local indicators of spatial association—LISA. Geographical Analysis, 27(2), 93–115. https://doi.org/10.1111/j.1538-4632.1995.tb00338.x
+2. International Monetary Fund. (2024, April 16). World Economic Outlook Database, April 2024 Edition: Thailand. https://www.imf.org/en/Publications/WEO/weo-database/2024/April
+3. Khant, M. N. (2024, February 10). Take-Home Exercise 02: Spatio-Temporal Analysis of Dengue Fever Outbreak in Tainan City, Taiwan. https://is415-geospatial-with-khant.netlify.app/take-home_ex/take-home_ex02/take-home_ex02
+4. Kongjareon, Y., Samoh, N., Peerawaranun, P. et al. Pride-based violence, intoxicated sex and poly-drug use: a vocational school-based study of heterosexual and LGBT students in Bangkok. BMC Psychiatry 22, 148 (2022). https://doi.org/10.1186/s12888-022-03777-7
+5. Kanato, M., Sarasiri, R., & Leyatikul, P. (Eds.). (2022). ASEAN drug monitoring report 2021. ASEAN Narcotics Cooperation Center.
+6. Moraga, P. (2024). Spatial neighbourhood matrices. In Spatial statistics for Data Science: Theory and practice with R (pp. 83–94). CRC Press.
+7. Thailand. (n.d.). Hands-Off Cain. Retrieved 23 September 2024, from https://www.handsoffcain.info/bancadati/asia-middle-east-australia-and-oceania/thailand-17000464
+8. Tobler, W. R. (1970). A computer movie simulating urban growth in the Detroit region. Economic Geography (Supplement: Proceedings, International Geographical Union. Commission on Quantitative Methods), 46, 234-240. https://doi.org/10.2307/143141
+9. United Nations Development Programme. (2024, March 13). Human Development Report 2023/2024 (PDF). Retrieved September 23, 2024, from https://hdr.undp.org/sites/default/files/reports/3503/hdr2023-24reporten.pdf
+10. World Bank. (n.d.). Gini index. Retrieved September 23, 2024, from https://www.worldbank.org/en/topic/poverty/brief/gini-index
+11. World Bank Open Data. (n.d.). Unemployment, total (% of total labor force) (national estimate) - Thailand. Retrieved 27 September 2024, from https://data.worldbank.org/indicator/SL.UEM.TOTL.NE.ZS?end=2023&locations=TH
+12. World Drug Day report highlights spike in drug use, increased trafficking | UN News. (2024, June 26). United Nations. https://news.un.org/en/story/2024/06/1151446biggest increase from 1873kg in 2020 to 4520kg in 2021 (Kanato et al., 2022).
