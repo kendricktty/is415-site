@@ -175,7 +175,7 @@ thailand_2021
 ```
 ```{r}
 use_map <- tm_shape(thailand_2021) + tm_fill("total_use_cases", n = 8, style = "quantile") + tm_borders(alpha = 0.5)
-trafficking_map <- tm_shape(thailand_2021) + tm_fill("total_trafficking_cases", n = 8, style = "equal") + tm_borders(alpha = 0.5)
+trafficking_map <- tm_shape(thailand_2021) + tm_fill("total_trafficking_cases", n = 16, style = "quantile") + tm_borders(alpha = 0.5)
 tmap_arrange(use_map, trafficking_map, asp = 1, ncol = 2)
 ```
 Considering only confirmed cases of use and trafficking (and ignoring *suspected* ones), the provinces with the highest number of drug use cases appear clustered to the northeast, around Sakon Nakhon, and north, around Chiang Mai and Chiang Rai, with pockets of high use around Pattaya and the capital Bangkok near the Gulf of Thailand, and the southern provinces including Songkhla province on the border with Kedah, Malaysia. Surprisingly, provinces such as Kanchanaburi and Sing Buri see relatively muted drug use and trafficking.
@@ -244,6 +244,38 @@ From the output above:
 - After 1000 permutations, we get a similar Moran's I observation of `0.2081`, with a p-value of `0.003`. Therefore, our result is stable and statistically significant.
 
 This shows that provinces with high drug use in Thailand can, to a limited extent, be near one another.
+
+#### TH2.5.2.2 Moran's I on `drug_trafficking` statistics
+
+```{r}
+moran.test(thailand_2021$total_trafficking_cases, listw=rswm_q_tr, zero.policy = TRUE, na.action=na.omit)
+set.seed(1234)
+bperm_tr <- moran.mc(thailand_2021$total_trafficking_cases, 
+                listw=rswm_q_tr, 
+                nsim=999, 
+                zero.policy = TRUE, 
+                na.action=na.omit)
+bperm_tr
+hist(bperm_use$res, main = "Global Moran's I Simulation Results for drug_trafficking", xlab="Monte-Carlo Results", ylab="Frequency") 
+abline(v = bperm_tr$statistic, col = "purple4")
+```
+The output for our `drug_trafficking` statistics is similar to that for our `drug_use` statistics, and can be interpreted as follows:
+
+- The Moran's I statistic is approximately `0.22`, which is significantly higher than the expected value of `-0.014`. This is a significant indicator of positive spatial autocorrelation, but only to a moderate degree.
+- With a standard deviation of `3.24 and p-value of `0.006 < 0.05`, the test result is statistically significant. We can reject the null hypothesis of a lack of spatial autocorrelation.
+- After 1000 permutations, we get a similar Moran's I observation of `0.21947`, with a p-value of `0.008`. Therefore, our result is stable and statistically significant.
+
+Like drug use, the results show that provinces with high drug trafficking in Thailand can, to a limited extent, be near one another.
+
+## TH2.6 Geary's C
+
+Geary's C is another measure of global spatial autocorrelation that describes how features differ from their immediate neighbours. When `C > 1`, the points are dispersed, and while `C < 1`, the points are clustered. A `C` value of `1` indicates observations are randomly arranged in space. Geary’s C approaches `0` when similar values are clustered, and approaches `3` when dissimilar values are clustered. Geary’s C is inversely proportional to Moran’s I, so higher Cs correspond to lower Is.
+
+Just as before, we will now perform Geary's C on both our `drug_use` and `drug_trafficking` statistics.
+
+```{r}
+
+```
 
 ## References
 
