@@ -22,7 +22,7 @@ The aim of today's study is to discover:
 
 ## TH2.2 The Drug Problem in Thailand
 
-**[Thailand](https://en.wikipedia.org/wiki/Thailand)** (2024 GDP per capita - PPP: $23,401; Gini coefficient: 35.1 - <span style="color:orange;">medium</span>; HDI: 0.083 - <span style="color:darkgreen;">very high</span>) (International Monetary Fund, 2024) (World Bank, n.d.) (United Nations Development Programme, 2024) is located in close proximity to the [Golden Triangle](https://en.wikipedia.org/wiki/Golden_Triangle_(Southeast_Asia)), which comprises the northern part of the country along with northeastern Myanmar and northern Laos. In 2021, its drug trafficking situation remained critical, with 337,186 drug cases in total. While seizures of ketamine decreased between 2020 and 2021, seizures of methamphetamine, ice and heroin increased in the same period, with heroin seeing the biggest increase from 1873kg in 2020 to 4520kg in 2021 (Kanato et al., 2022). Considering that the *COVID-19 pandemic* - which caused a global economic depression among other socio-economic effects - occurred around this time, it can be theorised that those who encountered economic hardship as a result of the pandemic might turn to drug trafficking to support themselves and their families.
+**[Thailand](https://en.wikipedia.org/wiki/Thailand)** (2024 GDP per capita - PPP: $23,401; Gini coefficient: 35.1 - <span style="color:orange;">medium</span>; HDI: 0.083 - <span style="color:darkgreen;">very high</span>) (International Monetary Fund, 2024) (World Bank, n.d.) (United Nations Development Programme, 2024) is located in close proximity to the [Golden Triangle](https://en.wikipedia.org/wiki/Golden_Triangle_(Southeast_Asia)), which comprises the northern part of the country along with northeastern Myanmar and northern Laos. In 2021, its drug trafficking situation remained critical, with 337,186 drug cases in total. While seizures of ketamine decreased between 2020 and 2021, seizures of methamphetamine, ice and heroin increased in the same period, with heroin seeing the biggest increase from 1873kg in 2020 to 4520kg in 2021 (Kanato et al., 2022). Considering that the *COVID-19 pandemic* - which caused a global economic depression among other socio-economic effects - occurred around this time, it can be theorised that those who encountered economic hardship as a result of the pandemic might turn to drug trafficking to support themselves and their families. Indeed, unemployment in Thailand rose to 1.2% in 2021 from 0.7% two years prior (World Bank Open Data, n.d.).
 
 The maximum penalty for drug trafficking in Thailand, as is neighbouring Laos, Malaysia and Singapore, is [death](https://en.wikipedia.org/wiki/Capital_punishment_for_drug_trafficking) (Thailand, n.d.). Despite this, smugglers have innovated on new routes, through the north and northern borders of the country, and even go so far as to hide shipments in cargo vessels bound for the likes of Singapore, New Zealand, Australia and South Korea. 575 smuggling cases by sea occurred in 2021, in which 4554kg of heroin, 2.4 times more than the previous year, were seized (Kanato et al., 2022).
 
@@ -168,15 +168,13 @@ ggplot(data = thailand_drug_trafficking, aes(x = fiscal_year)) +
 ```
 There was a spike in the number of drug use cases in 2021 in an otherwise variable set of data. Meanwhile, drug possession cases generally declined after 2019, though there was a slight increase in 2021.
 
-From both analysis steps, it makes sense to select the drug use cases trafficking cases in 2021 for further analysis. The year 2021 coincided with a rise in the country's unemployment rate to 1.2% from 0.7% two years prior (World Bank Open Data, n.d.), as the Thai economy was still recovering from the COVID-19 pandemic. Unemployment increases susceptibility to, among other negative effects, drug use.
+## TH2.4.3 Grouping observations by case type
 
-## TH2.4.3 Creating filtered table for 2021 observations
-
-The following code chunks create a filtered table for the *confirmed* drug use and trafficking observations that occurred in 2021, groups and summarises them by province, and plots the numbers onto the provincial map of Thailand.
+The following code chunks create a filtered table for the *confirmed* drug use and trafficking observations, groups and summarises them by province, and plots the numbers onto the provincial map of Thailand.
 
 ```{r}
 thailand_2021_drug <- thailand_drug %>%
-  filter(fiscal_year == "2021") %>%
+  filter(fiscal_year %in% c("2020", "2021")) %>%
   filter(types_of_drug_offenses %in% c("drug_use_cases", "trafficking_cases")) %>%
   group_by(province_en) %>%
   summarise(total_use_cases = sum(no_cases[types_of_drug_offenses == "drug_use_cases"]),
