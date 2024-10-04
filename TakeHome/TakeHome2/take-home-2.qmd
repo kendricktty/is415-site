@@ -21,10 +21,6 @@ The aim of today's study is to discover:
 - If the key indicators of drug abuse and trafficking in Thailand are independent from space,
 - If the indicators of drug abuse and trafficking are indeed spatially-dependent, and if so, where the clusters, outliers and hotspots are located.
 
-### TH2.1.1 Provincial map of Thailand
-
-[Map of the 77 provinces of Thailand.](https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Thailand_provinces_en.svg/1164px-Thailand_provinces_en.svg.png)
-
 ## TH2.2 The Drug Problem in Thailand
 
 **[Thailand](https://en.wikipedia.org/wiki/Thailand)** (2024 GDP per capita - PPP: $23,401; Gini coefficient: 35.1 - <span style="color:orange;">medium</span>; HDI: 0.083 - <span style="color:darkgreen;">very high</span>) (International Monetary Fund, 2024) (World Bank, n.d.) (United Nations Development Programme, 2024) is located in close proximity to the [Golden Triangle](https://en.wikipedia.org/wiki/Golden_Triangle_(Southeast_Asia)), which comprises the northern part of the country along with northeastern Myanmar and northern Laos. In 2021, its drug trafficking situation remained critical, with 337,186 drug cases in total. While seizures of ketamine decreased between 2020 and 2021, seizures of methamphetamine, ice and heroin increased in the same period, with heroin seeing the biggest increase from 1873kg in 2020 to 4520kg in 2021 (Kanato et al., 2022). Considering that the *COVID-19 pandemic* - which caused a global economic depression among other socio-economic effects - occurred around this time, it can be theorised that those who encountered economic hardship as a result of the pandemic might turn to drug trafficking to support themselves and their families.
@@ -196,14 +192,14 @@ thailand_2021
 ```{r}
 use_map <- tm_shape(thailand_2021) + tm_fill("total_use_cases", n = 8, style = "quantile") + tm_borders(alpha = 0.5)
 use_map_equal <- tm_shape(thailand_2021) + tm_fill("total_use_cases", n = 6, style = "equal") + tm_borders(alpha = 0.5)
-tmap_arrange(use_map + tm_layout(main.title = "Drug use across Thailand (quantile)", title.size = 0.05), use_map_equal + tm_layout(main.title = "Drug use across Thailand (equal)", title.size = 0.25), asp = 1, ncol = 2)
+tmap_arrange(use_map + tm_layout(main.title = "Drug use across Thailand (quantile)", main.title.size = 1.2, frame = TRUE), use_map_equal + tm_layout(main.title = "Drug use across Thailand (equal)", main.title.size = 1.2, frame = TRUE), asp = 1, ncol = 2)
 ```
 Considering only confirmed cases of use and trafficking (and ignoring *suspected* ones), the provinces with the highest number of drug use cases appear clustered to the northeast, around Sakon Nakhon, and north, around Chiang Mai and Chiang Rai. Both these general regions are either within, or in close proximity to, the Golden Triangle that also encompasses northern Laos and northeastern Myanmar. There are also pockets of high use around the capital Bangkok near the Gulf of Thailand, and the southern provinces including Songkhla province on the border with Kedah, Malaysia, and the resort island province of Phuket. Surprisingly, provinces such as Kanchanaburi and Sing Buri, which are also close to the Golden Triangle, see relatively muted drug use.
 
 ```{r}
 trafficking_map <- tm_shape(thailand_2021) + tm_fill("total_trafficking_cases", n = 8, style = "quantile") + tm_borders(alpha = 0.5)
 trafficking_map_equal <- tm_shape(thailand_2021) + tm_fill("total_trafficking_cases", n = 6, style = "equal") + tm_borders(alpha = 0.5)
-tmap_arrange(trafficking_map  + tm_layout(main.title = "Drug trafficking across Thailand (quantile)", title.size = 0.05), trafficking_map_equal  + tm_layout(main.title = "Drug trafficking across Thailand (equal)"), asp = 1, ncol = 2)
+tmap_arrange(trafficking_map  + tm_layout(main.title = "Drug trafficking across Thailand (quantile)", main.title.size = 1, frame = TRUE), trafficking_map_equal  + tm_layout(main.title = "Drug trafficking across Thailand (equal)", main.title.size = 1, frame = TRUE), asp = 1, ncol = 2)
 ```
 
 This same general region in the north-northeast also sees the highest concentration of drug *trafficking* cases throughout the country, with the eastern province of Ubon Ratchatani seeing the largest number of all. The further south within the country, the lower the concentration of drug cases, with one notable anomaly being Surat Thani Province, which contains another resort island - Koh Samui.
@@ -617,15 +613,17 @@ There are no visible cold spots for our drug trafficking data, but there is one 
 
 ## TH2.9 Emerging Hotspot Analysis
 
-Since we have spatial-temporal data, we are able to perform emerging hotspot analysis, which will help us evaluate how the hot and cold spots in both our datasets have changed over time. It combines the Getis-Ord Gi* statistic with the Man-Kendall test, which us used to assess the direction and statistical significance of a set of data values.
+Since we have spatial-temporal data, we are able to perform emerging hotspot analysis, which will help us evaluate how the hot and cold spots in both our datasets have changed over time. It combines the Getis-Ord Gi* statistic with the Man-Kendall test, which is used to assess the direction and statistical significance of a set of data values.
 
 ### TH2.9.1 Data wrangling for EHSA
 
-Taking inspiration from Matthew Ho (2024)'s example, we will perform the following checks to ensure our data meets the prerequisites:
+We need to perform the following checks to ensure our data meets the prerequisites:
 
 * The data is not collected seasonally (it was collected yearly)
 * One point per time period (each time period contains the number of drug use cases and trafficking cases only)
 * Data does not have covariates (as Ho (2024) rightly points out, while factors such as human population and unemployment rate can affect the number of drug offence cases, we have to work within our limitations in many data science tasks including this one).
+
+Our data fulfills all three requirements, so we can proceed to create a new summary table containing the total number of drug use and trafficking cases each year for each province.
 
 ```{r}
 thailand_esa_drug <- thailand_drug %>%
@@ -646,7 +644,7 @@ With our data prepared, we can create a `spacetime` object using the `spacetime(
 
 ```{r}
 thailand_drug_spt <- spacetime(thailand_esa_drug, thailand, .loc_col = "ADM1_EN", .time_col = "fiscal_year", active = "data")
-is_spacetime_cube(thailand_esa_use_spt)
+is_spacetime_cube(thailand_drug_spt)
 ```
 
 ### TH2.9.2 Performing EHSA
@@ -656,10 +654,152 @@ We can now perform EHSA analysis using `emerging_hotspot_analysis()` from the `s
 ```{r}
 thailand_ehsa_use <- emerging_hotspot_analysis(x = thailand_drug_spt, .var = "total_use_cases", k = 1, nsim = 99)
 thailand_ehsa_tr <- emerging_hotspot_analysis(x = thailand_drug_spt, .var = "total_trafficking_cases", k = 1, nsim = 99)
-
-thailand_ehsa_use <- thailand %>% left_join(thailand_ehsa_use, by = join_by(ADM1_EN == ADM1_EN))
-thailand_ehsa_tr <- thailand %>% left_join(thailand_ehsa_tr, by = join_by(ADM1_EN == ADM1_EN))
 ```
+```{r}
+thailand_ehsa_use <- thailand %>% left_join(thailand_ehsa_use, by = join_by(ADM1_EN == location))
+thailand_ehsa_tr <- thailand %>% left_join(thailand_ehsa_tr, by = join_by(ADM1_EN == location))
+```
+
+### TH2.9.3 Visualising Distribution of EHSA classes
+
+The following bar chart reveals the distribution of different EHSA classes per province for both classes of drug offence.
+
+```{r}
+ggplot(data = thailand_ehsa_use, aes(y = classification, fill = classification)) + geom_bar(show.legend = FALSE) + labs(title = "EHSA for drug_use")
+ggplot(data = thailand_ehsa_tr, aes(y = classification, fill = classification)) + geom_bar(show.legend = FALSE) + labs(title = "EHSA for drug_trafficking")
+```
+Based on the plots, thre are a total of 6 distinct hotspot and coldspot classes across both classes of drug offence. However, only the `drug_use` statistics returned at least one oscilating hotspot, which suggests periodic fluctuations in drug use statistics.
+
+Just as we discovered in the spatial autocorrelation findings from earlier, EHSA on our `drug_use` statistics returned 20 instances of sporadic coldspots - the highest among provinces where patterns were detected. However, in both instances, more than half of the provinces of Thailand did not feature any pattern.
+
+To check how the findings change when only statistically significant cases are included, we need to isolate only those EHSA classes with `p < 0.05` for a 95% confidence interval:
+
+```{r}
+thailand_ehsa_use_sig <- thailand_ehsa_use %>% filter(p_value < 0.05)
+thailand_ehsa_tr_sig <- thailand_ehsa_tr %>% filter(p_value < 0.05)
+
+ggplot(data = thailand_ehsa_use_sig, aes(y = classification, fill = classification)) + geom_bar(show.legend = FALSE) + labs(title = "EHSA for drug_use with p < 0.05")
+ggplot(data = thailand_ehsa_tr_sig, aes(y = classification, fill = classification)) + geom_bar(show.legend = FALSE) + labs(title = "EHSA for drug_trafficking with p < 0.05")
+```
+No statistically significant `drug_use` EHSA classifications were returned, while there were no new statistically significant hotspots from our `drug_trafficking` EHSA classifications.
+
+We can try a 90% confidence interval instead for our `drug_use` EHSA classifications:
+
+```{r}
+thailand_ehsa_use_sig <- thailand_ehsa_use %>% filter(p_value < 0.1)
+ggplot(data = thailand_ehsa_use_sig, aes(y = classification, fill = classification)) + geom_bar(show.legend = FALSE) + labs(title = "EHSA for drug_use with p < 0.1")
+```
+If we increased our threshold to `0.1` from `0.05`, we are able to detect 1 statistically significant oscilating hotspot.
+
+### TH2.9.4 Visualising EHSA Maps
+
+For this section, we will assume a 95% confidence interval for our `drug_trafficking` statistics, and ignore statistical significance for our `drug_use` statistics.
+
+The relevant `filter()` and `tmap` functions can be used to create maps that will help us identify the geographic distribution of hotspots and coldspots in our study area.
+
+```{r}
+thailand_ehsa_use_hot <- thailand_ehsa_use %>% filter(classification %in% c("consecutive hotspot","new hotspot","oscilating hotspot","sporadic hotspot"))
+thailand_ehsa_use_cold <- thailand_ehsa_use %>% filter(classification %in% c("consecutive coldspot","oscilating coldspot","sporadic coldspot","new coldspot"))
+
+thailand_ehsa_tr_sig_hot <- thailand_ehsa_tr_sig %>% filter(classification %in% c("consecutive hotspot","new hotspot","oscilating hotspot","sporadic hotspot"))
+thailand_ehsa_tr_sig_cold <- thailand_ehsa_tr_sig %>% filter(classification %in% c("consecutive coldspot","oscilating coldspot","sporadic coldspot","new coldspot"))
+```
+```{r}
+hot_map <- tm_shape(thailand_ehsa_use)+
+  tm_polygons()+
+  tm_borders(alpha = 0.6)+
+tm_shape(thailand_ehsa_use_hot)+
+  tm_fill("classification", 
+          palette = c("#de573e","#f67774","#f8b675","#f8d673"),
+          title = "classification",
+          midpoint = 0) +
+  tm_borders(alpha = 0.6)+
+  tm_layout(main.title = "drug_use hotspots in Thailand",
+            main.title.position = "center",
+            main.title.size = 1,
+            frame = TRUE) +
+  tm_borders(alpha = 0.5)
+
+cold_map <- tm_shape(thailand_ehsa_use)+
+  tm_polygons()+
+  tm_borders(alpha = 0.6)+
+tm_shape(thailand_ehsa_use_cold)+
+  tm_fill("classification", 
+          palette = c("#57bfc0","#b977cb","#7977f3"),
+          title = "classification",
+          midpoint = 0) +
+  tm_borders(alpha = 0.6)+
+  tm_layout(main.title = "drug_use coldspots in Thailand",
+            main.title.position = "center",
+            main.title.size = 1,
+            legend.title.size = 1.8,
+            legend.text.size = 1.3,
+            frame = TRUE) +
+  tm_borders(alpha = 0.5)
+```
+```{r}
+tmap_arrange(hot_map, cold_map, asp = 1, ncol = 2)
+```
+
+```{r}
+hot_map <- tm_shape(thailand_ehsa_tr)+
+  tm_polygons()+
+  tm_borders(alpha = 0.6)+
+tm_shape(thailand_ehsa_tr_sig_hot)+
+  tm_fill("classification", 
+          palette = c("#de573e","#f67774","#f8b675","#f8d673"),
+          title = "classification",
+          midpoint = 0) +
+  tm_borders(alpha = 0.6)+
+  tm_layout(main.title = "drug_trafficking hotspots in Thailand",
+            main.title.position = "center",
+            main.title.size = 1,
+            legend.title.size = 1.8,
+            legend.text.size = 1.3,
+            frame = TRUE) +
+  tm_borders(alpha = 0.5)
+
+cold_map <- tm_shape(thailand_ehsa_tr)+
+  tm_polygons()+
+  tm_borders(alpha = 0.6)+
+tm_shape(thailand_ehsa_tr_sig_cold)+
+  tm_fill("classification", 
+          palette = c("#57bfc0","#b977cb","#7977f3"),
+          title = "classification",
+          midpoint = 0) +
+  tm_borders(alpha = 0.6)+
+  tm_layout(main.title = "drug_trafficking coldspots in Thailand",
+            main.title.position = "center",
+            main.title.size = 1,
+            legend.title.size = 1.8,
+            legend.text.size = 1.3,
+            frame = TRUE) +
+  tm_borders(alpha = 0.5)
+```
+```{r}
+tmap_arrange(hot_map, cold_map, asp = 1, ncol = 2)
+```
+
+## TH2.10 Local Gi* and Mann-Kendall Tests
+
+Emerging hotspot analysis combines local Gi* statistics with the Mann-Kendall test.
+
+To calculate spatial-temporal local Gi*, we can use the original spacetime cube we created and the following code chunks.
+
+```{r}
+thailand_drug_nb <- thailand_drug_spt %>%
+  activate("geometry") %>%
+  mutate(nb = include_self(st_contiguity(geometry)),
+         wt = st_inverse_distance(nb, geometry,
+                                  scale = 1,
+                                  alpha = 1),
+         .before = 1) %>%
+    set_nbs("nb") %>%
+    set_wts("wt")
+head(thailand_drug_nb)
+```
+
+## TH2.11 Conclusion
 
 ## References
 
