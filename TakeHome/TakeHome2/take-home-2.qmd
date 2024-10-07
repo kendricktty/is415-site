@@ -921,19 +921,19 @@ In conclusion, given a dataset of drug offence statistics, we used the results o
 
 ## References
 
-1. Anselin, L. (1995). Local indicators of spatial association—LISA. Geographical Analysis, 27(2), 93–115. https://doi.org/10.1111/j.1538-4632.1995.tb00338.x
+1. Anselin, L. (1995). Local indicators of spatial association—LISA. Geographical Analysis, 27(2), 93–115. [https://doi.org/10.1111/j.1538-4632.1995.tb00338.x](https://doi.org/10.1111/j.1538-4632.1995.tb00338.x)
 2. Gilbert, R. O. (1987). Statistical methods for environmental pollution monitoring. Van Nostrand Reinhold.
-3. Ho, M. (2024, March 1). Take-Home Exercise 2. https://is415-gaa-matthew-ho.netlify.app/takehomeex/takehomeex2/the2
-4. International Monetary Fund. (2024, April 16). World Economic Outlook Database, April 2024 Edition: Thailand. https://www.imf.org/en/Publications/WEO/weo-database/2024/April
-5. Kam, T. S. (2022). R for Geospatial Data Science and Analytics. https://r4gdsa.netlify.app
+3. Ho, M. (2024, March 1). Take-Home Exercise 2. [https://is415-gaa-matthew-ho.netlify.app/takehomeex/takehomeex2/the2](https://is415-gaa-matthew-ho.netlify.app/takehomeex/takehomeex2/the2)
+4. International Monetary Fund. (2024, April 16). World Economic Outlook Database, April 2024 Edition: Thailand. [https://www.imf.org/en/Publications/WEO/weo-database/2024/April](https://www.imf.org/en/Publications/WEO/weo-database/2024/April)
+5. Kam, T. S. (2022). R for Geospatial Data Science and Analytics. [https://r4gdsa.netlify.app](https://r4gdsa.netlify.app)
 6. Khambhammettu, P. (2005). Mann-Kendall Analysis for the Fort Ord Site (Report No. OU-1 2004 Annual Groundwater Monitoring Report-Former Fort Ord, California). HydroGeoLogic, Inc.
-7. Khant, M. N. (2024, February 10). Take-Home Exercise 02: Spatio-Temporal Analysis of Dengue Fever Outbreak in Tainan City, Taiwan. https://is415-geospatial-with-khant.netlify.app/take-home_ex/take-home_ex02/take-home_ex02
-8. Kongjareon, Y., Samoh, N., Peerawaranun, P. et al. Pride-based violence, intoxicated sex and poly-drug use: a vocational school-based study of heterosexual and LGBT students in Bangkok. BMC Psychiatry 22, 148 (2022). https://doi.org/10.1186/s12888-022-03777-7
+7. Khant, M. N. (2024, February 10). Take-Home Exercise 02: Spatio-Temporal Analysis of Dengue Fever Outbreak in Tainan City, Taiwan. [https://is415-geospatial-with-khant.netlify.app/take-home_ex/take-home_ex02/take-home_ex02](https://is415-geospatial-with-khant.netlify.app/take-home_ex/take-home_ex02/take-home_ex02)
+8. Kongjareon, Y., Samoh, N., Peerawaranun, P. et al. Pride-based violence, intoxicated sex and poly-drug use: a vocational school-based study of heterosexual and LGBT students in Bangkok. BMC Psychiatry 22, 148 (2022). [https://doi.org/10.1186/s12888-022-03777-7](https://doi.org/10.1186/s12888-022-03777-7)
 9. Kanato, M., Sarasiri, R., & Leyatikul, P. (Eds.). (2022). ASEAN drug monitoring report 2021. ASEAN Narcotics Cooperation Center.
 10. Moraga, P. (2024). Spatial neighbourhood matrices. In Spatial statistics for Data Science: Theory and practice with R (pp. 83–94). CRC Press.
-11. Thailand. (n.d.). Hands-Off Cain. Retrieved 23 September 2024, from https://www.handsoffcain.info/bancadati/asia-middle-east-australia-and-oceania/thailand-17000464
-12. Tobler, W. R. (1970). A computer movie simulating urban growth in the Detroit region. Economic Geography (Supplement: Proceedings, International Geographical Union. Commission on Quantitative Methods), 46, 234-240. https://doi.org/10.2307/143141
-13. United Nations Development Programme. (2024, March 13). Human Development Report 2023/2024 (PDF). Retrieved September 23, 2024, from https://hdr.undp.org/sites/default/files/reports/3503/hdr2023-24reporten.pdf
-14. World Bank. (n.d.). Gini index. Retrieved September 23, 2024, from https://www.worldbank.org/en/topic/poverty/brief/gini-index
-15. World Bank Open Data. (n.d.). Unemployment, total (% of total labor force) (national estimate) - Thailand. Retrieved 27 September 2024, from https://data.worldbank.org/indicator/SL.UEM.TOTL.NE.ZS?end=2023&locations=TH
-16. World Drug Day report highlights spike in drug use, increased trafficking | UN News. (2024, June 26). United Nations. https://news.un.org/en/story/2024/06/1151446biggest increase from 1873kg in 2020 to 4520kg in 2021 (Kanato et al., 2022).
+11. Thailand. (n.d.). Hands-Off Cain. Retrieved 23 September 2024, from [https://www.handsoffcain.info/bancadati/asia-middle-east-australia-and-oceania/thailand-17000464](https://www.handsoffcain.info/bancadati/asia-middle-east-australia-and-oceania/thailand-17000464)
+12. Tobler, W. R. (1970). A computer movie simulating urban growth in the Detroit region. Economic Geography (Supplement: Proceedings, International Geographical Union. Commission on Quantitative Methods), 46, 234-240. [https://doi.org/10.2307/143141](https://doi.org/10.2307/143141)
+13. United Nations Development Programme. (2024, March 13). Human Development Report 2023/2024 (PDF). Retrieved September 23, 2024, from [https://hdr.undp.org/sites/default/files/reports/3503/hdr2023-24reporten.pdf](https://hdr.undp.org/sites/default/files/reports/3503/hdr2023-24reporten.pdf)
+14. World Bank. (n.d.). Gini index. Retrieved September 23, 2024, from [https://www.worldbank.org/en/topic/poverty/brief/gini-index](https://www.worldbank.org/en/topic/poverty/brief/gini-index)
+15. World Bank Open Data. (n.d.). Unemployment, total (% of total labor force) (national estimate) - Thailand. Retrieved 27 September 2024, from [https://data.worldbank.org/indicator/SL.UEM.TOTL.NE.ZS?end=2023&locations=TH](https://data.worldbank.org/indicator/SL.UEM.TOTL.NE.ZS?end=2023&locations=TH)
+16. World Drug Day report highlights spike in drug use, increased trafficking | UN News. (2024, June 26). United Nations. [https://news.un.org/en/story/2024/06/1151446](https://news.un.org/en/story/2024/06/1151446)
