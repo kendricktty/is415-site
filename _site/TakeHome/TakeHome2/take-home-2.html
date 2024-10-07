@@ -250,7 +250,10 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#th2.1-setting-the-scene" id="toc-th2.1-setting-the-scene" class="nav-link active" data-scroll-target="#th2.1-setting-the-scene">TH2.1 Setting the Scene</a></li>
+  <li><a href="#th2.1-setting-the-scene" id="toc-th2.1-setting-the-scene" class="nav-link active" data-scroll-target="#th2.1-setting-the-scene">TH2.1 Setting the Scene</a>
+  <ul class="collapse">
+  <li><a href="#th2.1.1-map-of-thailands-provinces" id="toc-th2.1.1-map-of-thailands-provinces" class="nav-link" data-scroll-target="#th2.1.1-map-of-thailands-provinces">TH2.1.1 Map of Thailand’s Provinces</a></li>
+  </ul></li>
   <li><a href="#th2.2-the-drug-problem-in-thailand" id="toc-th2.2-the-drug-problem-in-thailand" class="nav-link" data-scroll-target="#th2.2-the-drug-problem-in-thailand">TH2.2 The Drug Problem in Thailand</a></li>
   <li><a href="#th2.3-importing-data-and-r-packages" id="toc-th2.3-importing-data-and-r-packages" class="nav-link" data-scroll-target="#th2.3-importing-data-and-r-packages">TH2.3 Importing data and R packages</a>
   <ul class="collapse">
@@ -265,38 +268,47 @@ window.Quarto = {
   <li><a href="#th2.5-deriving-global-measures-of-spatial-autocorrelation" id="toc-th2.5-deriving-global-measures-of-spatial-autocorrelation" class="nav-link" data-scroll-target="#th2.5-deriving-global-measures-of-spatial-autocorrelation">TH2.5 Deriving Global Measures of Spatial Autocorrelation</a>
   <ul class="collapse">
   <li><a href="#th2.5.1-data-preparation---spatial-weights" id="toc-th2.5.1-data-preparation---spatial-weights" class="nav-link" data-scroll-target="#th2.5.1-data-preparation---spatial-weights">TH2.5.1 Data Preparation - Spatial Weights</a></li>
-  <li><a href="#th2.5.2-morans-i" id="toc-th2.5.2-morans-i" class="nav-link" data-scroll-target="#th2.5.2-morans-i">TH2.5.2 Moran’s I</a></li>
   </ul></li>
-  <li><a href="#th2.6-gearys-c" id="toc-th2.6-gearys-c" class="nav-link" data-scroll-target="#th2.6-gearys-c">TH2.6 Geary’s C</a>
+  <li><a href="#th2.6-morans-i" id="toc-th2.6-morans-i" class="nav-link" data-scroll-target="#th2.6-morans-i">TH2.6 Moran’s <span class="math inline">\(I\)</span></a>
   <ul class="collapse">
-  <li><a href="#th2.6.1-gearys-c-on-drug_use-statistics" id="toc-th2.6.1-gearys-c-on-drug_use-statistics" class="nav-link" data-scroll-target="#th2.6.1-gearys-c-on-drug_use-statistics">TH2.6.1 Geary’s C on <code>drug_use</code> statistics</a></li>
-  <li><a href="#th2.6.2-gearys-c-on-drug_trafficking-statistics" id="toc-th2.6.2-gearys-c-on-drug_trafficking-statistics" class="nav-link" data-scroll-target="#th2.6.2-gearys-c-on-drug_trafficking-statistics">TH2.6.2 Geary’s C on <code>drug_trafficking</code> statistics</a></li>
+  <li><a href="#th2.6.1-morans-i-on-drug_use-statistics" id="toc-th2.6.1-morans-i-on-drug_use-statistics" class="nav-link" data-scroll-target="#th2.6.1-morans-i-on-drug_use-statistics">TH2.6.1 Moran’s <span class="math inline">\(I\)</span> on <code>drug_use</code> statistics</a></li>
+  <li><a href="#th2.6.2-morans-i-on-drug_trafficking-statistics" id="toc-th2.6.2-morans-i-on-drug_trafficking-statistics" class="nav-link" data-scroll-target="#th2.6.2-morans-i-on-drug_trafficking-statistics">TH2.6.2 Moran’s <span class="math inline">\(I\)</span> on <code>drug_trafficking</code> statistics</a></li>
   </ul></li>
-  <li><a href="#th2.7-deriving-local-measures-of-spatial-autocorrelation" id="toc-th2.7-deriving-local-measures-of-spatial-autocorrelation" class="nav-link" data-scroll-target="#th2.7-deriving-local-measures-of-spatial-autocorrelation">TH2.7 Deriving Local Measures of Spatial Autocorrelation</a>
+  <li><a href="#th2.7-gearys-c" id="toc-th2.7-gearys-c" class="nav-link" data-scroll-target="#th2.7-gearys-c">TH2.7 Geary’s <span class="math inline">\(C\)</span></a>
   <ul class="collapse">
-  <li><a href="#th2.7.1-mapping-local-morans-i-statistics-for-drug_use-cases" id="toc-th2.7.1-mapping-local-morans-i-statistics-for-drug_use-cases" class="nav-link" data-scroll-target="#th2.7.1-mapping-local-morans-i-statistics-for-drug_use-cases">TH2.7.1 Mapping Local Moran’s I statistics for <code>drug_use</code> cases</a></li>
-  <li><a href="#th2.7.2-mapping-local-morans-i-statistics-for-drug_trafficking-cases" id="toc-th2.7.2-mapping-local-morans-i-statistics-for-drug_trafficking-cases" class="nav-link" data-scroll-target="#th2.7.2-mapping-local-morans-i-statistics-for-drug_trafficking-cases">TH2.7.2 Mapping Local Moran’s I statistics for <code>drug_trafficking</code> cases</a></li>
-  <li><a href="#th2.7.3-performing-local-morans-i-monte-carlo-test-for-drug_use-cases" id="toc-th2.7.3-performing-local-morans-i-monte-carlo-test-for-drug_use-cases" class="nav-link" data-scroll-target="#th2.7.3-performing-local-morans-i-monte-carlo-test-for-drug_use-cases">TH2.7.3 Performing Local Moran’s I Monte Carlo test for <code>drug_use</code> cases</a></li>
-  <li><a href="#th2.7.4-performing-local-morans-i-monte-carlo-test-for-drug_trafficking-cases" id="toc-th2.7.4-performing-local-morans-i-monte-carlo-test-for-drug_trafficking-cases" class="nav-link" data-scroll-target="#th2.7.4-performing-local-morans-i-monte-carlo-test-for-drug_trafficking-cases">TH2.7.4 Performing Local Moran’s I Monte Carlo test for <code>drug_trafficking</code> cases</a></li>
+  <li><a href="#th2.7.1-gearys-c-on-drug_use-statistics" id="toc-th2.7.1-gearys-c-on-drug_use-statistics" class="nav-link" data-scroll-target="#th2.7.1-gearys-c-on-drug_use-statistics">TH2.7.1 Geary’s <span class="math inline">\(C\)</span> on <code>drug_use</code> statistics</a></li>
+  <li><a href="#th2.7.2-gearys-c-on-drug_trafficking-statistics" id="toc-th2.7.2-gearys-c-on-drug_trafficking-statistics" class="nav-link" data-scroll-target="#th2.7.2-gearys-c-on-drug_trafficking-statistics">TH2.7.2 Geary’s <span class="math inline">\(C\)</span> on <code>drug_trafficking</code> statistics</a></li>
   </ul></li>
-  <li><a href="#th2.7.5-drawing-local-morans-i-scatterplots" id="toc-th2.7.5-drawing-local-morans-i-scatterplots" class="nav-link" data-scroll-target="#th2.7.5-drawing-local-morans-i-scatterplots">TH2.7.5 Drawing local Moran’s I scatterplots</a>
+  <li><a href="#th2.8-deriving-local-measures-of-spatial-autocorrelation" id="toc-th2.8-deriving-local-measures-of-spatial-autocorrelation" class="nav-link" data-scroll-target="#th2.8-deriving-local-measures-of-spatial-autocorrelation">TH2.8 Deriving Local Measures of Spatial Autocorrelation</a>
   <ul class="collapse">
-  <li><a href="#th2.7.6-creating-lisa-cluster-map" id="toc-th2.7.6-creating-lisa-cluster-map" class="nav-link" data-scroll-target="#th2.7.6-creating-lisa-cluster-map">TH2.7.6 Creating LISA cluster map</a></li>
+  <li><a href="#th2.8.1-mapping-local-morans-i-statistics-for-drug_use-cases" id="toc-th2.8.1-mapping-local-morans-i-statistics-for-drug_use-cases" class="nav-link" data-scroll-target="#th2.8.1-mapping-local-morans-i-statistics-for-drug_use-cases">TH2.8.1 Mapping Local Moran’s I statistics for <code>drug_use</code> cases</a></li>
+  <li><a href="#th2.8.2-mapping-local-morans-i-statistics-for-drug_trafficking-cases" id="toc-th2.8.2-mapping-local-morans-i-statistics-for-drug_trafficking-cases" class="nav-link" data-scroll-target="#th2.8.2-mapping-local-morans-i-statistics-for-drug_trafficking-cases">TH2.8.2 Mapping Local Moran’s I statistics for <code>drug_trafficking</code> cases</a></li>
+  <li><a href="#th2.8.3-performing-local-morans-i-monte-carlo-test-for-drug_use-cases" id="toc-th2.8.3-performing-local-morans-i-monte-carlo-test-for-drug_use-cases" class="nav-link" data-scroll-target="#th2.8.3-performing-local-morans-i-monte-carlo-test-for-drug_use-cases">TH2.8.3 Performing Local Moran’s I Monte Carlo test for <code>drug_use</code> cases</a></li>
+  <li><a href="#th2.8.4-performing-local-morans-i-monte-carlo-test-for-drug_trafficking-cases" id="toc-th2.8.4-performing-local-morans-i-monte-carlo-test-for-drug_trafficking-cases" class="nav-link" data-scroll-target="#th2.8.4-performing-local-morans-i-monte-carlo-test-for-drug_trafficking-cases">TH2.8.4 Performing Local Moran’s I Monte Carlo test for <code>drug_trafficking</code> cases</a></li>
   </ul></li>
-  <li><a href="#th2.8-using-local-gi-statistics-to-perform-hot-and-cold-spot-analysis" id="toc-th2.8-using-local-gi-statistics-to-perform-hot-and-cold-spot-analysis" class="nav-link" data-scroll-target="#th2.8-using-local-gi-statistics-to-perform-hot-and-cold-spot-analysis">TH2.8 Using Local Gi* statistics to perform hot and cold spot analysis</a>
+  <li><a href="#th2.8.5-drawing-local-morans-i-scatterplots" id="toc-th2.8.5-drawing-local-morans-i-scatterplots" class="nav-link" data-scroll-target="#th2.8.5-drawing-local-morans-i-scatterplots">TH2.8.5 Drawing local Moran’s I scatterplots</a>
   <ul class="collapse">
-  <li><a href="#th2.8.1-drug_use-dataset" id="toc-th2.8.1-drug_use-dataset" class="nav-link" data-scroll-target="#th2.8.1-drug_use-dataset">TH2.8.1 <code>drug_use</code> dataset</a></li>
-  <li><a href="#th2.8.2-drug_trafficking-dataset" id="toc-th2.8.2-drug_trafficking-dataset" class="nav-link" data-scroll-target="#th2.8.2-drug_trafficking-dataset">TH2.8.2 <code>drug_trafficking</code> dataset</a></li>
+  <li><a href="#th2.8.6-creating-lisa-cluster-map" id="toc-th2.8.6-creating-lisa-cluster-map" class="nav-link" data-scroll-target="#th2.8.6-creating-lisa-cluster-map">TH2.8.6 Creating LISA cluster map</a></li>
   </ul></li>
-  <li><a href="#th2.9-emerging-hotspot-analysis" id="toc-th2.9-emerging-hotspot-analysis" class="nav-link" data-scroll-target="#th2.9-emerging-hotspot-analysis">TH2.9 Emerging Hotspot Analysis</a>
+  <li><a href="#th2.9-using-local-g_i-statistics-to-perform-hot-and-cold-spot-analysis" id="toc-th2.9-using-local-g_i-statistics-to-perform-hot-and-cold-spot-analysis" class="nav-link" data-scroll-target="#th2.9-using-local-g_i-statistics-to-perform-hot-and-cold-spot-analysis">TH2.9 Using Local <span class="math inline">\(G_i^*\)</span> statistics to perform hot and cold spot analysis</a>
   <ul class="collapse">
-  <li><a href="#th2.9.1-data-wrangling-for-ehsa" id="toc-th2.9.1-data-wrangling-for-ehsa" class="nav-link" data-scroll-target="#th2.9.1-data-wrangling-for-ehsa">TH2.9.1 Data wrangling for EHSA</a></li>
-  <li><a href="#th2.9.2-performing-ehsa" id="toc-th2.9.2-performing-ehsa" class="nav-link" data-scroll-target="#th2.9.2-performing-ehsa">TH2.9.2 Performing EHSA</a></li>
-  <li><a href="#th2.9.3-visualising-distribution-of-ehsa-classes" id="toc-th2.9.3-visualising-distribution-of-ehsa-classes" class="nav-link" data-scroll-target="#th2.9.3-visualising-distribution-of-ehsa-classes">TH2.9.3 Visualising Distribution of EHSA classes</a></li>
-  <li><a href="#th2.9.4-visualising-ehsa-maps" id="toc-th2.9.4-visualising-ehsa-maps" class="nav-link" data-scroll-target="#th2.9.4-visualising-ehsa-maps">TH2.9.4 Visualising EHSA Maps</a></li>
+  <li><a href="#th2.9.1-drug_use-dataset" id="toc-th2.9.1-drug_use-dataset" class="nav-link" data-scroll-target="#th2.9.1-drug_use-dataset">TH2.9.1 <code>drug_use</code> dataset</a></li>
+  <li><a href="#th2.9.2-drug_trafficking-dataset" id="toc-th2.9.2-drug_trafficking-dataset" class="nav-link" data-scroll-target="#th2.9.2-drug_trafficking-dataset">TH2.9.2 <code>drug_trafficking</code> dataset</a></li>
   </ul></li>
-  <li><a href="#th2.10-local-gi-and-mann-kendall-tests" id="toc-th2.10-local-gi-and-mann-kendall-tests" class="nav-link" data-scroll-target="#th2.10-local-gi-and-mann-kendall-tests">TH2.10 Local Gi* and Mann-Kendall Tests</a></li>
-  <li><a href="#th2.11-conclusion" id="toc-th2.11-conclusion" class="nav-link" data-scroll-target="#th2.11-conclusion">TH2.11 Conclusion</a></li>
+  <li><a href="#th2.10-emerging-hotspot-analysis" id="toc-th2.10-emerging-hotspot-analysis" class="nav-link" data-scroll-target="#th2.10-emerging-hotspot-analysis">TH2.10 Emerging Hotspot Analysis</a>
+  <ul class="collapse">
+  <li><a href="#th2.10.1-data-wrangling-for-ehsa" id="toc-th2.10.1-data-wrangling-for-ehsa" class="nav-link" data-scroll-target="#th2.10.1-data-wrangling-for-ehsa">TH2.10.1 Data wrangling for EHSA</a></li>
+  <li><a href="#th2.10.2-performing-ehsa" id="toc-th2.10.2-performing-ehsa" class="nav-link" data-scroll-target="#th2.10.2-performing-ehsa">TH2.10.2 Performing EHSA</a></li>
+  <li><a href="#th2.10.3-visualising-distribution-of-ehsa-classes" id="toc-th2.10.3-visualising-distribution-of-ehsa-classes" class="nav-link" data-scroll-target="#th2.10.3-visualising-distribution-of-ehsa-classes">TH2.10.3 Visualising Distribution of EHSA classes</a></li>
+  <li><a href="#th2.10.4-visualising-ehsa-maps" id="toc-th2.10.4-visualising-ehsa-maps" class="nav-link" data-scroll-target="#th2.10.4-visualising-ehsa-maps">TH2.10.4 Visualising EHSA Maps</a></li>
+  </ul></li>
+  <li><a href="#th2.11-local-g_i-and-mann-kendall-tests" id="toc-th2.11-local-g_i-and-mann-kendall-tests" class="nav-link" data-scroll-target="#th2.11-local-g_i-and-mann-kendall-tests">TH2.11 Local <span class="math inline">\(G_i^*\)</span> and Mann-Kendall Tests</a>
+  <ul class="collapse">
+  <li><a href="#th2.11.1-calculating-local-g_i-statistics" id="toc-th2.11.1-calculating-local-g_i-statistics" class="nav-link" data-scroll-target="#th2.11.1-calculating-local-g_i-statistics">TH2.11.1 Calculating Local <span class="math inline">\(G_i^*\)</span> Statistics</a></li>
+  <li><a href="#th2.11.2-extracting-local-g_i-in-hot-and-cold-spots" id="toc-th2.11.2-extracting-local-g_i-in-hot-and-cold-spots" class="nav-link" data-scroll-target="#th2.11.2-extracting-local-g_i-in-hot-and-cold-spots">TH2.11.2 Extracting local <span class="math inline">\(G_i^*\)</span> in hot and cold spots</a></li>
+  <li><a href="#th2.11.3-plotting-g_i-values-and-conducting-mann-kendall-trend-test" id="toc-th2.11.3-plotting-g_i-values-and-conducting-mann-kendall-trend-test" class="nav-link" data-scroll-target="#th2.11.3-plotting-g_i-values-and-conducting-mann-kendall-trend-test">TH2.11.3 Plotting <span class="math inline">\(G_i^*\)</span> values and conducting Mann-Kendall trend test</a></li>
+  </ul></li>
+  <li><a href="#th2.12-conclusion-limitations-and-extensibility" id="toc-th2.12-conclusion-limitations-and-extensibility" class="nav-link" data-scroll-target="#th2.12-conclusion-limitations-and-extensibility">TH2.12 Conclusion, Limitations and Extensibility</a></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
 </nav>
@@ -331,7 +343,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">October 4, 2024</p>
+      <p class="date-modified">October 7, 2024</p>
     </div>
   </div>
     
@@ -347,14 +359,19 @@ window.Quarto = {
 <p>Drug abuse brings with it significant negative health, financial and social consequences. Yet, illicit drug consumption remains highly prevalent and continues to be a growing problem worldwide. The UNODC has reported an increase in the number of people using illicit drugs to 292 million people worldwide in the decade leading up to 2022. Of these, 228 million people consumed cannabis, 60 million people consumed opiods, 30 million used amphetamines, 23 million used cocaine and 20 million took ecstasy. Further, they found an <strong>increase in overdose deaths following the emergence of nitazenes</strong>, which is a group of synthetic opioids potentially more dangerous than fentanyl – in several high-income countries. (World Drug Day Report Highlights Spike in Drug Use, Increased Trafficking | UN News, 2024).</p>
 <p>The aim of today’s study is to discover:</p>
 <ul>
-<li>How the trend of drug offences in Thailand varied over the past 6 years,</li>
+<li>How the trend of drug offences in Thailand has varied over the past 6 years,</li>
 <li>If the key indicators of drug abuse and trafficking in Thailand are independent from space,</li>
-<li>If the indicators of drug abuse and trafficking are indeed spatially-dependent, and if so, where the clusters, outliers and hotspots are located.</li>
+<li>If the indicators of drug abuse and trafficking are indeed spatially-dependent, and if so, where the clusters, outliers and hotspots are located,</li>
+<li>How these indicators have varied over the past 6 years, by means of emerging hot spot analysis.</li>
 </ul>
+<section id="th2.1.1-map-of-thailands-provinces" class="level3">
+<h3 class="anchored" data-anchor-id="th2.1.1-map-of-thailands-provinces">TH2.1.1 Map of Thailand’s Provinces</h3>
+<p>A map of Thailand’s provinces can be accessed <a href="https://en.wikipedia.org/wiki/Provinces_of_Thailand#The_76_provinces_in_Thailand">here</a>.</p>
+</section>
 </section>
 <section id="th2.2-the-drug-problem-in-thailand" class="level2">
 <h2 class="anchored" data-anchor-id="th2.2-the-drug-problem-in-thailand">TH2.2 The Drug Problem in Thailand</h2>
-<p><strong><a href="https://en.wikipedia.org/wiki/Thailand">Thailand</a></strong> (2024 GDP per capita - PPP: $23,401; Gini coefficient: 35.1 - <span style="color:orange;">medium</span>; HDI: 0.083 - <span style="color:darkgreen;">very high</span>) (International Monetary Fund, 2024) (World Bank, n.d.) (United Nations Development Programme, 2024) is located in close proximity to the <a href="https://en.wikipedia.org/wiki/Golden_Triangle_(Southeast_Asia)">Golden Triangle</a>, which comprises the northern part of the country along with northeastern Myanmar and northern Laos. In 2021, its drug trafficking situation remained critical, with 337,186 drug cases in total. While seizures of ketamine decreased between 2020 and 2021, seizures of methamphetamine, ice and heroin increased in the same period, with heroin seeing the biggest increase from 1873kg in 2020 to 4520kg in 2021 (Kanato et al., 2022). Considering that the <em>COVID-19 pandemic</em> - which caused a global economic depression among other socio-economic effects - occurred around this time, it can be theorised that those who encountered economic hardship as a result of the pandemic might turn to drug trafficking to support themselves and their families.</p>
+<p><a href="https://en.wikipedia.org/wiki/Thailand"><strong>Thailand</strong></a> (2024 GDP per capita - PPP: $23,401; Gini coefficient: 35.1 - <span style="color:orange;">medium</span>; HDI: 0.083 - <span style="color:darkgreen;">very high</span>) (International Monetary Fund, 2024) (World Bank, n.d.) (United Nations Development Programme, 2024) is located in close proximity to the <a href="https://en.wikipedia.org/wiki/Golden_Triangle_(Southeast_Asia)">Golden Triangle</a>, which comprises the northern part of the country along with northeastern Myanmar and northern Laos. In 2021, its drug trafficking situation remained critical, with 337,186 drug cases in total. While seizures of ketamine decreased between 2020 and 2021, seizures of methamphetamine, ice and heroin increased in the same period, with heroin seeing the biggest increase from 1873kg in 2020 to 4520kg in 2021 (Kanato et al., 2022). Considering that the <em>COVID-19 pandemic</em> - which caused a global economic depression among other socio-economic effects - occurred around this time, it can be theorised that those who encountered economic hardship as a result of the pandemic might turn to drug trafficking to support themselves and their families.</p>
 <p>The maximum penalty for drug trafficking in Thailand, as is neighbouring Laos, Malaysia and Singapore, is <a href="https://en.wikipedia.org/wiki/Capital_punishment_for_drug_trafficking">death</a> (Thailand, n.d.). Despite this, smugglers have innovated on new routes through the northern and northeastern borders of the country, and even go so far as to hide shipments in cargo vessels bound for the likes of Singapore, New Zealand, Australia and South Korea. 575 smuggling cases by sea occurred in 2021, in which 4554kg of heroin, 2.4 times more than the previous year, were seized (Kanato et al., 2022).</p>
 <p>Drug <em>use</em> in the country is as problematic. In 2018, 39% of Thais aged between 15 and 24 were involved in illicit drugs. Of youth aged between 15 and 19, there are 300000 who need treatment, and a significant majority attend vocational schools (as opposed to grade schools). Kongjareon et al.&nbsp;(2022) found in a study of 638 students in four vocational schools, that 11.3% reported poly-drug use. Among LGBT students this figure was 20.2%, and among hetrosexual students 9.8%. Factors contributing to the former’s use of drugs include, among other things, counselling needs, intoxicated sex and GPA.</p>
 </section>
@@ -618,7 +635,7 @@ dbl (2): fiscal_year, no_cases
 </div>
 </div>
 <p>There was a spike in the number of drug use cases in 2021 in an otherwise variable set of data. Meanwhile, drug possession cases generally declined after 2019, though there was a slight increase in 2021.</p>
-<p>From both analysis steps, it makes sense to select the drug use cases trafficking cases in 2021 for further analysis. The year 2021 coincided with a rise in the country’s unemployment rate to 1.2% from 0.7% two years prior (World Bank Open Data, n.d.), as the Thai economy was still recovering from the COVID-19 pandemic. Unemployment increases susceptibility to, among other negative effects, drug use.</p>
+<p>From both analysis steps, it makes sense to select the drug use and trafficking cases in 2021 for further analysis. The year 2021 coincided with a rise in the country’s unemployment rate to 1.2% from 0.7% two years prior (World Bank Open Data, n.d.), as the Thai economy was still recovering from the COVID-19 pandemic. Unemployment increases susceptibility to, among other negative effects, drug use.</p>
 </section>
 </section>
 <section id="th2.4.3-creating-filtered-table-for-2021-observations" class="level2">
@@ -717,7 +734,7 @@ First 10 features:
 </div>
 </div>
 </div>
-<p>Considering only confirmed cases of use and trafficking (and ignoring <em>suspected</em> ones), the provinces with the highest number of drug use cases appear clustered to the northeast, around Sakon Nakhon, and north, around Chiang Mai and Chiang Rai. Both these general regions are either within, or in close proximity to, the Golden Triangle that also encompasses northern Laos and northeastern Myanmar. There are also pockets of high use around the capital Bangkok near the Gulf of Thailand, and the southern provinces including Songkhla province on the border with Kedah, Malaysia, and the resort island province of Phuket. Surprisingly, provinces such as Kanchanaburi and Sing Buri, which are also close to the Golden Triangle, see relatively muted drug use.</p>
+<p>Considering only confirmed cases of drug use and drug trafficking (and ignoring <em>suspected</em> ones), the provinces with the highest number of drug use cases appear clustered to the northeast, around Sakon Nakhon, and north, around Chiang Mai and Chiang Rai. Both these general regions are either within, or in close proximity to, the Golden Triangle that also encompasses northern Laos and northeastern Myanmar. There are also pockets of high use around the capital Bangkok near the Gulf of Thailand, and the southern provinces including Songkhla province on the border with Kedah, Malaysia, and the resort island province of Phuket. Surprisingly, provinces such as Kanchanaburi and Sing Buri, which are also close to the Golden Triangle, see relatively muted drug use.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>trafficking_map <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(thailand_2021) <span class="sc">+</span> <span class="fu">tm_fill</span>(<span class="st">"total_trafficking_cases"</span>, <span class="at">n =</span> <span class="dv">8</span>, <span class="at">style =</span> <span class="st">"quantile"</span>) <span class="sc">+</span> <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>)</span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>trafficking_map_equal <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(thailand_2021) <span class="sc">+</span> <span class="fu">tm_fill</span>(<span class="st">"total_trafficking_cases"</span>, <span class="at">n =</span> <span class="dv">6</span>, <span class="at">style =</span> <span class="st">"equal"</span>) <span class="sc">+</span> <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>)</span>
@@ -841,20 +858,25 @@ W 76 5776 76 36.26113 315.652</code></pre>
 </div>
 <p>We will also define our null and alternative hypotheses as such:</p>
 <ul>
-<li>**Null Hypotheses <span class="math inline">\(H_0_\)</span>: the tests indicate no spatial autocorrelation:
+<li><strong>Null Hypotheses</strong> <span class="math inline">\(H_0\)</span>:
 <ul>
-<li>For <em>Moran’s I</em>: <span class="math inline">\(H_0_: I = E[I] = 0\)</span>, and;</li>
-<li>For <em>Geary’s C</em>:</li>
+<li>For <em>Moran’s I</em>: <span class="math inline">\(H_0\)</span>: <span class="math inline">\(I = E[I] = 0\)</span>; indicates no spatial autocorrelation, or;</li>
+<li>For <em>Geary’s C</em>: <span class="math inline">\(H_0\)</span>: <span class="math inline">\(C = E[C] = 1\)</span></li>
 </ul></li>
-<li>**Alternative Hypotheses</li>
+<li><strong>Alternative Hypotheses</strong> : the tests indicate the presence of spatial autocorrelation:
+<ul>
+<li>For <em>Moran’s I</em>: <span class="math inline">\(H_1\)</span>: <span class="math inline">\(-1 ≤ I &lt; E[I] \land E[I] &lt; I ≤ 1\)</span>, and;</li>
+<li>For <em>Geary’s C</em>: <span class="math inline">\(H_1\)</span> <span class="math inline">\(0 ≤ C &lt; E[C] \land E[C] &lt; C ≤ 3\)</span></li>
+</ul></li>
 </ul>
 </section>
-<section id="th2.5.2-morans-i" class="level3">
-<h3 class="anchored" data-anchor-id="th2.5.2-morans-i">TH2.5.2 Moran’s I</h3>
-<p>With our matrices constructed, we can calculate our global spatial correlation statistics. Moran’s I describes how features differ from the values in the study area as a whole. It approaches 1 when similar values are clustered, and approaches -1 when dissimilar values tend to cluster.</p>
-<p>The code chunk below computes Moran’s I on our <em>drug use</em> dataset, subsequently performing a Monte Carlo test and plotting the result in a histogram. We can use the histogram to visualise the permutation results and compare them to the expected value under null hypothesis.</p>
-<section id="th2.5.2.1-morans-i-on-drug_use-statistics" class="level4">
-<h4 class="anchored" data-anchor-id="th2.5.2.1-morans-i-on-drug_use-statistics">TH2.5.2.1 Moran’s I on <code>drug_use</code> statistics</h4>
+</section>
+<section id="th2.6-morans-i" class="level2">
+<h2 class="anchored" data-anchor-id="th2.6-morans-i">TH2.6 Moran’s <span class="math inline">\(I\)</span></h2>
+<p>With our matrices constructed, we can calculate our global spatial correlation statistics. Moran’s <span class="math inline">\(I\)</span> describes how features differ from the values in the study area as a whole. It approaches <span class="math inline">\(1\)</span> when similar values are clustered, and approaches <span class="math inline">\(-1\)</span> when dissimilar values tend to cluster.</p>
+<p>The code chunk below computes Moran’s <span class="math inline">\(I\)</span> on our <em>drug use</em> dataset, subsequently performing a Monte Carlo test and plotting the result in a histogram. We can use the histogram to visualise the permutation results and compare them to the expected value under null hypothesis.</p>
+<section id="th2.6.1-morans-i-on-drug_use-statistics" class="level3">
+<h3 class="anchored" data-anchor-id="th2.6.1-morans-i-on-drug_use-statistics">TH2.6.1 Moran’s <span class="math inline">\(I\)</span> on <code>drug_use</code> statistics</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">moran.test</span>(thailand_2021<span class="sc">$</span>total_use_cases, <span class="at">listw=</span>rswm_q_use, <span class="at">zero.policy =</span> <span class="cn">TRUE</span>, <span class="at">na.action=</span>na.omit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -907,8 +929,8 @@ alternative hypothesis: greater</code></pre>
 </ul>
 <p>This shows that provinces with high drug use in Thailand can, to a limited extent, be near one another.</p>
 </section>
-<section id="th2.5.2.2-morans-i-on-drug_trafficking-statistics" class="level4">
-<h4 class="anchored" data-anchor-id="th2.5.2.2-morans-i-on-drug_trafficking-statistics">TH2.5.2.2 Moran’s I on <code>drug_trafficking</code> statistics</h4>
+<section id="th2.6.2-morans-i-on-drug_trafficking-statistics" class="level3">
+<h3 class="anchored" data-anchor-id="th2.6.2-morans-i-on-drug_trafficking-statistics">TH2.6.2 Moran’s <span class="math inline">\(I\)</span> on <code>drug_trafficking</code> statistics</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">moran.test</span>(thailand_2021<span class="sc">$</span>total_trafficking_cases, <span class="at">listw=</span>rswm_q_tr, <span class="at">zero.policy =</span> <span class="cn">TRUE</span>, <span class="at">na.action=</span>na.omit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -962,13 +984,12 @@ alternative hypothesis: greater</code></pre>
 <p>Like drug use, using Moran’s I show that provinces with high drug trafficking in Thailand can, to a limited extent, be near one another.</p>
 </section>
 </section>
-</section>
-<section id="th2.6-gearys-c" class="level2">
-<h2 class="anchored" data-anchor-id="th2.6-gearys-c">TH2.6 Geary’s C</h2>
-<p>Geary’s C is another measure of global spatial autocorrelation that describes how features differ from their immediate neighbours. When <code>C &gt; 1</code>, the points are dispersed, and while <code>C &lt; 1</code>, the points are clustered. A <code>C</code> value of <code>1</code> indicates observations are randomly arranged in space. Geary’s C approaches <code>0</code> when similar values are clustered, and approaches <code>3</code> when dissimilar values are clustered. Geary’s C is inversely proportional to Moran’s I, so higher Cs correspond to lower Is.</p>
+<section id="th2.7-gearys-c" class="level2">
+<h2 class="anchored" data-anchor-id="th2.7-gearys-c">TH2.7 Geary’s <span class="math inline">\(C\)</span></h2>
+<p>Geary’s <span class="math inline">\(C\)</span> is another measure of global spatial autocorrelation that describes how features differ from their immediate neighbours. When <span class="math inline">\(C &gt; 1\)</span>, the points are dispersed, and when <span class="math inline">\(C &lt; 1\)</span>, the points are clustered. A <span class="math inline">\(C\)</span> value of <span class="math inline">\(1\)</span> indicates observations are randomly arranged in space. Geary’s <span class="math inline">\(C\)</span> approaches <span class="math inline">\(0\)</span> when similar values are clustered, and approaches <span class="math inline">\(3\)</span> when dissimilar values are clustered. Geary’s <span class="math inline">\(C\)</span> is inversely proportional to Moran’s I, so higher <span class="math inline">\(C\)</span>s correspond to lower <span class="math inline">\(I\)</span>s.</p>
 <p>Just as before, we will now perform Geary’s C on both our <code>drug_use</code> and <code>drug_trafficking</code> statistics.</p>
-<section id="th2.6.1-gearys-c-on-drug_use-statistics" class="level3">
-<h3 class="anchored" data-anchor-id="th2.6.1-gearys-c-on-drug_use-statistics">TH2.6.1 Geary’s C on <code>drug_use</code> statistics</h3>
+<section id="th2.7.1-gearys-c-on-drug_use-statistics" class="level3">
+<h3 class="anchored" data-anchor-id="th2.7.1-gearys-c-on-drug_use-statistics">TH2.7.1 Geary’s <span class="math inline">\(C\)</span> on <code>drug_use</code> statistics</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">geary.test</span>(thailand_2021<span class="sc">$</span>total_use_cases, <span class="at">listw=</span>rswm_q_use, <span class="at">zero.policy =</span> <span class="cn">TRUE</span>, <span class="at">na.action =</span> na.omit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1021,8 +1042,8 @@ alternative hypothesis: greater</code></pre>
 </ul>
 <p>Hence, the Geary’s C statistic on drug use cases in 2021 yielded inconclusive results.</p>
 </section>
-<section id="th2.6.2-gearys-c-on-drug_trafficking-statistics" class="level3">
-<h3 class="anchored" data-anchor-id="th2.6.2-gearys-c-on-drug_trafficking-statistics">TH2.6.2 Geary’s C on <code>drug_trafficking</code> statistics</h3>
+<section id="th2.7.2-gearys-c-on-drug_trafficking-statistics" class="level3">
+<h3 class="anchored" data-anchor-id="th2.7.2-gearys-c-on-drug_trafficking-statistics">TH2.7.2 Geary’s <span class="math inline">\(C\)</span> on <code>drug_trafficking</code> statistics</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">geary.test</span>(thailand_2021<span class="sc">$</span>total_trafficking_cases, <span class="at">listw=</span>rswm_q_tr, <span class="at">zero.policy =</span> <span class="cn">TRUE</span>, <span class="at">na.action =</span> na.omit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1074,8 +1095,8 @@ alternative hypothesis: greater</code></pre>
 <p>Hence, the Geary’s C measure on drug trafficking cases in 2021 indicates mild positive spatial autocorrelation, albeit stronger than that observed on our drug use statistics.</p>
 </section>
 </section>
-<section id="th2.7-deriving-local-measures-of-spatial-autocorrelation" class="level2">
-<h2 class="anchored" data-anchor-id="th2.7-deriving-local-measures-of-spatial-autocorrelation">TH2.7 Deriving Local Measures of Spatial Autocorrelation</h2>
+<section id="th2.8-deriving-local-measures-of-spatial-autocorrelation" class="level2">
+<h2 class="anchored" data-anchor-id="th2.8-deriving-local-measures-of-spatial-autocorrelation">TH2.8 Deriving Local Measures of Spatial Autocorrelation</h2>
 <p>Both Global Moran’s I and Geary’s C only return a surface observation on how Thailand’s drug crime is distributed by province. To identify where the clusters are located, we need to use local indicators of spatial association (LISA), which indicate the extent of spatial clustering around each observation (Anselin, 1995) (Khant, 2024).</p>
 <p>An example of a LISA is local Moran’s I, which is essentially Moran’s I calculated for each geographical subdivision, in this case the provinces of Thailand. However, with these localised measures, we are able to visualise our findings on a choropleth map, and from there, identify the locations of noteworthy clusters.</p>
 <p>As before, we will derive the local Moran’s I statistics for both our drug trafficking and drug use data. The <code>localmoran()</code> function use here returns a matrix whose columns mean the following (Kam, 2022):</p>
@@ -1095,8 +1116,8 @@ alternative hypothesis: greater</code></pre>
 <span id="cb60-6"><a href="#cb60-6" aria-hidden="true" tabindex="-1"></a>thailand_2021_trafficking.localMI <span class="ot">&lt;-</span> <span class="fu">cbind</span>(thailand_2021, local_MI_trafficking) <span class="sc">%&gt;%</span> <span class="fu">rename</span>(<span class="at">Pr.Ii =</span> Pr.z....E.Ii..)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We can then proceed to map the local Moran’s I statistics and p-values. The colour palette used for mapping local Moran’s I p-values (Khant, 2024) helps us easily identify statistically significant results, once again for a 95% confidence interval.</p>
-<section id="th2.7.1-mapping-local-morans-i-statistics-for-drug_use-cases" class="level3">
-<h3 class="anchored" data-anchor-id="th2.7.1-mapping-local-morans-i-statistics-for-drug_use-cases">TH2.7.1 Mapping Local Moran’s I statistics for <code>drug_use</code> cases</h3>
+<section id="th2.8.1-mapping-local-morans-i-statistics-for-drug_use-cases" class="level3">
+<h3 class="anchored" data-anchor-id="th2.8.1-mapping-local-morans-i-statistics-for-drug_use-cases">TH2.8.1 Mapping Local Moran’s I statistics for <code>drug_use</code> cases</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>use.localMI.map <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(thailand_2021_use.localMI) <span class="sc">+</span> <span class="fu">tm_fill</span>(<span class="at">col =</span> <span class="st">"Ii"</span>, <span class="at">style =</span> <span class="st">"pretty"</span>, <span class="at">title =</span> <span class="st">"drug_use local Moran"</span>) <span class="sc">+</span> <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>)</span>
 <span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a>use.pv.map <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(thailand_2021_use.localMI) <span class="sc">+</span> <span class="fu">tm_fill</span>(<span class="at">col =</span> <span class="st">"Pr.Ii"</span>, </span>
@@ -1118,8 +1139,8 @@ alternative hypothesis: greater</code></pre>
 </div>
 <p>There are statistcally significant instances of dissimilar clustering toward the south in Krabi and Phattalung provinces, and a handful towards the central and north. With p-values of <code>0.1</code> or more, the local Moran’s I values for the rest of the country cannot be considered to be statistically significant. This is a surprising result for our <code>drug_use</code> data.</p>
 </section>
-<section id="th2.7.2-mapping-local-morans-i-statistics-for-drug_trafficking-cases" class="level3">
-<h3 class="anchored" data-anchor-id="th2.7.2-mapping-local-morans-i-statistics-for-drug_trafficking-cases">TH2.7.2 Mapping Local Moran’s I statistics for <code>drug_trafficking</code> cases</h3>
+<section id="th2.8.2-mapping-local-morans-i-statistics-for-drug_trafficking-cases" class="level3">
+<h3 class="anchored" data-anchor-id="th2.8.2-mapping-local-morans-i-statistics-for-drug_trafficking-cases">TH2.8.2 Mapping Local Moran’s I statistics for <code>drug_trafficking</code> cases</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>tr.localMI.map <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(thailand_2021_trafficking.localMI) <span class="sc">+</span> <span class="fu">tm_fill</span>(<span class="at">col =</span> <span class="st">"Ii"</span>, <span class="at">style =</span> <span class="st">"pretty"</span>, <span class="at">title =</span> <span class="st">"drug_trafficking local Moran"</span>) <span class="sc">+</span> <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>)</span>
 <span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>tr.pv.map <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(thailand_2021_trafficking.localMI) <span class="sc">+</span> <span class="fu">tm_fill</span>(<span class="at">col =</span> <span class="st">"Pr.Ii"</span>, </span>
@@ -1141,8 +1162,8 @@ alternative hypothesis: greater</code></pre>
 </div>
 <p>And likewise for our <code>drug_trafficking</code> statistics. The only statistically significant observation that confirms the hypothesis is Chiang Rai province up north, and Si Sa Ket, the western neighbour of Ubon Ratchathani province, to the east.</p>
 </section>
-<section id="th2.7.3-performing-local-morans-i-monte-carlo-test-for-drug_use-cases" class="level3">
-<h3 class="anchored" data-anchor-id="th2.7.3-performing-local-morans-i-monte-carlo-test-for-drug_use-cases">TH2.7.3 Performing Local Moran’s I Monte Carlo test for <code>drug_use</code> cases</h3>
+<section id="th2.8.3-performing-local-morans-i-monte-carlo-test-for-drug_use-cases" class="level3">
+<h3 class="anchored" data-anchor-id="th2.8.3-performing-local-morans-i-monte-carlo-test-for-drug_use-cases">TH2.8.3 Performing Local Moran’s I Monte Carlo test for <code>drug_use</code> cases</h3>
 <p>Just like with global Moran’s I, we can also perform a Monte Carlo permutation test for local Moran’s I, and hopefully return a more realistic result.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>local_MI_use <span class="ot">&lt;-</span> <span class="fu">localmoran_perm</span>(thailand_2021<span class="sc">$</span>total_use_cases, rswm_q_use, <span class="at">nsim =</span> <span class="dv">999</span>)</span>
@@ -1172,8 +1193,8 @@ alternative hypothesis: greater</code></pre>
 </div>
 </div>
 </section>
-<section id="th2.7.4-performing-local-morans-i-monte-carlo-test-for-drug_trafficking-cases" class="level3">
-<h3 class="anchored" data-anchor-id="th2.7.4-performing-local-morans-i-monte-carlo-test-for-drug_trafficking-cases">TH2.7.4 Performing Local Moran’s I Monte Carlo test for <code>drug_trafficking</code> cases</h3>
+<section id="th2.8.4-performing-local-morans-i-monte-carlo-test-for-drug_trafficking-cases" class="level3">
+<h3 class="anchored" data-anchor-id="th2.8.4-performing-local-morans-i-monte-carlo-test-for-drug_trafficking-cases">TH2.8.4 Performing Local Moran’s I Monte Carlo test for <code>drug_trafficking</code> cases</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>tr.localMI.map <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(thailand_2021_trafficking.localMI) <span class="sc">+</span> <span class="fu">tm_fill</span>(<span class="at">col =</span> <span class="st">"Ii"</span>, <span class="at">style =</span> <span class="st">"pretty"</span>, <span class="at">title =</span> <span class="st">"drug_trafficking local Moran"</span>) <span class="sc">+</span> <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>)</span>
 <span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a>tr.pv.map <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(thailand_2021_trafficking.localMI) <span class="sc">+</span> <span class="fu">tm_fill</span>(<span class="at">col =</span> <span class="st">"Pr.Ii"</span>, </span>
@@ -1194,13 +1215,13 @@ alternative hypothesis: greater</code></pre>
 </div>
 </div>
 <p>Just like last time, the only statistically significant areas to confirm the hypothesis are Chiang Rai and Si Sa Ket.</p>
-<p>Even after 999 simulations, we get results with p-values exceeding <code>0.05</code> for a 95% confidence interval, rendering the local Moran’s I values generated to be inconclusive.</p>
+<p>Even after 999 simulations, we get results with p-values exceeding <code>0.05</code> for a 95% confidence interval, rendering the local Moran’s I values generated to be inconclusive. Nonetheless, by plotting these values on a map anyway, we can still paint a sufficiently high-level picture of the drug situation in the area.</p>
 </section>
 </section>
-<section id="th2.7.5-drawing-local-morans-i-scatterplots" class="level2">
-<h2 class="anchored" data-anchor-id="th2.7.5-drawing-local-morans-i-scatterplots">TH2.7.5 Drawing local Moran’s I scatterplots</h2>
-<p>The local Moran’s I scatterplot illustrates the relationship between the drug use and trafficking statistics at each location, and the average values at neighbouring locations. It returns a plot with four quardrants which should be interested as shown in the image below (Kam, 2022).</p>
-<p><a href="https://is415-ay2024-25t1.netlify.app/lesson/lesson06/img/image7-15.jpg">Interpretation of Local Moran’s I scatterplot</a></p>
+<section id="th2.8.5-drawing-local-morans-i-scatterplots" class="level2">
+<h2 class="anchored" data-anchor-id="th2.8.5-drawing-local-morans-i-scatterplots">TH2.8.5 Drawing local Moran’s I scatterplots</h2>
+<p>The local Moran’s I scatterplot illustrates the relationship between the drug use and trafficking statistics at each location, and the average values at neighbouring locations. It returns a plot with four quardrants as shown in the image below (Kam, 2022).</p>
+<p><a href="scatter.jpg">Interpretation of Local Moran’s I scatterplot</a></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>nci_use <span class="ot">&lt;-</span> <span class="fu">moran.plot</span>(thailand_2021_use<span class="sc">$</span>total_use_cases, rswm_q_use, <span class="at">labels =</span> thailand_2021_use<span class="sc">$</span>ADM1_EN, <span class="at">xlab =</span> <span class="st">"total_use_cases"</span>, <span class="at">ylab =</span> <span class="st">"Spatially lagged total_use_cases"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
@@ -1221,11 +1242,11 @@ alternative hypothesis: greater</code></pre>
 </div>
 <p>In terms of drug usage, notable high outliers among low neighbours are Chiang Mai, Bangkok and Phuket, whereas a notable low outlier among high neighbours is Samut Prakan, which is Bangkok’s southeastern neighbour.</p>
 <p>In terms of drug trafficking, a notable low outlier among high neighbours is Mae Hong Song, on the eastern border with Myanmar and within the Golden Triangle. Major provinces within the Triangle - namely Chiang Rai and Chiang Mai - are considered to be clustered with neighbours also seeing high trafficking.</p>
-<section id="th2.7.6-creating-lisa-cluster-map" class="level3">
-<h3 class="anchored" data-anchor-id="th2.7.6-creating-lisa-cluster-map">TH2.7.6 Creating LISA cluster map</h3>
+<section id="th2.8.6-creating-lisa-cluster-map" class="level3">
+<h3 class="anchored" data-anchor-id="th2.8.6-creating-lisa-cluster-map">TH2.8.6 Creating LISA cluster map</h3>
 <p>The above information can also be plotted onto a map colourcoded by the type of spatial autocorrelation. The code chunks below create our LISA maps from our local Moran’s I statistics, and plots the resulting quadrant map along with their corresponding quantile-classified basemaps.</p>
-<section id="th2.7.6.1-lisa-cluster-map-for-drug-use-data" class="level4">
-<h4 class="anchored" data-anchor-id="th2.7.6.1-lisa-cluster-map-for-drug-use-data">TH2.7.6.1 LISA cluster map for drug use data</h4>
+<section id="th2.8.6.1-lisa-cluster-map-for-drug-use-data" class="level4">
+<h4 class="anchored" data-anchor-id="th2.8.6.1-lisa-cluster-map-for-drug-use-data">TH2.8.6.1 LISA cluster map for drug use data</h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a>quadrant <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"numeric"</span>, <span class="at">length =</span> <span class="fu">nrow</span>(local_MI_use))</span>
 <span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a>thailand_2021_use<span class="sc">$</span>lag_total_use <span class="ot">&lt;-</span> <span class="fu">lag.listw</span>(rswm_q_use, thailand_2021_use<span class="sc">$</span>total_use_cases)</span>
@@ -1260,8 +1281,8 @@ alternative hypothesis: greater</code></pre>
 </div>
 </div>
 </section>
-<section id="th2.7.6.2-lisa-cluster-map-for-drug-trafficking-data" class="level4">
-<h4 class="anchored" data-anchor-id="th2.7.6.2-lisa-cluster-map-for-drug-trafficking-data">TH2.7.6.2 LISA cluster map for drug trafficking data</h4>
+<section id="th2.8.6.2-lisa-cluster-map-for-drug-trafficking-data" class="level4">
+<h4 class="anchored" data-anchor-id="th2.8.6.2-lisa-cluster-map-for-drug-trafficking-data">TH2.8.6.2 LISA cluster map for drug trafficking data</h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>quadrant <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"numeric"</span>, <span class="at">length =</span> <span class="fu">nrow</span>(local_MI_trafficking))</span>
 <span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a>thailand_2021_trafficking<span class="sc">$</span>lag_total_trafficking <span class="ot">&lt;-</span> <span class="fu">lag.listw</span>(rswm_q_use, thailand_2021_trafficking<span class="sc">$</span>total_trafficking_cases)</span>
@@ -1298,19 +1319,19 @@ alternative hypothesis: greater</code></pre>
 </section>
 </section>
 </section>
-<section id="th2.8-using-local-gi-statistics-to-perform-hot-and-cold-spot-analysis" class="level2">
-<h2 class="anchored" data-anchor-id="th2.8-using-local-gi-statistics-to-perform-hot-and-cold-spot-analysis">TH2.8 Using Local Gi* statistics to perform hot and cold spot analysis</h2>
-<p>We need more local indicators to determine the extent of clustering in our drug crime data. Another method we can use is creating <strong>Gertis and Ord’s G-statistics</strong>. One of the earliest LISAs (Khant, 2024), they seek to determine the locations of clusters of high and low values - in our case, clusters of provinces with high incidences of drug trafficking, and clusters of those with low incidences of such. These scores are typically reported as z-scores, where positive values indicate a high-high cluster, and negative values indicate a low-low cluster.</p>
+<section id="th2.9-using-local-g_i-statistics-to-perform-hot-and-cold-spot-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="th2.9-using-local-g_i-statistics-to-perform-hot-and-cold-spot-analysis">TH2.9 Using Local <span class="math inline">\(G_i^*\)</span> statistics to perform hot and cold spot analysis</h2>
+<p>We need more local indicators to determine the extent of clustering in our drug crime data. Another method we can use is creating <strong>Gertis and Ord’s G-statistics</strong>, or <span class="math inline">\(G_i^*\)</span>. One of the earliest LISAs (Khant, 2024), they seek to determine the locations of clusters of high and low values - in our case, clusters of provinces with high incidences of drug trafficking, and clusters of those with low incidences of such. These scores are typically reported as z-scores, where positive values indicate a high-high cluster, and negative values indicate a low-low cluster.</p>
 <p>The analysis consists of three steps:</p>
 <ol type="1">
 <li>Deriving the spatial weight matrix,</li>
-<li>Computing the Gi statistics</li>
-<li>Mapping the Gi statistics</li>
+<li>Computing the <span class="math inline">\(G_i^*\)</span> statistics</li>
+<li>Mapping the <span class="math inline">\(G_i^*\)</span> statistics</li>
 </ol>
-<section id="th2.8.1-drug_use-dataset" class="level3">
-<h3 class="anchored" data-anchor-id="th2.8.1-drug_use-dataset">TH2.8.1 <code>drug_use</code> dataset</h3>
-<section id="th2.8.1.1-deriving-distance-based-weight-matrices" class="level4">
-<h4 class="anchored" data-anchor-id="th2.8.1.1-deriving-distance-based-weight-matrices">TH2.8.1.1 Deriving distance-based weight matrices</h4>
+<section id="th2.9.1-drug_use-dataset" class="level3">
+<h3 class="anchored" data-anchor-id="th2.9.1-drug_use-dataset">TH2.9.1 <code>drug_use</code> dataset</h3>
+<section id="th2.9.1.1-deriving-distance-based-weight-matrices" class="level4">
+<h4 class="anchored" data-anchor-id="th2.9.1.1-deriving-distance-based-weight-matrices">TH2.9.1.1 Deriving distance-based weight matrices</h4>
 <p>First, we define an adaptive distance-based weight matrix. We will do this by creating centroids - points associated with each polygon - by extracting longitudes and latitudes. This is done by mapping the <code>st_centroid()</code> function to each polygon in our dataset.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="co"># drug_use data</span></span>
@@ -1368,8 +1389,8 @@ B 35 1225 80 160 1040</code></pre>
 </div>
 </div>
 </section>
-<section id="th2.8.1.2-computing-adaptive-distance-weight-matrix" class="level4">
-<h4 class="anchored" data-anchor-id="th2.8.1.2-computing-adaptive-distance-weight-matrix">TH2.8.1.2 Computing adaptive distance weight matrix</h4>
+<section id="th2.9.1.2-computing-adaptive-distance-weight-matrix" class="level4">
+<h4 class="anchored" data-anchor-id="th2.9.1.2-computing-adaptive-distance-weight-matrix">TH2.9.1.2 Computing adaptive distance weight matrix</h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb82"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a>knn <span class="ot">&lt;-</span> <span class="fu">knn2nb</span>(<span class="fu">knearneigh</span>(coords, <span class="at">k=</span><span class="dv">8</span>))</span>
 <span id="cb82-2"><a href="#cb82-2" aria-hidden="true" tabindex="-1"></a>knn_lw <span class="ot">&lt;-</span> <span class="fu">nb2listw</span>(knn, <span class="at">style =</span> <span class="st">'B'</span>)</span>
@@ -1398,15 +1419,15 @@ B 77 5929 616 1088 20466</code></pre>
 </div>
 </div>
 </section>
-<section id="th2.8.1.3-computing-gi-statistics" class="level4">
-<h4 class="anchored" data-anchor-id="th2.8.1.3-computing-gi-statistics">TH2.8.1.3 Computing Gi statistics</h4>
+<section id="th2.9.1.3-computing-g_i-statistics" class="level4">
+<h4 class="anchored" data-anchor-id="th2.9.1.3-computing-g_i-statistics">TH2.9.1.3 Computing <span class="math inline">\(G_i^*\)</span> statistics</h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb84"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a>gi <span class="ot">&lt;-</span> <span class="fu">localG</span>(thailand_2021_use<span class="sc">$</span>total_use_cases, knn_lw)</span>
 <span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a>thailand_2021_use.gi <span class="ot">&lt;-</span> <span class="fu">cbind</span>(thailand_2021_use, <span class="fu">as.matrix</span>(gi)) <span class="sc">%&gt;%</span> <span class="fu">rename</span>(<span class="at">gstat_adaptive =</span> as.matrix.gi.)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="th2.8.1.4-plotting-drug_use-gi-statistics-on-map" class="level4">
-<h4 class="anchored" data-anchor-id="th2.8.1.4-plotting-drug_use-gi-statistics-on-map">TH2.8.1.4 Plotting <code>drug_use</code> Gi statistics on map</h4>
+<section id="th2.9.1.4-plotting-drug_use-g_i-statistics-on-map" class="level4">
+<h4 class="anchored" data-anchor-id="th2.9.1.4-plotting-drug_use-g_i-statistics-on-map">TH2.9.1.4 Plotting <code>drug_use</code> <span class="math inline">\(G_i^*\)</span> statistics on map</h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb85"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a>gi_map <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(thailand_2021_use.gi) <span class="sc">+</span> <span class="fu">tm_fill</span>(<span class="at">col =</span> <span class="st">"gstat_adaptive"</span>, <span class="at">breaks=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">3</span>, <span class="sc">-</span><span class="dv">2</span>, <span class="sc">-</span><span class="fl">1.96</span>, <span class="sc">-</span><span class="fl">1.65</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="fl">1.65</span>, <span class="fl">1.96</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="at">palette =</span> <span class="st">"-RdBu"</span>, <span class="at">title =</span> <span class="st">"drug_use local Gi"</span>) <span class="sc">+</span> <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>)</span>
 <span id="cb85-2"><a href="#cb85-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_arrange</span>(use_map, gi_map)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1425,11 +1446,11 @@ Variable(s) "gstat_adaptive" contains positive and negative values, so midpoint 
 <p>There is one large cold spot to the northwest of the map towards the border with Myanmar, but as far as <em>hot spots</em> are concerned, the best candidate for that is located in the east, towards the border with Cambodia and Laos, and appears lukewarm. Most of that area is only suggestive of a hotspot at a 90% confidence interval, with only 3 provinces - Maha-Sarakham, Amnat-Charoen and Surin - showing strong evidence of a hotspot at a 95% confidence interval.</p>
 </section>
 </section>
-<section id="th2.8.2-drug_trafficking-dataset" class="level3">
-<h3 class="anchored" data-anchor-id="th2.8.2-drug_trafficking-dataset">TH2.8.2 <code>drug_trafficking</code> dataset</h3>
+<section id="th2.9.2-drug_trafficking-dataset" class="level3">
+<h3 class="anchored" data-anchor-id="th2.9.2-drug_trafficking-dataset">TH2.9.2 <code>drug_trafficking</code> dataset</h3>
 <p>We can repeat the entire process again with our <code>drug_trafficking</code> dataset.</p>
-<section id="th2.8.2.1-deriving-distance-based-weight-matrices" class="level4">
-<h4 class="anchored" data-anchor-id="th2.8.2.1-deriving-distance-based-weight-matrices">TH2.8.2.1 Deriving distance-based weight matrices</h4>
+<section id="th2.9.2.1-deriving-distance-based-weight-matrices" class="level4">
+<h4 class="anchored" data-anchor-id="th2.9.2.1-deriving-distance-based-weight-matrices">TH2.9.2.1 Deriving distance-based weight matrices</h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb87"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="co"># drug_trafficking data</span></span>
 <span id="cb87-2"><a href="#cb87-2" aria-hidden="true" tabindex="-1"></a>longitude <span class="ot">&lt;-</span> <span class="fu">map_dbl</span>(thailand_2021_trafficking<span class="sc">$</span>geometry, <span class="sc">~</span><span class="fu">st_centroid</span>(.x)[[<span class="dv">1</span>]])</span>
@@ -1486,8 +1507,8 @@ B 35 1225 80 160 1040</code></pre>
 </div>
 </div>
 </section>
-<section id="th2.8.2.2-computing-adaptive-distance-weight-matrix" class="level4">
-<h4 class="anchored" data-anchor-id="th2.8.2.2-computing-adaptive-distance-weight-matrix">TH2.8.2.2 Computing adaptive distance weight matrix</h4>
+<section id="th2.9.2.2-computing-adaptive-distance-weight-matrix" class="level4">
+<h4 class="anchored" data-anchor-id="th2.9.2.2-computing-adaptive-distance-weight-matrix">TH2.9.2.2 Computing adaptive distance weight matrix</h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb93"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a>knn <span class="ot">&lt;-</span> <span class="fu">knn2nb</span>(<span class="fu">knearneigh</span>(coords, <span class="at">k=</span><span class="dv">8</span>))</span>
 <span id="cb93-2"><a href="#cb93-2" aria-hidden="true" tabindex="-1"></a>knn_lw <span class="ot">&lt;-</span> <span class="fu">nb2listw</span>(knn, <span class="at">style =</span> <span class="st">'B'</span>)</span>
@@ -1516,18 +1537,18 @@ B 77 5929 616 1088 20466</code></pre>
 </div>
 </div>
 </section>
-<section id="th2.8.2.3-computing-gi-statistics" class="level4">
-<h4 class="anchored" data-anchor-id="th2.8.2.3-computing-gi-statistics">TH2.8.2.3 Computing Gi statistics</h4>
+<section id="th2.9.2.3-computing-g_i-statistics" class="level4">
+<h4 class="anchored" data-anchor-id="th2.9.2.3-computing-g_i-statistics">TH2.9.2.3 Computing <span class="math inline">\(G_i^*\)</span> statistics</h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb95"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb95-1"><a href="#cb95-1" aria-hidden="true" tabindex="-1"></a>gi <span class="ot">&lt;-</span> <span class="fu">localG</span>(thailand_2021_trafficking<span class="sc">$</span>total_trafficking_cases, knn_lw)</span>
 <span id="cb95-2"><a href="#cb95-2" aria-hidden="true" tabindex="-1"></a>thailand_2021_trafficking.gi <span class="ot">&lt;-</span> <span class="fu">cbind</span>(thailand_2021_trafficking, <span class="fu">as.matrix</span>(gi)) <span class="sc">%&gt;%</span> <span class="fu">rename</span>(<span class="at">gstat_adaptive =</span> as.matrix.gi.)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="th2.8.2.4-plotting-drug_use-gi-statistics-on-map" class="level4">
-<h4 class="anchored" data-anchor-id="th2.8.2.4-plotting-drug_use-gi-statistics-on-map">TH2.8.2.4 Plotting <code>drug_use</code> Gi statistics on map</h4>
+<section id="th2.9.2.4-plotting-drug_use-g_i-statistics-on-map" class="level4">
+<h4 class="anchored" data-anchor-id="th2.9.2.4-plotting-drug_use-g_i-statistics-on-map">TH2.9.2.4 Plotting <code>drug_use</code> <span class="math inline">\(G_i^*\)</span> statistics on map</h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb96"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a>gi_map <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(thailand_2021_trafficking.gi) <span class="sc">+</span> <span class="fu">tm_fill</span>(<span class="at">col =</span> <span class="st">"gstat_adaptive"</span>, <span class="at">breaks=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">3</span>, <span class="sc">-</span><span class="dv">2</span>, <span class="sc">-</span><span class="fl">1.96</span>, <span class="sc">-</span><span class="fl">1.65</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="fl">1.65</span>, <span class="fl">1.96</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="at">palette =</span> <span class="st">"-RdBu"</span>, <span class="at">title =</span> <span class="st">"drug_trafficking local Gi"</span>) <span class="sc">+</span> <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>)</span>
-<span id="cb96-2"><a href="#cb96-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_arrange</span>(use_map, gi_map)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb96-2"><a href="#cb96-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_arrange</span>(trafficking_map, gi_map)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: Values have found that are higher than the highest break</code></pre>
 </div>
@@ -1552,16 +1573,16 @@ B 77 5929 616 1088 20466</code></pre>
 </section>
 </section>
 </section>
-<section id="th2.9-emerging-hotspot-analysis" class="level2">
-<h2 class="anchored" data-anchor-id="th2.9-emerging-hotspot-analysis">TH2.9 Emerging Hotspot Analysis</h2>
-<p>Since we have spatial-temporal data, we are able to perform emerging hotspot analysis, which will help us evaluate how the hot and cold spots in both our datasets have changed over time. It combines the Getis-Ord Gi* statistic with the Man-Kendall test, which is used to assess the direction and statistical significance of a set of data values.</p>
-<section id="th2.9.1-data-wrangling-for-ehsa" class="level3">
-<h3 class="anchored" data-anchor-id="th2.9.1-data-wrangling-for-ehsa">TH2.9.1 Data wrangling for EHSA</h3>
+<section id="th2.10-emerging-hotspot-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="th2.10-emerging-hotspot-analysis">TH2.10 Emerging Hotspot Analysis</h2>
+<p>Since we have spatial-temporal data, we are able to perform emerging hotspot analysis, which will help us evaluate how the hot and cold spots in both our datasets have changed over time. It combines the <span class="math inline">\(G_i^*\)</span> statistic with the Man-Kendall test, which is used to assess the direction and statistical significance of a set of data values.</p>
+<section id="th2.10.1-data-wrangling-for-ehsa" class="level3">
+<h3 class="anchored" data-anchor-id="th2.10.1-data-wrangling-for-ehsa">TH2.10.1 Data wrangling for EHSA</h3>
 <p>We need to perform the following checks to ensure our data meets the prerequisites:</p>
 <ul>
 <li>The data is not collected seasonally (it was collected yearly)</li>
 <li>One point per time period (each time period contains the number of drug use cases and trafficking cases only)</li>
-<li>Data does not have covariates (as Ho (2024) rightly points out, while factors such as human population and unemployment rate can affect the number of drug offence cases, we have to work within our limitations in many data science tasks including this one).</li>
+<li>Data does not have covariates (as Matthew (Ho, 2024) rightly points out, while factors such as human population and unemployment rate can affect the number of drug offence cases, we have to work within our limitations in many data science tasks including this one).</li>
 </ul>
 <p>Our data fulfills all three requirements, so we can proceed to create a new summary table containing the total number of drug use and trafficking cases each year for each province.</p>
 <div class="cell">
@@ -1609,8 +1630,8 @@ B 77 5929 616 1088 20466</code></pre>
 </div>
 </div>
 </section>
-<section id="th2.9.2-performing-ehsa" class="level3">
-<h3 class="anchored" data-anchor-id="th2.9.2-performing-ehsa">TH2.9.2 Performing EHSA</h3>
+<section id="th2.10.2-performing-ehsa" class="level3">
+<h3 class="anchored" data-anchor-id="th2.10.2-performing-ehsa">TH2.10.2 Performing EHSA</h3>
 <p>We can now perform EHSA analysis using <code>emerging_hotspot_analysis()</code> from the <code>sfdep</code> package. It takes a spacetime object and the name of the variable of interest (<code>.var</code>).</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb107"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb107-1"><a href="#cb107-1" aria-hidden="true" tabindex="-1"></a>thailand_ehsa_use <span class="ot">&lt;-</span> <span class="fu">emerging_hotspot_analysis</span>(<span class="at">x =</span> thailand_drug_spt, <span class="at">.var =</span> <span class="st">"total_use_cases"</span>, <span class="at">k =</span> <span class="dv">1</span>, <span class="at">nsim =</span> <span class="dv">99</span>)</span>
@@ -1621,8 +1642,8 @@ B 77 5929 616 1088 20466</code></pre>
 <span id="cb108-2"><a href="#cb108-2" aria-hidden="true" tabindex="-1"></a>thailand_ehsa_tr <span class="ot">&lt;-</span> thailand <span class="sc">%&gt;%</span> <span class="fu">left_join</span>(thailand_ehsa_tr, <span class="at">by =</span> <span class="fu">join_by</span>(ADM1_EN <span class="sc">==</span> location))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="th2.9.3-visualising-distribution-of-ehsa-classes" class="level3">
-<h3 class="anchored" data-anchor-id="th2.9.3-visualising-distribution-of-ehsa-classes">TH2.9.3 Visualising Distribution of EHSA classes</h3>
+<section id="th2.10.3-visualising-distribution-of-ehsa-classes" class="level3">
+<h3 class="anchored" data-anchor-id="th2.10.3-visualising-distribution-of-ehsa-classes">TH2.10.3 Visualising Distribution of EHSA classes</h3>
 <p>The following bar chart reveals the distribution of different EHSA classes per province for both classes of drug offence.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb109"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb109-1"><a href="#cb109-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> thailand_ehsa_use, <span class="fu">aes</span>(<span class="at">y =</span> classification, <span class="at">fill =</span> classification)) <span class="sc">+</span> <span class="fu">geom_bar</span>(<span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"EHSA for drug_use"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1681,8 +1702,8 @@ B 77 5929 616 1088 20466</code></pre>
 </div>
 <p>If we increased our threshold to <code>0.1</code> from <code>0.05</code>, we are able to detect 1 statistically significant oscilating hotspot.</p>
 </section>
-<section id="th2.9.4-visualising-ehsa-maps" class="level3">
-<h3 class="anchored" data-anchor-id="th2.9.4-visualising-ehsa-maps">TH2.9.4 Visualising EHSA Maps</h3>
+<section id="th2.10.4-visualising-ehsa-maps" class="level3">
+<h3 class="anchored" data-anchor-id="th2.10.4-visualising-ehsa-maps">TH2.10.4 Visualising EHSA Maps</h3>
 <p>For this section, we will assume a 95% confidence interval for our <code>drug_trafficking</code> statistics, and ignore statistical significance for our <code>drug_use</code> statistics.</p>
 <p>The relevant <code>filter()</code> and <code>tmap</code> functions can be used to create maps that will help us identify the geographic distribution of hotspots and coldspots in our study area.</p>
 <div class="cell">
@@ -1821,10 +1842,14 @@ tm_shape prior to each of them).</code></pre>
 </div>
 </section>
 </section>
-<section id="th2.10-local-gi-and-mann-kendall-tests" class="level2">
-<h2 class="anchored" data-anchor-id="th2.10-local-gi-and-mann-kendall-tests">TH2.10 Local Gi* and Mann-Kendall Tests</h2>
-<p>Emerging hotspot analysis combines local Gi* statistics with the Mann-Kendall test.</p>
-<p>To calculate spatial-temporal local Gi*, we can use the original spacetime cube we created and the following code chunks.</p>
+<section id="th2.11-local-g_i-and-mann-kendall-tests" class="level2">
+<h2 class="anchored" data-anchor-id="th2.11-local-g_i-and-mann-kendall-tests">TH2.11 Local <span class="math inline">\(G_i^*\)</span> and Mann-Kendall Tests</h2>
+<p>Emerging hotspot analysis combines local <span class="math inline">\(G_i^*\)</span> statistics with the Mann-Kendall test.</p>
+<p>A non-parametric test, the Man-Kendall trend test is used to assess the direction (increasing/decreasing) of a set of data values over time, and whether the trend in either direction is statistically significant. It returns two values: Kendall’s Score <code>s</code>, and Kendall’s Tau <code>tau</code>, which is a correlation coefficient that is positive (<span class="math inline">\(tau\)</span> &gt; 0) if a correlation is present, and zero (<span class="math inline">\(tau\)</span> = 0) otherwise (Khant, 2024) (Gilbert, 1987).</p>
+<p>As for Kendall’s Score (Khant, 2024) (Khambhammettu, 2005) <code>S</code>, the value of <code>S</code> starts at <code>0</code> (i.e.&nbsp;no trend), and is incremented and decremented depending on the magnitude of later data points relative to the beginning. The final value of <code>S</code> indicates the overall trend. If <code>S</code> is positive, it suggests an upward trend, whereas if <code>S</code> is negative, it indicates a downward trend. Similarly to everything else we’ve been doing here, we also need to extract the associated p-value to determine its statistical significance.</p>
+<section id="th2.11.1-calculating-local-g_i-statistics" class="level3">
+<h3 class="anchored" data-anchor-id="th2.11.1-calculating-local-g_i-statistics">TH2.11.1 Calculating Local <span class="math inline">\(G_i^*\)</span> Statistics</h3>
+<p>To calculate spatial-temporal local <span class="math inline">\(G_i^*\)</span>, we can use the original spacetime cube we created and the following code chunks.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb125"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb125-1"><a href="#cb125-1" aria-hidden="true" tabindex="-1"></a>thailand_drug_nb <span class="ot">&lt;-</span> thailand_drug_spt <span class="sc">%&gt;%</span></span>
 <span id="cb125-2"><a href="#cb125-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">activate</span>(<span class="st">"geometry"</span>) <span class="sc">%&gt;%</span></span>
@@ -1873,27 +1898,243 @@ Caused by warning in `st_point_on_surface.sfc()`:
 # ℹ abbreviated name: ¹​total_trafficking_cases</code></pre>
 </div>
 </div>
+<p>We are interested in understanding the spatio-temporal dynamics of drug offence cases by year. Therefore, we need to use the following code chunk to perform <span class="math inline">\(G_i^*\)</span> calculation for each year.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb135"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb135-1"><a href="#cb135-1" aria-hidden="true" tabindex="-1"></a>thailand_gi_stars_per_year_use <span class="ot">&lt;-</span> thailand_drug_nb <span class="sc">%&gt;%</span></span>
+<span id="cb135-2"><a href="#cb135-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(fiscal_year) <span class="sc">%&gt;%</span></span>
+<span id="cb135-3"><a href="#cb135-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">gi_star_use =</span> <span class="fu">local_gstar_perm</span>(total_use_cases, nb, wt)) <span class="sc">%&gt;%</span></span>
+<span id="cb135-4"><a href="#cb135-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(gi_star_use) <span class="sc">%&gt;%</span></span>
+<span id="cb135-5"><a href="#cb135-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb135-6"><a href="#cb135-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb135-7"><a href="#cb135-7" aria-hidden="true" tabindex="-1"></a>thailand_gi_stars_per_year_tr <span class="ot">&lt;-</span> thailand_drug_nb <span class="sc">%&gt;%</span></span>
+<span id="cb135-8"><a href="#cb135-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(fiscal_year) <span class="sc">%&gt;%</span></span>
+<span id="cb135-9"><a href="#cb135-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">gi_star_tr =</span> <span class="fu">local_gstar_perm</span>(total_trafficking_cases, nb, wt)) <span class="sc">%&gt;%</span></span>
+<span id="cb135-10"><a href="#cb135-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(gi_star_tr) <span class="sc">%&gt;%</span></span>
+<span id="cb135-11"><a href="#cb135-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb135-12"><a href="#cb135-12" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(thailand_gi_stars_per_year_use)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 16
+  ADM1_EN fiscal_year total_use_cases total_trafficking_ca…¹ nb    wt    gi_star
+  &lt;chr&gt;         &lt;dbl&gt;           &lt;dbl&gt;                  &lt;dbl&gt; &lt;lis&gt; &lt;lis&gt;   &lt;dbl&gt;
+1 Bangkok        2017           11871                    950 &lt;int&gt; &lt;dbl&gt;    4.96
+2 Samut …        2017             820                    201 &lt;int&gt; &lt;dbl&gt;    3.73
+3 Nontha…        2017             553                    118 &lt;int&gt; &lt;dbl&gt;    2.33
+4 Pathum…        2017             450                     83 &lt;int&gt; &lt;dbl&gt;    1.94
+5 Phra N…        2017             378                    164 &lt;int&gt; &lt;dbl&gt;   -1.17
+6 Ang Th…        2017             208                     51 &lt;int&gt; &lt;dbl&gt;   -1.24
+# ℹ abbreviated name: ¹​total_trafficking_cases
+# ℹ 9 more variables: cluster &lt;fct&gt;, e_gi &lt;dbl&gt;, var_gi &lt;dbl&gt;, std_dev &lt;dbl&gt;,
+#   p_value &lt;dbl&gt;, p_sim &lt;dbl&gt;, p_folded_sim &lt;dbl&gt;, skewness &lt;dbl&gt;,
+#   kurtosis &lt;dbl&gt;</code></pre>
+</div>
+</div>
 </section>
-<section id="th2.11-conclusion" class="level2">
-<h2 class="anchored" data-anchor-id="th2.11-conclusion">TH2.11 Conclusion</h2>
+<section id="th2.11.2-extracting-local-g_i-in-hot-and-cold-spots" class="level3">
+<h3 class="anchored" data-anchor-id="th2.11.2-extracting-local-g_i-in-hot-and-cold-spots">TH2.11.2 Extracting local <span class="math inline">\(G_i^*\)</span> in hot and cold spots</h3>
+<p>Earlier, we identified some hot and cold spots in section <strong>2.8</strong>, and we now want to find out how the drug crime activity in these locations has changed over time. Hence, we will now choose some of these hot and cold spots, and filter them from our spatial-temporal <span class="math inline">\(G_i^*\)</span> statistics. For simplicity, we will choose <strong>Surin province</strong> as our hot spot subject and <strong>Kanchanaburi province</strong> as our <em>cold spot</em> subject for further study - the former is considered a hot spot for both drug use and drug trafficking, and while the latter is a suggestive cold spot in terms of drug trafficking, it is considered a statistically significant cold spot in terms of drug use.</p>
+<p>First, we will filter our our <span class="math inline">\(G_i^*\)</span> statistics for both areas.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb137"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb137-1"><a href="#cb137-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Surin province</span></span>
+<span id="cb137-2"><a href="#cb137-2" aria-hidden="true" tabindex="-1"></a>cbg_surin_use <span class="ot">&lt;-</span> thailand_gi_stars_per_year_use <span class="sc">%&gt;%</span></span>
+<span id="cb137-3"><a href="#cb137-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(ADM1_EN <span class="sc">==</span> <span class="st">"Surin"</span>)</span>
+<span id="cb137-4"><a href="#cb137-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># select(ADM1_EN, fiscal_year, gi_star_use)</span></span>
+<span id="cb137-5"><a href="#cb137-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb137-6"><a href="#cb137-6" aria-hidden="true" tabindex="-1"></a>cbg_surin_tr <span class="ot">&lt;-</span> thailand_gi_stars_per_year_tr <span class="sc">%&gt;%</span></span>
+<span id="cb137-7"><a href="#cb137-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(ADM1_EN <span class="sc">==</span> <span class="st">"Surin"</span>)</span>
+<span id="cb137-8"><a href="#cb137-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># select(ADM1_EN, fiscal_year, gi_star_use)</span></span>
+<span id="cb137-9"><a href="#cb137-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb137-10"><a href="#cb137-10" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(cbg_surin_use)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 16
+  ADM1_EN fiscal_year total_use_cases total_trafficking_ca…¹ nb    wt    gi_star
+  &lt;chr&gt;         &lt;dbl&gt;           &lt;dbl&gt;                  &lt;dbl&gt; &lt;lis&gt; &lt;lis&gt;   &lt;dbl&gt;
+1 Surin          2017            1309                    287 &lt;int&gt; &lt;dbl&gt;   0.142
+2 Surin          2018            3170                    308 &lt;int&gt; &lt;dbl&gt;   0.567
+3 Surin          2019            4155                    450 &lt;int&gt; &lt;dbl&gt;   1.00 
+4 Surin          2020             899                    438 &lt;int&gt; &lt;dbl&gt;  -0.915
+5 Surin          2021            2697                    429 &lt;int&gt; &lt;dbl&gt;   1.02 
+6 Surin          2022            1170                    434 &lt;int&gt; &lt;dbl&gt;   1.08 
+# ℹ abbreviated name: ¹​total_trafficking_cases
+# ℹ 9 more variables: cluster &lt;fct&gt;, e_gi &lt;dbl&gt;, var_gi &lt;dbl&gt;, std_dev &lt;dbl&gt;,
+#   p_value &lt;dbl&gt;, p_sim &lt;dbl&gt;, p_folded_sim &lt;dbl&gt;, skewness &lt;dbl&gt;,
+#   kurtosis &lt;dbl&gt;</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb139"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb139-1"><a href="#cb139-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(cbg_surin_tr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 16
+  ADM1_EN fiscal_year total_use_cases total_trafficking_ca…¹ nb    wt    gi_star
+  &lt;chr&gt;         &lt;dbl&gt;           &lt;dbl&gt;                  &lt;dbl&gt; &lt;lis&gt; &lt;lis&gt;   &lt;dbl&gt;
+1 Surin          2017            1309                    287 &lt;int&gt; &lt;dbl&gt;   0.570
+2 Surin          2018            3170                    308 &lt;int&gt; &lt;dbl&gt;   0.753
+3 Surin          2019            4155                    450 &lt;int&gt; &lt;dbl&gt;   2.19 
+4 Surin          2020             899                    438 &lt;int&gt; &lt;dbl&gt;   2.32 
+5 Surin          2021            2697                    429 &lt;int&gt; &lt;dbl&gt;   2.25 
+6 Surin          2022            1170                    434 &lt;int&gt; &lt;dbl&gt;   4.34 
+# ℹ abbreviated name: ¹​total_trafficking_cases
+# ℹ 9 more variables: cluster &lt;fct&gt;, e_gi &lt;dbl&gt;, var_gi &lt;dbl&gt;, std_dev &lt;dbl&gt;,
+#   p_value &lt;dbl&gt;, p_sim &lt;dbl&gt;, p_folded_sim &lt;dbl&gt;, skewness &lt;dbl&gt;,
+#   kurtosis &lt;dbl&gt;</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb141"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb141-1"><a href="#cb141-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Kanchanaburi province</span></span>
+<span id="cb141-2"><a href="#cb141-2" aria-hidden="true" tabindex="-1"></a>cbg_kanchanaburi_use <span class="ot">&lt;-</span> thailand_gi_stars_per_year_use <span class="sc">%&gt;%</span></span>
+<span id="cb141-3"><a href="#cb141-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(ADM1_EN <span class="sc">==</span> <span class="st">"Kanchanaburi"</span>)</span>
+<span id="cb141-4"><a href="#cb141-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb141-5"><a href="#cb141-5" aria-hidden="true" tabindex="-1"></a>cbg_kanchanaburi_tr <span class="ot">&lt;-</span> thailand_gi_stars_per_year_tr <span class="sc">%&gt;%</span></span>
+<span id="cb141-6"><a href="#cb141-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(ADM1_EN <span class="sc">==</span> <span class="st">"Kanchanaburi"</span>)</span>
+<span id="cb141-7"><a href="#cb141-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb141-8"><a href="#cb141-8" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(cbg_kanchanaburi_use)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 16
+  ADM1_EN fiscal_year total_use_cases total_trafficking_ca…¹ nb    wt    gi_star
+  &lt;chr&gt;         &lt;dbl&gt;           &lt;dbl&gt;                  &lt;dbl&gt; &lt;lis&gt; &lt;lis&gt;   &lt;dbl&gt;
+1 Kancha…        2017            1370                    239 &lt;int&gt; &lt;dbl&gt;   0.141
+2 Kancha…        2018            2203                    264 &lt;int&gt; &lt;dbl&gt;   0.274
+3 Kancha…        2019            2082                    235 &lt;int&gt; &lt;dbl&gt;  -0.118
+4 Kancha…        2020            1311                    216 &lt;int&gt; &lt;dbl&gt;  -0.678
+5 Kancha…        2021            1226                     90 &lt;int&gt; &lt;dbl&gt;  -2.17 
+6 Kancha…        2022            1476                    135 &lt;int&gt; &lt;dbl&gt;  -0.769
+# ℹ abbreviated name: ¹​total_trafficking_cases
+# ℹ 9 more variables: cluster &lt;fct&gt;, e_gi &lt;dbl&gt;, var_gi &lt;dbl&gt;, std_dev &lt;dbl&gt;,
+#   p_value &lt;dbl&gt;, p_sim &lt;dbl&gt;, p_folded_sim &lt;dbl&gt;, skewness &lt;dbl&gt;,
+#   kurtosis &lt;dbl&gt;</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb143"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb143-1"><a href="#cb143-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(cbg_kanchanaburi_tr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 16
+  ADM1_EN fiscal_year total_use_cases total_trafficking_ca…¹ nb    wt    gi_star
+  &lt;chr&gt;         &lt;dbl&gt;           &lt;dbl&gt;                  &lt;dbl&gt; &lt;lis&gt; &lt;lis&gt;   &lt;dbl&gt;
+1 Kancha…        2017            1370                    239 &lt;int&gt; &lt;dbl&gt;  0.434 
+2 Kancha…        2018            2203                    264 &lt;int&gt; &lt;dbl&gt;  0.428 
+3 Kancha…        2019            2082                    235 &lt;int&gt; &lt;dbl&gt; -0.0700
+4 Kancha…        2020            1311                    216 &lt;int&gt; &lt;dbl&gt; -0.389 
+5 Kancha…        2021            1226                     90 &lt;int&gt; &lt;dbl&gt; -1.17  
+6 Kancha…        2022            1476                    135 &lt;int&gt; &lt;dbl&gt; -0.786 
+# ℹ abbreviated name: ¹​total_trafficking_cases
+# ℹ 9 more variables: cluster &lt;fct&gt;, e_gi &lt;dbl&gt;, var_gi &lt;dbl&gt;, std_dev &lt;dbl&gt;,
+#   p_value &lt;dbl&gt;, p_sim &lt;dbl&gt;, p_folded_sim &lt;dbl&gt;, skewness &lt;dbl&gt;,
+#   kurtosis &lt;dbl&gt;</code></pre>
+</div>
+</div>
+</section>
+<section id="th2.11.3-plotting-g_i-values-and-conducting-mann-kendall-trend-test" class="level3">
+<h3 class="anchored" data-anchor-id="th2.11.3-plotting-g_i-values-and-conducting-mann-kendall-trend-test">TH2.11.3 Plotting <span class="math inline">\(G_i^*\)</span> values and conducting Mann-Kendall trend test</h3>
+<p>Then, we will plot the <span class="math inline">\(G_i^*\)</span> values to visualise their trends between 2017 and 2022. Finally, we will use the Man-Kendall trend test to confirm the direction of the trends and their statistical significance.</p>
+<section id="th2.11.3.1-surin-province-selected-hot-spot" class="level4">
+<h4 class="anchored" data-anchor-id="th2.11.3.1-surin-province-selected-hot-spot">TH2.11.3.1 Surin Province (selected hot spot)</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb145"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb145-1"><a href="#cb145-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_line</span>(</span>
+<span id="cb145-2"><a href="#cb145-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> cbg_surin_use,</span>
+<span id="cb145-3"><a href="#cb145-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> fiscal_year, <span class="at">y =</span> gi_star, <span class="at">color =</span> <span class="st">"Drug Use in Surin Province"</span>)</span>
+<span id="cb145-4"><a href="#cb145-4" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span> </span>
+<span id="cb145-5"><a href="#cb145-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(</span>
+<span id="cb145-6"><a href="#cb145-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> cbg_surin_tr,</span>
+<span id="cb145-7"><a href="#cb145-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> fiscal_year, <span class="at">y =</span> gi_star, <span class="at">color =</span> <span class="st">"Drug Trafficking in Surin Province"</span>)</span>
+<span id="cb145-8"><a href="#cb145-8" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span></span>
+<span id="cb145-9"><a href="#cb145-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Fiscal year"</span>, <span class="at">y =</span> <span class="st">"Gi* Value"</span>, <span class="at">title =</span> <span class="st">"Gi* for Surin Province between 2017 and 2022"</span>, <span class="at">color =</span> <span class="st">"Village"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-2_files/figure-html/unnamed-chunk-53-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>It turns out the Surin province has always been a hotspot for drug trafficking, with the only difference being its intensity. Based on <span class="math inline">\(G_i^*\)</span> statistics, the province starts off as a suggestive hotspot at <code>0.5</code>, and would emerge into a statistically significant hotspot by 2022 with a value of around <code>4.25</code>.</p>
+<p>As for drug use, Surin province briefly became a suggestive cold spot in the year 2020, when its <span class="math inline">\(G_i^*\)</span> statistic fell to about <code>0.8</code> in 2020.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb146"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb146-1"><a href="#cb146-1" aria-hidden="true" tabindex="-1"></a>cbg_surin_use <span class="sc">%&gt;%</span> <span class="fu">summarise</span>(</span>
+<span id="cb146-2"><a href="#cb146-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">mann_kendall =</span> <span class="fu">list</span>(<span class="fu">unclass</span>(Kendall<span class="sc">::</span><span class="fu">MannKendall</span>(gi_star)))) <span class="sc">%&gt;%</span></span>
+<span id="cb146-3"><a href="#cb146-3" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">unnest_wider</span>(mann_kendall)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 5
+    tau    sl     S     D  varS
+  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1 0.600 0.133     9  15.0  28.3</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb148"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb148-1"><a href="#cb148-1" aria-hidden="true" tabindex="-1"></a>cbg_surin_tr <span class="sc">%&gt;%</span> <span class="fu">summarise</span>(</span>
+<span id="cb148-2"><a href="#cb148-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">mann_kendall =</span> <span class="fu">list</span>(<span class="fu">unclass</span>(Kendall<span class="sc">::</span><span class="fu">MannKendall</span>(gi_star)))) <span class="sc">%&gt;%</span></span>
+<span id="cb148-3"><a href="#cb148-3" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">unnest_wider</span>(mann_kendall)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 5
+    tau     sl     S     D  varS
+  &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1 0.867 0.0242    13  15.0  28.3</code></pre>
+</div>
+</div>
+<p>For Surin province, Kendall’s <span class="math inline">\(tau\)</span> is <code>0.6 &gt; 0</code> for <code>drug_use</code> <code>0.867 &gt; 0</code> for <code>drug_trafficking</code>, indicating a positive association over time. This suggests that as time progresses, the spatial clustering of both drug use and trafficking cases in the province tends to increase. Kendall’s <code>S</code> is also <code>9</code> and <code>13</code> respectively, supporting this conclusion. However, since the p-values <code>sl</code> are <code>0.133</code> and <code>0.0242</code> respectively, only the results for <code>drug_trafficking</code> are statistically significant at a 95% confidence interval.</p>
+</section>
+<section id="th2.11.3.2-kanchanaburi-province-selected-cold-spot" class="level4">
+<h4 class="anchored" data-anchor-id="th2.11.3.2-kanchanaburi-province-selected-cold-spot">TH2.11.3.2 Kanchanaburi Province (selected cold spot)</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb150"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb150-1"><a href="#cb150-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_line</span>(</span>
+<span id="cb150-2"><a href="#cb150-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> cbg_kanchanaburi_use,</span>
+<span id="cb150-3"><a href="#cb150-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> fiscal_year, <span class="at">y =</span> gi_star, <span class="at">color =</span> <span class="st">"Drug Use in Kanchanaburi Province"</span>)</span>
+<span id="cb150-4"><a href="#cb150-4" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span> </span>
+<span id="cb150-5"><a href="#cb150-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(</span>
+<span id="cb150-6"><a href="#cb150-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> cbg_kanchanaburi_tr,</span>
+<span id="cb150-7"><a href="#cb150-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> fiscal_year, <span class="at">y =</span> gi_star, <span class="at">color =</span> <span class="st">"Drug Trafficking in Kanchanaburi Province"</span>)</span>
+<span id="cb150-8"><a href="#cb150-8" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span></span>
+<span id="cb150-9"><a href="#cb150-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Fiscal year"</span>, <span class="at">y =</span> <span class="st">"Gi* Value"</span>, <span class="at">title =</span> <span class="st">"Gi* for Kanchanaburi Province between 2017 and 2022"</span>, <span class="at">color =</span> <span class="st">"Village"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home-2_files/figure-html/unnamed-chunk-55-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Kanchanaburi province, on the other hand, has been largely a cold spot of both drug use and trafficking since late-2018, with their <span class="math inline">\(G_i^*\)</span> statistics hitting their minimum in 2021.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb151"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb151-1"><a href="#cb151-1" aria-hidden="true" tabindex="-1"></a>cbg_kanchanaburi_use <span class="sc">%&gt;%</span> <span class="fu">summarise</span>(</span>
+<span id="cb151-2"><a href="#cb151-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">mann_kendall =</span> <span class="fu">list</span>(<span class="fu">unclass</span>(Kendall<span class="sc">::</span><span class="fu">MannKendall</span>(gi_star)))) <span class="sc">%&gt;%</span></span>
+<span id="cb151-3"><a href="#cb151-3" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">unnest_wider</span>(mann_kendall)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 5
+     tau     sl     S     D  varS
+   &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1 -0.733 0.0603   -11  15.0  28.3</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb153"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb153-1"><a href="#cb153-1" aria-hidden="true" tabindex="-1"></a>cbg_kanchanaburi_tr <span class="sc">%&gt;%</span> <span class="fu">summarise</span>(</span>
+<span id="cb153-2"><a href="#cb153-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">mann_kendall =</span> <span class="fu">list</span>(<span class="fu">unclass</span>(Kendall<span class="sc">::</span><span class="fu">MannKendall</span>(gi_star)))) <span class="sc">%&gt;%</span></span>
+<span id="cb153-3"><a href="#cb153-3" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">unnest_wider</span>(mann_kendall)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 5
+     tau     sl     S     D  varS
+   &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1 -0.867 0.0242   -13  15.0  28.3</code></pre>
+</div>
+</div>
+<p>For Kanchanaburi province, Kendall’s <span class="math inline">\(tau\)</span> is <code>-0.733 &lt; 0</code> for <code>drug_use</code> <code>-0.867 &gt; 0</code> for <code>drug_trafficking</code>, indicating a strong negative association over time. This suggests that as time progresses, the spatial clustering of both drug use and trafficking cases in the province tends to increase. Kendall’s <code>S</code> is also <code>-11</code> and <code>-13</code> respectively, supporting this conclusion. The p-values <code>sl</code> are <code>0.060</code> and <code>0.0242</code> respectively. While the results for <code>drug_trafficking</code> are statistically significant at a 95% confidence interval, the results for <code>drug_use</code> would only be considered statistically significant if we assume a 90% confidence interval.</p>
+</section>
+</section>
+</section>
+<section id="th2.12-conclusion-limitations-and-extensibility" class="level2">
+<h2 class="anchored" data-anchor-id="th2.12-conclusion-limitations-and-extensibility">TH2.12 Conclusion, Limitations and Extensibility</h2>
+<p>In conclusion, given a dataset of drug offence statistics, we used the results of preliminary exploratory data analysis to identify a time bracket - the year 2021 given its occurrence towards the middle of the COVID-19 pandemic - to derive global and local measures of spatial autocorrelation on confirmed drug use and drug trafficking statistics. Our global Moran’s I and Geary’s C statistics showed moderate positive spatial autocorrelation for both classes of drug offence, with the drug trafficking data’s figure showing stronger correlation than that for drug use. This was, to an extent, backed up by the local Moran’s I figures, which returned p-values of 0.1 or more for many provinces, only returning statistically significant observations towards the northwest and east of the country in the case of <code>drug_trafficking</code>, and sporadically so in the case of <code>drug_use</code>. Despite the lack of statistical significance, the local Moran’s I scatterplot identified the provinces of Chiang Mai, Bangkok and Phuket to be high outliers among low neighbours in drug use, and Mae Hong Song as a notable low outlier among high neighbours in the case of drug trafficking. We identified drug use cold spots and drug trafficking hot spots, and performed emerging hotspot analysis to identify which among them were sporadic, new or consecutive - and found that we were unable to assign a pattern to most cases. Finally, on the hot spot of Surin and cold spot of Kanchanaburi, we extracted local <span class="math inline">\(G_i^*\)</span> statistics and, through the Mann-Kendall test, confirmed that Surin province was indeed a rising hotbed for drug trafficking, and that drug activity in Kanchanaburi province was on the decline.</p>
+<p>The year 2021 was chosen for spatial autocorrelational analysis based on the EDA because it had the highest number of drug use cases, so it follows that not only would there be a higher demand for drugs, and therefore more instances of drug trafficking, but this should also return a higher sample size to return a statistically significant result. This was not the case, and there are several possible reasons why. It could be that the given data is not further classified by other demographic factors such as age group or yearly income. Indeed, among all people who use cannabis globally, 42% are youths aged 17-24 (The Lancet Regional Health – Southeast Asia, 2023), and the drug <em>Yaba</em> is popular among Thai youth who use it to, among other things, “improve academic performance”. It could also be that this dataset is still too small to be able to draw strong conclusions. Or, it could simply be that statistics alone are unable to account for the socio-economic factors behind drug use. One key motivation for people to use drugs is the inability to manage stress. Two examples of this would be the COVID-19 pandemic increasing stress among retrenched people, or males having experienced childhood adversities being more susceptible to tobacco, alcohol or cannibis (The Lancet Regional Health – Southeast Asia, 2023).</p>
+<p>The results are still somewhat adequate in identifying the locations of hot spots around the country, and have even successfully identified cold spots in drug use. In these cold spots, a greater focus can be placed on educating youth and the general public on the harms of drug use and why one should never even start, so that resources spent on rehabilitation and counselling can be freed and directed towards hot spots. Additionally, in identifying the locations of existing and emerging hot spots of drug trafficking, law enforcement will have a clearer understanding on where their efforts should be prioritised and where they can afford to scale back, leading to a more efficient allocation of scarce policing resources.</p>
+<p>However, the drug problem in Thailand, as can be reaffirmed from our efforts, is a complex one. If we are to truly eradicate the problem of drugs once and for all, more extensive research not just on the statistics, but on the factors that lead to drug use, will surely be needed. Further research can account for socio-economic factors, such as the HDI, median salary and highest educational qualitifications for each province, and explore the relationship between drug trafficking and drug use numbers within the country.</p>
 </section>
 <section id="references" class="level2">
 <h2 class="anchored" data-anchor-id="references">References</h2>
 <ol type="1">
-<li>Anselin, L. (1995). Local indicators of spatial association—LISA. Geographical Analysis, 27(2), 93–115. https://doi.org/10.1111/j.1538-4632.1995.tb00338.x</li>
-<li>Ho, M. (2024, March 1). Take-Home Exercise 2. https://is415-gaa-matthew-ho.netlify.app/takehomeex/takehomeex2/the2</li>
-<li>International Monetary Fund. (2024, April 16). World Economic Outlook Database, April 2024 Edition: Thailand. https://www.imf.org/en/Publications/WEO/weo-database/2024/April</li>
-<li>Kam, T. S. (2022). R for Geospatial Data Science and Analytics. https://r4gdsa.netlify.app</li>
-<li>Khant, M. N. (2024, February 10). Take-Home Exercise 02: Spatio-Temporal Analysis of Dengue Fever Outbreak in Tainan City, Taiwan. https://is415-geospatial-with-khant.netlify.app/take-home_ex/take-home_ex02/take-home_ex02</li>
-<li>Kongjareon, Y., Samoh, N., Peerawaranun, P. et al.&nbsp;Pride-based violence, intoxicated sex and poly-drug use: a vocational school-based study of heterosexual and LGBT students in Bangkok. BMC Psychiatry 22, 148 (2022). https://doi.org/10.1186/s12888-022-03777-7</li>
-<li>Kanato, M., Sarasiri, R., &amp; Leyatikul, P. (Eds.). (2022). ASEAN drug monitoring report 2021. ASEAN Narcotics Cooperation Center.</li>
+<li>Anselin, L. (1995). Local indicators of spatial association—LISA. Geographical Analysis, 27(2), 93–115. <a href="https://doi.org/10.1111/j.1538-4632.1995.tb00338.x" class="uri">https://doi.org/10.1111/j.1538-4632.1995.tb00338.x</a></li>
+<li>Gilbert, R. O. (1987). Statistical methods for environmental pollution monitoring. Van Nostrand Reinhold.</li>
+<li>Ho, M. (2024, March 1). Take-Home Exercise 2. <a href="https://is415-gaa-matthew-ho.netlify.app/takehomeex/takehomeex2/the2" class="uri">https://is415-gaa-matthew-ho.netlify.app/takehomeex/takehomeex2/the2</a></li>
+<li>International Monetary Fund. (2024, April 16). World Economic Outlook Database, April 2024 Edition: Thailand. <a href="https://www.imf.org/en/Publications/WEO/weo-database/2024/April" class="uri">https://www.imf.org/en/Publications/WEO/weo-database/2024/April</a></li>
+<li>Kam, T. S. (2022). R for Geospatial Data Science and Analytics. <a href="https://r4gdsa.netlify.app" class="uri">https://r4gdsa.netlify.app</a></li>
+<li>Khambhammettu, P. (2005). Mann-Kendall Analysis for the Fort Ord Site (Report No.&nbsp;OU-1 2004 Annual Groundwater Monitoring Report-Former Fort Ord, California). HydroGeoLogic, Inc.</li>
+<li>Khant, M. N. (2024, February 10). Take-Home Exercise 02: Spatio-Temporal Analysis of Dengue Fever Outbreak in Tainan City, Taiwan. <a href="https://is415-geospatial-with-khant.netlify.app/take-home_ex/take-home_ex02/take-home_ex02" class="uri">https://is415-geospatial-with-khant.netlify.app/take-home_ex/take-home_ex02/take-home_ex02</a></li>
+<li>Kongjareon, Y., Samoh, N., Peerawaranun, P. et al.&nbsp;Pride-based violence, intoxicated sex and poly-drug use: a vocational school-based study of heterosexual and LGBT students in Bangkok. BMC Psychiatry 22, 148 (2022). <a href="https://doi.org/10.1186/s12888-022-03777-7" class="uri">https://doi.org/10.1186/s12888-022-03777-7</a></li>
+<li>Kanato, M., Sarasiri, R., &amp; Leyatikul, P. (Eds.). (2022). ASEAN drug monitoring report 2021. ASEAN Narcotics Cooperation Center. <a href="https://asean.org/wp-content/uploads/2023/11/Drug-Monitoring-Report-2021.pdf" class="uri">https://asean.org/wp-content/uploads/2023/11/Drug-Monitoring-Report-2021.pdf</a></li>
 <li>Moraga, P. (2024). Spatial neighbourhood matrices. In Spatial statistics for Data Science: Theory and practice with R (pp.&nbsp;83–94). CRC Press.</li>
-<li>Thailand. (n.d.). Hands-Off Cain. Retrieved 23 September 2024, from https://www.handsoffcain.info/bancadati/asia-middle-east-australia-and-oceania/thailand-17000464</li>
-<li>Tobler, W. R. (1970). A computer movie simulating urban growth in the Detroit region. Economic Geography (Supplement: Proceedings, International Geographical Union. Commission on Quantitative Methods), 46, 234-240. https://doi.org/10.2307/143141</li>
-<li>United Nations Development Programme. (2024, March 13). Human Development Report 2023/2024 (PDF). Retrieved September 23, 2024, from https://hdr.undp.org/sites/default/files/reports/3503/hdr2023-24reporten.pdf</li>
-<li>World Bank. (n.d.). Gini index. Retrieved September 23, 2024, from https://www.worldbank.org/en/topic/poverty/brief/gini-index</li>
-<li>World Bank Open Data. (n.d.). Unemployment, total (% of total labor force) (national estimate) - Thailand. Retrieved 27 September 2024, from https://data.worldbank.org/indicator/SL.UEM.TOTL.NE.ZS?end=2023&amp;locations=TH</li>
-<li>World Drug Day report highlights spike in drug use, increased trafficking | UN News. (2024, June 26). United Nations. https://news.un.org/en/story/2024/06/1151446biggest increase from 1873kg in 2020 to 4520kg in 2021 (Kanato et al., 2022).</li>
+<li>Thailand. (n.d.). Hands-Off Cain. Retrieved 23 September 2024, from <a href="https://www.handsoffcain.info/bancadati/asia-middle-east-australia-and-oceania/thailand-17000464" class="uri">https://www.handsoffcain.info/bancadati/asia-middle-east-australia-and-oceania/thailand-17000464</a></li>
+<li>The Lancet Regional Health – Southeast Asia. (2023). Escape from quicksand: Illicit drug use among youth in southeast Asia. The Lancet Regional Health - Southeast Asia, 10, 100175. <a href="https://doi.org/10.1016/j.lansea.2023.100175" class="uri">https://doi.org/10.1016/j.lansea.2023.100175</a></li>
+<li>Tobler, W. R. (1970). A computer movie simulating urban growth in the Detroit region. Economic Geography (Supplement: Proceedings, International Geographical Union. Commission on Quantitative Methods), 46, 234-240. <a href="https://doi.org/10.2307/143141" class="uri">https://doi.org/10.2307/143141</a></li>
+<li>United Nations Development Programme. (2024, March 13). Human Development Report 2023/2024 (PDF). Retrieved September 23, 2024, from <a href="https://hdr.undp.org/sites/default/files/reports/3503/hdr2023-24reporten.pdf" class="uri">https://hdr.undp.org/sites/default/files/reports/3503/hdr2023-24reporten.pdf</a></li>
+<li>World Bank. (n.d.). Gini index. Retrieved September 23, 2024, from <a href="https://www.worldbank.org/en/topic/poverty/brief/gini-index" class="uri">https://www.worldbank.org/en/topic/poverty/brief/gini-index</a></li>
+<li>World Bank Open Data. (n.d.). Unemployment, total (% of total labor force) (national estimate) - Thailand. Retrieved 27 September 2024, from <a href="https://data.worldbank.org/indicator/SL.UEM.TOTL.NE.ZS?end=2023&amp;locations=TH" class="uri">https://data.worldbank.org/indicator/SL.UEM.TOTL.NE.ZS?end=2023&amp;locations=TH</a></li>
+<li>World Drug Day report highlights spike in drug use, increased trafficking | UN News. (2024, June 26). United Nations. <a href="https://news.un.org/en/story/2024/06/1151446" class="uri">https://news.un.org/en/story/2024/06/1151446</a></li>
 </ol>
 
 

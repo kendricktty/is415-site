@@ -22,6 +22,10 @@ The aim of today's study is to discover:
 -   If the indicators of drug abuse and trafficking are indeed spatially-dependent, and if so, where the clusters, outliers and hotspots are located,
 -   How these indicators have varied over the past 6 years, by means of emerging hot spot analysis.
 
+### TH2.1.1 Map of Thailand's Provinces
+
+A map of Thailand's provinces can be accessed [here](https://en.wikipedia.org/wiki/Provinces_of_Thailand#The_76_provinces_in_Thailand).
+
 ## TH2.2 The Drug Problem in Thailand
 
 [**Thailand**](https://en.wikipedia.org/wiki/Thailand) (2024 GDP per capita - PPP: \$23,401; Gini coefficient: 35.1 - [medium]{style="color:orange;"}; HDI: 0.083 - [very high]{style="color:darkgreen;"}) (International Monetary Fund, 2024) (World Bank, n.d.) (United Nations Development Programme, 2024) is located in close proximity to the [Golden Triangle](https://en.wikipedia.org/wiki/Golden_Triangle_(Southeast_Asia)), which comprises the northern part of the country along with northeastern Myanmar and northern Laos. In 2021, its drug trafficking situation remained critical, with 337,186 drug cases in total. While seizures of ketamine decreased between 2020 and 2021, seizures of methamphetamine, ice and heroin increased in the same period, with heroin seeing the biggest increase from 1873kg in 2020 to 4520kg in 2021 (Kanato et al., 2022). Considering that the *COVID-19 pandemic* - which caused a global economic depression among other socio-economic effects - occurred around this time, it can be theorised that those who encountered economic hardship as a result of the pandemic might turn to drug trafficking to support themselves and their families.
@@ -261,13 +265,13 @@ We will also define our null and alternative hypotheses as such:
     -   For *Moran's I*: $H_1$: $-1 ≤ I < E[I] \land E[I] < I ≤ 1$, and;
     -   For *Geary's C*: $H_1$ $0 ≤ C < E[C] \land E[C] < C ≤ 3$
 
-### TH2.5.2 Moran's $I$
+## TH2.6 Moran's $I$
 
 With our matrices constructed, we can calculate our global spatial correlation statistics. Moran’s $I$ describes how features differ from the values in the study area as a whole. It approaches $1$ when similar values are clustered, and approaches $-1$ when dissimilar values tend to cluster.
 
 The code chunk below computes Moran's $I$ on our *drug use* dataset, subsequently performing a Monte Carlo test and plotting the result in a histogram. We can use the histogram to visualise the permutation results and compare them to the expected value under null hypothesis.
 
-#### TH2.5.2.1 Moran's $I$ on `drug_use` statistics
+### TH2.6.1 Moran's $I$ on `drug_use` statistics
 
 ```{r}
 moran.test(thailand_2021$total_use_cases, listw=rswm_q_use, zero.policy = TRUE, na.action=na.omit)
@@ -290,7 +294,7 @@ From the output above:
 
 This shows that provinces with high drug use in Thailand can, to a limited extent, be near one another.
 
-#### TH2.5.2.2 Moran's $I$ on `drug_trafficking` statistics
+### TH2.6.2 Moran's $I$ on `drug_trafficking` statistics
 
 ```{r}
 moran.test(thailand_2021$total_trafficking_cases, listw=rswm_q_tr, zero.policy = TRUE, na.action=na.omit)
@@ -313,13 +317,13 @@ The output for our `drug_trafficking` statistics is similar to that for our `dru
 
 Like drug use, using Moran's I show that provinces with high drug trafficking in Thailand can, to a limited extent, be near one another.
 
-## TH2.6 Geary's $C$
+## TH2.7 Geary's $C$
 
 Geary's $C$ is another measure of global spatial autocorrelation that describes how features differ from their immediate neighbours. When $C > 1$, the points are dispersed, and when $C < 1$, the points are clustered. A $C$ value of $1$ indicates observations are randomly arranged in space. Geary’s $C$ approaches $0$ when similar values are clustered, and approaches $3$ when dissimilar values are clustered. Geary’s $C$ is inversely proportional to Moran’s I, so higher $C$s correspond to lower $I$s.
 
 Just as before, we will now perform Geary's C on both our `drug_use` and `drug_trafficking` statistics.
 
-### TH2.6.1 Geary's $C$ on `drug_use` statistics
+### TH2.7.1 Geary's $C$ on `drug_use` statistics
 
 ```{r}
 geary.test(thailand_2021$total_use_cases, listw=rswm_q_use, zero.policy = TRUE, na.action = na.omit)
@@ -342,7 +346,7 @@ From the output above:
 
 Hence, the Geary's C statistic on drug use cases in 2021 yielded inconclusive results.
 
-### TH2.6.2 Geary's $C$ on `drug_trafficking` statistics
+### TH2.7.2 Geary's $C$ on `drug_trafficking` statistics
 
 ```{r}
 geary.test(thailand_2021$total_trafficking_cases, listw=rswm_q_tr, zero.policy = TRUE, na.action = na.omit)
@@ -363,7 +367,7 @@ When Geary's C is run on the `drug_trafficking` statistics:
 
 Hence, the Geary's C measure on drug trafficking cases in 2021 indicates mild positive spatial autocorrelation, albeit stronger than that observed on our drug use statistics.
 
-## TH2.7 Deriving Local Measures of Spatial Autocorrelation
+## TH2.8 Deriving Local Measures of Spatial Autocorrelation
 
 Both Global Moran's I and Geary's C only return a surface observation on how Thailand's drug crime is distributed by province. To identify where the clusters are located, we need to use local indicators of spatial association (LISA), which indicate the extent of spatial clustering around each observation (Anselin, 1995) (Khant, 2024).
 
@@ -388,7 +392,7 @@ thailand_2021_trafficking.localMI <- cbind(thailand_2021, local_MI_trafficking) 
 
 We can then proceed to map the local Moran's I statistics and p-values. The colour palette used for mapping local Moran's I p-values (Khant, 2024) helps us easily identify statistically significant results, once again for a 95% confidence interval.
 
-### TH2.7.1 Mapping Local Moran's I statistics for `drug_use` cases
+### TH2.8.1 Mapping Local Moran's I statistics for `drug_use` cases
 
 ```{r}
 use.localMI.map <- tm_shape(thailand_2021_use.localMI) + tm_fill(col = "Ii", style = "pretty", title = "drug_use local Moran") + tm_borders(alpha = 0.5)
@@ -402,7 +406,7 @@ tmap_arrange(use.localMI.map, use.pv.map, asp = 1, ncol = 2)
 
 There are statistcally significant instances of dissimilar clustering toward the south in Krabi and Phattalung provinces, and a handful towards the central and north. With p-values of `0.1` or more, the local Moran's I values for the rest of the country cannot be considered to be statistically significant. This is a surprising result for our `drug_use` data.
 
-### TH2.7.2 Mapping Local Moran's I statistics for `drug_trafficking` cases
+### TH2.8.2 Mapping Local Moran's I statistics for `drug_trafficking` cases
 
 ```{r}
 tr.localMI.map <- tm_shape(thailand_2021_trafficking.localMI) + tm_fill(col = "Ii", style = "pretty", title = "drug_trafficking local Moran") + tm_borders(alpha = 0.5)
@@ -416,7 +420,7 @@ tmap_arrange(tr.localMI.map, tr.pv.map, asp = 1, ncol = 2)
 
 And likewise for our `drug_trafficking` statistics. The only statistically significant observation that confirms the hypothesis is Chiang Rai province up north, and Si Sa Ket, the western neighbour of Ubon Ratchathani province, to the east.
 
-### TH2.7.3 Performing Local Moran's I Monte Carlo test for `drug_use` cases
+### TH2.8.3 Performing Local Moran's I Monte Carlo test for `drug_use` cases
 
 Just like with global Moran's I, we can also perform a Monte Carlo permutation test for local Moran's I, and hopefully return a more realistic result.
 
@@ -439,7 +443,7 @@ use.pv.map <- tm_shape(thailand_2021_use.localMI) + tm_fill(col = "Pr.Ii",
 tmap_arrange(use.localMI.map, use.pv.map, asp = 1, ncol = 2)
 ```
 
-### TH2.7.4 Performing Local Moran's I Monte Carlo test for `drug_trafficking` cases
+### TH2.8.4 Performing Local Moran's I Monte Carlo test for `drug_trafficking` cases
 
 ```{r}
 tr.localMI.map <- tm_shape(thailand_2021_trafficking.localMI) + tm_fill(col = "Ii", style = "pretty", title = "drug_trafficking local Moran") + tm_borders(alpha = 0.5)
@@ -455,11 +459,11 @@ Just like last time, the only statistically significant areas to confirm the hyp
 
 Even after 999 simulations, we get results with p-values exceeding `0.05` for a 95% confidence interval, rendering the local Moran's I values generated to be inconclusive. Nonetheless, by plotting these values on a map anyway, we can still paint a sufficiently high-level picture of the drug situation in the area.
 
-## TH2.7.5 Drawing local Moran's I scatterplots
+## TH2.8.5 Drawing local Moran's I scatterplots
 
 The local Moran's I scatterplot illustrates the relationship between the drug use and trafficking statistics at each location, and the average values at neighbouring locations. It returns a plot with four quardrants as shown in the image below (Kam, 2022).
 
-[Interpretation of Local Moran's I scatterplot](https://is415-ay2024-25t1.netlify.app/lesson/lesson06/img/image7-15.jpg)
+[Interpretation of Local Moran's I scatterplot](scatter.jpg)
 
 ```{r}
 nci_use <- moran.plot(thailand_2021_use$total_use_cases, rswm_q_use, labels = thailand_2021_use$ADM1_EN, xlab = "total_use_cases", ylab = "Spatially lagged total_use_cases")
@@ -470,11 +474,11 @@ In terms of drug usage, notable high outliers among low neighbours are Chiang Ma
 
 In terms of drug trafficking, a notable low outlier among high neighbours is Mae Hong Song, on the eastern border with Myanmar and within the Golden Triangle. Major provinces within the Triangle - namely Chiang Rai and Chiang Mai - are considered to be clustered with neighbours also seeing high trafficking.
 
-### TH2.7.6 Creating LISA cluster map
+### TH2.8.6 Creating LISA cluster map
 
 The above information can also be plotted onto a map colourcoded by the type of spatial autocorrelation. The code chunks below create our LISA maps from our local Moran's I statistics, and plots the resulting quadrant map along with their corresponding quantile-classified basemaps.
 
-#### TH2.7.6.1 LISA cluster map for drug use data
+#### TH2.8.6.1 LISA cluster map for drug use data
 
 ```{r}
 quadrant <- vector(mode = "numeric", length = nrow(local_MI_use))
@@ -504,7 +508,7 @@ use_LISA <- tm_shape(thailand_2021_use.localMI) +
 tmap_arrange(use_LISA, use_map)
 ```
 
-#### TH2.7.6.2 LISA cluster map for drug trafficking data
+#### TH2.8.6.2 LISA cluster map for drug trafficking data
 
 ```{r}
 quadrant <- vector(mode = "numeric", length = nrow(local_MI_trafficking))
@@ -534,7 +538,7 @@ tr_LISA <- tm_shape(thailand_2021_trafficking.localMI) +
 tmap_arrange(tr_LISA, trafficking_map)
 ```
 
-## TH2.8 Using Local $G_i^*$ statistics to perform hot and cold spot analysis
+## TH2.9 Using Local $G_i^*$ statistics to perform hot and cold spot analysis
 
 We need more local indicators to determine the extent of clustering in our drug crime data. Another method we can use is creating **Gertis and Ord's G-statistics**, or $G_i^*$. One of the earliest LISAs (Khant, 2024), they seek to determine the locations of clusters of high and low values - in our case, clusters of provinces with high incidences of drug trafficking, and clusters of those with low incidences of such. These scores are typically reported as z-scores, where positive values indicate a high-high cluster, and negative values indicate a low-low cluster.
 
@@ -544,9 +548,9 @@ The analysis consists of three steps:
 2.  Computing the $G_i^*$ statistics
 3.  Mapping the $G_i^*$ statistics
 
-### TH2.8.1 `drug_use` dataset
+### TH2.9.1 `drug_use` dataset
 
-#### TH2.8.1.1 Deriving distance-based weight matrices
+#### TH2.9.1.1 Deriving distance-based weight matrices
 
 First, we define an adaptive distance-based weight matrix. We will do this by creating centroids - points associated with each polygon - by extracting longitudes and latitudes. This is done by mapping the `st_centroid()` function to each polygon in our dataset.
 
@@ -566,7 +570,7 @@ wm62_lw <- nb2listw(wm_d62, style = 'B', zero.policy = TRUE)
 summary(wm62_lw)
 ```
 
-#### TH2.8.1.2 Computing adaptive distance weight matrix
+#### TH2.9.1.2 Computing adaptive distance weight matrix
 
 ```{r}
 knn <- knn2nb(knearneigh(coords, k=8))
@@ -574,14 +578,14 @@ knn_lw <- nb2listw(knn, style = 'B')
 summary(knn_lw)
 ```
 
-#### TH2.8.1.3 Computing $G_i^*$ statistics
+#### TH2.9.1.3 Computing $G_i^*$ statistics
 
 ```{r}
 gi <- localG(thailand_2021_use$total_use_cases, knn_lw)
 thailand_2021_use.gi <- cbind(thailand_2021_use, as.matrix(gi)) %>% rename(gstat_adaptive = as.matrix.gi.)
 ```
 
-#### TH2.8.1.4 Plotting `drug_use` $G_i^*$ statistics on map
+#### TH2.9.1.4 Plotting `drug_use` $G_i^*$ statistics on map
 
 ```{r}
 gi_map <- tm_shape(thailand_2021_use.gi) + tm_fill(col = "gstat_adaptive", breaks=c(-3, -2, -1.96, -1.65, -1, 0, 1, 1.65, 1.96, 2, 3), palette = "-RdBu", title = "drug_use local Gi") + tm_borders(alpha = 0.5)
@@ -590,11 +594,11 @@ tmap_arrange(use_map, gi_map)
 
 There is one large cold spot to the northwest of the map towards the border with Myanmar, but as far as *hot spots* are concerned, the best candidate for that is located in the east, towards the border with Cambodia and Laos, and appears lukewarm. Most of that area is only suggestive of a hotspot at a 90% confidence interval, with only 3 provinces - Maha-Sarakham, Amnat-Charoen and Surin - showing strong evidence of a hotspot at a 95% confidence interval.
 
-### TH2.8.2 `drug_trafficking` dataset
+### TH2.9.2 `drug_trafficking` dataset
 
 We can repeat the entire process again with our `drug_trafficking` dataset.
 
-#### TH2.8.2.1 Deriving distance-based weight matrices
+#### TH2.9.2.1 Deriving distance-based weight matrices
 
 ```{r}
 # drug_trafficking data
@@ -612,7 +616,7 @@ wm62_lw <- nb2listw(wm_d62, style = 'B', zero.policy = TRUE)
 summary(wm62_lw)
 ```
 
-#### TH2.8.2.2 Computing adaptive distance weight matrix
+#### TH2.9.2.2 Computing adaptive distance weight matrix
 
 ```{r}
 knn <- knn2nb(knearneigh(coords, k=8))
@@ -620,14 +624,14 @@ knn_lw <- nb2listw(knn, style = 'B')
 summary(knn_lw)
 ```
 
-#### TH2.8.2.3 Computing $G_i^*$ statistics
+#### TH2.9.2.3 Computing $G_i^*$ statistics
 
 ```{r}
 gi <- localG(thailand_2021_trafficking$total_trafficking_cases, knn_lw)
 thailand_2021_trafficking.gi <- cbind(thailand_2021_trafficking, as.matrix(gi)) %>% rename(gstat_adaptive = as.matrix.gi.)
 ```
 
-#### TH2.8.2.4 Plotting `drug_use` $G_i^*$ statistics on map
+#### TH2.9.2.4 Plotting `drug_use` $G_i^*$ statistics on map
 
 ```{r}
 gi_map <- tm_shape(thailand_2021_trafficking.gi) + tm_fill(col = "gstat_adaptive", breaks=c(-3, -2, -1.96, -1.65, -1, 0, 1, 1.65, 1.96, 2, 3), palette = "-RdBu", title = "drug_trafficking local Gi") + tm_borders(alpha = 0.5)
@@ -636,11 +640,11 @@ tmap_arrange(trafficking_map, gi_map)
 
 There are no visible cold spots for our drug trafficking data, but there is one suggestive hot spot around Chiang Mai and Chiang Rai to the north (with only Chiang Rai showing a strong possibility), and three statistically significant clusters to the east.
 
-## TH2.9 Emerging Hotspot Analysis
+## TH2.10 Emerging Hotspot Analysis
 
 Since we have spatial-temporal data, we are able to perform emerging hotspot analysis, which will help us evaluate how the hot and cold spots in both our datasets have changed over time. It combines the $G_i^*$ statistic with the Man-Kendall test, which is used to assess the direction and statistical significance of a set of data values.
 
-### TH2.9.1 Data wrangling for EHSA
+### TH2.10.1 Data wrangling for EHSA
 
 We need to perform the following checks to ensure our data meets the prerequisites:
 
@@ -673,7 +677,7 @@ thailand_drug_spt <- spacetime(thailand_esa_drug, thailand, .loc_col = "ADM1_EN"
 is_spacetime_cube(thailand_drug_spt)
 ```
 
-### TH2.9.2 Performing EHSA
+### TH2.10.2 Performing EHSA
 
 We can now perform EHSA analysis using `emerging_hotspot_analysis()` from the `sfdep` package. It takes a spacetime object and the name of the variable of interest (`.var`).
 
@@ -687,7 +691,7 @@ thailand_ehsa_use <- thailand %>% left_join(thailand_ehsa_use, by = join_by(ADM1
 thailand_ehsa_tr <- thailand %>% left_join(thailand_ehsa_tr, by = join_by(ADM1_EN == location))
 ```
 
-### TH2.9.3 Visualising Distribution of EHSA classes
+### TH2.10.3 Visualising Distribution of EHSA classes
 
 The following bar chart reveals the distribution of different EHSA classes per province for both classes of drug offence.
 
@@ -721,7 +725,7 @@ ggplot(data = thailand_ehsa_use_sig, aes(y = classification, fill = classificati
 
 If we increased our threshold to `0.1` from `0.05`, we are able to detect 1 statistically significant oscilating hotspot.
 
-### TH2.9.4 Visualising EHSA Maps
+### TH2.10.4 Visualising EHSA Maps
 
 For this section, we will assume a 95% confidence interval for our `drug_trafficking` statistics, and ignore statistical significance for our `drug_use` statistics.
 
@@ -813,7 +817,7 @@ tm_shape(thailand_ehsa_tr_sig_cold)+
 tmap_arrange(hot_map, cold_map, asp = 1, ncol = 2)
 ```
 
-## TH2.10 Local $G_i^*$ and Mann-Kendall Tests
+## TH2.11 Local $G_i^*$ and Mann-Kendall Tests
 
 Emerging hotspot analysis combines local $G_i^*$ statistics with the Mann-Kendall test.
 
@@ -821,7 +825,7 @@ A non-parametric test, the Man-Kendall trend test is used to assess the directio
 
 As for Kendall's Score (Khant, 2024) (Khambhammettu, 2005) `S`, the value of `S` starts at `0` (i.e. no trend), and is incremented and decremented depending on the magnitude of later data points relative to the beginning. The final value of `S` indicates the overall trend. If `S` is positive, it suggests an upward trend, whereas if `S` is negative, it indicates a downward trend. Similarly to everything else we've been doing here, we also need to extract the associated p-value to determine its statistical significance.
 
-### TH2.10.1 Calculating Local $G_i^*$ Statistics
+### TH2.11.1 Calculating Local $G_i^*$ Statistics
 
 To calculate spatial-temporal local $G_i^*$, we can use the original spacetime cube we created and the following code chunks.
 
@@ -855,7 +859,7 @@ thailand_gi_stars_per_year_tr <- thailand_drug_nb %>%
 head(thailand_gi_stars_per_year_use)
 ```
 
-### TH2.10.2 Extracting local $G_i^*$ in hot and cold spots
+### TH2.11.2 Extracting local $G_i^*$ in hot and cold spots
 
 Earlier, we identified some hot and cold spots in section **2.8**, and we now want to find out how the drug crime activity in these locations has changed over time. Hence, we will now choose some of these hot and cold spots, and filter them from our spatial-temporal $G_i^*$ statistics. For simplicity, we will choose **Surin province** as our hot spot subject and **Kanchanaburi province** as our *cold spot* subject for further study - the former is considered a hot spot for both drug use and drug trafficking, and while the latter is a suggestive cold spot in terms of drug trafficking, it is considered a statistically significant cold spot in terms of drug use.
 
@@ -885,11 +889,11 @@ head(cbg_kanchanaburi_use)
 head(cbg_kanchanaburi_tr)
 ```
 
-### TH2.10.3 Plotting $G_i^*$ values and conducting Mann-Kendall trend test
+### TH2.11.3 Plotting $G_i^*$ values and conducting Mann-Kendall trend test
 
 Then, we will plot the $G_i^*$ values to visualise their trends between 2017 and 2022. Finally, we will use the Man-Kendall trend test to confirm the direction of the trends and their statistical significance.
 
-#### TH2.10.3.1 Surin Province (selected hot spot)
+#### TH2.11.3.1 Surin Province (selected hot spot)
 
 ```{r}
 ggplot() + geom_line(
@@ -919,7 +923,7 @@ cbg_surin_tr %>% summarise(
 
 For Surin province, Kendall's $tau$ is `0.6 > 0` for `drug_use` `0.867 > 0` for `drug_trafficking`, indicating a positive association over time. This suggests that as time progresses, the spatial clustering of both drug use and trafficking cases in the province tends to increase. Kendall's `S` is also `9` and `13` respectively, supporting this conclusion. However, since the p-values `sl` are `0.133` and `0.0242` respectively, only the results for `drug_trafficking` are statistically significant at a 95% confidence interval.
 
-#### TH2.10.3.2 Kanchanaburi Province (selected cold spot)
+#### TH2.11.3.2 Kanchanaburi Province (selected cold spot)
 
 ```{r}
 ggplot() + geom_line(
@@ -947,7 +951,7 @@ cbg_kanchanaburi_tr %>% summarise(
 
 For Kanchanaburi province, Kendall's $tau$ is `-0.733 < 0` for `drug_use` `-0.867 > 0` for `drug_trafficking`, indicating a strong negative association over time. This suggests that as time progresses, the spatial clustering of both drug use and trafficking cases in the province tends to increase. Kendall's `S` is also `-11` and `-13` respectively, supporting this conclusion. The p-values `sl` are `0.060` and `0.0242` respectively. While the results for `drug_trafficking` are statistically significant at a 95% confidence interval, the results for `drug_use` would only be considered statistically significant if we assume a 90% confidence interval.
 
-## TH2.11 Conclusion, Limitations and Extensibility
+## TH2.12 Conclusion, Limitations and Extensibility
 
 In conclusion, given a dataset of drug offence statistics, we used the results of preliminary exploratory data analysis to identify a time bracket - the year 2021 given its occurrence towards the middle of the COVID-19 pandemic - to derive global and local measures of spatial autocorrelation on confirmed drug use and drug trafficking statistics. Our global Moran's I and Geary's C statistics showed moderate positive spatial autocorrelation for both classes of drug offence, with the drug trafficking data's figure showing stronger correlation than that for drug use. This was, to an extent, backed up by the local Moran's I figures, which returned p-values of 0.1 or more for many provinces, only returning statistically significant observations towards the northwest and east of the country in the case of `drug_trafficking`, and sporadically so in the case of `drug_use`. Despite the lack of statistical significance, the local Moran's I scatterplot identified the provinces of Chiang Mai, Bangkok and Phuket to be high outliers among low neighbours in drug use, and Mae Hong Song as a notable low outlier among high neighbours in the case of drug trafficking. We identified drug use cold spots and drug trafficking hot spots, and performed emerging hotspot analysis to identify which among them were sporadic, new or consecutive - and found that we were unable to assign a pattern to most cases. Finally, on the hot spot of Surin and cold spot of Kanchanaburi, we extracted local $G_i^*$ statistics and, through the Mann-Kendall test, confirmed that Surin province was indeed a rising hotbed for drug trafficking, and that drug activity in Kanchanaburi province was on the decline.
 
