@@ -17,9 +17,10 @@ Drug abuse brings with it significant negative health, financial and social cons
 
 The aim of today's study is to discover:
 
-- How the trend of drug offences in Thailand varied over the past 6 years,
+- How the trend of drug offences in Thailand has varied over the past 6 years,
 - If the key indicators of drug abuse and trafficking in Thailand are independent from space,
-- If the indicators of drug abuse and trafficking are indeed spatially-dependent, and if so, where the clusters, outliers and hotspots are located.
+- If the indicators of drug abuse and trafficking are indeed spatially-dependent, and if so, where the clusters, outliers and hotspots are located,
+- How these indicators have varied over the past 6 years, by means of emerging hot spot analysis.
 
 ## TH2.2 The Drug Problem in Thailand
 
@@ -194,7 +195,7 @@ use_map <- tm_shape(thailand_2021) + tm_fill("total_use_cases", n = 8, style = "
 use_map_equal <- tm_shape(thailand_2021) + tm_fill("total_use_cases", n = 6, style = "equal") + tm_borders(alpha = 0.5)
 tmap_arrange(use_map + tm_layout(main.title = "Drug use across Thailand (quantile)", main.title.size = 1.2, frame = TRUE), use_map_equal + tm_layout(main.title = "Drug use across Thailand (equal)", main.title.size = 1.2, frame = TRUE), asp = 1, ncol = 2)
 ```
-Considering only confirmed cases of use and trafficking (and ignoring *suspected* ones), the provinces with the highest number of drug use cases appear clustered to the northeast, around Sakon Nakhon, and north, around Chiang Mai and Chiang Rai. Both these general regions are either within, or in close proximity to, the Golden Triangle that also encompasses northern Laos and northeastern Myanmar. There are also pockets of high use around the capital Bangkok near the Gulf of Thailand, and the southern provinces including Songkhla province on the border with Kedah, Malaysia, and the resort island province of Phuket. Surprisingly, provinces such as Kanchanaburi and Sing Buri, which are also close to the Golden Triangle, see relatively muted drug use.
+Considering only confirmed cases of drug use and drug trafficking (and ignoring *suspected* ones), the provinces with the highest number of drug use cases appear clustered to the northeast, around Sakon Nakhon, and north, around Chiang Mai and Chiang Rai. Both these general regions are either within, or in close proximity to, the Golden Triangle that also encompasses northern Laos and northeastern Myanmar. There are also pockets of high use around the capital Bangkok near the Gulf of Thailand, and the southern provinces including Songkhla province on the border with Kedah, Malaysia, and the resort island province of Phuket. Surprisingly, provinces such as Kanchanaburi and Sing Buri, which are also close to the Golden Triangle, see relatively muted drug use.
 
 ```{r}
 trafficking_map <- tm_shape(thailand_2021) + tm_fill("total_trafficking_cases", n = 8, style = "quantile") + tm_borders(alpha = 0.5)
@@ -243,10 +244,10 @@ rswm_q_tr
 ```
 We will also define our null and alternative hypotheses as such:
 
-- **Null Hypotheses $H_0_$: the tests indicate no spatial autocorrelation:
-  - For *Moran's I*: $H_0_: I = E[I] = 0$, and;
+- **Null Hypotheses $H_0_$ **: the tests indicate no spatial autocorrelation:
+  - For *Moran's I*: $H_0_$ **: I = E[I] = 0$, and;
   - For *Geary's C*:
-- **Alternative Hypotheses
+- **Alternative Hypotheses: 
 
 ### TH2.5.2 Moran's I
 
@@ -433,11 +434,11 @@ tmap_arrange(tr.localMI.map, tr.pv.map, asp = 1, ncol = 2)
 ```
 Just like last time, the only statistically significant areas to confirm the hypothesis are Chiang Rai and Si Sa Ket.
 
-Even after 999 simulations, we get results with p-values exceeding `0.05` for a 95% confidence interval, rendering the local Moran's I values generated to be inconclusive.
+Even after 999 simulations, we get results with p-values exceeding `0.05` for a 95% confidence interval, rendering the local Moran's I values generated to be inconclusive. Nonetheless, by plotting these values on a map anyway, we can still paint a sufficiently high-level picture of the drug situation in the area.
 
 ## TH2.7.5 Drawing local Moran's I scatterplots
 
-The local Moran's I scatterplot illustrates the relationship between the drug use and trafficking statistics at each location, and the average values at neighbouring locations. It returns a plot with four quardrants which should be interested as shown in the image below (Kam, 2022).
+The local Moran's I scatterplot illustrates the relationship between the drug use and trafficking statistics at each location, and the average values at neighbouring locations. It returns a plot with four quardrants as shown in the image below (Kam, 2022).
 
 [Interpretation of Local Moran's I scatterplot](https://is415-ay2024-25t1.netlify.app/lesson/lesson06/img/image7-15.jpg)
 
@@ -621,7 +622,7 @@ We need to perform the following checks to ensure our data meets the prerequisit
 
 * The data is not collected seasonally (it was collected yearly)
 * One point per time period (each time period contains the number of drug use cases and trafficking cases only)
-* Data does not have covariates (as Ho (2024) rightly points out, while factors such as human population and unemployment rate can affect the number of drug offence cases, we have to work within our limitations in many data science tasks including this one).
+* Data does not have covariates (as Matthew (Ho, 2024) rightly points out, while factors such as human population and unemployment rate can affect the number of drug offence cases, we have to work within our limitations in many data science tasks including this one).
 
 Our data fulfills all three requirements, so we can proceed to create a new summary table containing the total number of drug use and trafficking cases each year for each province.
 
@@ -784,7 +785,7 @@ tmap_arrange(hot_map, cold_map, asp = 1, ncol = 2)
 
 Emerging hotspot analysis combines local Gi* statistics with the Mann-Kendall test.
 
-A non-parametric test, the Man-Kendall trend test is used to assess the direction (increasing/decreasing) of a set of data values over time, and whether the trend in either direction is statistically significant. It returns two values: Kendall's Score `s`, and Kendall's Tau `tau`, which is a correlation coefficient is positive ($tau$ > 0) if a correlation is present, and zero ($tau$ = 0) otherwise (Khant, 2024) (Gilbert, 1987).
+A non-parametric test, the Man-Kendall trend test is used to assess the direction (increasing/decreasing) of a set of data values over time, and whether the trend in either direction is statistically significant. It returns two values: Kendall's Score `s`, and Kendall's Tau `tau`, which is a correlation coefficient that is positive ($tau$ > 0) if a correlation is present, and zero ($tau$ = 0) otherwise (Khant, 2024) (Gilbert, 1987).
 
 As for Kendall's Score (Khant, 2024) (Khambhammettu, 2005) `S`, the value of `S` starts at `0` (i.e. no trend), and is incremented and decremented depending on the magnitude of later data points relative to the beginning. The final value of `S` indicates the overall trend. If `S` is positive, it suggests an upward trend, whereas if `S` is negative, it indicates a downward trend. Similarly to everything else we've been doing here, we also need to extract the associated p-value to determine its statistical significance.
 
@@ -808,11 +809,17 @@ head(thailand_drug_nb)
 We are interested in understanding the spatio-temporal dynamics of drug offence cases by year. Therefore, we need to use the following code chunk to perform Gi* calculation for each year.
 
 ```{r}
-thailand_gi_stars_per_year <- thailand_drug_nb %>%
+thailand_gi_stars_per_year_use <- thailand_drug_nb %>%
   group_by(fiscal_year) %>%
   mutate(gi_star_use = local_gstar_perm(total_use_cases, nb, wt)) %>%
+  unnest(gi_star_use) %>%
+  ungroup()
+
+thailand_gi_stars_per_year_tr <- thailand_drug_nb %>%
+  group_by(fiscal_year) %>%
   mutate(gi_star_tr = local_gstar_perm(total_trafficking_cases, nb, wt)) %>%
-  ungroup(gi_star_use) %>% ungroup(gi_star_tr)
+  unnest(gi_star_tr) %>%
+  ungroup()
 head(thailand_gi_stars_per_year)
 ```
 ### TH2.10.2 Extracting local Gi* in hot and cold spots
@@ -823,13 +830,26 @@ First, we will filter our our Gi* statistics for both areas.
 
 ```{r}
 # Surin province
-cbg_surin <- thailand_gi_stars_per_year %>% ungroup() %>%
-  filter(ADM1_EN == "Surin") %>%
-  select(ADM1_EN, fiscal_year, gi_star_use, gi_star_tr)
+cbg_surin_use <- thailand_gi_stars_per_year_use %>%
+  filter(ADM1_EN == "Surin")
+  # select(ADM1_EN, fiscal_year, gi_star_use)
+
+cbg_surin_tr <- thailand_gi_stars_per_year_tr %>%
+  filter(ADM1_EN == "Surin")
+  # select(ADM1_EN, fiscal_year, gi_star_use)
+
+head(cbg_surin_use)
+head(cbg_surin_tr)
+
 # Kanchanaburi province
-cbg_kanchanaburi <- thailand_gi_stars_per_year %>% ungroup() %>%
-  filter(ADM1_EN == "Kanchanaburi") %>%
-  select(ADM1_EN, fiscal_year, gi_star_use, gi_star_tr)
+cbg_kanchanaburi_use <- thailand_gi_stars_per_year_use %>%
+  filter(ADM1_EN == "Kanchanaburi")
+
+cbg_kanchanaburi_tr <- thailand_gi_stars_per_year_tr %>%
+  filter(ADM1_EN == "Kanchanaburi")
+
+head(cbg_kanchanaburi_use)
+head(cbg_kanchanaburi_tr)
 ```
 
 ### TH2.10.3 Plotting Gi* values and conducting Mann-Kendall trend test
@@ -840,12 +860,12 @@ Then, we will plot the Gi* values to visualise their trends between 2017 and 202
 
 ```{r}
 ggplot() + geom_line(
-  data = cbg_surin,
-  mapping = aes(x = fiscal_year, y = gi_star_use$gi_star, color = "Drug Use in Surin Province")
+  data = cbg_surin_use,
+  mapping = aes(x = fiscal_year, y = gi_star, color = "Drug Use in Surin Province")
 ) + 
   geom_line(
-    data = cbg_surin,
-    mapping = aes(x = fiscal_year, y = gi_star_tr$gi_star, color = "Drug Trafficking in Surin Province")
+    data = cbg_surin_tr,
+    mapping = aes(x = fiscal_year, y = gi_star, color = "Drug Trafficking in Surin Province")
 ) +
   labs(x = "Fiscal year", y = "Gi* Value", title = "Gi* for Surin Province between 2017 and 2022", color = "Village")
 ```
@@ -854,31 +874,50 @@ It turns out the Surin province has always been a hotspot for drug trafficking, 
 As for drug use, Surin province briefly became a suggestive cold spot in the year 2020, when its Gi* statistic fell to about `0.8` in 2020.
 
 ```{r}
-cbg_surin_use <- cbg_surin %>% summarise(
-  mann_kendall = list(unclass(Kendall::MannKendall(gi_star_use)))) %>%
-  tidyr::unnest_wider(mann_kendall_use)
+cbg_surin_use %>% summarise(
+  mann_kendall = list(unclass(Kendall::MannKendall(gi_star)))) %>%
+  tidyr::unnest_wider(mann_kendall)
 
-cbg_surin_tr <- cbg_surin %>% summarise(
-  mann_kendall = list(unclass(Kendall::MannKendall(gi_star_tr)))) %>%
-  tidyr::unnest_wider(mann_kendall_tr)
+cbg_surin_tr %>% summarise(
+  mann_kendall = list(unclass(Kendall::MannKendall(gi_star)))) %>%
+  tidyr::unnest_wider(mann_kendall)
 ```
+
+For Surin province, Kendall's $tau$ is `0.6 > 0` for `drug_use` `0.867 > 0` for `drug_trafficking`, indicating a positive association over time. This suggests that as time progresses, the spatial clustering of both drug use and trafficking cases in the province tends to increase. Kendall's `S` is also `9` and `13` respectively, supporting this conclusion. However, since the p-values `sl` are `0.133` and `0.0242` respectively, only the results for `drug_trafficking` are statistically significant at a 95% confidence interval.
 
 #### TH2.10.3.2 Kanchanaburi Province (selected cold spot)
 
 ```{r}
 ggplot() + geom_line(
-  data = cbg_kanchanaburi,
-  mapping = aes(x = fiscal_year, y = gi_star_use$gi_star, color = "Drug Use in Kanchanaburi Province")
+  data = cbg_kanchanaburi_use,
+  mapping = aes(x = fiscal_year, y = gi_star, color = "Drug Use in Kanchanaburi Province")
 ) + 
   geom_line(
-    data = cbg_kanchanaburi,
-    mapping = aes(x = fiscal_year, y = gi_star_tr$gi_star, color = "Drug Trafficking in Kanchanaburi Province")
+    data = cbg_kanchanaburi_tr,
+    mapping = aes(x = fiscal_year, y = gi_star, color = "Drug Trafficking in Kanchanaburi Province")
 ) +
   labs(x = "Fiscal year", y = "Gi* Value", title = "Gi* for Kanchanaburi Province between 2017 and 2022", color = "Village")
 ```
+
 Kanchanaburi province, on the other hand, has been largely a cold spot of both drug use and trafficking since late-2018, with their Gi* statistics hitting their minimum in 2021.
 
+```{r}
+cbg_kanchanaburi_use %>% summarise(
+  mann_kendall = list(unclass(Kendall::MannKendall(gi_star)))) %>%
+  tidyr::unnest_wider(mann_kendall)
+
+cbg_kanchanaburi_tr %>% summarise(
+  mann_kendall = list(unclass(Kendall::MannKendall(gi_star)))) %>%
+  tidyr::unnest_wider(mann_kendall)
+```
+
+For Kanchanaburi province, Kendall's $tau$ is `-0.733 < 0` for `drug_use` `-0.867 > 0` for `drug_trafficking`, indicating a strong negative association over time. This suggests that as time progresses, the spatial clustering of both drug use and trafficking cases in the province tends to increase. Kendall's `S` is also `-11` and `-13` respectively, supporting this conclusion. The p-values `sl` are `0.060` and `0.0242` respectively. While the results for `drug_trafficking` are statistically significant at a 95% confidence interval, the results for `drug_use` would only be considered statistically significant if we assume a 90% confidence interval.
+
 ## TH2.11 Conclusion, Limitations and Extensibility
+
+In conclusion, given a dataset of drug offence statistics, we used the results of preliminary exploratory data analysis to identify a time bracket - the year 2021 given its occurrence towards the middle of the COVID-19 pandemic - to derive global and local measures of spatial autocorrelation on confirmed drug use and drug trafficking statistics. Our global Moran's I and Geary's C statistics showed moderate positive spatial autocorrelation for both classes of drug offence, with the drug trafficking data's figure showing stronger correlation than that for drug use. This was, to an extent, backed up by the local Moran's I figures, which returned p-values of 0.1 or more for many provinces, only returning statistically significant observations towards the northwest and east of the country in the case of `drug_trafficking`, and sporadically so in the case of `drug_use`. Despite the lack of statistical significance, the local Moran's I scatterplot identified the provinces of Chiang Mai, Bangkok and Phuket to be high outliers among low neighbours in drug use, and Mae Hong Song as a notable low outlier among high neighbours in the case of drug trafficking. We identified drug use cold spots and drug trafficking hot spots, and performed emerging hotspot analysis to identify which among them were sporadic, new or consecutive - and found that we were unable to assign a pattern to most cases. Finally, on the hot spot of Surin and cold spot of Kanchanaburi, we extracted local Gi* statistics and, through the Mann-Kendall test, confirmed that Surin province was indeed a rising hotbed for drug trafficking, and that drug activity in Kanchanaburi province was on the decline.
+
+
 
 ## References
 
