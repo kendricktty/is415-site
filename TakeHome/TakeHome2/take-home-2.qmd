@@ -170,7 +170,7 @@ ggplot(data = thailand_drug_trafficking, aes(x = fiscal_year)) +
 ```
 There was a spike in the number of drug use cases in 2021 in an otherwise variable set of data. Meanwhile, drug possession cases generally declined after 2019, though there was a slight increase in 2021.
 
-From both analysis steps, it makes sense to select the drug use cases trafficking cases in 2021 for further analysis. The year 2021 coincided with a rise in the country's unemployment rate to 1.2% from 0.7% two years prior (World Bank Open Data, n.d.), as the Thai economy was still recovering from the COVID-19 pandemic. Unemployment increases susceptibility to, among other negative effects, drug use.
+From both analysis steps, it makes sense to select the drug use and trafficking cases in 2021 for further analysis. The year 2021 coincided with a rise in the country's unemployment rate to 1.2% from 0.7% two years prior (World Bank Open Data, n.d.), as the Thai economy was still recovering from the COVID-19 pandemic. Unemployment increases susceptibility to, among other negative effects, drug use.
 
 ## TH2.4.3 Creating filtered table for 2021 observations
 
@@ -607,7 +607,7 @@ thailand_2021_trafficking.gi <- cbind(thailand_2021_trafficking, as.matrix(gi)) 
 
 ```{r}
 gi_map <- tm_shape(thailand_2021_trafficking.gi) + tm_fill(col = "gstat_adaptive", breaks=c(-3, -2, -1.96, -1.65, -1, 0, 1, 1.65, 1.96, 2, 3), palette = "-RdBu", title = "drug_trafficking local Gi") + tm_borders(alpha = 0.5)
-tmap_arrange(use_map, gi_map)
+tmap_arrange(trafficking_map, gi_map)
 ```
 There are no visible cold spots for our drug trafficking data, but there is one suggestive hot spot around Chiang Mai and Chiang Rai to the north (with only Chiang Rai showing a strong possibility), and three statistically significant clusters to the east.
 
@@ -784,6 +784,12 @@ tmap_arrange(hot_map, cold_map, asp = 1, ncol = 2)
 
 Emerging hotspot analysis combines local Gi* statistics with the Mann-Kendall test.
 
+A non-parametric test, the Man-Kendall trend test is used to assess the direction (increasing/decreasing) of a set of data values over time, and whether the trend in either direction is statistically significant. It returns two values: Kendall's Score `s`, and Kendall's Tau `tau`, which is a correlation coefficient is positive ($tau$ > 0) if a correlation is present, and zero ($tau$ = 0) otherwise (Khant, 2024) (Gilbert, 1987).
+
+As for Kendall's Score (Khant, 2024) (Khambhammettu, 2005) `S`, the value of `S` starts at `0` (i.e. no trend), and is incremented and decremented depending on the magnitude of later data points relative to the beginning. The final value of `S` indicates the overall trend. If `S` is positive, it suggests an upward trend, whereas if `S` is negative, it indicates a downward trend. Similarly to everything else we've been doing here, we also need to extract the associated p-value to determine its statistical significance.
+
+### TH2.10.1 Calculating Local Gi* Statistics
+
 To calculate spatial-temporal local Gi*, we can use the original spacetime cube we created and the following code chunks.
 
 ```{r}
@@ -799,21 +805,96 @@ thailand_drug_nb <- thailand_drug_spt %>%
 head(thailand_drug_nb)
 ```
 
-## TH2.11 Conclusion
+We are interested in understanding the spatio-temporal dynamics of drug offence cases by year. Therefore, we need to use the following code chunk to perform Gi* calculation for each year.
+
+```{r}
+thailand_gi_stars_per_year <- thailand_drug_nb %>%
+  group_by(fiscal_year) %>%
+  mutate(gi_star_use = local_gstar_perm(total_use_cases, nb, wt)) %>%
+  mutate(gi_star_tr = local_gstar_perm(total_trafficking_cases, nb, wt)) %>%
+  ungroup(gi_star_use) %>% ungroup(gi_star_tr)
+head(thailand_gi_stars_per_year)
+```
+### TH2.10.2 Extracting local Gi* in hot and cold spots
+
+Earlier, we identified some hot and cold spots in section **2.8**, and we now want to find out how the drug crime activity in these locations has changed over time. Hence, we will now choose some of these hot and cold spots, and filter them from our spatial-temporal Gi* statistics. For simplicity, we will choose **Surin province** as our hot spot subject and **Kanchanaburi province** as our *cold spot* subject for further study - the former is considered a hot spot for both drug use and drug trafficking, and while the latter is a suggestive cold spot in terms of drug trafficking, it is considered a statistically significant cold spot in terms of drug use.
+
+First, we will filter our our Gi* statistics for both areas.
+
+```{r}
+# Surin province
+cbg_surin <- thailand_gi_stars_per_year %>% ungroup() %>%
+  filter(ADM1_EN == "Surin") %>%
+  select(ADM1_EN, fiscal_year, gi_star_use, gi_star_tr)
+# Kanchanaburi province
+cbg_kanchanaburi <- thailand_gi_stars_per_year %>% ungroup() %>%
+  filter(ADM1_EN == "Kanchanaburi") %>%
+  select(ADM1_EN, fiscal_year, gi_star_use, gi_star_tr)
+```
+
+### TH2.10.3 Plotting Gi* values and conducting Mann-Kendall trend test
+
+Then, we will plot the Gi* values to visualise their trends between 2017 and 2022. Finally, we will use the Man-Kendall trend test to confirm the direction of the trends and their statistical significance.
+
+#### TH2.10.3.1 Surin Province (selected hot spot)
+
+```{r}
+ggplot() + geom_line(
+  data = cbg_surin,
+  mapping = aes(x = fiscal_year, y = gi_star_use$gi_star, color = "Drug Use in Surin Province")
+) + 
+  geom_line(
+    data = cbg_surin,
+    mapping = aes(x = fiscal_year, y = gi_star_tr$gi_star, color = "Drug Trafficking in Surin Province")
+) +
+  labs(x = "Fiscal year", y = "Gi* Value", title = "Gi* for Surin Province between 2017 and 2022", color = "Village")
+```
+It turns out the Surin province has always been a hotspot for drug trafficking, with the only difference being its intensity. Based on Gi* statistics, the province starts off as a suggestive hotspot at `0.5`, and would emerge into a statistically significant hotspot by 2022 with a value of around `4.25`.
+
+As for drug use, Surin province briefly became a suggestive cold spot in the year 2020, when its Gi* statistic fell to about `0.8` in 2020.
+
+```{r}
+cbg_surin_use <- cbg_surin %>% summarise(
+  mann_kendall = list(unclass(Kendall::MannKendall(gi_star_use)))) %>%
+  tidyr::unnest_wider(mann_kendall_use)
+
+cbg_surin_tr <- cbg_surin %>% summarise(
+  mann_kendall = list(unclass(Kendall::MannKendall(gi_star_tr)))) %>%
+  tidyr::unnest_wider(mann_kendall_tr)
+```
+
+#### TH2.10.3.2 Kanchanaburi Province (selected cold spot)
+
+```{r}
+ggplot() + geom_line(
+  data = cbg_kanchanaburi,
+  mapping = aes(x = fiscal_year, y = gi_star_use$gi_star, color = "Drug Use in Kanchanaburi Province")
+) + 
+  geom_line(
+    data = cbg_kanchanaburi,
+    mapping = aes(x = fiscal_year, y = gi_star_tr$gi_star, color = "Drug Trafficking in Kanchanaburi Province")
+) +
+  labs(x = "Fiscal year", y = "Gi* Value", title = "Gi* for Kanchanaburi Province between 2017 and 2022", color = "Village")
+```
+Kanchanaburi province, on the other hand, has been largely a cold spot of both drug use and trafficking since late-2018, with their Gi* statistics hitting their minimum in 2021.
+
+## TH2.11 Conclusion, Limitations and Extensibility
 
 ## References
 
 1. Anselin, L. (1995). Local indicators of spatial association—LISA. Geographical Analysis, 27(2), 93–115. https://doi.org/10.1111/j.1538-4632.1995.tb00338.x
-2. Ho, M. (2024, March 1). Take-Home Exercise 2. https://is415-gaa-matthew-ho.netlify.app/takehomeex/takehomeex2/the2
-3. International Monetary Fund. (2024, April 16). World Economic Outlook Database, April 2024 Edition: Thailand. https://www.imf.org/en/Publications/WEO/weo-database/2024/April
-4. Kam, T. S. (2022). R for Geospatial Data Science and Analytics. https://r4gdsa.netlify.app
-5. Khant, M. N. (2024, February 10). Take-Home Exercise 02: Spatio-Temporal Analysis of Dengue Fever Outbreak in Tainan City, Taiwan. https://is415-geospatial-with-khant.netlify.app/take-home_ex/take-home_ex02/take-home_ex02
-6. Kongjareon, Y., Samoh, N., Peerawaranun, P. et al. Pride-based violence, intoxicated sex and poly-drug use: a vocational school-based study of heterosexual and LGBT students in Bangkok. BMC Psychiatry 22, 148 (2022). https://doi.org/10.1186/s12888-022-03777-7
-7. Kanato, M., Sarasiri, R., & Leyatikul, P. (Eds.). (2022). ASEAN drug monitoring report 2021. ASEAN Narcotics Cooperation Center.
-8. Moraga, P. (2024). Spatial neighbourhood matrices. In Spatial statistics for Data Science: Theory and practice with R (pp. 83–94). CRC Press.
-9. Thailand. (n.d.). Hands-Off Cain. Retrieved 23 September 2024, from https://www.handsoffcain.info/bancadati/asia-middle-east-australia-and-oceania/thailand-17000464
-10. Tobler, W. R. (1970). A computer movie simulating urban growth in the Detroit region. Economic Geography (Supplement: Proceedings, International Geographical Union. Commission on Quantitative Methods), 46, 234-240. https://doi.org/10.2307/143141
-11. United Nations Development Programme. (2024, March 13). Human Development Report 2023/2024 (PDF). Retrieved September 23, 2024, from https://hdr.undp.org/sites/default/files/reports/3503/hdr2023-24reporten.pdf
-12. World Bank. (n.d.). Gini index. Retrieved September 23, 2024, from https://www.worldbank.org/en/topic/poverty/brief/gini-index
-13. World Bank Open Data. (n.d.). Unemployment, total (% of total labor force) (national estimate) - Thailand. Retrieved 27 September 2024, from https://data.worldbank.org/indicator/SL.UEM.TOTL.NE.ZS?end=2023&locations=TH
-14. World Drug Day report highlights spike in drug use, increased trafficking | UN News. (2024, June 26). United Nations. https://news.un.org/en/story/2024/06/1151446biggest increase from 1873kg in 2020 to 4520kg in 2021 (Kanato et al., 2022).
+2. Gilbert, R. O. (1987). Statistical methods for environmental pollution monitoring. Van Nostrand Reinhold.
+3. Ho, M. (2024, March 1). Take-Home Exercise 2. https://is415-gaa-matthew-ho.netlify.app/takehomeex/takehomeex2/the2
+4. International Monetary Fund. (2024, April 16). World Economic Outlook Database, April 2024 Edition: Thailand. https://www.imf.org/en/Publications/WEO/weo-database/2024/April
+5. Kam, T. S. (2022). R for Geospatial Data Science and Analytics. https://r4gdsa.netlify.app
+6. Khambhammettu, P. (2005). Mann-Kendall Analysis for the Fort Ord Site (Report No. OU-1 2004 Annual Groundwater Monitoring Report-Former Fort Ord, California). HydroGeoLogic, Inc.
+7. Khant, M. N. (2024, February 10). Take-Home Exercise 02: Spatio-Temporal Analysis of Dengue Fever Outbreak in Tainan City, Taiwan. https://is415-geospatial-with-khant.netlify.app/take-home_ex/take-home_ex02/take-home_ex02
+8. Kongjareon, Y., Samoh, N., Peerawaranun, P. et al. Pride-based violence, intoxicated sex and poly-drug use: a vocational school-based study of heterosexual and LGBT students in Bangkok. BMC Psychiatry 22, 148 (2022). https://doi.org/10.1186/s12888-022-03777-7
+9. Kanato, M., Sarasiri, R., & Leyatikul, P. (Eds.). (2022). ASEAN drug monitoring report 2021. ASEAN Narcotics Cooperation Center.
+10. Moraga, P. (2024). Spatial neighbourhood matrices. In Spatial statistics for Data Science: Theory and practice with R (pp. 83–94). CRC Press.
+11. Thailand. (n.d.). Hands-Off Cain. Retrieved 23 September 2024, from https://www.handsoffcain.info/bancadati/asia-middle-east-australia-and-oceania/thailand-17000464
+12. Tobler, W. R. (1970). A computer movie simulating urban growth in the Detroit region. Economic Geography (Supplement: Proceedings, International Geographical Union. Commission on Quantitative Methods), 46, 234-240. https://doi.org/10.2307/143141
+13. United Nations Development Programme. (2024, March 13). Human Development Report 2023/2024 (PDF). Retrieved September 23, 2024, from https://hdr.undp.org/sites/default/files/reports/3503/hdr2023-24reporten.pdf
+14. World Bank. (n.d.). Gini index. Retrieved September 23, 2024, from https://www.worldbank.org/en/topic/poverty/brief/gini-index
+15. World Bank Open Data. (n.d.). Unemployment, total (% of total labor force) (national estimate) - Thailand. Retrieved 27 September 2024, from https://data.worldbank.org/indicator/SL.UEM.TOTL.NE.ZS?end=2023&locations=TH
+16. World Drug Day report highlights spike in drug use, increased trafficking | UN News. (2024, June 26). United Nations. https://news.un.org/en/story/2024/06/1151446biggest increase from 1873kg in 2020 to 4520kg in 2021 (Kanato et al., 2022).
