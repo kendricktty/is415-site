@@ -459,7 +459,7 @@ Just like last time, the only statistically significant areas to confirm the hyp
 
 Even after 999 simulations, we get results with p-values exceeding `0.05` for a 95% confidence interval, rendering the local Moran's I values generated to be inconclusive. Nonetheless, by plotting these values on a map anyway, we can still paint a sufficiently high-level picture of the drug situation in the area.
 
-## TH2.8.5 Drawing local Moran's I scatterplots
+### TH2.8.5 Drawing local Moran's I scatterplots
 
 The local Moran's I scatterplot illustrates the relationship between the drug use and trafficking statistics at each location, and the average values at neighbouring locations. It returns a plot with four quardrants as shown in the image below (Kam, 2022).
 

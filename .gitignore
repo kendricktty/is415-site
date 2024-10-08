@@ -10,3 +10,4 @@
 .quarto
 /.quarto/
 *data/
+*.zip

@@ -285,9 +285,7 @@ window.Quarto = {
   <li><a href="#th2.8.2-mapping-local-morans-i-statistics-for-drug_trafficking-cases" id="toc-th2.8.2-mapping-local-morans-i-statistics-for-drug_trafficking-cases" class="nav-link" data-scroll-target="#th2.8.2-mapping-local-morans-i-statistics-for-drug_trafficking-cases">TH2.8.2 Mapping Local Moran’s I statistics for <code>drug_trafficking</code> cases</a></li>
   <li><a href="#th2.8.3-performing-local-morans-i-monte-carlo-test-for-drug_use-cases" id="toc-th2.8.3-performing-local-morans-i-monte-carlo-test-for-drug_use-cases" class="nav-link" data-scroll-target="#th2.8.3-performing-local-morans-i-monte-carlo-test-for-drug_use-cases">TH2.8.3 Performing Local Moran’s I Monte Carlo test for <code>drug_use</code> cases</a></li>
   <li><a href="#th2.8.4-performing-local-morans-i-monte-carlo-test-for-drug_trafficking-cases" id="toc-th2.8.4-performing-local-morans-i-monte-carlo-test-for-drug_trafficking-cases" class="nav-link" data-scroll-target="#th2.8.4-performing-local-morans-i-monte-carlo-test-for-drug_trafficking-cases">TH2.8.4 Performing Local Moran’s I Monte Carlo test for <code>drug_trafficking</code> cases</a></li>
-  </ul></li>
-  <li><a href="#th2.8.5-drawing-local-morans-i-scatterplots" id="toc-th2.8.5-drawing-local-morans-i-scatterplots" class="nav-link" data-scroll-target="#th2.8.5-drawing-local-morans-i-scatterplots">TH2.8.5 Drawing local Moran’s I scatterplots</a>
-  <ul class="collapse">
+  <li><a href="#th2.8.5-drawing-local-morans-i-scatterplots" id="toc-th2.8.5-drawing-local-morans-i-scatterplots" class="nav-link" data-scroll-target="#th2.8.5-drawing-local-morans-i-scatterplots">TH2.8.5 Drawing local Moran’s I scatterplots</a></li>
   <li><a href="#th2.8.6-creating-lisa-cluster-map" id="toc-th2.8.6-creating-lisa-cluster-map" class="nav-link" data-scroll-target="#th2.8.6-creating-lisa-cluster-map">TH2.8.6 Creating LISA cluster map</a></li>
   </ul></li>
   <li><a href="#th2.9-using-local-g_i-statistics-to-perform-hot-and-cold-spot-analysis" id="toc-th2.9-using-local-g_i-statistics-to-perform-hot-and-cold-spot-analysis" class="nav-link" data-scroll-target="#th2.9-using-local-g_i-statistics-to-perform-hot-and-cold-spot-analysis">TH2.9 Using Local <span class="math inline">\(G_i^*\)</span> statistics to perform hot and cold spot analysis</a>
@@ -343,7 +341,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">October 7, 2024</p>
+      <p class="date-modified">October 8, 2024</p>
     </div>
   </div>
     
@@ -1217,9 +1215,8 @@ alternative hypothesis: greater</code></pre>
 <p>Just like last time, the only statistically significant areas to confirm the hypothesis are Chiang Rai and Si Sa Ket.</p>
 <p>Even after 999 simulations, we get results with p-values exceeding <code>0.05</code> for a 95% confidence interval, rendering the local Moran’s I values generated to be inconclusive. Nonetheless, by plotting these values on a map anyway, we can still paint a sufficiently high-level picture of the drug situation in the area.</p>
 </section>
-</section>
-<section id="th2.8.5-drawing-local-morans-i-scatterplots" class="level2">
-<h2 class="anchored" data-anchor-id="th2.8.5-drawing-local-morans-i-scatterplots">TH2.8.5 Drawing local Moran’s I scatterplots</h2>
+<section id="th2.8.5-drawing-local-morans-i-scatterplots" class="level3">
+<h3 class="anchored" data-anchor-id="th2.8.5-drawing-local-morans-i-scatterplots">TH2.8.5 Drawing local Moran’s I scatterplots</h3>
 <p>The local Moran’s I scatterplot illustrates the relationship between the drug use and trafficking statistics at each location, and the average values at neighbouring locations. It returns a plot with four quardrants as shown in the image below (Kam, 2022).</p>
 <p><a href="scatter.jpg">Interpretation of Local Moran’s I scatterplot</a></p>
 <div class="cell">
@@ -1242,6 +1239,7 @@ alternative hypothesis: greater</code></pre>
 </div>
 <p>In terms of drug usage, notable high outliers among low neighbours are Chiang Mai, Bangkok and Phuket, whereas a notable low outlier among high neighbours is Samut Prakan, which is Bangkok’s southeastern neighbour.</p>
 <p>In terms of drug trafficking, a notable low outlier among high neighbours is Mae Hong Song, on the eastern border with Myanmar and within the Golden Triangle. Major provinces within the Triangle - namely Chiang Rai and Chiang Mai - are considered to be clustered with neighbours also seeing high trafficking.</p>
+</section>
 <section id="th2.8.6-creating-lisa-cluster-map" class="level3">
 <h3 class="anchored" data-anchor-id="th2.8.6-creating-lisa-cluster-map">TH2.8.6 Creating LISA cluster map</h3>
 <p>The above information can also be plotted onto a map colourcoded by the type of spatial autocorrelation. The code chunks below create our LISA maps from our local Moran’s I statistics, and plots the resulting quadrant map along with their corresponding quantile-classified basemaps.</p>
