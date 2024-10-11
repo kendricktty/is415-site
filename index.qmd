@@ -1,6 +1,21 @@
 ---
 title: "IS415: Geospatial Analytics and Applications"
 subtitle: "Student portfolio website"
+listing:
+  - id: latest-exercise
+    contents:
+      - "HandsOn/hands-on-7.qmd"
+      - "TakeHome/TakeHome2/take-home-2.qmd"
+    type: default
+  - id: take-home-featured
+    contents: TakeHome
+    type: grid
+  - id: hands-on-featured
+    contents:
+      - "HandsOn/Hands-on_Ex01/hands-on-1.qmd"
+      - "HandsOn/Hands-on_Ex03/hands-on-3.qmd"
+      - "InClass/ICE4/in-class-4.qmd"
+    type: grid
 ---
 
 Welcome, and thanks for stopping by! My name is Kendrick, and you've reached my portfolio website for **IS415: Geospatial Analytics and Applications**.
@@ -10,10 +25,18 @@ hello_world <- "hello world!"
 print(hello_world)
 ```
 
-## Featured Exercises
+## Latest Exercises
 
-[Hands-on Exercise 1: Geospatial Data Wrangling with R](HandsOn/Hands-on_Ex01/hands-on-1.qmd)
+:::{#latest-exercise}
+:::
 
-[Hands-on Exercise 2: Thematic Mapping and GeoVisualisation with R](HandsOn/Hands-on_Ex02/hands-on-2.qmd)
+## Featured Take-Home Exercises
 
-[Hands-on Exercise 3: Spatial Point Patterns Analysis](HandsOn/Hands-on_Ex03/hands-on-3.qmd)
+:::{#take-home-featured}
+:::
+
+## Featured Hands-On Exercises
+---
+
+:::{#hands-on-featured}
+:::

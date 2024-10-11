@@ -45,3 +45,4 @@ shan_sf <- st_read(dsn = "data/geospatial",
 ict <- read_csv ("data/aspatial/Shan-ICT.csv")
 summary(ict)
 ```
+

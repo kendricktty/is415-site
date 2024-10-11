@@ -155,7 +155,7 @@ window.Quarto = {
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
     <a class="nav-link" href="../../about.html"> 
-<span class="menu-text">About me</span></a>
+<span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item dropdown ">
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-in-class-exercises" role="link" data-bs-toggle="dropdown" aria-expanded="false">
@@ -172,19 +172,23 @@ window.Quarto = {
   </li>  
         <li>
     <a class="dropdown-item" href="../../InClass/ICE3/in-class-3.html">
- <span class="dropdown-text">CE3: Spatial Point Patterns Analysis</span></a>
+ <span class="dropdown-text">CE3: Spatial Point Pattern Analysis</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="../../InClass/ICE4/in-class-4.html">
- <span class="dropdown-text">CE4/H4: Spatial-Temporal Point Patterns Analysis</span></a>
+ <span class="dropdown-text">CE4/HX4: SPatial-Temporal Point Pattern Analysis</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="../../InClass/ICE5/in-class-5.html">
- <span class="dropdown-text">CE5: Geographically-weighted statistics with gwModel</span></a>
+ <span class="dropdown-text">CE5: Spatial Weights and Applications</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="../../InClass/ICE5/in-class-6.html">
  <span class="dropdown-text">CE6: Measures of Spatial Autocorrelation</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../InClass/ICE7/in-class-7.html">
+ <span class="dropdown-text">CE7: Geographical Segmentation with Spatially Constrained Clustering Techniques</span></a>
   </li>  
     </ul>
   </li>
@@ -195,27 +199,31 @@ window.Quarto = {
     <ul class="dropdown-menu" aria-labelledby="nav-menu-hands-on-exercises">    
         <li>
     <a class="dropdown-item" href="../../HandsOn/Hands-on_Ex01/hands-on-1.html">
- <span class="dropdown-text">H1: Geospatial Data Wrangling with R</span></a>
+ <span class="dropdown-text">HX1: Geospatial Data Wrangling with R</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="../../HandsOn/Hands-on_Ex02/hands-on-2.html">
- <span class="dropdown-text">H2: Thematic Mapping and Geospatial visualisation with R</span></a>
+ <span class="dropdown-text">HX2: Thematic Mapping and Geovisualisation with R</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="../../HandsOn/Hands-on_Ex03/hands-on-3.html">
- <span class="dropdown-text">H3: Spatial Point Patterns Analysis</span></a>
+ <span class="dropdown-text">HX3: Spatial Point Pattern Analysis</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="../../InClass/ICE4/in-class-4.html">
- <span class="dropdown-text">CE4/H4: Spatial-Temporal Point Patterns Analysis</span></a>
+ <span class="dropdown-text">HX4/CE4: SPatial-Temporal Point Pattern Analysis</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="../../HandsOn/Hands-on_Ex05/hands-on-5.html">
- <span class="dropdown-text">H5: Spatial Weights and Appliations</span></a>
+ <span class="dropdown-text">HX5: Spatial Weights and Applications</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="../../HandsOn/hands-on-6.html">
- <span class="dropdown-text">HX6: Spatial Autocorrelation</span></a>
+ <span class="dropdown-text">HX6: Methods of Spatial Autocorrelation</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../HandsOn/hands-on-7.html">
+ <span class="dropdown-text">HX7: Geographical Segmentation with Spatially Constrained Clustering Techniques</span></a>
   </li>  
     </ul>
   </li>
@@ -226,11 +234,11 @@ window.Quarto = {
     <ul class="dropdown-menu" aria-labelledby="nav-menu-take-home-exercises">    
         <li>
     <a class="dropdown-item" href="../../TakeHome/TakeHome1/take-home-1.html">
- <span class="dropdown-text">TH1: Geospatial Analytics for Social Good</span></a>
+ <span class="dropdown-text">TH1: The Myanmar Civil War</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="../../TakeHome/TakeHome2/take-home-2.html">
- <span class="dropdown-text">TH2: Application of Geospatial Analysis Methods to Discover Thailand Drug Abuse at the Province Level</span></a>
+ <span class="dropdown-text">TH2: Drug Abuse in Thailand</span></a>
   </li>  
     </ul>
   </li>
@@ -341,7 +349,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">October 8, 2024</p>
+      <p class="date-modified">October 11, 2024</p>
     </div>
   </div>
     
@@ -1218,7 +1226,12 @@ alternative hypothesis: greater</code></pre>
 <section id="th2.8.5-drawing-local-morans-i-scatterplots" class="level3">
 <h3 class="anchored" data-anchor-id="th2.8.5-drawing-local-morans-i-scatterplots">TH2.8.5 Drawing local Moran’s I scatterplots</h3>
 <p>The local Moran’s I scatterplot illustrates the relationship between the drug use and trafficking statistics at each location, and the average values at neighbouring locations. It returns a plot with four quardrants as shown in the image below (Kam, 2022).</p>
-<p><a href="scatter.jpg">Interpretation of Local Moran’s I scatterplot</a></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="scatter.jpg" class="img-fluid figure-img"></p>
+<figcaption>Interpretation of Local Moran’s I scatterplot</figcaption>
+</figure>
+</div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>nci_use <span class="ot">&lt;-</span> <span class="fu">moran.plot</span>(thailand_2021_use<span class="sc">$</span>total_use_cases, rswm_q_use, <span class="at">labels =</span> thailand_2021_use<span class="sc">$</span>ADM1_EN, <span class="at">xlab =</span> <span class="st">"total_use_cases"</span>, <span class="at">ylab =</span> <span class="st">"Spatially lagged total_use_cases"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
