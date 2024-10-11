@@ -1,0 +1,47 @@
+---
+title: "HX7: Geographical Segmentation with Spatially Constrained Clustering Techniques"
+subtitle: "Hands-On Exercise 7"
+author: "Kendrick Teo"
+date: "2024-10-10"
+date-modified: "last-modified"
+
+execute: 
+  eval: true
+  echo: true
+  freeze: true
+---
+
+## HX7.1 Overview and Analytical Question
+
+This hands-on exercise is on delineating a homogeneous region using geographically-referenced multivariate data. Today, we return to [Myanmar](https://en.wikipedia.org/wiki/Myanmar) to divide the state of Shan into homogeneous regions using a key statistic: whether the population uses info-communication technologies like mobile phones and computers at home.
+
+## HX7.2 Installing and loading R packages and Data
+
+Today's R packages to be used are:
+
+* Spatial data handling
+  * sf, rgdal and spdep
+* Attribute data handling
+  * tidyverse, especially readr, ggplot2 and dplyr
+* Choropleth mapping
+  * tmap
+* Multivariate data visualisation and analysis
+  * coorplot, ggpubr, and heatmaply
+* Cluster analysis
+  * cluster
+* ClustGeo
+
+Today's dataset will be `Shan-ICT.csv`, an extract from the [2014 Myanmar Population and Housing Census](https://myanmar.unfpa.org/en/publications/2014-population-and-housing-census-myanmar-data-sheet) containing, as its name suggests, data on ICT use. We will superimpose this against township boundary data (admin 3) in Myanmar.
+
+```{r}
+pacman::p_load(spdep, tmap, sf, ClustGeo, 
+               ggpubr, cluster, factoextra, NbClust,
+               heatmaply, corrplot, psych, tidyverse, GGally)
+shan_sf <- st_read(dsn = "data/geospatial", 
+                   layer = "myanmar_township_boundaries") %>%
+  # Filter only boundaries of Shan state
+  filter(ST %in% c("Shan (East)", "Shan (North)", "Shan (South)")) %>%
+  select(c(2:7))
+ict <- read_csv ("data/aspatial/Shan-ICT.csv")
+summary(ict)
+```

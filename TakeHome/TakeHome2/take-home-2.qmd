@@ -463,7 +463,7 @@ Even after 999 simulations, we get results with p-values exceeding `0.05` for a 
 
 The local Moran's I scatterplot illustrates the relationship between the drug use and trafficking statistics at each location, and the average values at neighbouring locations. It returns a plot with four quardrants as shown in the image below (Kam, 2022).
 
-[Interpretation of Local Moran's I scatterplot](scatter.jpg)
+![Interpretation of Local Moran's I scatterplot](scatter.jpg)
 
 ```{r}
 nci_use <- moran.plot(thailand_2021_use$total_use_cases, rswm_q_use, labels = thailand_2021_use$ADM1_EN, xlab = "total_use_cases", ylab = "Spatially lagged total_use_cases")
