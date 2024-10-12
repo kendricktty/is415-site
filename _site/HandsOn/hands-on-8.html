@@ -282,9 +282,9 @@ window.Quarto = {
   <li><a href="#hx8.8-spatially-constrained-clustering-clustgeo-method" id="toc-hx8.8-spatially-constrained-clustering-clustgeo-method" class="nav-link" data-scroll-target="#hx8.8-spatially-constrained-clustering-clustgeo-method">HX8.8 Spatially Constrained Clustering: ClustGeo method</a>
   <ul class="collapse">
   <li><a href="#hx8.8.1-a-short-note-about-clustgeo" id="toc-hx8.8.1-a-short-note-about-clustgeo" class="nav-link" data-scroll-target="#hx8.8.1-a-short-note-about-clustgeo">HX8.8.1 A short note about ClustGeo</a></li>
-  </ul></li>
   <li><a href="#hx8.8.2-ward-like-hierarchical-clustering-with-clustgeo" id="toc-hx8.8.2-ward-like-hierarchical-clustering-with-clustgeo" class="nav-link" data-scroll-target="#hx8.8.2-ward-like-hierarchical-clustering-with-clustgeo">HX8.8.2 Ward-like hierarchical clustering with ClustGeo</a></li>
-  <li><a href="#hx8.8.3.1-mapping-the-clusters-formed" id="toc-hx8.8.3.1-mapping-the-clusters-formed" class="nav-link" data-scroll-target="#hx8.8.3.1-mapping-the-clusters-formed">HX8.8.3.1 Mapping the clusters formed</a></li>
+  <li><a href="#hx8.8.3-mapping-the-clusters-formed" id="toc-hx8.8.3-mapping-the-clusters-formed" class="nav-link" data-scroll-target="#hx8.8.3-mapping-the-clusters-formed">HX8.8.3 Mapping the clusters formed</a></li>
+  </ul></li>
   <li><a href="#hx8.9-spatially-constrained-hierarchical-clustering" id="toc-hx8.9-spatially-constrained-hierarchical-clustering" class="nav-link" data-scroll-target="#hx8.9-spatially-constrained-hierarchical-clustering">HX8.9 Spatially-constrained hierarchical clustering</a></li>
   <li><a href="#hx8.10-visual-interpretation-of-clusters" id="toc-hx8.10-visual-interpretation-of-clusters" class="nav-link" data-scroll-target="#hx8.10-visual-interpretation-of-clusters">HX8.10 Visual interpretation of clusters</a>
   <ul class="collapse">
@@ -568,12 +568,12 @@ B 55 3025 7626.765 582607.8 5220160</code></pre>
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(shan.mst)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>     [,1] [,2]      [,3]
-[1,]   19   39  7.941836
-[2,]   39   41 16.280878
-[3,]   41   27  7.829342
-[4,]   27   30  5.760801
-[5,]   30   51 10.837735
-[6,]   51   38 14.666661</code></pre>
+[1,]   14   37 32.929477
+[2,]   37   35  9.165458
+[3,]   35   49 12.474445
+[4,]   49   12  5.969478
+[5,]   12   28  7.878999
+[6,]   28   13  9.279567</code></pre>
 </div>
 </div>
 <p>We can also plot our tree to show the observation numbers of each node in addition to the edge. As before, we plot this together with the township boundaries. We can see how the initial neighbour list is simplified to just one edge connecting each of the nodes, while passing through all the nodes.</p>
@@ -612,13 +612,13 @@ B 55 3025 7626.765 582607.8 5220160</code></pre>
  $ groups      : num [1:55] 3 3 6 3 3 3 3 3 3 3 ...
  $ edges.groups:List of 6
   ..$ :List of 3
+  .. ..$ node: num [1:22] 13 48 45 55 52 14 34 16 25 54 ...
+  .. ..$ edge: num [1:21, 1:3] 48 55 45 14 34 16 52 25 13 28 ...
+  .. ..$ ssw : num 342
+  ..$ :List of 3
   .. ..$ node: num [1:18] 47 27 53 38 42 15 41 51 43 32 ...
   .. ..$ edge: num [1:17, 1:3] 53 15 42 38 41 51 15 27 15 43 ...
   .. ..$ ssw : num 376
-  ..$ :List of 3
-  .. ..$ node: num [1:22] 13 48 54 55 45 37 34 16 25 52 ...
-  .. ..$ edge: num [1:21, 1:3] 48 55 54 37 34 16 45 25 13 13 ...
-  .. ..$ ssw : num 342
   ..$ :List of 3
   .. ..$ node: num [1:11] 2 6 8 1 36 4 10 9 46 5 ...
   .. ..$ edge: num [1:10, 1:3] 6 1 8 36 4 6 8 10 10 9 ...
@@ -650,14 +650,14 @@ B 55 3025 7626.765 582607.8 5220160</code></pre>
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>ccs6 <span class="ot">&lt;-</span> clust6<span class="sc">$</span>groups</span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>ccs6</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code> [1] 3 3 6 3 3 3 3 3 3 3 1 2 2 2 1 2 2 2 1 4 2 1 5 2 2 2 1 2 1 1 2 1 1 2 2 3 2 1
-[39] 1 1 1 1 1 4 2 3 1 2 2 2 1 2 1 2 2</code></pre>
+<pre><code> [1] 3 3 6 3 3 3 3 3 3 3 2 1 1 1 2 1 1 1 2 4 1 2 5 1 1 1 2 1 2 2 1 2 2 1 1 3 1 2
+[39] 2 2 2 2 2 4 1 3 2 1 1 1 2 1 2 1 1</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(ccs6)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>ccs6
  1  2  3  4  5  6 
-18 22 11  2  1  1 </code></pre>
+22 18 11  2  1  1 </code></pre>
 </div>
 </div>
 <p>Lastly, we can also plot the pruned tree that shows the five clusters on top of the townshop area.</p>
@@ -729,9 +729,8 @@ Warning in segments(coords[id1, 1], coords[id1, 2], coords[id2, 1], coords[id2,
 <p>The idea is then to determine a value of alpha which increases the spatial contiguity without deteriorating too much the quality of the solution based on the variables of interest. This need is supported by a function called <code>choicealpha()</code>.</p>
 </blockquote>
 </section>
-</section>
-<section id="hx8.8.2-ward-like-hierarchical-clustering-with-clustgeo" class="level2">
-<h2 class="anchored" data-anchor-id="hx8.8.2-ward-like-hierarchical-clustering-with-clustgeo">HX8.8.2 Ward-like hierarchical clustering with ClustGeo</h2>
+<section id="hx8.8.2-ward-like-hierarchical-clustering-with-clustgeo" class="level3">
+<h3 class="anchored" data-anchor-id="hx8.8.2-ward-like-hierarchical-clustering-with-clustgeo">HX8.8.2 Ward-like hierarchical clustering with ClustGeo</h3>
 <p>The <code>ClustGeo</code> package provides us with a function called <code>hclustgeo()</code> to perform Ward-like hierarchical clustering. To use this method to perform non-spatially-constrained hierarchical clustering, all we need to provide is a dissimilarity matrix - specifically, the one from Hands-on exercise 7.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># From hands-on exercise 7</span></span>
@@ -750,8 +749,8 @@ Warning in segments(coords[id1, 1], coords[id1, 2], coords[id2, 1], coords[id2,
 </div>
 </div>
 </section>
-<section id="hx8.8.3.1-mapping-the-clusters-formed" class="level2">
-<h2 class="anchored" data-anchor-id="hx8.8.3.1-mapping-the-clusters-formed">HX8.8.3.1 Mapping the clusters formed</h2>
+<section id="hx8.8.3-mapping-the-clusters-formed" class="level3">
+<h3 class="anchored" data-anchor-id="hx8.8.3-mapping-the-clusters-formed">HX8.8.3 Mapping the clusters formed</h3>
 <p>The ClustGeo clusters can also be plotted onto a map as follows.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>groups <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">cutree</span>(nongeo_cluster, <span class="at">k=</span><span class="dv">6</span>))</span>
@@ -766,6 +765,7 @@ Warning in segments(coords[id1, 1], coords[id1, 2], coords[id2, 1], coords[id2,
 </div>
 </div>
 </div>
+</section>
 </section>
 <section id="hx8.9-spatially-constrained-hierarchical-clustering" class="level2">
 <h2 class="anchored" data-anchor-id="hx8.9-spatially-constrained-hierarchical-clustering">HX8.9 Spatially-constrained hierarchical clustering</h2>

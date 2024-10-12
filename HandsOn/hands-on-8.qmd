@@ -226,7 +226,7 @@ As described in the course website (Kam, 2024):
 
 > The idea is then to determine a value of alpha which increases the spatial contiguity without deteriorating too much the quality of the solution based on the variables of interest. This need is supported by a function called `choicealpha()`.
 
-## HX8.8.2 Ward-like hierarchical clustering with ClustGeo
+### HX8.8.2 Ward-like hierarchical clustering with ClustGeo
 
 The `ClustGeo` package provides us with a function called `hclustgeo()` to perform Ward-like hierarchical clustering. To use this method to perform non-spatially-constrained hierarchical clustering, all we need to provide is a dissimilarity matrix - specifically, the one from Hands-on exercise 7.
 
@@ -240,7 +240,7 @@ rect.hclust(nongeo_cluster,
             border = 2:5)
 ```
 
-## HX8.8.3.1 Mapping the clusters formed
+### HX8.8.3 Mapping the clusters formed
 
 The ClustGeo clusters can also be plotted onto a map as follows.
 
