@@ -441,17 +441,22 @@ In order to visualise the clusters, the groups object needs to be appended onto 
 ```{r}
 shan_sf_cluster <- cbind(shan_sf, as.matrix(groups)) %>%
   rename(`CLUSTER`=`as.matrix.groups.`)
-qtm(shan_sf_cluster, "CLUSTER")
+hierarchical_map <- qtm(shan_sf_cluster, "CLUSTER")
+hierarchical_map
 ```
 
 The choropleth map above reveals extensive fragmentation in the clusters. The is a major limitation when non-spatial clustering algorithms such as hierarchical cluster analysis method are used.
 
 ## HX7.10 Saving modified `sf` to disk as RDS
 
-The process will continue in [Hands-on exercise 8](hands-on-8.qmd). Before we conclude, we need to save the `shan_sf` object from earlier to the disk so that we can refer to it again.
+The process will continue in [Hands-on exercise 8](hands-on-8.qmd). Before we conclude, we need to save some objects from earlier to the disk so that we can refer to it again.
 
 ```{r}
 write_rds(shan_sf, 'data/rds/shan_sf.rds')
+write_rds(shan_ict, 'data/rds/shan_ict.rds')
+write_rds(shan_sf_cluster, 'data/rds/shan_sf_cluster.rds')
+write_rds(hierarchical_map, 'data/rds/hmap.rds')
+write_rds(proxmat, 'data/rds/proxmat.rds')
 ```
 
 ## References

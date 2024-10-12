@@ -12,6 +12,8 @@ listing:
     type: grid
   - id: hands-on-featured
     contents:
+      - "HandsOn/hands-on-7.qmd"
+      - "HandsOn/hands-on-8.qmd"
       - "HandsOn/Hands-on_Ex01/hands-on-1.qmd"
       - "HandsOn/Hands-on_Ex03/hands-on-3.qmd"
       - "InClass/ICE4/in-class-4.qmd"
