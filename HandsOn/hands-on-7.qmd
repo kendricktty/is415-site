@@ -52,12 +52,12 @@ If we directly use the measurement of the number of households, we may lead to b
 
 ```{r}
 ict_derived <- ict %>%
-  mutate(`RADIO_PR` = `Radio`/`Total households`*1000) %>%
-  mutate(`TV_PR` = `Television`/`Total households`*1000) %>%
-  mutate(`LLPHONE_PR` = `Land line phone`/`Total households`*1000) %>%
-  mutate(`MPHONE_PR` = `Mobile phone`/`Total households`*1000) %>%
-  mutate(`COMPUTER_PR` = `Computer`/`Total households`*1000) %>%
-  mutate(`INTERNET_PR` = `Internet at home`/`Total households`*1000) %>%
+  mutate(`RADIO_PR` = `Radio`/`Total households`*100) %>%
+  mutate(`TV_PR` = `Television`/`Total households`*100) %>%
+  mutate(`LLPHONE_PR` = `Land line phone`/`Total households`*100) %>%
+  mutate(`MPHONE_PR` = `Mobile phone`/`Total households`*100) %>%
+  mutate(`COMPUTER_PR` = `Computer`/`Total households`*100) %>%
+  mutate(`INTERNET_PR` = `Internet at home`/`Total households`*100) %>%
   rename(`DT_PCODE` =`District Pcode`,`DT`=`District Name`,
          `TS_PCODE`=`Township Pcode`, `TS`=`Township Name`,
          `TT_HOUSEHOLDS`=`Total households`,
@@ -146,4 +146,314 @@ ggarrange(radio, tv, llphone, mphone, computer, internet,
 
 ### HX7.4.2 Using choropleth maps
 
-EDA can also be performed by drawing choropleth maps.
+EDA can also be performed by drawing choropleth maps. To start, as always, we perform a *left join* between the geospatial data object and the `ict_derived` dataframe using the unique identifier `TS_PCODE`.
+
+```{r}
+shan_sf <- left_join(shan_sf, ict_derived, by = c("TS_PCODE"="TS_PCODE"))
+```
+```{r}
+#|echo: false
+# Write to disk so that we can retrieve it later
+# write_rds(shan_sf, 'data/rds/shan_sf.rds')
+```
+
+We can now create our choropleth map using the combined dataset. By plotting the total number of households in one map and the total absolute number of households owning radios, we are able to showcase the inherent bias we encounter by using only absolute numbers.
+
+```{r}
+TT_HOUSEHOLDS.map <- tm_shape(shan_sf) + 
+  tm_fill(col = "TT_HOUSEHOLDS",
+          n = 5,
+          style = "jenks", 
+          title = "Total households") + 
+  tm_borders(alpha = 0.5) 
+
+RADIO.map <- tm_shape(shan_sf) + 
+  tm_fill(col = "RADIO",
+          n = 5,
+          style = "jenks",
+          title = "Number Radio ") + 
+  tm_borders(alpha = 0.5) 
+
+tmap_arrange(TT_HOUSEHOLDS.map, RADIO.map,
+             asp=NA, ncol=2)
+```
+
+In comparison...
+
+```{r}
+tm_shape(shan_sf) +
+    tm_polygons(c("TT_HOUSEHOLDS", "RADIO_PR"),
+                style="jenks") +
+    tm_facets(sync = TRUE, ncol = 2) +
+  tm_legend(legend.position = c("right", "bottom"))+
+  tm_layout(outer.margins=0, asp=0)
+```
+
+## HX7.5 Correlation analysis
+
+A key part of data analytics is correlation analysis. When performing machine learning tasks, for example, we avoid incorporating too many correlated features lest it impacts the performance of our model.
+
+`corrplot.mixed()` visualises the correlation coefficients between each of our input variables, similarly to how we can use `seaborn` to draw a correlation heatmap in Python.
+
+```{r}
+cluster_vars.cor = cor(ict_derived[,12:17])
+corrplot.mixed(cluster_vars.cor,
+         lower = "ellipse", 
+               upper = "number",
+               tl.pos = "lt",
+               diag = "l",
+               tl.col = "black")
+```
+
+The correlation matrix above shows a high degree of correlation between `COMPUTER_PR` and `INTERNET_PR`. This indicates that we should only use one, and not both, in our cluster analysis later.
+
+## HX7.6 Extracting clustering variables
+
+And now for the fun part: hierarchy cluster analysis. First, we extract the clustering variables needed from the `shan_sf` data frame. We will not extract `INTERNET_PR` since, as we know, it is highly correlated with `COMPUTER_PR`.
+
+```{r}
+cluster_vars <- shan_sf %>%
+  st_set_geometry(NULL) %>%
+  select("TS.x", "RADIO_PR", "TV_PR", "LLPHONE_PR", "MPHONE_PR", "COMPUTER_PR")
+head(cluster_vars,10)
+```
+
+Next, we change the unique identifier of each row to reference township name instead of row number.
+
+```{r}
+row.names(cluster_vars) <- cluster_vars$"TS.x"
+head(cluster_vars,10)
+```
+
+Then, we delete the original `TS.x` field we referred to a few moments ago.
+
+```{r}
+shan_ict <- select(cluster_vars, c(2:6))
+head(shan_ict, 10)
+```
+
+## HX7.7 Data Standardisation
+
+Multiple values with widely varying ranges will be used in cluster analysis. It would thus be imperative to standardise the input values first. There are many ways to do this, two of which -min-max and Z-score standardisation will be performed today.
+
+### HX7.7.1 Min-max standardisation
+
+In the code chunk below, `normalize()` of the `heatmaply` package is used to standardisze the clustering variables by using Min-Max method.
+
+```{r}
+shan_ict.std <- normalize(shan_ict)
+summary(shan_ict.std)
+```
+
+### HX7.7.2 Z-score standardisation
+
+Z-score standardisation can be performed easily by using `scale()` of Base R. **It should only be used if we can safely assume normal distribution.**
+
+```{r}
+shan_ict.z <- scale(shan_ict)
+describe(shan_ict.z)
+```
+
+Notice that `describe()` from the `psych` package is used here instead of `summary()` since it provides us the standard deviation.
+
+### HX7.7.3 Visualising standardised clustering variables
+
+```{r}
+r <- ggplot(data=ict_derived, 
+             aes(x= `RADIO_PR`)) +
+  geom_histogram(bins=20, 
+                 color="black", 
+                 fill="light blue") +
+  ggtitle("Raw values without standardisation")
+
+shan_ict_s_df <- as.data.frame(shan_ict.std)
+s <- ggplot(data=shan_ict_s_df, 
+       aes(x=`RADIO_PR`)) +
+  geom_histogram(bins=20, 
+                 color="black", 
+                 fill="light blue") +
+  ggtitle("Min-Max Standardisation")
+
+shan_ict_z_df <- as.data.frame(shan_ict.z)
+z <- ggplot(data=shan_ict_z_df, 
+       aes(x=`RADIO_PR`)) +
+  geom_histogram(bins=20, 
+                 color="black", 
+                 fill="light blue") +
+  ggtitle("Z-score Standardisation")
+
+ggarrange(r, s, z,
+          ncol = 3,
+          nrow = 1)
+```
+
+Standardisation gives us data distributions more closely resembling a normal distribution. The same effect can also be seen if we draw a line plot as below.
+
+```{r}
+r <- ggplot(data=ict_derived, 
+             aes(x= `RADIO_PR`)) +
+  geom_density(color="black",
+               fill="#ff7d04") +
+  ggtitle("Raw values without standardisation")
+
+shan_ict_s_df <- as.data.frame(shan_ict.std)
+s <- ggplot(data=shan_ict_s_df, 
+       aes(x=`RADIO_PR`)) +
+  geom_density(color="black",
+               fill="#ff7d04") +
+  ggtitle("Min-Max Standardisation")
+
+shan_ict_z_df <- as.data.frame(shan_ict.z)
+z <- ggplot(data=shan_ict_z_df, 
+       aes(x=`RADIO_PR`)) +
+  geom_density(color="black",
+               fill="#ff7d04") +
+  ggtitle("Z-score Standardisation")
+
+ggarrange(r, s, z,
+          ncol = 3,
+          nrow = 1)
+```
+
+## HX7.4 Computing proximity matrix
+
+We need a proximity matrix to pass into our hierarchical clustering computation function later. Today, we will use `dist(method = 'euclidean')` from base R to compute a simple *euclidean* proximity matrix. There are five other options available: maximum, manhattan, canberra, binary and minkowski.
+
+```{r}
+proxmat <- dist(shan_ict, method = 'euclidean')
+proxmat
+```
+
+## HX7.5 Computing hierarchical clustering
+
+Several packages exist in R to perform hierarchical clustering, but today, `hclust()` from R stats will be used. It employs an agglomeration method to compute clusters and supports the following eight clustering algorithms: `ward.D`, `ward.D2`, `single`, `complete`, `average` (UPGMA), `mcquitty` (WPGMA), `median` (WPGMC) and `centroid` (UPGMC).
+
+The code chunk below  performs hierarchical cluster analysis using ward.D method. The hierarchical clustering output is stored in an object of class `hclust`, which describes the tree produced by the clustering process. We will then plot the tree using `plot()` from R graphics.
+
+```{r}
+hclust_ward <- hclust(proxmat, method = 'ward.D')
+plot(hclust_ward, cex = 0.6)
+```
+
+## HX7.6 Selecting optimal clustering algorithm
+
+A key challenge in performing hierarchical clustering is in identifying stronger clustering structures. A function, `agnes()` from the `cluster` package, can be used to solve this issue - it functions like `hclust()`, but can also be used to return the **agglomerative coefficient**, which measures the extent to which clustering exists. As the coefficient approaches `1`, the data suggests a stronger clustering structure.
+
+```{r}
+m <- c( "average", "single", "complete", "ward")
+names(m) <- c( "average", "single", "complete", "ward")
+
+ac <- function(x) {
+  agnes(shan_ict, method = x)$ac
+}
+
+map_dbl(m, ac)
+```
+
+From the output above, Ward's method provides the strongest clustering structure among the four methods assessed. Hence, we will use Ward's method in subsequent analyses.
+
+## HX7.7 Determining optimal clusters
+
+The next obstacle is in determining the optimal clusters to retain. Three commonly used methods are used to determine optimal clusters: the **elbow method**, the **average silhouette method** and the **gap statistic method**.
+
+## HX7.7.1 Gap statistic method
+
+This method compares the total within intra-cluster variation for different numbers of clusters $k$ with their expected values under null reference distribution of the data. The estimate of the optimal clusters will be value that maximises the gap statistic (i.e., that yields the largest gap statistic). This means that the clustering structure is far away from the random uniform distribution of points.
+
+`clusGap()` of the `cluster` package will be used to compute the gap statistic, and `fviz_gap_stat()` of the `factoextra` package will be used to plot the optimal numbers of clusters.
+
+```{r}
+set.seed(12345)
+gap_stat <- clusGap(shan_ict, 
+                    FUN = hcut, 
+                    nstart = 25, 
+                    K.max = 10, 
+                    B = 50)
+# Print the result
+print(gap_stat, method = "firstmax")
+fviz_gap_stat(gap_stat)
+```
+With the highest gap statistic of around `0.275`, the recommended value of $k$ is `1`, i.e. we are apparently encouraged to retain only one cluster. However, this is illogical - instead, the next best value of $k$, with the second highest gap statistic, is `6`.
+
+### HX7.7.2 Interpretation
+
+In the dendrogram from **HX7.5**, each leaf corresponds to one observation. As we move up the tree, observations that are similar to each other are combined into branches, which are themselves fused at a higher height. The height of the fusion (which is provided on the y-axis) indicates the (dis)similarity between two observations. The higher the height, the less similar the observations are. We cannot use the proximity of two observations along the *x-axis* as a basis of comparision for their similarity.
+
+It is also possible to draw the dendrogram with a border around the selected clusters by using `rect.hclust()` of R stats. The argument border is used to specify the border colors for the rectangles.
+
+```{r}
+plot(hclust_ward, cex = 0.6)
+rect.hclust(hclust_ward, 
+            k = 6, 
+            border = 2:5)
+```
+
+## HX7.8 Visually-driven hierarchical clustering analysis
+
+Another type of clustering analysis is **visually-driven hierarchical clustering analysis**, which can be done using the `heatmaply` package. With this package, we can build both highly interactive cluster heatmaps or static cluster heatmaps.
+
+### HX7.8.1 Transforming data frame into matrix
+
+The data was loaded as a dataframe, but to create the heatmap we have to first convert it into a data matrix.
+
+```{r}
+shan_ict_mat <- data.matrix(shan_ict)
+```
+
+### HX7.8.2 Interactive cluster heatmap
+
+```{r}
+heatmaply(normalize(shan_ict_mat),
+          Colv=NA,
+          dist_method = "euclidean",
+          hclust_method = "ward.D",
+          seriate = "OLO",
+          colors = Blues,
+          k_row = 6,
+          margins = c(NA,200,60,NA),
+          fontsize_row = 4,
+          fontsize_col = 5,
+          main="Geographic Segmentation of Shan State by ICT indicators",
+          xlab = "ICT Indicators",
+          ylab = "Townships of Shan State"
+          )
+```
+
+When we plot our interactive cluster heatmap with the code chunk above, the right part of the output is effectively the same dendrogram we get from earlier.
+
+## HX7.9 Mapping the clusters formed
+
+If we recall from earlier, we determined that the optimal number of clusters $k$ to retain is `6`. We will do just that in the code chunk below, using `cutree()` of base R.
+
+```{r}
+groups <- as.factor(cutree(hclust_ward, k=6))
+```
+
+The output is called groups. It is a list object.
+
+In order to visualise the clusters, the groups object needs to be appended onto the `shan_sf` simple feature object. This is done in three steps:
+
+* Convert `groups` into a matrix;
+* Use cbind() to append `groups` matrix to `shan_sf` to produce an output simple feature object called `shan_sf_cluster`; and
+* Use `rename`from the dplyr package to rename the `as.matrix.groups` field as `CLUSTER`.
+* Plot the choropleth map showing the clusters formed.
+
+```{r}
+shan_sf_cluster <- cbind(shan_sf, as.matrix(groups)) %>%
+  rename(`CLUSTER`=`as.matrix.groups.`)
+qtm(shan_sf_cluster, "CLUSTER")
+```
+
+The choropleth map above reveals extensive fragmentation in the clusters. The is a major limitation when non-spatial clustering algorithms such as hierarchical cluster analysis method are used.
+
+## HX7.10 Saving modified `sf` to disk as RDS
+
+The process will continue in [Hands-on exercise 8](hands-on-8.qmd). Before we conclude, we need to save the `shan_sf` object from earlier to the disk so that we can refer to it again.
+
+```{r}
+write_rds(shan_sf, 'data/rds/shan_sf.rds')
+```
+
+## References
+
+1.  Kam, T. S. (2024). 12 Geographical Segmentation with Spatially Constrained Clustering Techniques. R for Geospatial Data Science and Analytics. <https://r4gdsa.netlify.app/chap12#correlation-analysis>

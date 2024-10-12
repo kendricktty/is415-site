@@ -1,0 +1,71 @@
+---
+title: "HX8: Spatially Constrained Clustering Analysis"
+subtitle: "Hands-On Exercise 8"
+author: "Kendrick Teo"
+date: "2024-10-10"
+date-modified: "last-modified"
+
+execute: 
+  eval: true
+  echo: true
+  freeze: true
+---
+
+## HX8.1 Overview
+
+This hands-on exercise is a continuation of [Hands-on Exercise 7](hands-on-7.qmd), where the focus now will be on **spatially constrained clustering analysis**.
+
+## HX8.2 Loading R packages and preparing data
+
+In this section, we will load the R packages and the data we need, which are the same as Hands-on Exercise 7. We will also replicate the steps from the earlier exercise to derive the penetration rate of various ICT device types.
+
+```{r}
+pacman::p_load(spdep, tmap, sf, ClustGeo, 
+               ggpubr, cluster, factoextra, NbClust,
+               heatmaply, corrplot, psych, tidyverse, GGally)
+# Retrieve joined DF as saved in exercise 7
+shan_sf <- read_rds("data/rds/shan_sf.rds")
+ict <- read_csv ("data/aspatial/Shan-ICT.csv")
+
+ict_derived <- ict %>%
+  mutate(`RADIO_PR` = `Radio`/`Total households`*100) %>%
+  mutate(`TV_PR` = `Television`/`Total households`*100) %>%
+  mutate(`LLPHONE_PR` = `Land line phone`/`Total households`*100) %>%
+  mutate(`MPHONE_PR` = `Mobile phone`/`Total households`*100) %>%
+  mutate(`COMPUTER_PR` = `Computer`/`Total households`*100) %>%
+  mutate(`INTERNET_PR` = `Internet at home`/`Total households`*100) %>%
+  rename(`DT_PCODE` =`District Pcode`,`DT`=`District Name`,
+         `TS_PCODE`=`Township Pcode`, `TS`=`Township Name`,
+         `TT_HOUSEHOLDS`=`Total households`,
+         `RADIO`=`Radio`, `TV`=`Television`, 
+         `LLPHONE`=`Land line phone`, `MPHONE`=`Mobile phone`,
+         `COMPUTER`=`Computer`, `INTERNET`=`Internet at home`)
+summary(ict_derived)
+```
+
+### HX8.2.1 Abridged EDA
+
+As a revision, we will also draw the choropleth maps and correlation matrix from the last exercise.
+
+```{r}
+tm_shape(shan_sf) +
+    tm_polygons(c("TT_HOUSEHOLDS", "RADIO_PR"),
+                style="jenks") +
+    tm_facets(sync = TRUE, ncol = 2) +
+  tm_legend(legend.position = c("right", "bottom"))+
+  tm_layout(outer.margins=0, asp=0)
+```
+
+```{r}
+cluster_vars.cor = cor(ict_derived[,12:17])
+corrplot.mixed(cluster_vars.cor,
+         lower = "ellipse", 
+               upper = "number",
+               tl.pos = "lt",
+               diag = "l",
+               tl.col = "black")
+```
+
+## References
+
+1.  Kam, T. S. (2024). 12 Geographical Segmentation with Spatially Constrained Clustering Techniques. R for Geospatial Data Science and Analytics. <https://r4gdsa.netlify.app/chap12#correlation-analysis>
