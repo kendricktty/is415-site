@@ -289,9 +289,7 @@ window.Quarto = {
   <li><a href="#hx8.10-visual-interpretation-of-clusters" id="toc-hx8.10-visual-interpretation-of-clusters" class="nav-link" data-scroll-target="#hx8.10-visual-interpretation-of-clusters">HX8.10 Visual interpretation of clusters</a>
   <ul class="collapse">
   <li><a href="#hx8.10.1-visualising-individual-clustering-variable" id="toc-hx8.10.1-visualising-individual-clustering-variable" class="nav-link" data-scroll-target="#hx8.10.1-visualising-individual-clustering-variable">HX8.10.1 Visualising individual clustering variable</a></li>
-  </ul></li>
-  <li><a href="#hx8.10.2-multivariate-visualisation" id="toc-hx8.10.2-multivariate-visualisation" class="nav-link" data-scroll-target="#hx8.10.2-multivariate-visualisation">HX8.10.2 Multivariate visualisation</a>
-  <ul class="collapse">
+  <li><a href="#hx8.10.2-multivariate-visualisation" id="toc-hx8.10.2-multivariate-visualisation" class="nav-link" data-scroll-target="#hx8.10.2-multivariate-visualisation">HX8.10.2 Multivariate visualisation</a></li>
   <li><a href="#hx8.10.3-printing-summary-statistics" id="toc-hx8.10.3-printing-summary-statistics" class="nav-link" data-scroll-target="#hx8.10.3-printing-summary-statistics">HX8.10.3 Printing summary statistics</a></li>
   </ul></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
@@ -570,12 +568,12 @@ B 55 3025 7626.765 582607.8 5220160</code></pre>
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(shan.mst)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>     [,1] [,2]      [,3]
-[1,]    7    4  9.461225
-[2,]    4   36 13.812050
-[3,]   36    6  9.566782
-[4,]    6    8 14.001101
-[5,]    8    9  9.082891
-[6,]    9   10 15.704230</code></pre>
+[1,]   19   39  7.941836
+[2,]   39   41 16.280878
+[3,]   41   27  7.829342
+[4,]   27   30  5.760801
+[5,]   30   51 10.837735
+[6,]   51   38 14.666661</code></pre>
 </div>
 </div>
 <p>We can also plot our tree to show the observation numbers of each node in addition to the edge. As before, we plot this together with the township boundaries. We can see how the initial neighbour list is simplified to just one edge connecting each of the nodes, while passing through all the nodes.</p>
@@ -611,12 +609,8 @@ B 55 3025 7626.765 582607.8 5220160</code></pre>
 <span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(clust6)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>List of 8
- $ groups      : num [1:55] 1 1 6 1 1 1 1 1 1 1 ...
+ $ groups      : num [1:55] 3 3 6 3 3 3 3 3 3 3 ...
  $ edges.groups:List of 6
-  ..$ :List of 3
-  .. ..$ node: num [1:11] 2 6 8 1 4 7 36 9 10 46 ...
-  .. ..$ edge: num [1:10, 1:3] 6 1 8 4 7 36 6 9 10 8 ...
-  .. ..$ ssw : num 146
   ..$ :List of 3
   .. ..$ node: num [1:18] 47 27 53 38 42 15 41 51 43 32 ...
   .. ..$ edge: num [1:17, 1:3] 53 15 42 38 41 51 15 27 15 43 ...
@@ -625,6 +619,10 @@ B 55 3025 7626.765 582607.8 5220160</code></pre>
   .. ..$ node: num [1:22] 13 48 54 55 45 37 34 16 25 52 ...
   .. ..$ edge: num [1:21, 1:3] 48 55 54 37 34 16 45 25 13 13 ...
   .. ..$ ssw : num 342
+  ..$ :List of 3
+  .. ..$ node: num [1:11] 2 6 8 1 36 4 10 9 46 5 ...
+  .. ..$ edge: num [1:10, 1:3] 6 1 8 36 4 6 8 10 10 9 ...
+  .. ..$ ssw : num 146
   ..$ :List of 3
   .. ..$ node: num [1:2] 44 20
   .. ..$ edge: num [1, 1:3] 44 20 9.5
@@ -652,14 +650,14 @@ B 55 3025 7626.765 582607.8 5220160</code></pre>
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>ccs6 <span class="ot">&lt;-</span> clust6<span class="sc">$</span>groups</span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>ccs6</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code> [1] 1 1 6 1 1 1 1 1 1 1 2 3 3 3 2 3 3 3 2 4 3 2 5 3 3 3 2 3 2 2 3 2 2 3 3 1 3 2
-[39] 2 2 2 2 2 4 3 1 2 3 3 3 2 3 2 3 3</code></pre>
+<pre><code> [1] 3 3 6 3 3 3 3 3 3 3 1 2 2 2 1 2 2 2 1 4 2 1 5 2 2 2 1 2 1 1 2 1 1 2 2 3 2 1
+[39] 1 1 1 1 1 4 2 3 1 2 2 2 1 2 1 2 2</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(ccs6)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>ccs6
  1  2  3  4  5  6 
-11 18 22  2  1  1 </code></pre>
+18 22 11  2  1  1 </code></pre>
 </div>
 </div>
 <p>Lastly, we can also plot the pruned tree that shows the five clusters on top of the townshop area.</p>
@@ -835,9 +833,8 @@ Warning in segments(coords[id1, 1], coords[id1, 2], coords[id2, 1], coords[id2,
 </div>
 <p>The boxplot reveals cluster 3 displays the highest radio penetration rate on average, followed by clusters 2, 1, 4, 6 and 5.</p>
 </section>
-</section>
-<section id="hx8.10.2-multivariate-visualisation" class="level2">
-<h2 class="anchored" data-anchor-id="hx8.10.2-multivariate-visualisation">HX8.10.2 Multivariate visualisation</h2>
+<section id="hx8.10.2-multivariate-visualisation" class="level3">
+<h3 class="anchored" data-anchor-id="hx8.10.2-multivariate-visualisation">HX8.10.2 Multivariate visualisation</h3>
 <p>We can also choose to create multiple parallel coordinate plots, which have been shown to reveal clustering variables extremely effectively. In the below code chunk, parallel coordinate plots can be created by means of <code>ggparcoord()</code> from the <code>GGally</code> package.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggparcoord</span>(<span class="at">data =</span> shan_sf_ngeo_cluster, </span>
@@ -872,6 +869,7 @@ Warning in segments(coords[id1, 1], coords[id1, 2], coords[id2, 1], coords[id2,
 <li>There is no one best scaling method to use. You should explore them and select the one that best meet your analysis need.</li>
 </ul>
 </blockquote>
+</section>
 <section id="hx8.10.3-printing-summary-statistics" class="level3">
 <h3 class="anchored" data-anchor-id="hx8.10.3-printing-summary-statistics">HX8.10.3 Printing summary statistics</h3>
 <p>The following code chunk creates a summarised table for us to print summary statistics per cluster.</p>

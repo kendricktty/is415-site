@@ -298,7 +298,7 @@ ggplot(data = shan_sf_ngeo_cluster,
 
 The boxplot reveals cluster 3 displays the highest radio penetration rate on average, followed by clusters 2, 1, 4, 6 and 5.
 
-## HX8.10.2 Multivariate visualisation
+### HX8.10.2 Multivariate visualisation
 
 We can also choose to create multiple parallel coordinate plots, which have been shown to reveal clustering variables extremely effectively. In the below code chunk, parallel coordinate plots can be created by means of `ggparcoord()` from the `GGally` package.
 

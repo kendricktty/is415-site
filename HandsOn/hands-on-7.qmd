@@ -19,17 +19,17 @@ This hands-on exercise is on delineating a homogeneous region using geographical
 
 Today's R packages to be used are:
 
-* Spatial data handling
-  * sf, rgdal and spdep
-* Attribute data handling
-  * tidyverse, especially readr, ggplot2 and dplyr
-* Choropleth mapping
-  * tmap
-* Multivariate data visualisation and analysis
-  * coorplot, ggpubr, and heatmaply
-* Cluster analysis
-  * cluster
-* ClustGeo
+-   Spatial data handling
+    -   sf, rgdal and spdep
+-   Attribute data handling
+    -   tidyverse, especially readr, ggplot2 and dplyr
+-   Choropleth mapping
+    -   tmap
+-   Multivariate data visualisation and analysis
+    -   coorplot, ggpubr, and heatmaply
+-   Cluster analysis
+    -   cluster
+-   ClustGeo
 
 Today's dataset will be `Shan-ICT.csv`, an extract from the [2014 Myanmar Population and Housing Census](https://myanmar.unfpa.org/en/publications/2014-population-and-housing-census-myanmar-data-sheet) containing, as its name suggests, data on ICT use. We will superimpose this against township boundary data (admin 3) in Myanmar.
 
@@ -84,6 +84,7 @@ ggplot(data=ict_derived,
   geom_boxplot(color="black", 
                fill="light blue")
 ```
+
 As we can expect from a not-so-developed country like Myanmar, the ownership of radios is skewed left, i.e. not a lot of the population owns a radio.
 
 We can also plot the distribution of our derived variables, i.e. the penetration rate.
@@ -99,6 +100,7 @@ ggplot(data=ict_derived,
   geom_boxplot(color="black", 
                fill="light blue")
 ```
+
 When penetration rate, rather than absolute numbers, is plotted, we can see a much more normalised distribution. The average radio penetration rate in Shan state would lie somewhere around `230-240`.
 
 We can do the same for multiple variables and create multiple plots side by side.
@@ -151,6 +153,7 @@ EDA can also be performed by drawing choropleth maps. To start, as always, we pe
 ```{r}
 shan_sf <- left_join(shan_sf, ict_derived, by = c("TS_PCODE"="TS_PCODE"))
 ```
+
 ```{r}
 #|echo: false
 # Write to disk so that we can retrieve it later
@@ -315,7 +318,7 @@ ggarrange(r, s, z,
           nrow = 1)
 ```
 
-## HX7.4 Computing proximity matrix
+### HX7.7.4 Computing proximity matrix
 
 We need a proximity matrix to pass into our hierarchical clustering computation function later. Today, we will use `dist(method = 'euclidean')` from base R to compute a simple *euclidean* proximity matrix. There are five other options available: maximum, manhattan, canberra, binary and minkowski.
 
@@ -324,18 +327,18 @@ proxmat <- dist(shan_ict, method = 'euclidean')
 proxmat
 ```
 
-## HX7.5 Computing hierarchical clustering
+## HX7.8 Computing hierarchical clustering
 
 Several packages exist in R to perform hierarchical clustering, but today, `hclust()` from R stats will be used. It employs an agglomeration method to compute clusters and supports the following eight clustering algorithms: `ward.D`, `ward.D2`, `single`, `complete`, `average` (UPGMA), `mcquitty` (WPGMA), `median` (WPGMC) and `centroid` (UPGMC).
 
-The code chunk below  performs hierarchical cluster analysis using ward.D method. The hierarchical clustering output is stored in an object of class `hclust`, which describes the tree produced by the clustering process. We will then plot the tree using `plot()` from R graphics.
+The code chunk below performs hierarchical cluster analysis using ward.D method. The hierarchical clustering output is stored in an object of class `hclust`, which describes the tree produced by the clustering process. We will then plot the tree using `plot()` from R graphics.
 
 ```{r}
 hclust_ward <- hclust(proxmat, method = 'ward.D')
 plot(hclust_ward, cex = 0.6)
 ```
 
-## HX7.6 Selecting optimal clustering algorithm
+## HX7.9 Selecting optimal clustering algorithm
 
 A key challenge in performing hierarchical clustering is in identifying stronger clustering structures. A function, `agnes()` from the `cluster` package, can be used to solve this issue - it functions like `hclust()`, but can also be used to return the **agglomerative coefficient**, which measures the extent to which clustering exists. As the coefficient approaches `1`, the data suggests a stronger clustering structure.
 
@@ -352,11 +355,11 @@ map_dbl(m, ac)
 
 From the output above, Ward's method provides the strongest clustering structure among the four methods assessed. Hence, we will use Ward's method in subsequent analyses.
 
-## HX7.7 Determining optimal clusters
+## HX7.10 Determining optimal clusters
 
 The next obstacle is in determining the optimal clusters to retain. Three commonly used methods are used to determine optimal clusters: the **elbow method**, the **average silhouette method** and the **gap statistic method**.
 
-## HX7.7.1 Gap statistic method
+### HX7.10.1 Gap statistic method
 
 This method compares the total within intra-cluster variation for different numbers of clusters $k$ with their expected values under null reference distribution of the data. The estimate of the optimal clusters will be value that maximises the gap statistic (i.e., that yields the largest gap statistic). This means that the clustering structure is far away from the random uniform distribution of points.
 
@@ -373,9 +376,10 @@ gap_stat <- clusGap(shan_ict,
 print(gap_stat, method = "firstmax")
 fviz_gap_stat(gap_stat)
 ```
+
 With the highest gap statistic of around `0.275`, the recommended value of $k$ is `1`, i.e. we are apparently encouraged to retain only one cluster. However, this is illogical - instead, the next best value of $k$, with the second highest gap statistic, is `6`.
 
-### HX7.7.2 Interpretation
+### HX7.10.2 Interpretation
 
 In the dendrogram from **HX7.5**, each leaf corresponds to one observation. As we move up the tree, observations that are similar to each other are combined into branches, which are themselves fused at a higher height. The height of the fusion (which is provided on the y-axis) indicates the (dis)similarity between two observations. The higher the height, the less similar the observations are. We cannot use the proximity of two observations along the *x-axis* as a basis of comparision for their similarity.
 
@@ -388,11 +392,11 @@ rect.hclust(hclust_ward,
             border = 2:5)
 ```
 
-## HX7.8 Visually-driven hierarchical clustering analysis
+## HX7.11 Visually-driven hierarchical clustering analysis
 
 Another type of clustering analysis is **visually-driven hierarchical clustering analysis**, which can be done using the `heatmaply` package. With this package, we can build both highly interactive cluster heatmaps or static cluster heatmaps.
 
-### HX7.8.1 Transforming data frame into matrix
+### HX7.11.1 Transforming data frame into matrix
 
 The data was loaded as a dataframe, but to create the heatmap we have to first convert it into a data matrix.
 
@@ -400,7 +404,7 @@ The data was loaded as a dataframe, but to create the heatmap we have to first c
 shan_ict_mat <- data.matrix(shan_ict)
 ```
 
-### HX7.8.2 Interactive cluster heatmap
+### HX7.11.2 Interactive cluster heatmap
 
 ```{r}
 heatmaply(normalize(shan_ict_mat),
@@ -421,7 +425,7 @@ heatmaply(normalize(shan_ict_mat),
 
 When we plot our interactive cluster heatmap with the code chunk above, the right part of the output is effectively the same dendrogram we get from earlier.
 
-## HX7.9 Mapping the clusters formed
+## HX7.12 Mapping the clusters formed
 
 If we recall from earlier, we determined that the optimal number of clusters $k$ to retain is `6`. We will do just that in the code chunk below, using `cutree()` of base R.
 
@@ -433,10 +437,10 @@ The output is called groups. It is a list object.
 
 In order to visualise the clusters, the groups object needs to be appended onto the `shan_sf` simple feature object. This is done in three steps:
 
-* Convert `groups` into a matrix;
-* Use cbind() to append `groups` matrix to `shan_sf` to produce an output simple feature object called `shan_sf_cluster`; and
-* Use `rename`from the dplyr package to rename the `as.matrix.groups` field as `CLUSTER`.
-* Plot the choropleth map showing the clusters formed.
+-   Convert `groups` into a matrix;
+-   Use cbind() to append `groups` matrix to `shan_sf` to produce an output simple feature object called `shan_sf_cluster`; and
+-   Use `rename`from the dplyr package to rename the `as.matrix.groups` field as `CLUSTER`.
+-   Plot the choropleth map showing the clusters formed.
 
 ```{r}
 shan_sf_cluster <- cbind(shan_sf, as.matrix(groups)) %>%
@@ -447,7 +451,7 @@ hierarchical_map
 
 The choropleth map above reveals extensive fragmentation in the clusters. The is a major limitation when non-spatial clustering algorithms such as hierarchical cluster analysis method are used.
 
-## HX7.10 Saving modified `sf` to disk as RDS
+## HX7.13 Saving modified `sf` to disk as RDS
 
 The process will continue in [Hands-on exercise 8](hands-on-8.qmd). Before we conclude, we need to save some objects from earlier to the disk so that we can refer to it again.
 
