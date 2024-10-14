@@ -4,6 +4,7 @@ subtitle: "Student portfolio website"
 listing:
   - id: latest-exercise
     contents:
+      - "HandsOn/hands-on-8.qmd"
       - "HandsOn/hands-on-7.qmd"
       - "TakeHome/TakeHome2/take-home-2.qmd"
     type: default
