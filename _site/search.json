@@ -1264,7 +1264,7 @@
     "href": "index.html#featured-hands-on-exercises",
     "title": "IS415: Geospatial Analytics and Applications",
     "section": "Featured Hands-On Exercises",
-    "text": "Featured Hands-On Exercises\n\n\n\n\n\n\n\n\n\nCE4/H4: Spatial-Temporal Point Patterns Analysis\n\n\n\n\n\n\nKendrick Teo\n\n\nSep 1, 2024\n\n\n\n\n\n\n\n\n\n\n\n\nH1: Geospatial Data Wrangling with R\n\n\n\n\n\n\nKendrick Teo\n\n\nAug 15, 2024\n\n\n\n\n\n\n\n\n\n\n\n\nH3: Spatial Point Patterns Analysis\n\n\n\n\n\n\nKendrick Teo\n\n\nAug 29, 2024\n\n\n\n\n\n\n\n\n\n\n\n\nHX7: Geographical Segmentation with Spatially Constrained Clustering Techniques\n\n\n\n\n\n\nKendrick Teo\n\n\nOct 10, 2024\n\n\n\n\n\n\n\n\n\n\n\n\nHX8: Spatially Constrained Clustering Analysis\n\n\n\n\n\n\nKendrick Teo\n\n\nOct 10, 2024\n\n\n\n\n\n\n\n\nNo matching items"
+    "text": "Featured Hands-On Exercises\n\n\n\n\n\n\n\n\nCE4/H4: Spatial-Temporal Point Patterns Analysis\n\n\n\n\n\n\nKendrick Teo\n\n\nSep 1, 2024\n\n\n\n\n\n\n\n\n\n\n\n\nH1: Geospatial Data Wrangling with R\n\n\n\n\n\n\nKendrick Teo\n\n\nAug 15, 2024\n\n\n\n\n\n\n\n\n\n\n\n\nH3: Spatial Point Patterns Analysis\n\n\n\n\n\n\nKendrick Teo\n\n\nAug 29, 2024\n\n\n\n\n\n\n\n\n\n\n\n\nHX7: Geographical Segmentation with Spatially Constrained Clustering Techniques\n\n\n\n\n\n\nKendrick Teo\n\n\nOct 10, 2024\n\n\n\n\n\n\n\n\n\n\n\n\nHX8: Spatially Constrained Clustering Analysis\n\n\n\n\n\n\nKendrick Teo\n\n\nOct 10, 2024\n\n\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "index.html#latest-exercises",
@@ -1517,5 +1517,12 @@
     "title": "HX7: Geographical Segmentation with Spatially Constrained Clustering Techniques",
     "section": "HX7.13 Saving modified sf to disk as RDS",
     "text": "HX7.13 Saving modified sf to disk as RDS\nThe process will continue in Hands-on exercise 8. Before we conclude, we need to save some objects from earlier to the disk so that we can refer to it again.\n\nwrite_rds(shan_sf, 'data/rds/shan_sf.rds')\nwrite_rds(shan_ict, 'data/rds/shan_ict.rds')\nwrite_rds(shan_sf_cluster, 'data/rds/shan_sf_cluster.rds')\nwrite_rds(hierarchical_map, 'data/rds/hmap.rds')\nwrite_rds(proxmat, 'data/rds/proxmat.rds')"
+  },
+  {
+    "objectID": "index.html#about-me",
+    "href": "index.html#about-me",
+    "title": "IS415: Geospatial Analytics and Applications",
+    "section": "About me",
+    "text": "About me\n\n\n\n\n\n\n\n\n\n\nAbout me\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNo matching items"
   }
 ]

@@ -105,6 +105,34 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script>
 
   window.document.addEventListener("DOMContentLoaded", function (_event) {
+    const listingTargetEl = window.document.querySelector('#listing-about .list');
+    if (!listingTargetEl) {
+      // No listing discovered, do not attach.
+      return; 
+    }
+
+    const options = {
+      valueNames: ['listing-title','listing-author','listing-image','listing-description',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
+      
+      searchColumns: ["listing-title","listing-author","listing-image","listing-description"],
+    };
+
+    window['quarto-listings'] = window['quarto-listings'] || {};
+    window['quarto-listings']['listing-about'] = new List('listing-about', options);
+
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  });
+
+  window.addEventListener('hashchange',() => {
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  })
+  
+
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
     const listingTargetEl = window.document.querySelector('#listing-latest-exercise .list');
     if (!listingTargetEl) {
       // No listing discovered, do not attach.
@@ -351,7 +379,8 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#latest-exercises" id="toc-latest-exercises" class="nav-link active" data-scroll-target="#latest-exercises">Latest Exercises</a></li>
+  <li><a href="#about-me" id="toc-about-me" class="nav-link active" data-scroll-target="#about-me">About me</a></li>
+  <li><a href="#latest-exercises" id="toc-latest-exercises" class="nav-link" data-scroll-target="#latest-exercises">Latest Exercises</a></li>
   <li><a href="#featured-take-home-exercises" id="toc-featured-take-home-exercises" class="nav-link" data-scroll-target="#featured-take-home-exercises">Featured Take-Home Exercises</a></li>
   <li><a href="#featured-hands-on-exercises" id="toc-featured-hands-on-exercises" class="nav-link" data-scroll-target="#featured-hands-on-exercises">Featured Hands-On Exercises</a></li>
   </ul>
@@ -388,6 +417,38 @@ window.Quarto = {
 <pre><code>[1] "hello world!"</code></pre>
 </div>
 </div>
+<section id="about-me" class="level2">
+<h2 class="anchored" data-anchor-id="about-me">About me</h2>
+<div id="listing-about" class="quarto-listing quarto-listing-container-default">
+<div class="list quarto-listing-default">
+<div class="quarto-post image-right" data-index="0" data-listing-file-modified-sort="1727057574242" data-listing-reading-time-sort="1" data-listing-word-count-sort="79">
+<div class="thumbnail">
+<p><a href="./about.html" class="no-external"></a></p><a href="./about.html" class="no-external">
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+</a><p><a href="./about.html" class="no-external"></a></p>
+</div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="./about.html" class="no-external">About me</a>
+</h3>
+<div class="listing-subtitle">
+<a href="./about.html" class="no-external"></a>
+</div>
+<div class="listing-description">
+<a href="./about.html" class="no-external">Hi there! My name is <strong>Kendrick Teo</strong>, and I’m a final-year student of <strong>Singapore Management University</strong> (SMU).</a>
+</div>
+</div>
+<div class="metadata">
+<p><a href="./about.html" class="no-external"></a></p><a href="./about.html" class="no-external">
+</a>
+</div>
+</div>
+</div>
+<div class="listing-no-matching d-none">
+No matching items
+</div>
+</div>
+</section>
 <section id="latest-exercises" class="level2">
 <h2 class="anchored" data-anchor-id="latest-exercises">Latest Exercises</h2>
 <div id="listing-latest-exercise" class="quarto-listing quarto-listing-container-default">
@@ -534,7 +595,7 @@ Sep 23, 2024
 </div>
 </a>
 </div>
-<div class="g-col-1" data-index="2" data-listing-date-sort="1728835200000" data-listing-file-modified-sort="1728869568789" data-listing-date-modified-sort="1728869568000" data-listing-reading-time-sort="1" data-listing-word-count-sort="1">
+<div class="g-col-1" data-index="2" data-listing-date-sort="1728835200000" data-listing-file-modified-sort="1728869721809" data-listing-date-modified-sort="1728869721000" data-listing-reading-time-sort="1" data-listing-word-count-sort="1">
 <a href="./TakeHome/TakeHome3/take-home-3.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <div class="listing-item-img-placeholder card-img-top" style="height: 150px;">&nbsp;</div>
@@ -565,7 +626,6 @@ No matching items
 </section>
 <section id="featured-hands-on-exercises" class="level2">
 <h2 class="anchored" data-anchor-id="featured-hands-on-exercises">Featured Hands-On Exercises</h2>
-<hr>
 <div id="listing-hands-on-featured" class="quarto-listing quarto-listing-container-grid">
 <div class="list grid quarto-listing-cols-3">
 <div class="g-col-1" data-index="0" data-listing-date-sort="1725120000000" data-listing-file-modified-sort="1725852288958" data-listing-date-modified-sort="1725852288000" data-listing-reading-time-sort="4" data-listing-word-count-sort="634">

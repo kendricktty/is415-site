@@ -2,6 +2,10 @@
 title: "IS415: Geospatial Analytics and Applications"
 subtitle: "Student portfolio website"
 listing:
+  - id: about
+    contents:
+      - "about.qmd"
+    type: default
   - id: latest-exercise
     contents:
       - "HandsOn/hands-on-8.qmd"
@@ -28,6 +32,11 @@ hello_world <- "hello world!"
 print(hello_world)
 ```
 
+## About me
+
+:::{#about}
+:::
+
 ## Latest Exercises
 
 :::{#latest-exercise}
@@ -39,7 +48,6 @@ print(hello_world)
 :::
 
 ## Featured Hands-On Exercises
----
 
 :::{#hands-on-featured}
 :::
