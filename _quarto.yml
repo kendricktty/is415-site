@@ -70,6 +70,8 @@ website:
             href: "TakeHome/TakeHome2/take-home-2.html"
         # - href: "TakeHome/TakeHome1/take-home-1.qmd"
         # - href: "TakeHome/TakeHome2/take-home-2.qmd"
+          - text: "TH3: Prototyping Modules for Geospatial Analytics Shiny Application"
+            href: "TakeHome/TakeHome3/take-home-3.html"
   # sidebar:
   #   style: "floating"
   #   contents:
