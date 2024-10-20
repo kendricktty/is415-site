@@ -1,0 +1,229 @@
+---
+title: "HX9: Geographically Weighted Regression - Calibrating a Hedonic Pricing Model"
+subtitle: "Hands-On Exercise 9"
+author: "Kendrick Teo"
+date: "2024-10-20"
+date-modified: "last-modified"
+
+execute: 
+  eval: true
+  echo: true
+  freeze: true
+---
+
+## HX9.1 Overview, Data and R Packages
+
+**Regression** is a statistical (and machine learning) technique that uses non-stationary variables to model the relationship between these independent variables and a **numerical** outcome of interest (dependent variable), the aim of which is to *predict* unseen values. **Geographically weighted regression** factors in *location* variables like climate and physical environment characteristics. In this exercise, we will build a hedonic pricing model to predict the resale prices of condominiums in [Singapore](https://en.wikipedia.org/wiki/Singapore) in 2015.
+
+The datasets to be used in this exercise are:
+
+* URA Master Plan Subzone Boundary in Shapefile format (i.e. `MP14_SUBZONE_WEB_PL`), and
+* `condo_resale_2015.csv`.
+
+The R packages to be used today are:
+
+* `olsrr` for building OLS and performing diagnostic tests
+* `GWmodel`, for building geographically weighted models
+* `corrplot` for data visualisation and analysis
+* `sf`, `tidyverse` and `tmap` for data handling and choropleth mapping.
+
+```{r}
+pacman::p_load(olsrr, corrplot, ggpubr, sf, spdep, GWmodel, tmap, tidyverse, gtsummary)
+```
+
+### HX9.1.1 A short note about `GWmodel`
+
+The `GWmodel` package provides a collection of localised spatial statistical methods, namely: GW summary statistics, GW principal components analysis, GW discriminant analysis and various forms of GW regression. Some of these are provided in basic and robust (outlier resistant) forms. Commonly, outputs or parameters of the `GWmodel` are mapped to provide a useful exploratory tool, which can often precede (and direct) a more traditional or sophisticated statistical analysis.
+
+## HX9.2 Geospatial Data Wrangling
+
+### HX9.2.1 Importing data
+
+```{r}
+mpsz <- st_read(dsn = "data/geospatial", layer = "MP14_SUBZONE_WEB_PL")
+```
+
+### HX9.2.2 Update CRS information
+
+The coordinate system needs to be updated to Singapore's: ESPG `3414`, or SVY21.
+
+```{r}
+mpsz_svy21 <- st_transform(mpsz, 3414)
+st_crs(mpsz_svy21)
+st_bbox(mpsz_svy21) #view extent
+```
+
+## HX9.3 Aspatial Data Wrangling
+
+### HX9.3.1 Importing data
+
+```{r}
+condo_resale = read_csv("data/aspatial/Condo_resale_2015.csv")
+glimpse(condo_resale)
+```
+
+### HX9.3.2 Converting aspatial dataframe to `sf` object
+
+As the `condo_resale` dataframe is aspatial, we will now need to convert it to an `sf` object. Notice we need to perform another `st_transform()` to convert the coordinates from WGS84 to SVY21.
+
+```{r}
+condo_resale.sf <- st_as_sf(condo_resale, coords = c("LONGITUDE", "LATITUDE"), crs=4326) %>% st_transform(crs=3414)
+head(condo_resale.sf)
+```
+
+## HX9.4 Exploratory Data Analysis
+
+**Exploratory data analysis (EDA)** is a crucial part of any data analytics task, and is especially critical for data preparation prior to machine learning. In this section, we will use `ggplot2` to perform EDA.
+
+### HX9.4.1 Using graphical methods
+
+The distribution of `SELLING_PRICE` may be plotted using the following code chunk.
+
+```{r}
+ggplot(data=condo_resale.sf, aes(x=`SELLING_PRICE`)) +
+  geom_histogram(bins=20, color="black", fill="green4")
+```
+
+The distribution of `SELLING_PRICE` is **right skewed**, meaning that more condominium units were transacted at lower prices.
+
+We can normalise this data using log transformation. The code chunk below is used to derive a new variable called `LOG_SELLING_PRICE` by using a log transformation on the variable `SELLING_PRICE, using mutate() of dplyr package. The end result is a distribution that is less skewed.
+
+```{r}
+condo_resale.sf <- condo_resale.sf %>%
+  mutate(`LOG_SELLING_PRICE` = log(SELLING_PRICE))
+ggplot(data=condo_resale.sf, aes(x=`LOG_SELLING_PRICE`)) +
+  geom_histogram(bins=20, color="black", fill="green4")
+```
+
+## HX9.4.2 Multiple histogram plots
+
+`ggarrange()` of the `ggpubr` package may be used to draw multiple small histograms, achieving a similar capability found in `matplotlib` of Python. In the code chunk below, 12 histograms are created and then presented as a table of 3 columns and 4 rows.
+
+```{r}
+AREA_SQM <- ggplot(data=condo_resale.sf, aes(x= `AREA_SQM`)) + 
+  geom_histogram(bins=20, color="black", fill="green4")
+
+AGE <- ggplot(data=condo_resale.sf, aes(x= `AGE`)) +
+  geom_histogram(bins=20, color="black", fill="green4")
+
+PROX_CBD <- ggplot(data=condo_resale.sf, aes(x= `PROX_CBD`)) +
+  geom_histogram(bins=20, color="black", fill="green4")
+
+PROX_CHILDCARE <- ggplot(data=condo_resale.sf, aes(x= `PROX_CHILDCARE`)) + 
+  geom_histogram(bins=20, color="black", fill="green4")
+
+PROX_ELDERLYCARE <- ggplot(data=condo_resale.sf, aes(x= `PROX_ELDERLYCARE`)) +
+  geom_histogram(bins=20, color="black", fill="green4")
+
+PROX_URA_GROWTH_AREA <- ggplot(data=condo_resale.sf, 
+                               aes(x= `PROX_URA_GROWTH_AREA`)) +
+  geom_histogram(bins=20, color="black", fill="green4")
+
+PROX_HAWKER_MARKET <- ggplot(data=condo_resale.sf, aes(x= `PROX_HAWKER_MARKET`)) +
+  geom_histogram(bins=20, color="black", fill="green4")
+
+PROX_KINDERGARTEN <- ggplot(data=condo_resale.sf, aes(x= `PROX_KINDERGARTEN`)) +
+  geom_histogram(bins=20, color="black", fill="green4")
+
+PROX_MRT <- ggplot(data=condo_resale.sf, aes(x= `PROX_MRT`)) +
+  geom_histogram(bins=20, color="black", fill="green4")
+
+PROX_PARK <- ggplot(data=condo_resale.sf, aes(x= `PROX_PARK`)) +
+  geom_histogram(bins=20, color="black", fill="green4")
+
+PROX_PRIMARY_SCH <- ggplot(data=condo_resale.sf, aes(x= `PROX_PRIMARY_SCH`)) +
+  geom_histogram(bins=20, color="black", fill="green4")
+
+PROX_TOP_PRIMARY_SCH <- ggplot(data=condo_resale.sf, 
+                               aes(x= `PROX_TOP_PRIMARY_SCH`)) +
+  geom_histogram(bins=20, color="black", fill="green4")
+
+ggarrange(AREA_SQM, AGE, PROX_CBD, PROX_CHILDCARE, PROX_ELDERLYCARE, 
+          PROX_URA_GROWTH_AREA, PROX_HAWKER_MARKET, PROX_KINDERGARTEN, PROX_MRT,
+          PROX_PARK, PROX_PRIMARY_SCH, PROX_TOP_PRIMARY_SCH,  
+          ncol = 3, nrow = 4)
+```
+
+## HX9.5 Geospatial EDA
+
+### HX9.5.1 Statistical point map
+
+Finally, we want to draw the geospatial distribution of condo resale prices in Singapore with the `tmap` package.
+
+First, we will turn on the interactive mapping mode with the code chunk below.
+
+```{r}
+tmap_options(check.and.fix = TRUE)
+tmap_mode("view")
+```
+
+Next, the code chunks below will draw us an interactive point symbol map.
+
+```{r}
+tm_shape(mpsz_svy21)+
+  tm_polygons() +
+tm_shape(condo_resale.sf) +  
+  tm_dots(col = "SELLING_PRICE",
+          alpha = 0.6,
+          style="quantile") +
+  tm_view(set.zoom.limits = c(11,14))
+```
+Notice that `tm_dots()` is used instead of `tm_bubbles()`. Also, the `set.zoom.limits` argument of `tm_view()` sets the minimum and maximum zoom level to `11` and `14` respectively.
+
+Before moving on to the next section, it is a good practice to revert `tmap` back to `plot` mode.
+
+```{r}
+tmap_mode("plot")
+```
+
+## HX9.6 Hedonic Price Modelling in R
+
+And now for the fun part: building our hedonic pricing models. We can do this using the **simple linear regression** or **multiple linear regression** methods.
+
+### HX9.6.1 Simple Linear Regression
+
+For this model, we want to predict `SELLING_PRICE` (`y`) using the independent variable `AREA_SQM` (`x`). In other words, we want to create a best fit linear function measuring the effect of `x` on `y`.
+
+```{r}
+condo.slr <- lm(formula=SELLING_PRICE ~ AREA_SQM, data = condo_resale.sf)
+```
+
+The functions `summary()` and `anova()` can be used to obtain and print a summary and analysis of variance table of the results. The generic accessor functions coefficients, effects, fitted.values and residuals extract various useful features of the value returned by `lm`. `lm()` returns an object of class `lm`, or a vector `c("mlm", "lm")` for multiple responses.
+
+```{r}
+summary(condo.slr)
+```
+
+The function given to us is:
+
+$y=14719x_1 -258121.1$
+
+The coefficient of determination $R^2$ is $0.4518$. This indicates the model is able to explain about $45%$ of the resale prices. With a p-value of much smaller than `0.0001`, we can reject the null hypothesis that the mean is a good esimator of `SELLING_PRICE`. This will allow us to infer that our simple linear regression model is a good estimator of `SELLING_PRICE`. 
+
+We can visualise our best fit on a scatterplot by incorporating `lm()` as a function in `ggplot`'s geometry as shown below.
+
+```{r}
+ggplot(data=condo_resale.sf,  
+       aes(x=`AREA_SQM`, y=`SELLING_PRICE`)) +
+  geom_point() +
+  geom_smooth(method = lm)
+```
+
+A few outliers with relatively higher selling prices can be seen in the plot.
+
+## HX9.6.2 Multiple Linear Regression
+
+So far, we have only been using a single independent variable to predict housing prices. We can also use multiple independent variables to do likewise.
+
+Before building our model, we need to ensure that the independent variables used are not highly correlated with one another, or the quality of the model will be compromised. In statistics, this phenomenon is known as **multicollinearity**. The typical method of doing this is to use a correlation matrix drawn as a heatmap to easily visualise the correlation coefficients of any given pair of variables. In Python, we use `pandas.DataFrame.corr()` to create the matrix and `seaborn.heatmap()` to visualise it as a heatmap. In R, the `corrplot` package is used instead.
+
+```{r}
+corrplot(cor(condo_resale[, 5:23]), diag = FALSE, order = "AOE",
+         tl.pos = "td", tl.cex = 0.5, method = "number", type = "upper")
+```
+
+From the scatterplot matrix, it is clear that `FREEHOLD` is highly correlated to `LEASE_99YEAR`. This could be because the two are mutually exclusive - a 99-year leasehold property must be returned to the government after 99 years. In view of this, it is wiser to only include either one of them in the subsequent model building. We will therefore exclude `LEASE_99YEAR` in the subsequent model building.
+
+## References
+
+1.  Kam, T. S. (2024). 13 Calibrating Hedonic Pricing Model for Private Highrise Property with GWR Method. R for Geospatial Data Science and Analytics. <https://r4gdsa.netlify.app/chap13.html#hedonic-pricing-modelling-in-r>
