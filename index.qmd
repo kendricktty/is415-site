@@ -33,11 +33,6 @@ hello_world <- "hello world!"
 print(hello_world)
 ```
 
-## About me
-
-:::{#about}
-:::
-
 ## Latest Exercises
 
 :::{#latest-exercise}
@@ -51,4 +46,9 @@ print(hello_world)
 ## Featured Hands-On Exercises
 
 :::{#hands-on-featured}
+:::
+
+## About me
+
+:::{#about}
 :::
