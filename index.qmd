@@ -26,6 +26,7 @@ listing:
     type: grid
   - id: in-class-featured
     contents:
+      - "InClass/ICE10/ICE10.qmd"
       - "InClass/ICE8/in-class-8.qmd"
     type: table
 ---
