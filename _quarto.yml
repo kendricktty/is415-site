@@ -28,6 +28,8 @@ website:
             href: "InClass/ICE7/in-class-7.html"
           - text: "CE8: Spatially Constrained Clustering Analysis"
             href: "InClass/ICE8/in-class-8.html"
+          - text: "CE10 Geographically Weighted Regression"
+            href: "InClass/ICE10/ICE10.html"
       #   menu:
       #   - href: "InClass/ICE1/in-class-1.qmd"
       #   - href: "InClass/ICE2/in-class-2.qmd"
