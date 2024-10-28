@@ -10,3 +10,17 @@ execute:
   echo: true
   freeze: true
 ---
+
+## TH3.1 Introduction
+
+The objective of Take-Home Exercise 3 is to prototype a module to be built for the Geospatial Analytics project, which is on building a hedonic pricing model for house prices in Johor Bahru. As the group member in charge of building the model itself, I have decided to base this exercise on the geographically weighted regression model. 
+
+At the time of writing, my group has yet to complete acquiring our dataset, so the regression model for this exercise will instead be used to model **[HDB](https://en.wikipedia.org/wiki/Public_housing_in_Singapore) resale prices in 2023**.
+
+## TH3.2 Overview
+
+### TH3.2.1 Geographically weighted regression
+
+
+
+### TH3.2.2 Public housing in Singapore

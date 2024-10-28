@@ -1,0 +1,174 @@
+---
+title: "CE10: Geographically Weighted Regression"
+subtitle: "In-class Exercise 10"
+author: "Kendrick Teo"
+date: "2024-10-28"
+date-modified: "last-modified"
+
+execute: 
+  eval: true
+  echo: true
+  freeze: true
+---
+
+## CE10.1 Getting Started
+
+```{r}
+pacman::p_load(olsrr, ggstatsplot, sf, tmap, tidyverse, gtsummary, performance, see, sfdep)
+
+mpsz <- st_read(dsn = "data/geospatial", layer = "MP14_SUBZONE_WEB_PL")
+condo_resale <- read_csv("data/aspatial/Condo_resale_2015.csv")
+condo_resale_sf <- st_as_sf(condo_resale, coords = c("LONGITUDE", "LATITUDE"), crs=4326) %>% st_transform(crs=3414)
+```
+
+## CE10.2 Correlation Analysis with `ggstatplot`
+
+```{r}
+ggcorrmat(condo_resale[, 5:23])
+```
+
+## CE10.3 Multiple Linear Regression method
+
+```{r}
+condo_mlr <- lm(formula = SELLING_PRICE ~ AREA_SQM + 
+                  AGE   + PROX_CBD + PROX_CHILDCARE + 
+                  PROX_ELDERLYCARE + PROX_URA_GROWTH_AREA + 
+                  PROX_HAWKER_MARKET    + PROX_KINDERGARTEN + 
+                  PROX_MRT  + PROX_PARK + PROX_PRIMARY_SCH + 
+                  PROX_TOP_PRIMARY_SCH + PROX_SHOPPING_MALL + 
+                  PROX_SUPERMARKET + PROX_BUS_STOP + 
+                  NO_Of_UNITS + FAMILY_FRIENDLY + 
+                  FREEHOLD + LEASEHOLD_99YR, 
+                data=condo_resale_sf)
+summary(condo_mlr)
+```
+
+## CE10.4 Tidy linear regression report with OLS
+
+```{r}
+ols_regress(condo_mlr)
+```
+
+## CE10.5 Stewpise regression
+
+Stepwise regression involves constructing a regression model by selecting independent variables step by step. It involves adding or removing potential explanatory variables in succession and testing for statistical significance after each iteration. Three methods are available: `ols_step_forward_p`, `ols_step_backward_p`, and `ols_step_both_p`.
+
+### CE10.5.1 Forward stepwise
+
+```{r}
+condo_fw_mlr <- ols_step_forward_p(
+  condo_mlr,
+  p_val = 0.05,
+  details = FALSE)
+condo_fw_mlr
+plot(condo_fw_mlr)
+```
+
+### CE10.5.2 Backward stepwise
+
+```{r}
+condo_bw_mlr <- ols_step_backward_p(
+  condo_mlr,
+  p_val = 0.05,
+  details = FALSE)
+condo_fw_mlr
+plot(condo_fw_mlr)
+```
+
+### CE10.5.3 Stepwise
+
+```{r}
+condo_sb_mlr <- ols_step_both_p(
+  condo_mlr,
+  p_val = 0.05,
+  details = FALSE)
+condo_sb_mlr
+```
+
+## CE10.6 Comparing performance
+
+```{r}
+metric <- compare_performance(condo_mlr, 
+                    condo_fw_mlr$model,
+                    condo_bw_mlr$model,
+                    condo_sb_mlr$model)
+
+metric$Name <- gsub(".*\\\\([a-zA-Z0-9_]+)\\\\, \\\\model\\\\.*", "\\1", metric$Name)
+```
+
+## CE10.7 Visualising model parameters
+
+```{r}
+ggcoefstats(condo_sb_mlr$model,
+            sort = "ascending")
+```
+
+## CE10.8 Checking for multilinearity
+
+```{r}
+check_collinearity(condo_sb_mlr$model)
+
+plot(check_collinearity(condo_sb_mlr$model)) +
+  theme(axis.text.x = element_text(
+    angle = 45, hjust = 1))
+```
+
+## CE10.9 Linearity assumption test
+
+```{r}
+out <- plot(check_model(condo_sb_mlr$model, 
+                        panel = FALSE))
+out[[2]]
+```
+
+## CE10.10 Normality assumption test
+
+```{r}
+plot(check_normality(condo_sb_mlr$model))
+```
+
+## CE10.11 Checking of outliers
+
+```{r}
+outliers <- check_outliers(condo_sb_mlr$model,
+                           method = "cook")
+outliers
+```
+
+## CE10.12 Visualising spatial non-stationary
+
+```{r}
+mlr_output <- as.data.frame(condo_fw_mlr$model$residuals) %>%
+  rename(`FW_MLR_RES` = `condo_fw_mlr$model$residuals`)
+
+condo_resale_sf <- cbind(condo_resale_sf, 
+                        mlr_output$FW_MLR_RES) %>%
+  rename(`MLR_RES` = `mlr_output.FW_MLR_RES`)
+
+tmap_mode("view")
+tm_shape(mpsz)+
+  tmap_options(check.and.fix = TRUE) +
+  tm_polygons(alpha = 0.4) +
+tm_shape(condo_resale_sf) +  
+  tm_dots(col = "MLR_RES",
+          alpha = 0.6,
+          style="quantile") 
+tmap_mode("plot")
+```
+
+## CE10.13 Spatial stationary test (Moran's I)
+
+```{r}
+condo_resale_sf <- condo_resale_sf %>%
+  mutate(nb = st_knn(geometry, k=6,
+                     longlat = FALSE),
+         wt = st_weights(nb,
+                         style = "W"),
+         .before = 1)
+
+global_moran_perm(condo_resale_sf$MLR_RES, 
+                  condo_resale_sf$nb, 
+                  condo_resale_sf$wt, 
+                  alternative = "two.sided", 
+                  nsim = 99)
+```
