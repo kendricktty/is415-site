@@ -24,6 +24,10 @@ listing:
       - "HandsOn/Hands-on_Ex03/hands-on-3.qmd"
       - "InClass/ICE4/in-class-4.qmd"
     type: grid
+  - id: in-class-featured
+    contents:
+      - "InClass/ICE8/in-class-8.qmd"
+    type: table
 ---
 
 Welcome, and thanks for stopping by! My name is Kendrick, and you've reached my portfolio website for **IS415: Geospatial Analytics and Applications**.
@@ -46,6 +50,11 @@ print(hello_world)
 ## Featured Hands-On Exercises
 
 :::{#hands-on-featured}
+:::
+
+## Featured In-Class Exercises
+
+::: {#in-class-featured}
 :::
 
 ## About me

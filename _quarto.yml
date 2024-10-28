@@ -26,6 +26,8 @@ website:
             href: "InClass/ICE5/in-class-6.html"
           - text: "CE7: Geographical Segmentation with Spatially Constrained Clustering Techniques"
             href: "InClass/ICE7/in-class-7.html"
+          - text: "CE8: Spatially Constrained Clustering Analysis"
+            href: "InClass/ICE8/in-class-8.html"
       #   menu:
       #   - href: "InClass/ICE1/in-class-1.qmd"
       #   - href: "InClass/ICE2/in-class-2.qmd"

@@ -1,0 +1,17 @@
+{
+  "hash": "40e012e0fca0d0f805df3557254f42f7",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"CE8: Spatially Constrained Clustering Analysis\"\nsubtitle: \"In-class Exercise 8\"\nauthor: \"Kendrick Teo\"\ndate: \"2024-09-16\"\ndate-modified: \"last-modified\"\n\nexecute: \n  eval: true\n  echo: true\n  freeze: true\n---\n\n\n\n## CE8.1 Loading R Packages\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\npacman::p_load(spdep, sp, tmap, sf, ClustGeo, cluster, factoextra, NbClust, tidyverse, GGally)\n```\n:::\n\n\n\n## CE8.2 Importing the data\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nshan_sf <- read_rds(\"data/rds/shan_sf.rds\")\nshan_ict <- read_rds(\"data/rds/shan_ict.rds\")\nshan_sf_cluster <- read_rds(\"data/rds/shan_sf_cluster.rds\")\n```\n:::\n\n\n\n## CE8.3 Conventional Hierarchical Clustering\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nproxmat <- dist(shan_ict, method = 'euclidean')\nhclust_ward <- hclust(proxmat, method = 'ward.D')\ngroups <- as.factor(cutree(hclust_ward, k = 6))\n```\n:::\n\n\n\n## CE8.4 Append to geospatial data\n\n\n::: {.cell}\n\n```{.r .cell-code}\nshan_sf_cluster <- cbind(shan_sf, as.matrix(groups)) %>%\n  rename(`CLUSTER` = `as.matrix.groups.`) %>% # Tidy your data\n  select(-c(3:4, 7:9)) %>%\n  rename(TS = TS.x)\n```\n:::\n\n\n\n## CE8.5 Create clustering dendogram\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nplot(hclust_ward, cex = 0.6)\nrect.hclust(hclust_ward, k = 6, border = 2:5)\n```\n\n::: {.cell-output-display}\n![](in-class-8_files/figure-html/unnamed-chunk-5-1.png){width=672}\n:::\n:::\n\n\n\n## CE8.6 Cluster map\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nqtm(shan_sf_cluster, \"CLUSTER\")\n```\n\n::: {.cell-output-display}\n![](in-class-8_files/figure-html/unnamed-chunk-6-1.png){width=672}\n:::\n:::",
+    "supporting": [
+      "in-class-8_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

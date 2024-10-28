@@ -214,6 +214,34 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       window['quarto-listing-loaded']();
     }
   })
+  
+
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    const listingTargetEl = window.document.querySelector('#listing-in-class-featured .list');
+    if (!listingTargetEl) {
+      // No listing discovered, do not attach.
+      return; 
+    }
+
+    const options = {
+      valueNames: ['listing-date','listing-title','listing-author',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-title-sort'] }],
+      
+      searchColumns: ["listing-date","listing-title","listing-author"],
+    };
+
+    window['quarto-listings'] = window['quarto-listings'] || {};
+    window['quarto-listings']['listing-in-class-featured'] = new List('listing-in-class-featured', options);
+
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  });
+
+  window.addEventListener('hashchange',() => {
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  })
   </script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
@@ -303,6 +331,10 @@ window.Quarto = {
     <a class="dropdown-item" href="./InClass/ICE7/in-class-7.html">
  <span class="dropdown-text">CE7: Geographical Segmentation with Spatially Constrained Clustering Techniques</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="./InClass/ICE8/in-class-8.html">
+ <span class="dropdown-text">CE8: Spatially Constrained Clustering Analysis</span></a>
+  </li>  
     </ul>
   </li>
   <li class="nav-item dropdown ">
@@ -390,6 +422,7 @@ window.Quarto = {
   <li><a href="#latest-exercises" id="toc-latest-exercises" class="nav-link active" data-scroll-target="#latest-exercises">Latest Exercises</a></li>
   <li><a href="#featured-take-home-exercises" id="toc-featured-take-home-exercises" class="nav-link" data-scroll-target="#featured-take-home-exercises">Featured Take-Home Exercises</a></li>
   <li><a href="#featured-hands-on-exercises" id="toc-featured-hands-on-exercises" class="nav-link" data-scroll-target="#featured-hands-on-exercises">Featured Hands-On Exercises</a></li>
+  <li><a href="#featured-in-class-exercises" id="toc-featured-in-class-exercises" class="nav-link" data-scroll-target="#featured-in-class-exercises">Featured In-Class Exercises</a></li>
   <li><a href="#about-me" id="toc-about-me" class="nav-link" data-scroll-target="#about-me">About me</a></li>
   </ul>
 </nav>
@@ -429,7 +462,7 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="latest-exercises">Latest Exercises</h2>
 <div id="listing-latest-exercise" class="quarto-listing quarto-listing-container-default">
 <div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-listing-date-sort="1728489600000" data-listing-file-modified-sort="1729413096654" data-listing-date-modified-sort="1729413096000" data-listing-reading-time-sort="13" data-listing-word-count-sort="2463">
+<div class="quarto-post image-right" data-index="0" data-listing-date-sort="1728489600000" data-listing-file-modified-sort="1728868861162" data-listing-date-modified-sort="1728868861000" data-listing-reading-time-sort="13" data-listing-word-count-sort="2463">
 <div class="thumbnail">
 <p><a href="./HandsOn/hands-on-8.html" class="no-external"></a></p><a href="./HandsOn/hands-on-8.html" class="no-external">
 <p class="card-img-top"><img src="HandsOn/hands-on-8_files/figure-html/unnamed-chunk-2-1.png"  class="thumbnail-image card-img"/></p>
@@ -457,7 +490,7 @@ Kendrick Teo
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="1" data-listing-date-sort="1729353600000" data-listing-file-modified-sort="1729418605940" data-listing-date-modified-sort="1729418605000" data-listing-reading-time-sort="20" data-listing-word-count-sort="3893">
+<div class="quarto-post image-right" data-index="1" data-listing-date-sort="1729353600000" data-listing-file-modified-sort="1729470080788" data-listing-date-modified-sort="1729470080000" data-listing-reading-time-sort="20" data-listing-word-count-sort="3893">
 <div class="thumbnail">
 <p><a href="./HandsOn/hands-on-9.html" class="no-external"></a></p><a href="./HandsOn/hands-on-9.html" class="no-external">
 <p class="card-img-top"><img src="HandsOn/hands-on-9_files/figure-html/unnamed-chunk-6-1.png"  class="thumbnail-image card-img"/></p>
@@ -485,7 +518,7 @@ Kendrick Teo
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="2" data-listing-date-sort="1727020800000" data-listing-file-modified-sort="1728654500666" data-listing-date-modified-sort="1728654500000" data-listing-reading-time-sort="46" data-listing-word-count-sort="9117">
+<div class="quarto-post image-right" data-index="2" data-listing-date-sort="1727020800000" data-listing-file-modified-sort="1728868861165" data-listing-date-modified-sort="1728868861000" data-listing-reading-time-sort="46" data-listing-word-count-sort="9117">
 <div class="thumbnail">
 <p><a href="./TakeHome/TakeHome2/take-home-2.html" class="no-external"></a></p><a href="./TakeHome/TakeHome2/take-home-2.html" class="no-external">
 <p class="card-img-top"><img src="TakeHome/TakeHome2/take-home-2_files/figure-html/unnamed-chunk-5-1.png"  class="thumbnail-image card-img"/></p>
@@ -523,7 +556,7 @@ No matching items
 <h2 class="anchored" data-anchor-id="featured-take-home-exercises">Featured Take-Home Exercises</h2>
 <div id="listing-take-home-featured" class="quarto-listing quarto-listing-container-grid">
 <div class="list grid quarto-listing-cols-3">
-<div class="g-col-1" data-index="0" data-listing-date-sort="1725638400000" data-listing-file-modified-sort="1727007490832" data-listing-date-modified-sort="1727007490000" data-listing-reading-time-sort="26" data-listing-word-count-sort="5021">
+<div class="g-col-1" data-index="0" data-listing-date-sort="1725638400000" data-listing-file-modified-sort="1727061340391" data-listing-date-modified-sort="1727061340000" data-listing-reading-time-sort="26" data-listing-word-count-sort="5021">
 <a href="./TakeHome/TakeHome1/take-home-1.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
@@ -548,7 +581,7 @@ Sep 7, 2024
 </div>
 </a>
 </div>
-<div class="g-col-1" data-index="1" data-listing-date-sort="1727020800000" data-listing-file-modified-sort="1728654500666" data-listing-date-modified-sort="1728654500000" data-listing-reading-time-sort="46" data-listing-word-count-sort="9117">
+<div class="g-col-1" data-index="1" data-listing-date-sort="1727020800000" data-listing-file-modified-sort="1728868861165" data-listing-date-modified-sort="1728868861000" data-listing-reading-time-sort="46" data-listing-word-count-sort="9117">
 <a href="./TakeHome/TakeHome2/take-home-2.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top"><img src="TakeHome/TakeHome2/take-home-2_files/figure-html/unnamed-chunk-5-1.png" style="height: 150px;"  class="thumbnail-image card-img"/></p>
@@ -571,7 +604,7 @@ Sep 23, 2024
 </div>
 </a>
 </div>
-<div class="g-col-1" data-index="2" data-listing-date-sort="1728835200000" data-listing-file-modified-sort="1729394799271" data-listing-date-modified-sort="1729394799000" data-listing-reading-time-sort="1" data-listing-word-count-sort="1">
+<div class="g-col-1" data-index="2" data-listing-date-sort="1728835200000" data-listing-file-modified-sort="1728869721809" data-listing-date-modified-sort="1728869721000" data-listing-reading-time-sort="1" data-listing-word-count-sort="1">
 <a href="./TakeHome/TakeHome3/take-home-3.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <div class="listing-item-img-placeholder card-img-top" style="height: 150px;">&nbsp;</div>
@@ -627,7 +660,7 @@ Sep 1, 2024
 </div>
 </a>
 </div>
-<div class="g-col-1" data-index="1" data-listing-date-sort="1723651200000" data-listing-file-modified-sort="1726643473999" data-listing-date-modified-sort="1726643473000" data-listing-reading-time-sort="8" data-listing-word-count-sort="1447">
+<div class="g-col-1" data-index="1" data-listing-date-sort="1723651200000" data-listing-file-modified-sort="1724631475788" data-listing-date-modified-sort="1724631475000" data-listing-reading-time-sort="8" data-listing-word-count-sort="1447">
 <a href="./HandsOn/Hands-on_Ex01/hands-on-1.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top"><img src="HandsOn/Hands-on_Ex01/hands-on-1_files/figure-html/unnamed-chunk-8-1.png" style="height: 150px;"  class="thumbnail-image card-img"/></p>
@@ -650,7 +683,7 @@ Aug 15, 2024
 </div>
 </a>
 </div>
-<div class="g-col-1" data-index="2" data-listing-date-sort="1724860800000" data-listing-file-modified-sort="1726642917483" data-listing-date-modified-sort="1726642917000" data-listing-reading-time-sort="18" data-listing-word-count-sort="3499">
+<div class="g-col-1" data-index="2" data-listing-date-sort="1724860800000" data-listing-file-modified-sort="1727061340389" data-listing-date-modified-sort="1727061340000" data-listing-reading-time-sort="18" data-listing-word-count-sort="3499">
 <a href="./HandsOn/Hands-on_Ex03/hands-on-3.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top"><img src="HandsOn/Hands-on_Ex03/hands-on-3_files/figure-html/unnamed-chunk-2-1.png" style="height: 150px;"  class="thumbnail-image card-img"/></p>
@@ -673,7 +706,7 @@ Aug 29, 2024
 </div>
 </a>
 </div>
-<div class="g-col-1" data-index="3" data-listing-date-sort="1728489600000" data-listing-file-modified-sort="1728739374159" data-listing-date-modified-sort="1728739374000" data-listing-reading-time-sort="17" data-listing-word-count-sort="3229">
+<div class="g-col-1" data-index="3" data-listing-date-sort="1728489600000" data-listing-file-modified-sort="1728868861162" data-listing-date-modified-sort="1728868861000" data-listing-reading-time-sort="17" data-listing-word-count-sort="3229">
 <a href="./HandsOn/hands-on-7.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top"><img src="HandsOn/hands-on-7_files/figure-html/unnamed-chunk-3-1.png" style="height: 150px;"  class="thumbnail-image card-img"/></p>
@@ -696,7 +729,7 @@ Oct 10, 2024
 </div>
 </a>
 </div>
-<div class="g-col-1" data-index="4" data-listing-date-sort="1728489600000" data-listing-file-modified-sort="1729413096654" data-listing-date-modified-sort="1729413096000" data-listing-reading-time-sort="13" data-listing-word-count-sort="2463">
+<div class="g-col-1" data-index="4" data-listing-date-sort="1728489600000" data-listing-file-modified-sort="1728868861162" data-listing-date-modified-sort="1728868861000" data-listing-reading-time-sort="13" data-listing-word-count-sort="2463">
 <a href="./HandsOn/hands-on-8.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top"><img src="HandsOn/hands-on-8_files/figure-html/unnamed-chunk-2-1.png" style="height: 150px;"  class="thumbnail-image card-img"/></p>
@@ -719,7 +752,7 @@ Oct 10, 2024
 </div>
 </a>
 </div>
-<div class="g-col-1" data-index="5" data-listing-date-sort="1729353600000" data-listing-file-modified-sort="1729418605940" data-listing-date-modified-sort="1729418605000" data-listing-reading-time-sort="20" data-listing-word-count-sort="3893">
+<div class="g-col-1" data-index="5" data-listing-date-sort="1729353600000" data-listing-file-modified-sort="1729470080788" data-listing-date-modified-sort="1729470080000" data-listing-reading-time-sort="20" data-listing-word-count-sort="3893">
 <a href="./HandsOn/hands-on-9.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top"><img src="HandsOn/hands-on-9_files/figure-html/unnamed-chunk-6-1.png" style="height: 150px;"  class="thumbnail-image card-img"/></p>
@@ -748,11 +781,72 @@ No matching items
 </div>
 </div>
 </section>
+<section id="featured-in-class-exercises" class="level2">
+<h2 class="anchored" data-anchor-id="featured-in-class-exercises">Featured In-Class Exercises</h2>
+<div id="listing-in-class-featured" class="quarto-listing quarto-listing-container-table">
+<div class="listing-actions-group">
+   <div class="input-group input-group-sm quarto-listing-sort">
+     <span class="input-group-text"><i class="bi bi-sort-down"></i></span>
+     <select id="listing-in-class-featured-sort" class="form-select" aria-label="Order By" onchange="window['quarto-listings']['listing-in-class-featured'].sort(this.options[this.selectedIndex].value, { order: this.options[this.selectedIndex].getAttribute('data-direction')})">
+       <option value="" disabled="" selected="" hidden="">Order By</option>
+       <option value="index" data-direction="asc">Default</option>
+         <option value="listing-date-sort" data-direction="asc">
+          Date - Oldest
+        </option>
+         <option value="listing-date-sort" data-direction="desc">
+          Date - Newest
+        </option>
+         <option value="listing-title-sort" data-direction="asc">
+          Title
+        </option>
+         <option value="listing-author" data-direction="asc">
+          Author
+        </option>
+     </select>
+  </div>
+    <div class="input-group input-group-sm quarto-listing-filter">
+      <span class="input-group-text"><i class="bi bi-search"></i></span>
+      <input type="text" class="search form-control" placeholder="Filter">
+    </div>
+</div>
+<table class="quarto-listing-table table">
+<thead>
+<tr>
+<th>
+<a class="sort" data-sort="listing-date-sort" onclick="if (this.classList.contains('sort-asc')) { this.classList.add('sort-desc'); this.classList.remove('sort-asc') } else { this.classList.add('sort-asc'); this.classList.remove('sort-desc')} return false;">Date</a>
+</th>
+<th>
+<a class="sort" data-sort="listing-title-sort" onclick="if (this.classList.contains('sort-asc')) { this.classList.add('sort-desc'); this.classList.remove('sort-asc') } else { this.classList.add('sort-asc'); this.classList.remove('sort-desc')} return false;">Title</a>
+</th>
+<th>
+<a class="sort" data-sort="listing-author" onclick="if (this.classList.contains('sort-asc')) { this.classList.add('sort-desc'); this.classList.remove('sort-asc') } else { this.classList.add('sort-asc'); this.classList.remove('sort-desc')} return false;">Author</a>
+</th>
+</tr>
+</thead>
+<tbody class="list">
+<tr data-index="0" data-listing-date-sort="1726416000000" data-listing-file-modified-sort="1729472566985" data-listing-date-modified-sort="1729472566000" data-listing-reading-time-sort="1" data-listing-word-count-sort="82" data-listing-title-sort="CE8: Spatially Constrained Clustering Analysis" data-listing-filename-sort="in-class-8.qmd">
+<td>
+<span class="listing-date">Sep 16, 2024</span>
+</td>
+<td>
+<a href="./InClass/ICE8/in-class-8.html" class="title listing-title">CE8: Spatially Constrained Clustering Analysis</a>
+</td>
+<td>
+<span class="listing-author">Kendrick Teo</span>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="listing-no-matching d-none">
+No matching items
+</div>
+</div>
+</section>
 <section id="about-me" class="level2">
 <h2 class="anchored" data-anchor-id="about-me">About me</h2>
 <div id="listing-about" class="quarto-listing quarto-listing-container-default">
 <div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-listing-file-modified-sort="1726235890328" data-listing-reading-time-sort="1" data-listing-word-count-sort="79">
+<div class="quarto-post image-right" data-index="0" data-listing-file-modified-sort="1727057574242" data-listing-reading-time-sort="1" data-listing-word-count-sort="79">
 <div class="thumbnail">
 <p><a href="./about.html" class="no-external"></a></p><a href="./about.html" class="no-external">
 <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
