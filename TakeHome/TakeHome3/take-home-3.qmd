@@ -15,7 +15,7 @@ execute:
 
 The objective of Take-Home Exercise 3 is to prototype a module to be built for the Geospatial Analytics project, which is on building a hedonic pricing model for house prices in Johor Bahru. As the group member in charge of building the model itself, I have decided to base this exercise on the geographically weighted regression model. 
 
-At the time of writing, my group has yet to complete acquiring our dataset, so the regression model for this exercise will instead be used to model **[HDB](https://en.wikipedia.org/wiki/Public_housing_in_Singapore) resale prices in 2023**.
+At the time of writing, my group has yet to complete acquiring our dataset, so the regression prototype for this exercise will instead be used to model **[HDB](https://en.wikipedia.org/wiki/Public_housing_in_Singapore) resale prices in 2023**. Additionally, unlike in hands-on exercise 9/10, we will include an added challenge - instead of using point data as is, we will aggregate the statistics by planning area and perform the regression task on its polygons.
 
 ## TH3.2 Overview
 
@@ -23,4 +23,16 @@ At the time of writing, my group has yet to complete acquiring our dataset, so t
 
 
 
-### TH3.2.2 Public housing in Singapore
+### TH3.2.2 The context: Public housing in Singapore
+
+[Singapore](https://en.wikipedia.org/wiki/Singapore) is known globally for its public housing programme. Initially set up to solve an acute housing crisis in the 1960s, it has since morphed into a world-famous concept, with clean residential apartments, well-designed towns and one of the highest home ownership rates in the world. In particular, Singapore uniquely adopts a home ownership policy (effectively a 99-year lease) for most public housing residents, something which has contributed positively to its overall economic growth and stability.
+
+Despite this, skyrocketing property prices, including for public flats in the resale market, skyrocketed in 2023. This was good news for property owners, but caused significant discontent among other quarters such as youth, whose homeowning dreams had become much harder to reach. In particular, complaints were leveled at the perceived unfairness of the public housing ownership system, which would lead some homeowners to reap windfall gains on desirable flats at the expense of pricing out young and first-time homeowners. In response, the Singapore government rolled out a slew of new measures, including a new system of setting minimum occupation periods in "plus" and "prime" location flats, which are located either near key transport nodes or within the city centre.
+
+This makes for an opportune time to perform an investigation on the factors affecting resale HDB pricing in the country. As identified by Megan Sim (2021) before me, besides economic factors like the purchasing power of buyers, structural and locational factors, such as size of the property and locational factors like 
+
+```{r}
+pacman::p_load(olsrr, corrplot, ggpubr, sf, spdep, GWmodel, tmap, tidyverse, gtsummary)
+mrt <- st_read(dsn="~/Downloads/TrainStation_Jul2024", layer="RapidTransitSystemStation") %>% st_transform(3414)
+
+```
