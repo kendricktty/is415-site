@@ -19,3 +19,32 @@ At the time of writing, my group has yet to complete geocoding our dataset, so t
 
 ## TH3.2 Loading the data
 
+The datasets to be used in this exercise are:
+
+-   URA Master Plan Subzone Boundary in Shapefile format (i.e. `MP14_SUBZONE_WEB_PL`), and
+-   `condo_resale_2015.csv`.
+
+```{r}
+pacman::p_load(olsrr, ggstatsplot, sf, tmap, tidyverse, gtsummary, performance, see, sfdep, tidygeocoder)
+```
+```{r}
+property_transaction_data <- read_csv('shiny/data/aspatial/Open Transaction Data.csv')
+head(property_transaction_data)
+```
+
+```{r}
+property_transaction_data <- property_transaction_data %>%
+  geocode(street = `Road Name`, city = `Mukim`, method = 'osm', lat = `latitude`, long = `longitude`) %>%
+  st_as_sf(coords = c("longitude", "latitude"), crs = 4326)
+
+write_rds((property_transaction_data, "shiny/data/property_transaction_sf.rds"))
+```
+
+```{r}
+test_address <- tibble::tribble(
+  ~name,            ~addr,
+  "House",       "Jalan Tembusu 15 Plentong"
+)
+lat_long <- test_address %>% geocode(addr, method='osm', lat=latitude, long=longitude)
+print(lat_long)
+```
