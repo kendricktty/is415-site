@@ -17,16 +17,18 @@ The objective of Take-Home Exercise 3 is to prototype a module to be built for t
 
 Since separating from Malaysia in 1965, [Singapore](https://en.wikipedia.org/wiki/Singapore) has seen a rapid development in its economy and quality of life the likes of which no one else has seen. So it made sense for the neighbouring city of [Johor Bahru, Malaysia](https://en.wikipedia.org/wiki/Johor_Bahru), to capitalise on the spillover effects of Singapore's prosperity by itself becoming a lifestyle hub for visiting Singaporeans, and an emerging business satellite for companies from Singapore and the region. New malls have sprouted all over the state capital, and new investments were made by the state and federal governments to boost the city's economy, such as the development areas of Iskandar Puteri and Pasir Gudang, the Johor Bahru-Singapore rapid transit link and the Iskandar Puteri stop on the since-shelved Kuala Lumpur-Singapore High Speed Rail, among many others. In particular, Johor Bahru became a place where Singaporeans could buy houses at prices cheaper than in their hometown - even more so when housing prices in the country began to fly through the roof in recent times. Even while this phenomenon led to further economic growth, there were concerns that the presence of these Singaporean buyers would put inflationary pressure on the city.
 
-Admist all this, this project aims to explore the trajectory and factors influencing housing prices in Johor Bahru. Using the measures of local and global spatial autocorrelation and a hedonic pricing model, we will perform geospatial data analysis on property transaction data in Johor Bahru and its northwestern neighbour Kulai. As the group member in charge of exploratory data analysis, this take-home exercise serves to prototype the module for performing hot and cold spot analysis.
+Admist all this, this project aims to explore the trajectory and factors influencing housing prices in Johor Bahru. Using the measures of local and global spatial autocorrelation and a hedonic pricing model, we will perform geospatial data analysis on property transaction data in Johor Bahru and its northwestern neighbour Kulai. As the group member in charge of exploratory data analysis, this take-home exercise serves to prototype the module for displaying the measures of spatial correlation, including Local Moran's I, LISA and the Gertis-Ord $G^*_i$ statistics. In addition, geocoding and simple feature engineering tasks will be performed to ensure the dataset is ready for machine learning use going forward.
 
 The scope of today's exercise will be as follows:
 
 - Load and clean the geospatial and aspatial data required for the analysis
 - Geocode the aspatial property transaction data
+- Prepare the aspatial data for machine learning by performing simple feature engineering tasks
 - Create a hexagonal grid of the study area prior to performing analysis
 - Perform exploratory data analysis
 - Derive the local measures of spatial autocorrelation, and perform hot/cold spot analysis
-- Prototype the UI for the corresponding part of the project
+
+Screenshots from the Shiny UI corresponding to each step will be displayed as it is performed in this exercise.
 
 ```{r}
 pacman::p_load(olsrr, ggstatsplot, sf, tmap, tidyverse, gtsummary, performance, see, sfdep, spdep, tidygeocoder)
@@ -56,9 +58,9 @@ head(property_transaction_data)
 
 ## TH3.3 Data Preprocessing
 
-### TH3.3.1 Filtering Mukims outside Johor Bahru
+### TH3.3.1 Filtering out Mukims outside Johor Bahru
 
-We are only concerned with Mukims within Johor Bahru and Kulai district - the latter of which contains Johor Bahru's main Senai international airport. Hence, we will need to filter these out.
+We are only concerned with Mukims within Johor Bahru and Kulai district - the latter of which contains Johor Bahru's main Senai international airport. Anything else will need to be filtered out.
 
 ```{r}
 johor_kulai_mukims <- c("MUKIM JELUTONG", "MUKIM PLENTONG", "MUKIM PULAI", "MUKIM SUNGAI TIRAM", "MUKIM TANJUNG KUPANG", "MUKIM TEBRAU", "BANDAR JOHOR BAHRU", "MUKIM BUKIT BATU", "MUKIM KULAI", "BANDAR KULAI", "MUKIM SEDENAK", "MUKIM SENAI")
@@ -110,9 +112,9 @@ property <- read_rds("shiny/data/rds/property_transaction_sf_notnull.rds") %>%
   st_as_sf(coords = c("longitude", "latitude"), crs = 4326) %>% st_transform(3377)
 ```
 
-### TH3.3.3 Final Preprocessing
+### TH3.3.3 Simple Feature Engineering
 
-Finally, to make our dataset compatible for machine learning use, we need to encode two categorical variables we want to ingest: the **Property Type** and **tenure**.
+Finally, to make our dataset compatible for machine learning use, we need to engineer features based on the two categorical variables we want to ingest: the **Property Type** and **tenure**.
 
 Since Property Type is multiclass categorical, we need to perform one-hot encoding. The following code chunk performs one-hot encoding on the Property Type feature.
 
@@ -177,6 +179,10 @@ tm_shape(property) +
   tm_view(set.zoom.limits = c(11,14)) +
   tm_basemap('OpenStreetMap')
 ```
+
+The basemap will be the first thing a user sees when they visit the project website. Future functionality to be implemented will include a colour scheme customisation and currency customisation, where the property prices can be displayed in either Malaysian ringgit, Singapore dollars or US dollars.
+
+![The basemap as it would appear in a Shiny UI.](basemap.png)
 
 ## TH3.4 Preparing for hot/cold spot analysis
 
@@ -289,6 +295,22 @@ jb_kulai_grid$median_price <- median_prices
 max_prices <- sapply(intersections, aggregate_price, method = "max")
 jb_kulai_grid$max_price <- max_prices
 
+# sectors <- sapply(intersections, function(i) {
+#   if (length(i) == 0) return(NA)
+#   
+#   # Get the Scheme Name/Area values for the properties within the grid cell
+#   schemes <- property$`Scheme Name/Area`[i]
+#   
+#   # Find the most frequent scheme name
+#   most_frequent <- sort(table(schemes), decreasing = TRUE)
+#   most_common_scheme <- names(most_frequent)[1]
+#   
+#   return(most_common_scheme)
+# })
+# jb_kulai_grid$sector <- sectors
+```
+```{r}
+#|eval: False
 write_rds(jb_kulai_grid, "shiny/data/rds/jb_kulai_grid.rds")
 ```
 
@@ -337,7 +359,11 @@ tmap_mode('plot')
 
 The highest median property prices in the study area appear clustered towards the centre of town (Bandar Johor Bahru), or towards Iskandar Puteri (within Pulai) towards the West. Notice their proximity to the two land border crossings with Singapore: the JB Sentral-Woodlands crossing (the causeway) connects with Bandar Johor Bahru, while the Tanjung Kupang-Tuas crossing (the second link) is towards the west - near Pulai. Pasir Gudang to the east (within Plentong) is the most recent area in Johor Bahru to be prominently industrialised, but the residential properties there do not fetch nearly as high a price - indicating a relative lack of demand.
 
-As for Kulai, areas with higher property prices appear clustered towards Bandar Kulai, or Senai - the location of Johor's international airport and a major industrial hub.
+As for Kulai, areas with higher median property prices appear clustered towards Bandar Kulai, or Senai - the location of Johor's international airport and a major industrial hub.
+
+In the Shiny application, the hexagonal map will be overlayed on an OpenStreetMap view of Johor Bahru and Kulai. It will be possible to adjust the transparency of the grid, along with the colour scheme, classification method, and whether to display the average, median or maximum property prices within a grid cell.
+
+![When ported to the Shiny application, it will be possible to toggle between average, median or maximum property prices within a grid cell.](hexgrid.png)
 
 ```{r}
 #| eval: False
@@ -362,11 +388,6 @@ rswm_q <- nb2listw(wm_q, style = "W", zero.policy = TRUE)
 # Compute local Moran's I
 fips <- order(jb_kulai_grid$index)
 localMI <- localmoran(jb_kulai_grid$median_price, rswm_q)
-printCoefmat(data.frame(
-  localMI[fips,],
-  row.names=jb_kulai_grid$index[fips]),
-  check.names = FALSE
-)
 ```
 
 ### TH3.5.1 Mapping Local Moran's I
@@ -393,7 +414,41 @@ p_values <- tm_shape(jb_kulai.localMI) +
 tmap_arrange(localMI_map, p_values, asp = 1, ncol = 2)
 ```
 
-## TH3.6 Hot and Cold Spot Analysis
+### TH3.5.2 Creating LISA cluster map
+
+```{r}
+quadrant <- vector(mode = "numeric", length = nrow(localMI))
+jb_kulai_grid$lag <- lag.listw(rswm_q, jb_kulai_grid$median_price)
+DV <- jb_kulai_grid$lag - mean(jb_kulai_grid$median_price)
+LM_I <- localMI[,1] - mean(localMI[, 1])
+signif <- 0.05
+quadrant[DV <0 & LM_I>0] <- 1
+quadrant[DV >0 & LM_I<0] <- 2
+quadrant[DV <0 & LM_I<0] <- 3  
+quadrant[DV >0 & LM_I>0] <- 4
+quadrant[localMI[,5]>signif] <- 0
+jb_kulai.localMI$quadrant <- quadrant
+colors <- c("#ffffff", "#2c7bb6", "#fdae61", "#abd9e9", "#d7191c")
+clusters <- c("insignificant", "low-low", "low-high", "high-low", "high-high")
+```
+
+```{r}
+cluster_map <- tm_shape(jb_kulai.localMI) +
+  tm_fill(col = "quadrant", 
+          style = "cat", 
+          palette = colors[c(sort(unique(quadrant)))+1], 
+          labels = clusters[c(sort(unique(quadrant)))+1],
+          popup.vars = c("")) +
+  tm_view(set.zoom.limits = c(11,17)) +
+  tm_borders(alpha=0.5)
+tmap_arrange(medians_map, cluster_map, asp = 1, ncol = 2)
+```
+
+In the Shiny app, it will be possible to calculate the local Moran's I and LISA cluster map for the average, median or maximum property price statistics. It will also be possible to customise parameters such as the contiguity method (queen or rook), Lisa classification or derivative statistics - including p-values.
+
+![Parameters and input data are customisable in the Shiny app.](localmeasures.png)
+
+## TH3.7 Hot and Cold Spot Analysis
 
 The next local indicator of spatial autocorrelation to explore is hot and cold spot analysis with Gertis and Ord's G-statistics, or $G^*_i$ statistics.
 
@@ -422,4 +477,14 @@ gi_map <- tm_shape(jb_kulai.gi) +
   tm_borders(alpha = 0.5) + 
   tm_legend(position = c("RIGHT", "BOTTOM"))
 tmap_arrange(medians_map, gi_map)
+```
+
+## Annex A: Local Moran's I Coefficient Matrix
+
+```{r}
+printCoefmat(data.frame(
+  localMI[fips,],
+  row.names=jb_kulai_grid$index[fips]),
+  check.names = FALSE
+)
 ```
