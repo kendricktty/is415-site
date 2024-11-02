@@ -13,17 +13,24 @@ execute:
 
 ## TH3.1 Introduction
 
-The objective of Take-Home Exercise 3 is to prototype a module to be built for the Geospatial Analytics project. By using hot and cold spot analysis and building a hedonic pricing model, the aim of the project is to analyse the trajectory and factors influencing housing prices in Johor Bahru. As the group member in charge of exploratory data analysis, this take-home exercise serves to prototype the module for performing hot and cold spot analysis.
+The objective of Take-Home Exercise 3 is to prototype a module to be built for the Geospatial Analytics project, which will serve to analyse housing prices in Johor Bahru.
 
-The scope of 
+Since separating from Malaysia in 1965, [Singapore](https://en.wikipedia.org/wiki/Singapore) saw a rapid development in its economy and quality of life the likes of which no one else has seen. So it made sense for the neighbouring city of [Johor Bahru, Malaysia](https://en.wikipedia.org/wiki/Johor_Bahru), to capitalise on the spillover effects of Singapore's prosperity by itself becoming a lifestyle hub for visiting Singaporeans, and an emerging business satellite for companies from Singapore and the region. New malls have sprouted all over the state capital, and new investments were made by the state and federal governments to boost the city's economy, such as the development areas of Iskandar Puteri and Pasir Gudang, the Johor Bahru-Singapore rapid transit link and the Iskandar Puteri stop on the since-shelved Kuala Lumpur-Singapore High Speed Rail, among many others. In particular, Johor Bahru became a place where Singaporeans could buy houses at prices cheaper than in their hometown - even more so when housing prices in the country began to fly through the roof in recent times. Even while this phenomenon led to further economic growth, there were concerns that the presence of these Singaporean buyers would put inflationary pressure on the city.
+
+Admist all this, this project aims to explore the trajectory and factors influencing housing prices in Johor Bahru. Using the measures of local and global spatial autocorrelation and a hedonic pricing model, we will perform geospatial data analysis on property transaction data in Johor Bahru and its northwestern neighbour Kulai. As the group member in charge of exploratory data analysis, this take-home exercise serves to prototype the module for performing hot and cold spot analysis.
+
+The scope of today's exercise will be as follows:
+
+- Load and clean the geospatial and aspatial data required for the analysis
+- Geocode the aspatial property transaction data
+- Create a hexagonal grid of the study area prior to performing analysis
+- Perform exploratory data analysis
+- Derive the local measures of spatial autocorrelation, and perform hot/cold spot analysis
+- Prototype the UI for the corresponding part of the project
 
 ```{r}
-pacman::p_load(olsrr, ggstatsplot, sf, tmap, tidyverse, gtsummary, performance, see, sfdep, tidygeocoder)
+pacman::p_load(olsrr, ggstatsplot, sf, tmap, tidyverse, gtsummary, performance, see, sfdep, spdep, tidygeocoder)
 ```
-
-## TH3.2 A brief background
-
-Since separating from Malaysia in 1965, Singapore saw a rapid development in its economy and quality of life the likes of which no one else has seen. So it made sense for the neighbouring city of Johor Bahru, Malaysia, to cap
 
 ## TH3.2 Loading data
 
@@ -38,7 +45,7 @@ adm3_my <- st_read(dsn = 'shiny/data/geospatial/myadm3', layer = 'geoBoundaries-
   st_transform(3377)
 qtm(adm3_my)
 ```
-The overall shape of the plot is as above, corresponding to Peninsula (West) Malaysia, Sabah and Sarawak.
+The overall shape of the plot is as above, corresponding to the geography of Peninsula (West) Malaysia, as well as the eastern states of Sabah and Sarawak.
 
 ### TH3.2.2 Loading property transaction data
 
@@ -80,7 +87,7 @@ tm_shape(adm3_jb_kulai) +
 
 ### TH3.3.2 Geocoding Property Data
 
-The raw dataset encodes information about street names, but we need latitudes and longitudes to plot the locations on a map. Therefore, it would be necessary to geocode the data. A dataset as large as ours took at least 2 hours to geocode, so it would be useful to save it as an RDS for later.
+The raw dataset encodes information about street names, but we need latitudes and longitudes to plot their locations on a map. Therefore, it would be necessary to geocode the data. A dataset as large as ours took at least 2 hours to geocode, so it would be useful to save it as an RDS for later.
 
 ```{r}
 #| eval: False
@@ -164,35 +171,36 @@ tm_shape(adm3_jb_kulai)+
 tm_shape(property) +  
   tm_dots(col = "Transaction Price",
           alpha = 0.6,
-          style="equal") +
+          style="kmeans",
+          n = 10) +
   tm_view(set.zoom.limits = c(11,14)) +
   tm_basemap('OpenStreetMap')
 ```
 
-## TH3.5 Preparing for hot/cold spot analysis
+## TH3.4 Preparing for hot/cold spot analysis
 
-## TH3.5.1 Creating spatial grids
+### TH3.4.1 Creating spatial grids
 
-Johor Bahru is a relatively less dense location than Singapore to its south, so directly performing hot/cold spot analysis on its smaller number of Mukims would not make much sense. Instead, we will create a spatial grid subdividing the area into hexagons of equal diameter, and count the price of property sales located within each zone.
+Johor Bahru is a relatively less dense location than Singapore to its south, so directly performing hot/cold spot analysis on its smaller number of Mukims would not make much sense. Instead, we will create a spatial grid subdividing the area into hexagons of equal diameter, and count the price of property sales located within each zone. The result is a hexagonal grid spanning the districts of Johor Bahru and Kulai, as shown below.
 
 ```{r}
 tmap_mode('plot')
-jb_kulai_hex <- st_make_grid(adm3_jb_kulai, cellsize = c(1500, 1500), what = "polygons", square = FALSE) %>%
+jb_kulai_hex <- st_make_grid(adm3_jb_kulai, cellsize = c(750, 750), what = "polygons", square = FALSE) %>%
   st_sf() %>%
   mutate(index = as.factor(row_number()))
 
 jb_kulai_border <- adm3_jb_kulai %>% st_union()
-jb_kulai_bounded <- st_intersection(jb_kulai_hex, jb_kulai_border)
+jb_kulai_grid <- st_intersection(jb_kulai_hex, jb_kulai_border)
 
 # Check if hex grid intersects any polygons using st_intersects
 # Returns a list of intersecting hexagons
-intersection_list = jb_kulai_hex$index[lengths(st_intersects(jb_kulai_hex, jb_kulai_bounded)) > 0]
+intersection_list = jb_kulai_hex$index[lengths(st_intersects(jb_kulai_hex, jb_kulai_grid)) > 0]
 
 # Filter for the intersecting hexagons
-jb_kulai_bounded = jb_kulai_hex %>%
+jb_kulai_grid = jb_kulai_hex %>%
   filter(index %in% intersection_list)
 
-tm_shape(jb_kulai_bounded) +
+tm_shape(jb_kulai_grid) +
   tm_polygons(alpha = 0.2)
 ```
 
@@ -202,36 +210,50 @@ aggregated <- joined %>%
   group_by(index) %>%
   summarise(`Mukim` = first(`shapeName`))
 
-jb_kulai_bounded$Mukim <- aggregated$Mukim
-jb_kulai_bounded <- jb_kulai_bounded %>%
+jb_kulai_grid$Mukim <- aggregated$Mukim
+jb_kulai_grid <- jb_kulai_grid %>%
   mutate(index = as.factor(row_number()))
 
-jb_kulai_bounded <- jb_kulai_bounded[, c("Mukim", setdiff(names(jb_kulai_bounded), "Mukim"))]
+jb_kulai_grid <- jb_kulai_grid[, c("Mukim", setdiff(names(jb_kulai_grid), "Mukim"))]
 
-write_rds(jb_kulai_bounded, "shiny/data/rds/jb_kulai_bounded.rds")
+write_rds(jb_kulai_grid, "shiny/data/rds/jb_kulai_grid.rds")
 
 tmap_mode('view')
-tm_shape(jb_kulai_bounded) +
+tm_shape(jb_kulai_grid) +
   tm_fill(col = "Mukim",
           alpha = 0.7)+
   tm_basemap("OpenStreetMap")
+
+```
+
+### TH3.4.2 Exploratory Data Analysis
+
+With our hexagonal grid, we can now perform exploratory data analysis. Using `st_intersects` allows us to map each point to a cell in the hexagonal grid.
+
+```{r}
+intersections <- st_intersects(jb_kulai_grid, property)
+jb_kulai_grid$density <- lengths(intersections)
 tmap_mode('plot')
+tm_shape(jb_kulai_grid) + 
+  tm_fill(col = "density",
+          palette = "Purples",
+          style = "quantile",
+          n = 10,
+          title = "Property density"
+          ) +
+  tm_borders(col = "grey") +
+  tm_legend(position = c("RIGHT", "BOTTOM"))
 ```
 
-## TH3.5.2 Computing Property Price Density
+The following code chunk allows us to aggregate the average, median and maximum property prices within each hexagonal cell.
 
 ```{r}
-intersections <- st_intersects(jb_kulai_bounded, property)
-jb_kulai_bounded$density <- lengths(intersections)
-```
+#| eval: False
+#| echo: False
+avg_prices <- numeric(nrow(jb_kulai_grid))
 
-The following function allows us to manually aggregate the average property price within each hexagonal grid.
-
-```{r}
-avg_prices <- numeric(nrow(jb_kulai_bounded))
-
-for (i in seq_len(nrow(jb_kulai_bounded))) {
-  points_in_hex <- property[st_within(property, jb_kulai_bounded[i, ], sparse = FALSE), ]
+for (i in seq_len(nrow(jb_kulai_grid))) {
+  points_in_hex <- property[st_within(property, jb_kulai_grid[i, ], sparse = FALSE), ]
   
   avg_prices[i] <- if (nrow(points_in_hex) > 0) {
     mean(points_in_hex$`Transaction Price`, na.rm = TRUE)
@@ -240,29 +262,81 @@ for (i in seq_len(nrow(jb_kulai_bounded))) {
   }
 }
 
-jb_kulai_bounded$avg_price_inefficient <- avg_prices
+jb_kulai_grid$avg_price_inefficient <- avg_prices
 ```
 
 ```{r}
-# Extract maximum property price for each cell
-avg_prices <- sapply(intersections, function(idx) {
-  if (length(idx) == 0) return(0)
-  mean(property$`Transaction Price`[idx], na.rm = TRUE)
-})
-jb_kulai_bounded$avg_price <- avg_prices
+# Extract average and maximum property price for each cell
+aggregate_price <- function(i, method = "median") {
+  if (length(i) == 0 || all(is.na(property$`Transaction Price`[i]))) return(0)
+  
+  if (method == "mean") {
+    return(mean(property$`Transaction Price`[i], na.rm = TRUE))
+  } else if (method == "max") {
+    return(mean(property$`Transaction Price`[i], na.rm = TRUE))
+  } else if (method == "median") {
+    return(median(property$`Transaction Price`[i], na.rm = TRUE))
+  } else {
+    stop("Invalid method: Choose either 'mean' or 'max'.")
+  }
+}
 
+avg_prices <- sapply(intersections, aggregate_price, method = "mean")
+jb_kulai_grid$avg_price <- avg_prices
+
+median_prices <- sapply(intersections, aggregate_price, method = "median")
+jb_kulai_grid$median_price <- median_prices
+
+max_prices <- sapply(intersections, aggregate_price, method = "max")
+jb_kulai_grid$max_price <- max_prices
 ```
+
+With these values calculated, we can plot them, along with our hexagonal grid, onto a map.
+
 ```{r}
-tm_shape(jb_kulai_bounded) + 
-  tm_fill(col = "avg_price",
-          palette = "Blues",
+medians_map <- tm_shape(jb_kulai_grid) + 
+  tm_fill(col = "median_price",
+          palette = "YlGn",
           style = "kmeans",
-          n = 8,
-          title = "Property Price density"
+          n = 10,
+          title = "Median Property Price"
           ) +
   tm_borders(col = "grey") +
   tm_legend(position = c("RIGHT", "BOTTOM"))
+
+averages_map <- tm_shape(jb_kulai_grid) + 
+  tm_fill(col = "avg_price",
+          palette = "Purples",
+          style = "kmeans",
+          n = 10,
+          title = "Average Property Price"
+          ) +
+  tm_borders(col = "grey") +
+  tm_legend(position = c("RIGHT", "BOTTOM"))
+
+maximums_map <- tm_shape(jb_kulai_grid) + 
+  tm_fill(col = "max_price",
+          palette = "YlOrRd",
+          style = "kmeans",
+          n = 10,
+          title = "Median Property Price"
+          ) +
+  tm_borders(col = "grey") +
+  tm_legend(position = c("RIGHT", "BOTTOM"))
+
+tmap_arrange(medians_map, averages_map, maximums_map, ncol = 3)
 ```
+```{r}
+# Plot the medians onto an interactive OpenStreetMap
+tmap_mode('view')
+medians_map +
+  tm_basemap('OpenStreetMap')
+tmap_mode('plot')
+```
+
+The highest median property prices in the study area appear clustered towards the centre of town (Bandar Johor Bahru), or towards Iskandar Puteri (within Pulai) towards the West. Notice their proximity to the two land border crossings with Singapore: the JB Sentral-Woodlands crossing (the causeway) connects with Bandar Johor Bahru, while the Tanjung Kupang-Tuas crossing (the second link) is towards the west - near Pulai. Pasir Gudang to the east (within Plentong) is the most recent area in Johor Bahru to be prominently industrialised, but the residential properties there do not fetch nearly as high a price - indicating a relative lack of demand.
+
+As for Kulai, areas with higher property prices appear clustered towards Bandar Kulai, or Senai - the location of Johor's international airport and a major industrial hub.
 
 ```{r}
 #| eval: False
@@ -273,4 +347,78 @@ test_address <- tibble::tribble(
 )
 lat_long <- test_address %>% geocode(addr, method='osm', lat=latitude, long=longitude)
 print(lat_long)
+```
+
+## TH3.5 Computing Local Moran's I
+
+With exploratory data analysis complete, we can proceed to compute the measures of local spatial autocorrelation. We will first derive the local Moran's I values for the **median property price values** with the following code chunk.
+
+```{r}
+# Compute queen contiguity weights - no need to account for islands
+wm_q <- poly2nb(jb_kulai_grid, queen=TRUE)
+rswm_q <- nb2listw(wm_q, style = "W", zero.policy = TRUE)
+
+# Compute local Moran's I
+fips <- order(jb_kulai_grid$index)
+localMI <- localmoran(jb_kulai_grid$median_price, rswm_q)
+printCoefmat(data.frame(
+  localMI[fips,],
+  row.names=jb_kulai_grid$index[fips]),
+  check.names = FALSE
+)
+```
+
+### TH3.5.1 Mapping Local Moran's I
+
+```{r}
+jb_kulai.localMI <- cbind(jb_kulai_grid, localMI) %>%
+  rename(Pr.Ii = Pr.z....E.Ii..)
+
+localMI_map <- tm_shape(jb_kulai.localMI) + 
+    tm_fill(col = "Ii",
+          style = "pretty",
+          palette = "YlGn",
+          n = 7,
+          title = "local moran statistics") +
+  tm_borders(alpha = 0.5)
+
+p_values <- tm_shape(jb_kulai.localMI) +
+    tm_fill(col = "Pr.Ii", 
+          breaks=c(-Inf, 0.001, 0.01, 0.05, 0.1, Inf),
+          palette="-RdBu", 
+          title = "local Moran's I p-values") +
+  tm_borders(alpha = 0.5)
+
+tmap_arrange(localMI_map, p_values, asp = 1, ncol = 2)
+```
+
+## TH3.6 Hot and Cold Spot Analysis
+
+The next local indicator of spatial autocorrelation to explore is hot and cold spot analysis with Gertis and Ord's G-statistics, or $G^*_i$ statistics.
+
+```{r}
+# Compute distance weight matrix
+jb_kulai_wgs <- jb_kulai_grid %>% st_transform(4326)
+longitude <- map_dbl(jb_kulai_wgs$geometry, ~st_centroid(.x)[[1]])
+latitude <- map_dbl(jb_kulai_wgs$geometry, ~st_centroid(.x)[[2]])
+coords <- cbind(longitude, latitude)
+# Compute adaptive distance weight matrix
+knn <- knn2nb(knearneigh(coords, k = 8))
+knn_lw <- nb2listw(knn, style = "B")
+# Compute Gi* statistics
+gi <- localG(jb_kulai_wgs$median_price, knn_lw)
+jb_kulai.gi <- cbind(jb_kulai_wgs, as.matrix(gi)) %>% rename(gstat = as.matrix.gi.)
+```
+
+```{r}
+gi_map <- tm_shape(jb_kulai.gi) + 
+  tm_fill(
+    col = "gstat", 
+    palette = "-RdBu", 
+    title = "drug_use local Gi",
+    breaks = seq(from = -10, to = 10, by = 2)
+  ) + 
+  tm_borders(alpha = 0.5) + 
+  tm_legend(position = c("RIGHT", "BOTTOM"))
+tmap_arrange(medians_map, gi_map)
 ```
