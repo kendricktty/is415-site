@@ -13,37 +13,232 @@ execute:
 
 ## TH3.1 Introduction
 
-The objective of Take-Home Exercise 3 is to prototype a module to be built for the Geospatial Analytics project, which is on building a hedonic pricing model for house prices in Johor Bahru. As the group member in charge of building the model itself, I have decided to base this exercise on the geographically weighted regression model. 
+The objective of Take-Home Exercise 3 is to prototype a module to be built for the Geospatial Analytics project. By using hot and cold spot analysis and building a hedonic pricing model, the aim of the project is to analyse the trajectory and factors influencing housing prices in Johor Bahru. As the group member in charge of exploratory data analysis, this take-home exercise serves to prototype the module for performing hot and cold spot analysis.
 
-At the time of writing, my group has yet to complete geocoding our dataset, so the regression prototype for this exercise will instead be used to model condominium prices in Singapore in 2015, using the dataset from hands-on exercise 9/10. However, unlike the hands-on exercise, this exercise will have an added challenge - instead of predicting prices from point data, we will instead aggregate and predict the price data by planning area.
-
-## TH3.2 Loading the data
-
-The datasets to be used in this exercise are:
-
--   URA Master Plan Subzone Boundary in Shapefile format (i.e. `MP14_SUBZONE_WEB_PL`), and
--   `condo_resale_2015.csv`.
+The scope of 
 
 ```{r}
 pacman::p_load(olsrr, ggstatsplot, sf, tmap, tidyverse, gtsummary, performance, see, sfdep, tidygeocoder)
 ```
+
+## TH3.2 A brief background
+
+Since separating from Malaysia in 1965, Singapore saw a rapid development in its economy and quality of life the likes of which no one else has seen. So it made sense for the neighbouring city of Johor Bahru, Malaysia, to cap
+
+## TH3.2 Loading data
+
+Today's exercise will involve going through the entire data acquisition process from start to finish. This includes sourcing and cleaning the data before it is used for analysis.
+
+### TH3.2.1 Loading geospatial data
+
+We will be using Malaysia's municipality polygons, sourced from the United Nations Humanitarian Data Exchange.
+
+```{r}
+adm3_my <- st_read(dsn = 'shiny/data/geospatial/myadm3', layer = 'geoBoundaries-MYS-ADM3') %>% 
+  st_transform(4390)
+qtm(adm3_my)
+```
+The overall shape of the plot is as above, corresponding to Peninsula (West) Malaysia, Sabah and Sarawak.
+
+### TH3.2.2 Loading property transaction data
+
 ```{r}
 property_transaction_data <- read_csv('shiny/data/aspatial/Open Transaction Data.csv')
 head(property_transaction_data)
 ```
 
-```{r}
-property_transaction_data <- property_transaction_data %>%
-  geocode(street = `Road Name`, city = `Mukim`, method = 'osm', lat = `latitude`, long = `longitude`) %>%
-  st_as_sf(coords = c("longitude", "latitude"), crs = 4326)
+## TH3.3 Data Preprocessing
 
-write_rds((property_transaction_data, "shiny/data/property_transaction_sf.rds"))
+### TH3.3.1 Filtering Mukims outside Johor Bahru
+
+We are only concerned with Mukims within Johor Bahru and Kulai district - the latter of which contains Johor Bahru's main Senai international airport. Hence, we will need to filter these out.
+
+```{r}
+johor_kulai_mukims <- c("MUKIM JELUTONG", "MUKIM PLENTONG", "MUKIM PULAI", "MUKIM SUNGAI TIRAM", "MUKIM TANJUNG KUPANG", "MUKIM TEBRAU", "BANDAR JOHOR BAHRU", "MUKIM BUKIT BATU", "MUKIM KULAI", "BANDAR KULAI", "MUKIM SEDENAK", "MUKIM SENAI")
+adm3_jb_kulai <- adm3_my %>%
+  filter(shapeName %in% johor_kulai_mukims)
+tmap_mode('view')
+tm_shape(adm3_jb_kulai) +
+  tm_polygons()
+```
+As we can see, there are still some stray polygons located very far north from Johor Bahru and Kulai proper that we have to remove. A quick inspection of the dataframe in memory indicates they are associated with the Mukims of Pulai and Jelutong, and carry the IDs `4, 5, 6, 16`.
+
+The code chunk below will break up the multipolygons into simple polygons, and remove the strays. The result is the correct, contiguous borders of the Mukims in Johor Bahru and Kulai districts.
+
+```{r}
+broken_up_jb <- adm3_jb_kulai %>%
+  st_cast("POLYGON")
+
+stray_polygons <- c(4, 5, 6, 16)
+adm3_jb_kulai <- broken_up_jb %>%
+  filter(!row_number() %in% stray_polygons)
+
+tm_shape(adm3_jb_kulai) +
+  tm_polygons() +
+  tm_basemap("OpenStreetMap")
+```
+
+### TH3.3.2 Geocoding Property Data
+
+The raw dataset encodes information about street names, but we need latitudes and longitudes to plot the locations on a map. Therefore, it would be necessary to geocode the data. A dataset as large as ours took at least 2 hours to geocode, so it would be useful to save it as an RDS for later.
+
+```{r}
+#| eval: False
+property_transaction_sf <- property_transaction_data %>%
+  mutate(Address = if_else(
+    !is.na(`Road Name`),
+    paste(`Road Name`, District, sep = " "),          # Concatenate "Road Name" and "District" if "Road Name" is not NA
+    paste(`Scheme Name/Area`, District, sep = " ")    # Else, concatenate "Scheme Name/Area" and "District"
+  )) %>%
+  geocode(address = Address, method = "osm", lat = "latitude", long = "longitude")
+
+write_rds(property_transaction_sf, "shiny/data/rds/property_transaction_sf.rds")
 ```
 
 ```{r}
+property <- read_rds("shiny/data/rds/property_transaction_sf_notnull.rds") %>%
+  st_as_sf(coords = c("longitude", "latitude"), crs = 4390)
+```
+
+### TH3.3.3 Final Preprocessing
+
+Finally, to make our dataset compatible for machine learning use, we need to encode two categorical variables we want to ingest: the **Property Type** and **tenure**.
+
+Since Property Type is multiclass categorical, we need to perform one-hot encoding. The following code chunk performs one-hot encoding on the Property Type feature.
+
+```{r}
+dummies <- model.matrix(~ `Property Type` - 1, data = property) %>% as.data.frame()
+colnames(dummies) <- gsub("Property Type", "", colnames(dummies))
+property <- property %>%
+  bind_cols(dummies) %>%
+select(-`Property Type`)
+```
+
+Since Tenure is binary categorical (the property is either freehold or leasehold), we can perform binary encoding on this feature.
+
+```{r}
+property <- property %>%
+  mutate(is_leasehold = ifelse(Tenure == "Leasehold", 1, 0)) %>%
+  select(-Tenure)
+```
+
+Finally, to help us join the property data with our polygon data later, we need to modify the "Mukim" column in the property data column to match that in the polygon data column.
+
+```{r}
+property <- property %>%
+  mutate(Mukim = if_else(
+    !startsWith(Mukim, "Bandar"),
+    paste("Mukim", Mukim),
+    Mukim
+  )) %>%
+  mutate(Mukim = toupper(Mukim))
+```
+
+We also need to parse the number in the **Transaction Price** column and convert the price from Malaysian Ringgit to US dollars.
+
+```{r}
+property <- property %>%
+  mutate(
+    `Transaction Price` = parse_number(`Transaction Price`),
+    price_USD = `Transaction Price` * 0.21
+  ) %>%
+  select(-`Transaction Price`)
+```
+
+The last step is to remove the columns we will not need.
+
+```{r}
+property <- property %>%
+  select(-`District`, -`Road Name`, -`Month, Year of Transaction Date`, -`Unit...9`, -`Unit...11`, -`Unit Level`, -`Address`, -`...14`)
+
+write_rds(property, "shiny/data/rds/property_preprocessed.rds")
+```
+
+To visualise the results, we can now plot our work onto a map.
+
+```{r}
+tmap_mode('view')
+tm_shape(adm3_jb_kulai)+
+  tm_borders() +
+tm_shape(property) +  
+  tm_dots(col = "price_USD",
+          alpha = 0.6,
+          style="equal") +
+  tm_view(set.zoom.limits = c(11,14)) +
+  tm_basemap('OpenStreetMap')
+```
+
+## TH3.5 Preparing for hot/cold spot analysis
+
+## TH3.5.1 Creating spatial grids
+
+Johor Bahru is a relatively less dense location than Singapore to its south, so directly performing hot/cold spot analysis on its smaller number of Mukims would not make much sense. Instead, we will create a spatial grid subdividing the area into hexagons of equal diameter, and count the price of property sales located within each zone.
+
+```{r}
+tmap_mode('plot')
+jb_kulai_hex <- st_make_grid(adm3_jb_kulai, cellsize = c(1500, 1500), what = "polygons", square = FALSE) %>%
+  st_sf() %>%
+  mutate(index = as.factor(row_number()))
+
+jb_kulai_border <- adm3_jb_kulai %>% st_union()
+jb_kulai_bounded <- st_intersection(jb_kulai_hex, jb_kulai_border)
+
+# Check if hex grid intersects any polygons using st_intersects
+# Returns a list of intersecting hexagons
+intersection_list = jb_kulai_hex$index[lengths(st_intersects(jb_kulai_hex, jb_kulai_bounded)) > 0]
+
+# Filter for the intersecting hexagons
+jb_kulai_bounded = jb_kulai_hex %>%
+  filter(index %in% intersection_list)
+
+tm_shape(jb_kulai_bounded) +
+  tm_polygons(alpha = 0.2)
+```
+
+```{r}
+joined <- st_join(jb_kulai_hex, adm3_jb_kulai, join = st_intersects, left = FALSE)
+aggregated <- joined %>%
+  group_by(index) %>%
+  summarise(`Mukim` = first(`shapeName`))
+
+jb_kulai_bounded$Mukim <- aggregated$Mukim
+jb_kulai_bounded <- jb_kulai_bounded %>%
+  mutate(index = as.factor(row_number()))
+
+jb_kulai_bounded <- jb_kulai_bounded[, c("Mukim", setdiff(names(jb_kulai_bounded), "Mukim"))]
+
+write_rds(jb_kulai_bounded, "shiny/data/rds/jb_kulai_bounded.rds")
+
+tmap_mode('view')
+tm_shape(jb_kulai_bounded) +
+  tm_fill(col = "Mukim",
+          alpha = 0.7)+
+  tm_basemap("OpenStreetMap")
+tmap_mode('plot')
+```
+
+## TH3.5.2 Computing Property Price Density
+
+```{r}
+intersections <- st_intersects(jb_kulai_bounded, property)
+```
+```{r}
+tm_shape(jb_kulai_bounded) + 
+  tm_fill(col = "property_price",
+          palette = "Blues",
+          style = "cont",
+          title = "Property Price density"
+          ) +
+  tm_borders(col = "grey") +
+  tm_legend(position = c("RIGHT", "BOTTOM"))
+```
+
+```{r}
+#| eval: False
+#| echo: False
 test_address <- tibble::tribble(
   ~name,            ~addr,
-  "House",       "Jalan Tembusu 15 Plentong"
+  "House",       "TAMAN MUTIARA BESTARI Johor Bahru"
 )
 lat_long <- test_address %>% geocode(addr, method='osm', lat=latitude, long=longitude)
 print(lat_long)
