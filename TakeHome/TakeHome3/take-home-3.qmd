@@ -15,7 +15,7 @@ execute:
 
 The objective of Take-Home Exercise 3 is to prototype a module to be built for the Geospatial Analytics project, which will serve to analyse housing prices in Johor Bahru.
 
-Since separating from Malaysia in 1965, [Singapore](https://en.wikipedia.org/wiki/Singapore) saw a rapid development in its economy and quality of life the likes of which no one else has seen. So it made sense for the neighbouring city of [Johor Bahru, Malaysia](https://en.wikipedia.org/wiki/Johor_Bahru), to capitalise on the spillover effects of Singapore's prosperity by itself becoming a lifestyle hub for visiting Singaporeans, and an emerging business satellite for companies from Singapore and the region. New malls have sprouted all over the state capital, and new investments were made by the state and federal governments to boost the city's economy, such as the development areas of Iskandar Puteri and Pasir Gudang, the Johor Bahru-Singapore rapid transit link and the Iskandar Puteri stop on the since-shelved Kuala Lumpur-Singapore High Speed Rail, among many others. In particular, Johor Bahru became a place where Singaporeans could buy houses at prices cheaper than in their hometown - even more so when housing prices in the country began to fly through the roof in recent times. Even while this phenomenon led to further economic growth, there were concerns that the presence of these Singaporean buyers would put inflationary pressure on the city.
+Since separating from Malaysia in 1965, [Singapore](https://en.wikipedia.org/wiki/Singapore) has seen a rapid development in its economy and quality of life the likes of which no one else has seen. So it made sense for the neighbouring city of [Johor Bahru, Malaysia](https://en.wikipedia.org/wiki/Johor_Bahru), to capitalise on the spillover effects of Singapore's prosperity by itself becoming a lifestyle hub for visiting Singaporeans, and an emerging business satellite for companies from Singapore and the region. New malls have sprouted all over the state capital, and new investments were made by the state and federal governments to boost the city's economy, such as the development areas of Iskandar Puteri and Pasir Gudang, the Johor Bahru-Singapore rapid transit link and the Iskandar Puteri stop on the since-shelved Kuala Lumpur-Singapore High Speed Rail, among many others. In particular, Johor Bahru became a place where Singaporeans could buy houses at prices cheaper than in their hometown - even more so when housing prices in the country began to fly through the roof in recent times. Even while this phenomenon led to further economic growth, there were concerns that the presence of these Singaporean buyers would put inflationary pressure on the city.
 
 Admist all this, this project aims to explore the trajectory and factors influencing housing prices in Johor Bahru. Using the measures of local and global spatial autocorrelation and a hedonic pricing model, we will perform geospatial data analysis on property transaction data in Johor Bahru and its northwestern neighbour Kulai. As the group member in charge of exploratory data analysis, this take-home exercise serves to prototype the module for performing hot and cold spot analysis.
 
@@ -83,6 +83,7 @@ adm3_jb_kulai <- broken_up_jb %>%
 tm_shape(adm3_jb_kulai) +
   tm_polygons() +
   tm_basemap("OpenStreetMap")
+write_rds(adm3_jb_kulai, 'shiny/data/rds/adm3_jb_kulai.rds')
 ```
 
 ### TH3.3.2 Geocoding Property Data
@@ -216,8 +217,6 @@ jb_kulai_grid <- jb_kulai_grid %>%
 
 jb_kulai_grid <- jb_kulai_grid[, c("Mukim", setdiff(names(jb_kulai_grid), "Mukim"))]
 
-write_rds(jb_kulai_grid, "shiny/data/rds/jb_kulai_grid.rds")
-
 tmap_mode('view')
 tm_shape(jb_kulai_grid) +
   tm_fill(col = "Mukim",
@@ -289,6 +288,8 @@ jb_kulai_grid$median_price <- median_prices
 
 max_prices <- sapply(intersections, aggregate_price, method = "max")
 jb_kulai_grid$max_price <- max_prices
+
+write_rds(jb_kulai_grid, "shiny/data/rds/jb_kulai_grid.rds")
 ```
 
 With these values calculated, we can plot them, along with our hexagonal grid, onto a map.
