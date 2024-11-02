@@ -35,7 +35,7 @@ We will be using Malaysia's municipality polygons, sourced from the United Natio
 
 ```{r}
 adm3_my <- st_read(dsn = 'shiny/data/geospatial/myadm3', layer = 'geoBoundaries-MYS-ADM3') %>% 
-  st_transform(4390)
+  st_transform(3377)
 qtm(adm3_my)
 ```
 The overall shape of the plot is as above, corresponding to Peninsula (West) Malaysia, Sabah and Sarawak.
@@ -95,9 +95,11 @@ property_transaction_sf <- property_transaction_data %>%
 write_rds(property_transaction_sf, "shiny/data/rds/property_transaction_sf.rds")
 ```
 
+I learned the hard way to encode all longitudes and latitudes with WGS 84 first before transforming it into my desired coordinate system.
+
 ```{r}
 property <- read_rds("shiny/data/rds/property_transaction_sf_notnull.rds") %>%
-  st_as_sf(coords = c("longitude", "latitude"), crs = 4390)
+  st_as_sf(coords = c("longitude", "latitude"), crs = 4326) %>% st_transform(3377)
 ```
 
 ### TH3.3.3 Final Preprocessing
@@ -140,9 +142,8 @@ We also need to parse the number in the **Transaction Price** column and convert
 property <- property %>%
   mutate(
     `Transaction Price` = parse_number(`Transaction Price`),
-    price_USD = `Transaction Price` * 0.21
-  ) %>%
-  select(-`Transaction Price`)
+    `Transaction Price` = `Transaction Price` * 0.21
+  )
 ```
 
 The last step is to remove the columns we will not need.
@@ -161,7 +162,7 @@ tmap_mode('view')
 tm_shape(adm3_jb_kulai)+
   tm_borders() +
 tm_shape(property) +  
-  tm_dots(col = "price_USD",
+  tm_dots(col = "Transaction Price",
           alpha = 0.6,
           style="equal") +
   tm_view(set.zoom.limits = c(11,14)) +
@@ -221,12 +222,42 @@ tmap_mode('plot')
 
 ```{r}
 intersections <- st_intersects(jb_kulai_bounded, property)
+jb_kulai_bounded$density <- lengths(intersections)
+```
+
+The following function allows us to manually aggregate the average property price within each hexagonal grid.
+
+```{r}
+avg_prices <- numeric(nrow(jb_kulai_bounded))
+
+for (i in seq_len(nrow(jb_kulai_bounded))) {
+  points_in_hex <- property[st_within(property, jb_kulai_bounded[i, ], sparse = FALSE), ]
+  
+  avg_prices[i] <- if (nrow(points_in_hex) > 0) {
+    mean(points_in_hex$`Transaction Price`, na.rm = TRUE)
+  } else {
+    0
+  }
+}
+
+jb_kulai_bounded$avg_price_inefficient <- avg_prices
+```
+
+```{r}
+# Extract maximum property price for each cell
+avg_prices <- sapply(intersections, function(idx) {
+  if (length(idx) == 0) return(0)
+  mean(property$`Transaction Price`[idx], na.rm = TRUE)
+})
+jb_kulai_bounded$avg_price <- avg_prices
+
 ```
 ```{r}
 tm_shape(jb_kulai_bounded) + 
-  tm_fill(col = "property_price",
+  tm_fill(col = "avg_price",
           palette = "Blues",
-          style = "cont",
+          style = "kmeans",
+          n = 8,
           title = "Property Price density"
           ) +
   tm_borders(col = "grey") +
