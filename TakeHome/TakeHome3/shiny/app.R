@@ -132,94 +132,135 @@ ui <- navbarPage(
         tabPanel("Geary's c"), # not defined yet
         tabPanel("Getis-Ord Global G") # not defined yet
     ),
-    navbarMenu(
-        "Local Measures",
-        tabPanel(
-            "Local Moran",
-            sidebarLayout(
-                sidebarPanel(
-                    selectInput(
-                        inputId = "variable",
-                        label = "Mapping variable",
-                        choices = list(
-                            "Average Property Prices" = "avg_price",
-                            "Median Property Prices" = "median_price",
-                            "Maximum Property Prices" = "max_price"
-                        ),
-                        selected = "median_price"
+    tabPanel(
+        "Local Moran",
+        # tabPanel("Local Moran")
+        sidebarLayout(
+            sidebarPanel(
+                selectInput(
+                    inputId = "variable",
+                    label = "Mapping variable",
+                    choices = list(
+                        "Average Property Prices" = "avg_price",
+                        "Median Property Prices" = "median_price",
+                        "Maximum Property Prices" = "max_price"
                     ),
-                    radioButtons(
-                        inputId = "Contiguity1",
-                        label = "Contiguity Method",
-                        choices = c(
-                            "Queen" = TRUE,
-                            "Rook" = FALSE
-                        ),
-                        selected = "TRUE",
-                        inline = TRUE
-                    ),
-                    selectInput("MoranWeights", "Spatial Weights Style",
-                        choices = c(
-                            "W: Row standardised" = "W",
-                            "B: Binary" = "B",
-                            "C: Globally standardised" = "C",
-                            "U: C / no of neighbours" = "U",
-                            "minmax" = "minmax",
-                            "S: Variance" = "S"
-                        ),
-                        selected = "W"
-                    ),
-                    sliderInput(
-                        inputId = "MoranSims",
-                        label = "Number of Simulations:",
-                        min = 99, max = 499,
-                        value = 99, step = 100
-                    ),
-                    actionButton("MoranUpdate", "Update Plot"),
-                    hr(),
-                    radioButtons(
-                        inputId = "MoranConf",
-                        label = "Select Confidence level",
-                        choices = c(
-                            "0.95" = 0.05,
-                            "0.99" = 0.01
-                        ),
-                        selected = 0.05,
-                        inline = TRUE
-                    ),
-                    selectInput("LisaClass", "Select Lisa Classification",
-                        choices = c(
-                            "mean" = "mean",
-                            "median" = "median",
-                            "pysal" = "pysal"
-                        ),
-                        selected = "mean"
-                    ),
-                    selectInput("localmoranstats", "Select Local Moran's Stat:",
-                        choices = c(
-                            "local moran(ii)" = "local moran(ii)",
-                            "expectation(eii)" = "expectation(eii)",
-                            "variance(var_ii)" = "variance(var_ii)",
-                            "std deviation(z_ii)" = "std deviation(z_ii)",
-                            "P-value" = "p_value"
-                        ),
-                        selected = "local moran(ii)"
-                    )
+                    selected = "median_price"
                 ),
-                mainPanel(
-                    fluidRow(
-                        column(6, tmapOutput("LocalMoranMap")),
-                        column(6, tmapOutput("LISA"))
-                    ) # Maximum total width is 12
-                    # Use 6 and 6 to define equal distance
-                    # Can have a map with a statistical output
+                radioButtons(
+                    inputId = "Contiguity1",
+                    label = "Contiguity Method",
+                    choices = c(
+                        "Queen" = TRUE,
+                        "Rook" = FALSE
+                    ),
+                    selected = "TRUE",
+                    inline = TRUE
+                ),
+                selectInput("MoranWeights", "Spatial Weights Style",
+                    choices = c(
+                        "W: Row standardised" = "W",
+                        "B: Binary" = "B",
+                        "C: Globally standardised" = "C",
+                        "U: C / no of neighbours" = "U",
+                        "minmax" = "minmax",
+                        "S: Variance" = "S"
+                    ),
+                    selected = "W"
+                ),
+                sliderInput(
+                    inputId = "MoranSims",
+                    label = "Number of Simulations:",
+                    min = 99, max = 499,
+                    value = 99, step = 100
+                ),
+                actionButton("MoranUpdate", "Update Plot"),
+                hr(),
+                radioButtons(
+                    inputId = "MoranConf",
+                    label = "Select Confidence level",
+                    choices = c(
+                        "0.95" = 0.05,
+                        "0.99" = 0.01
+                    ),
+                    selected = 0.05,
+                    inline = TRUE
+                ),
+                selectInput("LisaClass", "Select Lisa Classification",
+                    choices = c(
+                        "mean" = "mean",
+                        "median" = "median",
+                        "pysal" = "pysal"
+                    ),
+                    selected = "mean"
+                ),
+                selectInput("localmoranstats", "Select Local Moran's Stat:",
+                    choices = c(
+                        "local moran(ii)" = "local moran(ii)",
+                        "expectation(eii)" = "expectation(eii)",
+                        "variance(var_ii)" = "variance(var_ii)",
+                        "std deviation(z_ii)" = "std deviation(z_ii)",
+                        "P-value" = "p_value"
+                    ),
+                    selected = "local moran(ii)"
                 )
+            ),
+            mainPanel(
+                fluidRow(
+                    column(6, tmapOutput("LocalMoranMap")),
+                    column(6, tmapOutput("LISA"))
+                ) # Maximum total width is 12
+                # Use 6 and 6 to define equal distance
+                # Can have a map with a statistical output
             )
-        ),
-        tabPanel("Local Gi")
+        )
+        # tabPanel("Local Gi")
     ),
-    navbarMenu("Emerging Hot Spot Analysis")
+    tabPanel(
+        "Local Gi",
+        sidebarLayout(
+            sidebarPanel(
+                radioButtons(
+                    inputId = "BandwidthType",
+                    label = "Bandwidth",
+                    choices = c(
+                        "Fixed" = FALSE,
+                        "Adaptive" = TRUE
+                    ),
+                    selected = "TRUE",
+                    inline = TRUE
+                ),
+                sliderInput(
+                    inputId = "k",
+                    label = "k-means K value (adaptive only)",
+                    min = 2, max = 15,
+                    value = 2, step = 1
+                ),
+                selectInput("GiWeights", "Spatial Weights Style",
+                    choices = c(
+                        "W: Row standardised" = "W",
+                        "B: Binary" = "B",
+                        "C: Globally standardised" = "C",
+                        "U: C / no of neighbours" = "U",
+                        "minmax" = "minmax",
+                        "S: Variance" = "S"
+                    ),
+                    selected = "B"
+                ),
+                actionButton("GiUpdate", "Update Plot"),
+                hr()
+            ),
+            mainPanel(
+                fluidRow(
+                    column(6, tmapOutput("Gi"))
+                ) # Maximum total width is 12
+                # Use 6 and 6 to define equal distance
+                # Can have a map with a statistical output
+            )
+        )
+    )
 )
+
 
 # ========================#
 ###### Shiny Server ######
@@ -297,7 +338,28 @@ server <- function(input, output) {
                 "p_value" = "p_ii"
             )
 
+
+
         return(lisa)
+    })
+
+    gi_statistics_results <- eventReactive(input$GiUpdate, {
+        if (nrow(jb_kulai_grid) == 0) {
+            return(NULL)
+        } # Exit if no data
+        jb_kulai_wgs <- jb_kulai_grid %>% st_transform(4326)
+        longitude <- map_dbl(jb_kulai_wgs$geometry, ~ st_centroid(.x)[[1]])
+        latitude <- map_dbl(jb_kulai_wgs$geometry, ~ st_centroid(.x)[[2]])
+        coords <- cbind(longitude, latitude)
+
+        use_adaptive_bandwidth <- !!input$BandwidthType
+        # if (use_adaptive_bandwidth) {
+
+        # }
+        knn <- knn2nb(knearneigh(coords, k = 8))
+        knn_lw <- nb2listw(knn, style = input$GiWeights)
+        gi <- localG(jb_kulai_wgs$median_price, knn_lw)
+        return(gi)
     })
 
     # ==========================================================
@@ -354,6 +416,24 @@ server <- function(input, output) {
     })
 
     # Render hot/cold spot map
+    output$Gi <- renderTmap({
+        df <- gi_statistics_results()
+        if (is.null(df)) {
+            return()
+        }
+        jb_kulai_wgs <- jb_kulai_grid %>% st_transform(4326)
+        jb_kulai.gi <- cbind(jb_kulai_wgs, as.matrix(gi)) %>% rename(gstat = as.matrix.gi.)
+        gi_map <- tm_shape(jb_kulai.gi) +
+            tm_fill(
+                col = "gstat",
+                palette = "-RdBu",
+                title = "drug_use local Gi",
+                breaks = seq(from = -10, to = 10, by = 2)
+            ) +
+            tm_borders(alpha = 0.5) +
+            tm_view(set.zoom.limits = zoom_limits) + tm_basemap("OpenStreetMap")
+        gi_map
+    })
 }
 
 shinyApp(ui = ui, server = server, options = list(port = 4000))
