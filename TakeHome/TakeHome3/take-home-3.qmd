@@ -316,7 +316,7 @@ write_rds(jb_kulai_grid, "shiny/data/rds/jb_kulai_grid.rds")
 
 With these values calculated, we can plot them, along with our hexagonal grid, onto a map.
 
-::: Property price plots {.tabset}
+::: {.panel-tabset}
 
 ## Median Price
 
