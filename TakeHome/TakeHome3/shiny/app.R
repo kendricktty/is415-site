@@ -8,13 +8,14 @@
 #
 
 pacman::p_load(
-    shiny, bslib, shinydashboard, shinythemes, rsconnect, olsrr, ggstatsplot, sf, tmap, tidyverse, gtsummary, performance, see, sfdep, spdep, tidygeocoder
+    shiny, bslib, shinydashboard, shinythemes, rsconnect, olsrr, ggstatsplot, sf, tmap, tidyverse, gtsummary, performance, see, sfdep, spdep, tidygeocoder, RColorBrewer
 )
 
 adm3_jb_kulai <- read_rds("data/rds/adm3_jb_kulai.rds")
 jb_kulai_grid <- read_rds("data/rds/jb_kulai_grid.rds")
 property <- read_rds("data/rds/property_preprocessed.rds")
 zoom_limits <- c(10, 25)
+default_num_classes <- 6
 
 # ========================#
 ###### Shiny UI ######
@@ -33,35 +34,64 @@ ui <- navbarPage(
                     inputId = "currency",
                     label = "Currency",
                     choices = list(
-                        "MYR" = "myr",
-                        "SGD" = "sgd",
-                        "USD" = "usd"
+                        "MYR" = "Price_MYR",
+                        "SGD" = "Price_SGD",
+                        "USD" = "Price_USD"
                     ),
-                    selected = "usd"
+                    selected = "Price_USD"
+                    # ),
+                    # selectInput(
+                    #     inputId = "colour",
+                    #     label = "Colour scheme:",
+                    #     choices = list(
+                    #         "purples" = "Purples",
+                    #         "blues" = "Blues",
+                    #         "reds" = "Reds",
+                    #         "greens" = "Greens",
+                    #         "Yellow-Orange-Red" = "YlOrRd",
+                    #         "Yellow-Orange-Brown" = "YlOrBr",
+                    #         "Yellow-Green" = "YlGn",
+                    #         "Orange-Red" = "OrRd"
+                    #     ),
+                    #     selected = "Purples"
+                ),
+                sliderInput(
+                    inputId = "classes",
+                    label = "Number of classes",
+                    min = 2,
+                    max = 20,
+                    value = c(default_num_classes)
                 ),
                 selectInput(
-                    inputId = "colour",
-                    label = "Colour scheme:",
+                    inputId = "classification",
+                    label = "Classification method:",
                     choices = list(
-                        "purples" = "Purples",
-                        "blues" = "Blues",
-                        "reds" = "Reds",
-                        "greens" = "Greens",
-                        "Yellow-Orange-Red" = "YlOrRd",
-                        "Yellow-Orange-Brown" = "YlOrBr",
-                        "Yellow-Green" = "YlGn",
-                        "Orange-Red" = "OrRd"
+                        "sd" = "sd",
+                        "equal" = "equal",
+                        "pretty" = "pretty",
+                        "quantile" = "quantile",
+                        "kmeans" = "kmeans"
                     ),
-                    selected = "Purples"
+                    selected = "kmeans"
+                ),
+                sliderInput(
+                    inputId = "opacity",
+                    label = "Level of transparency",
+                    min = 0,
+                    max = 1,
+                    value = c(0.5)
                 )
             ),
             mainPanel(
+                p(
+                    "Map of all property transactions in JB and Kulai between 2023 and 2024.\nHover over a point to reveal its details."
+                ),
                 tmapOutput("base_map_plot",
                     width = "100%",
                     height = 580
                 )
             )
-        ),
+        )
     ),
     tabPanel(
         "Hexagon Grid",
@@ -71,6 +101,7 @@ ui <- navbarPage(
                     inputId = "variable",
                     label = "Mapping variable",
                     choices = list(
+                        "Density" = "density",
                         "Average Property Prices" = "avg_price",
                         "Median Property Prices" = "median_price",
                         "Maximum Property Prices" = "max_price"
@@ -94,21 +125,21 @@ ui <- navbarPage(
                     label = "Number of classes",
                     min = 2,
                     max = 20,
-                    value = c(4)
-                ),
-                selectInput(
-                    inputId = "colour",
-                    label = "Colour scheme:",
-                    choices = list(
-                        "blues" = "Blues",
-                        "reds" = "Reds",
-                        "greens" = "Greens",
-                        "Yellow-Orange-Red" = "YlOrRd",
-                        "Yellow-Orange-Brown" = "YlOrBr",
-                        "Yellow-Green" = "YlGn",
-                        "Orange-Red" = "OrRd"
-                    ),
-                    selected = "YlOrRd"
+                    value = c(default_num_classes)
+                    # ),
+                    # selectInput(
+                    #     inputId = "colour",
+                    #     label = "Colour scheme:",
+                    #     choices = list(
+                    #         "blues" = "Blues",
+                    #         "reds" = "Reds",
+                    #         "greens" = "Greens",
+                    #         "Yellow-Orange-Red" = "YlOrRd",
+                    #         "Yellow-Orange-Brown" = "YlOrBr",
+                    #         "Yellow-Green" = "YlGn",
+                    #         "Orange-Red" = "OrRd"
+                    #     ),
+                    #     selected = "YlOrRd"
                 ),
                 sliderInput(
                     inputId = "opacity",
@@ -119,9 +150,10 @@ ui <- navbarPage(
                 )
             ),
             mainPanel(
+                p("Map of the hexagonal grid plotted over JB and Kulai. You may select a price variable to plot or customise mapping parameters on the left panel."),
                 tmapOutput("hex_grid",
                     width = "100%",
-                    height = 580
+                    height = 560
                 )
             )
         )
@@ -139,7 +171,7 @@ ui <- navbarPage(
             sidebarPanel(
                 selectInput(
                     inputId = "variable",
-                    label = "Mapping variable",
+                    label = "Subject variable",
                     choices = list(
                         "Average Property Prices" = "avg_price",
                         "Median Property Prices" = "median_price",
@@ -186,7 +218,7 @@ ui <- navbarPage(
                     selected = 0.05,
                     inline = TRUE
                 ),
-                selectInput("LisaClass", "Select Lisa Classification",
+                selectInput("LisaClass", "Lisa Classification",
                     choices = c(
                         "mean" = "mean",
                         "median" = "median",
@@ -194,7 +226,7 @@ ui <- navbarPage(
                     ),
                     selected = "mean"
                 ),
-                selectInput("localmoranstats", "Select Local Moran's Stat:",
+                selectInput("localmoranstats", "Output variable",
                     choices = c(
                         "local moran(ii)" = "local moran(ii)",
                         "expectation(eii)" = "expectation(eii)",
@@ -203,9 +235,17 @@ ui <- navbarPage(
                         "P-value" = "p_value"
                     ),
                     selected = "local moran(ii)"
+                ),
+                sliderInput(
+                    inputId = "opacity",
+                    label = "Level of transparency",
+                    min = 0,
+                    max = 1,
+                    value = c(0.5)
                 )
             ),
             mainPanel(
+                p("The selected output variable map will be displayed on the left, and the LISA class map on the right. Customise the parameters in the left panel, then click 'Update Plot' to begin."),
                 fluidRow(
                     column(6, tmapOutput("LocalMoranMap")),
                     column(6, tmapOutput("LISA"))
@@ -220,6 +260,16 @@ ui <- navbarPage(
         "Local Gi",
         sidebarLayout(
             sidebarPanel(
+                selectInput(
+                    inputId = "variable",
+                    label = "Subject variable",
+                    choices = list(
+                        "Average Property Prices" = "avg_price",
+                        "Median Property Prices" = "median_price",
+                        "Maximum Property Prices" = "max_price"
+                    ),
+                    selected = "median_price"
+                ),
                 radioButtons(
                     inputId = "BandwidthType",
                     label = "Bandwidth",
@@ -248,11 +298,20 @@ ui <- navbarPage(
                     selected = "B"
                 ),
                 actionButton("GiUpdate", "Update Plot"),
-                hr()
+                hr(),
+                sliderInput(
+                    inputId = "opacity",
+                    label = "Level of transparency",
+                    min = 0,
+                    max = 1,
+                    value = c(0.5)
+                )
             ),
             mainPanel(
+                p("The hot/cold spot map will be displayed on the left, and the price map on the right. Customise the parameters in the left panel, then click 'Update Plot' to begin."),
                 fluidRow(
-                    column(6, tmapOutput("Gi"))
+                    column(6, tmapOutput("Gi")),
+                    column(6, tmapOutput("hex_grid_2"))
                 ) # Maximum total width is 12
                 # Use 6 and 6 to define equal distance
                 # Can have a map with a statistical output
@@ -268,29 +327,54 @@ ui <- navbarPage(
 
 server <- function(input, output) {
     output$base_map_plot <- renderTmap({
+        print(paste("Creating base map plot for currency variable:", input$currency))
+        currency <- input$currency
+        colour <- "Purples"
+        if (currency == "Price_SGD") {
+            colour <- "Reds"
+        } else if (currency == "Price_MYR") {
+            colour <- "YlOrBr"
+        }
+
         tmap_options(check.and.fix = TRUE) +
             tm_shape(adm3_jb_kulai) +
-            tm_borders() +
+            tm_polygons(alpha = 0.4) +
             tm_shape(property) +
             tm_dots(
-                col = "Transaction Price",
+                col = input$currency,
                 alpha = 0.6,
-                palette = input$colour,
-                style = "kmeans",
-                n = 10
+                style = input$classification,
+                palette = colour,
+                n = input$classes,
+                popup.vars = c(
+                    "Scheme Name/Area", "Road Name", "Mukim", "District",
+                    "Month, Year of Transaction Date", "Land/Parcel Area", "Main Floor Area",
+                    "Price_MYR", "Price_SGD", "Price_USD"
+                )
             ) +
             tm_view(
                 set.zoom.limits = zoom_limits # Hardcoded; reduces resource requirements
             ) + tm_basemap("OpenStreetMap")
     })
 
-    output$hex_grid <- renderTmap({
+    hex_grid <- renderTmap({
+        input_variable <- input$variable
+        print(paste("Creating hex grid plot for mapping variable:", input_variable))
+        colour <- "Greens"
+        if (input_variable == "avg_price") {
+            colour <- "Purples"
+        } else if (input_variable == "max_price") {
+            colour <- "YlOrRd"
+        } else if (input_variable == "density") {
+            colour <- "Greys"
+        }
+
         tmap_options(check.and.fix = TRUE) +
             tm_shape(jb_kulai_grid) +
             tm_fill(input$variable,
                 n = input$classes,
                 style = input$classification,
-                palette = input$colour,
+                palette = colour,
                 alpha = input$opacity
             ) +
             tm_borders(lwd = 0.1, alpha = 1) +
@@ -298,6 +382,9 @@ server <- function(input, output) {
                 set.zoom.limits = zoom_limits # Hardcoded; reduces resource requirements
             ) + tm_basemap("OpenStreetMap")
     })
+
+    output$hex_grid <- hex_grid
+    output$hex_grid_2 <- hex_grid
 
     # ==========================================================
     # Local Measures of Spatial AutoCorrelation
@@ -321,10 +408,18 @@ server <- function(input, output) {
 
         # Computing Local Moran's I
 
+        input_variable <- input$variable
+        measured_variable <- jb_kulai_grid$median_price
+        if (input_variable == "avg_price") {
+            measured_variable <- jb_kulai_grid$avg_price
+        } else if (input_variable == "max_price") {
+            measured_variable <- jb_kulai_grid$max_price
+        }
+
         lisa <- wm_q %>%
             mutate(
                 local_moran = local_moran(
-                    jb_kulai_grid$median_price, nb, wt,
+                    measured_variable, nb, wt,
                     nsim = as.numeric(input$MoranSims)
                 ),
                 .before = 5
@@ -351,14 +446,24 @@ server <- function(input, output) {
         longitude <- map_dbl(jb_kulai_wgs$geometry, ~ st_centroid(.x)[[1]])
         latitude <- map_dbl(jb_kulai_wgs$geometry, ~ st_centroid(.x)[[2]])
         coords <- cbind(longitude, latitude)
+        print("Successfully created coordinates")
 
-        use_adaptive_bandwidth <- !!input$BandwidthType
+        use_adaptive_bandwidth <- as.logical(input$BandwidthType)
         # if (use_adaptive_bandwidth) {
 
-        # }
+        # }˜
         knn <- knn2nb(knearneigh(coords, k = 8))
         knn_lw <- nb2listw(knn, style = input$GiWeights)
-        gi <- localG(jb_kulai_wgs$median_price, knn_lw)
+
+        input_variable <- input$variable
+        measured_variable <- jb_kulai_grid$median_price
+        if (input_variable == "avg_price") {
+            measured_variable <- jb_kulai_grid$avg_price
+        } else if (input_variable == "max_price") {
+            measured_variable <- jb_kulai_grid$max_price
+        }
+
+        gi <- localG(measured_variable, knn_lw)
         return(gi)
     })
 
@@ -368,6 +473,7 @@ server <- function(input, output) {
 
     # Render local Moran I statistics
     output$LocalMoranMap <- renderTmap({
+        print("Creating local Moran's I map")
         df <- localMIResults()
 
         if (is.null(df) || nrow(df) == 0) {
@@ -380,7 +486,8 @@ server <- function(input, output) {
                 col = input$localmoranstats,
                 style = "pretty",
                 palette = "RdBu",
-                title = input$localmoranstats
+                title = input$localmoranstats,
+                alpha = input$opacity
             ) +
             tm_borders() +
             tm_view(set.zoom.limits = zoom_limits) + tm_basemap("OpenStreetMap")
@@ -390,6 +497,7 @@ server <- function(input, output) {
 
     # Render LISA map
     output$LISA <- renderTmap({
+        print("Creating LISA cluster map")
         df <- localMIResults()
         if (is.null(df)) {
             return()
@@ -407,7 +515,8 @@ server <- function(input, output) {
             tm_fill(
                 col = input$LisaClass,
                 palette = "-RdBu",
-                title = (paste("Significance:", input$LisaClass))
+                title = (paste("Significance:", input$LisaClass)),
+                alpha = input$opacity
             ) +
             tm_borders(alpha = 0.4) +
             tm_view(set.zoom.limits = zoom_limits) + tm_basemap("OpenStreetMap")
@@ -417,8 +526,9 @@ server <- function(input, output) {
 
     # Render hot/cold spot map
     output$Gi <- renderTmap({
-        df <- gi_statistics_results()
-        if (is.null(df)) {
+        print("Creating hot/cold spot map")
+        gi <- gi_statistics_results()
+        if (is.null(gi)) {
             return()
         }
         jb_kulai_wgs <- jb_kulai_grid %>% st_transform(4326)
@@ -427,8 +537,9 @@ server <- function(input, output) {
             tm_fill(
                 col = "gstat",
                 palette = "-RdBu",
-                title = "drug_use local Gi",
-                breaks = seq(from = -10, to = 10, by = 2)
+                title = "Local Gi",
+                breaks = seq(from = -10, to = 10, by = 2),
+                alpha = input$opacity
             ) +
             tm_borders(alpha = 0.5) +
             tm_view(set.zoom.limits = zoom_limits) + tm_basemap("OpenStreetMap")

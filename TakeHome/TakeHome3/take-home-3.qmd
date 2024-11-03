@@ -122,16 +122,14 @@ Since Property Type is multiclass categorical, we need to perform one-hot encodi
 dummies <- model.matrix(~ `Property Type` - 1, data = property) %>% as.data.frame()
 colnames(dummies) <- gsub("Property Type", "", colnames(dummies))
 property <- property %>%
-  bind_cols(dummies) %>%
-select(-`Property Type`)
+  bind_cols(dummies)
 ```
 
 Since Tenure is binary categorical (the property is either freehold or leasehold), we can perform binary encoding on this feature.
 
 ```{r}
 property <- property %>%
-  mutate(is_leasehold = ifelse(Tenure == "Leasehold", 1, 0)) %>%
-  select(-Tenure)
+  mutate(is_leasehold = ifelse(Tenure == "Leasehold", 1, 0))
 ```
 
 Finally, to help us join the property data with our polygon data later, we need to modify the "Mukim" column in the property data column to match that in the polygon data column.
@@ -146,23 +144,25 @@ property <- property %>%
   mutate(Mukim = toupper(Mukim))
 ```
 
-We also need to parse the number in the **Transaction Price** column and convert the price from Malaysian Ringgit to US dollars.
+We also need to parse the number in the **Transaction Price** column and convert the price from Malaysian Ringgit to US dollars. Following this, we will save the dataset we have as an RDS file so that the human-readable data is accessible to the Shiny server.
 
 ```{r}
 property <- property %>%
   mutate(
-    `Transaction Price` = parse_number(`Transaction Price`),
-    `Transaction Price` = `Transaction Price` * 0.21
-  )
+    `Price_MYR` = parse_number(`Transaction Price`),
+    `Price_SGD` = `Price_MYR` * 0.3333333,
+    `Price_USD` = `Price_MYR` * 0.21
+  ) %>%
+  select(-`Transaction Price`)
+
+write_rds(property, "shiny/data/rds/property_preprocessed.rds")
 ```
 
 The last step is to remove the columns we will not need.
 
 ```{r}
 property <- property %>%
-  select(-`District`, -`Road Name`, -`Month, Year of Transaction Date`, -`Unit...9`, -`Unit...11`, -`Unit Level`, -`Address`, -`...14`)
-
-write_rds(property, "shiny/data/rds/property_preprocessed.rds")
+  select(-`Property Type`, -`District`, -`Road Name`, -`Month, Year of Transaction Date`, -`Tenure`, -`Unit...9`, -`Unit...11`, -`Unit Level`, -`Address`, -`...14`)
 ```
 
 To visualise the results, we can now plot our work onto a map.
@@ -170,9 +170,9 @@ To visualise the results, we can now plot our work onto a map.
 ```{r}
 tmap_mode('view')
 tm_shape(adm3_jb_kulai)+
-  tm_borders() +
+  tm_polygons(alpha = 0.3) +
 tm_shape(property) +  
-  tm_dots(col = "Transaction Price",
+  tm_dots(col = "Price_USD",
           alpha = 0.6,
           style="kmeans",
           palette = "Purples",
@@ -234,7 +234,7 @@ tm_shape(jb_kulai_grid) +
 
 ### TH3.4.2 Exploratory Data Analysis
 
-With our hexagonal grid, we can now perform exploratory data analysis. Using `st_intersects` allows us to map each point to a cell in the hexagonal grid.
+With our hexagonal grid, we can now perform exploratory data analysis. Using `st_intersects` allows us to map each point to a cell in the hexagonal grid. First up, we will save and plot the density of property sales in each hexagonal grid.
 
 ```{r}
 intersections <- st_intersects(jb_kulai_grid, property)
@@ -242,9 +242,9 @@ jb_kulai_grid$density <- lengths(intersections)
 tmap_mode('plot')
 tm_shape(jb_kulai_grid) + 
   tm_fill(col = "density",
-          palette = "Purples",
-          style = "quantile",
-          n = 10,
+          palette = "Greys",
+          style = "kmeans",
+          n = 5,
           title = "Property density"
           ) +
   tm_borders(col = "grey") +
@@ -262,7 +262,7 @@ for (i in seq_len(nrow(jb_kulai_grid))) {
   points_in_hex <- property[st_within(property, jb_kulai_grid[i, ], sparse = FALSE), ]
   
   avg_prices[i] <- if (nrow(points_in_hex) > 0) {
-    mean(points_in_hex$`Transaction Price`, na.rm = TRUE)
+    mean(points_in_hex$`Price_USD`, na.rm = TRUE)
   } else {
     0
   }
@@ -274,14 +274,14 @@ jb_kulai_grid$avg_price_inefficient <- avg_prices
 ```{r}
 # Extract average and maximum property price for each cell
 aggregate_price <- function(i, method = "median") {
-  if (length(i) == 0 || all(is.na(property$`Transaction Price`[i]))) return(0)
+  if (length(i) == 0 || all(is.na(property$`Price_USD`[i]))) return(0)
   
   if (method == "mean") {
-    return(mean(property$`Transaction Price`[i], na.rm = TRUE))
+    return(mean(property$`Price_USD`[i], na.rm = TRUE))
   } else if (method == "max") {
-    return(mean(property$`Transaction Price`[i], na.rm = TRUE))
+    return(mean(property$`Price_USD`[i], na.rm = TRUE))
   } else if (method == "median") {
-    return(median(property$`Transaction Price`[i], na.rm = TRUE))
+    return(median(property$`Price_USD`[i], na.rm = TRUE))
   } else {
     stop("Invalid method: Choose either 'mean' or 'max'.")
   }
@@ -311,11 +311,14 @@ jb_kulai_grid$max_price <- max_prices
 # jb_kulai_grid$sector <- sectors
 ```
 ```{r}
-#|eval: False
 write_rds(jb_kulai_grid, "shiny/data/rds/jb_kulai_grid.rds")
 ```
 
 With these values calculated, we can plot them, along with our hexagonal grid, onto a map.
+
+::: Property price plots {.tabset}
+
+## Median Price
 
 ```{r}
 medians_map <- tm_shape(jb_kulai_grid) + 
@@ -327,8 +330,13 @@ medians_map <- tm_shape(jb_kulai_grid) +
           ) +
   tm_borders(col = "grey") +
   tm_legend(position = c("RIGHT", "BOTTOM"))
+medians_map
+```
 
-averages_map <- tm_shape(jb_kulai_grid) + 
+## Average Price
+
+```{r}
+tm_shape(jb_kulai_grid) + 
   tm_fill(col = "avg_price",
           palette = "Purples",
           style = "kmeans",
@@ -337,8 +345,12 @@ averages_map <- tm_shape(jb_kulai_grid) +
           ) +
   tm_borders(col = "grey") +
   tm_legend(position = c("RIGHT", "BOTTOM"))
+```
 
-maximums_map <- tm_shape(jb_kulai_grid) + 
+## Maximum Price
+
+```{r}
+tm_shape(jb_kulai_grid) + 
   tm_fill(col = "max_price",
           palette = "YlOrRd",
           style = "kmeans",
@@ -347,9 +359,12 @@ maximums_map <- tm_shape(jb_kulai_grid) +
           ) +
   tm_borders(col = "grey") +
   tm_legend(position = c("RIGHT", "BOTTOM"))
-
-tmap_arrange(medians_map, averages_map, maximums_map, ncol = 3)
 ```
+
+:::
+
+Here's what the median property price data looks like overlayed on OpenStreetMap.
+
 ```{r}
 # Plot the medians onto an interactive OpenStreetMap
 tmap_mode('view')
@@ -357,10 +372,6 @@ medians_map +
   tm_basemap('OpenStreetMap')
 tmap_mode('plot')
 ```
-
-The highest median property prices in the study area appear clustered towards the centre of town (Bandar Johor Bahru), or towards Iskandar Puteri (within Pulai) towards the West. Notice their proximity to the two land border crossings with Singapore: the JB Sentral-Woodlands crossing (the causeway) connects with Bandar Johor Bahru, while the Tanjung Kupang-Tuas crossing (the second link) is towards the west - near Pulai. Pasir Gudang to the east (within Plentong) is the most recent area in Johor Bahru to be prominently industrialised, but the residential properties there do not fetch nearly as high a price - indicating a relative lack of demand.
-
-As for Kulai, areas with higher median property prices appear clustered towards Bandar Kulai, or Senai - the location of Johor's international airport and a major industrial hub.
 
 In the Shiny application, the hexagonal map will be overlayed on an OpenStreetMap view of Johor Bahru and Kulai. It will be possible to adjust the transparency of the grid, along with the colour scheme, classification method, and whether to display the average, median or maximum property prices within a grid cell.
 
@@ -445,9 +456,9 @@ cluster_map <- tm_shape(jb_kulai.localMI) +
 tmap_arrange(medians_map, cluster_map, asp = 1, ncol = 2)
 ```
 
-In the Shiny app, it will be possible to calculate the local Moran's I and LISA cluster map for the average, median or maximum property price statistics. It will also be possible to customise parameters such as the contiguity method (queen or rook), Lisa classification or derivative statistics - including p-values.
+In the Shiny app, it will be possible to calculate the local Moran's I and LISA cluster map for the average, median or maximum property price statistics, and display them as an overlay on an OpenStreetMap view of Johor Bahru and Kulai. It will also be possible to customise parameters such as the contiguity method (queen or rook), Lisa classification or derivative statistics - including p-values.
 
-![Parameters and input data are customisable in the Shiny app.](localmeasures.png)
+![Parameters and input data are customisable in the Shiny app.](localmoran.png)
 
 ## TH3.7 Hot and Cold Spot Analysis
 
@@ -472,13 +483,27 @@ gi_map <- tm_shape(jb_kulai.gi) +
   tm_fill(
     col = "gstat", 
     palette = "-RdBu", 
-    title = "drug_use local Gi",
+    title = "Local Gi",
     breaks = seq(from = -10, to = 10, by = 2)
   ) + 
   tm_borders(alpha = 0.5) + 
   tm_legend(position = c("RIGHT", "BOTTOM"))
 tmap_arrange(medians_map, gi_map)
 ```
+
+In the Shiny app, just as with the local Moran's I and LISA cluster maps, the hot/cold spot map for the average, median or maximum property price statistics can be plotted and displayed as an overlay on an OpenStreetMap view of Johor Bahru and Kulai. It will also be possible to select the bandwidth type (fixed or adaptive), and the value of `k` for adaptive bandwidth k-means clustering.
+
+![Parameters and input data are customisable in the Shiny app.](hotcold.png)
+
+## TH3.8 Conclusion
+
+The highest median property prices in the study area appear clustered towards the centre of town (Bandar Johor Bahru), or towards Iskandar Puteri (within Pulai) towards the West. Notice their proximity to the two land border crossings with Singapore: the JB Sentral-Woodlands crossing (the causeway) connects with Bandar Johor Bahru, while the Tanjung Kupang-Tuas crossing (the second link) is towards the west - near Pulai. Pasir Gudang to the east (within Plentong) is the most recent area in Johor Bahru to be prominently industrialised, but the residential properties there do not fetch nearly as high a price - indicating a relative lack of demand. This corresponds to the hot/cold spot map - the significant hot spots are clustered towards the centres of Kulai and Johor Bahru - where the economic opportunities are the best - along with the new development area of Iskandar Puteri.
+
+As for Kulai, areas with higher median property prices appear clustered towards Bandar Kulai, or Senai - the location of Johor's international airport and a major industrial hub.
+
+The above is a quick summary of the preprocessing and exploratory data analysis work that has been done so far, as well as a sneak peek into how these results can be displayed in the final Shiny application by means of prototyping.
+
+Going forward, other measures of spatial autocorrelation will be included, including Global Moran's I and Geary's C. Other team members will also be working on other aspects of the project, including the extraction of data on nearby amenities like shopping malls, schools, hospitals and key transport nodes, as well as the hedonic pricing model that will use these variables to predict the housing prices of various locations in Johor Bahru and Kulai.
 
 ## Annex A: Local Moran's I Coefficient Matrix
 
