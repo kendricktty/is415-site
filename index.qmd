@@ -8,9 +8,7 @@ listing:
     type: default
   - id: latest-exercise
     contents:
-      - "HandsOn/hands-on-9.qmd"
-      - "HandsOn/hands-on-8.qmd"
-      - "TakeHome/TakeHome2/take-home-2.qmd"
+      - "TakeHome/TakeHome3/take-home-3.qmd"
     type: default
   - id: take-home-featured
     contents: TakeHome
