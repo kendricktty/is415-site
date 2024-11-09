@@ -59,6 +59,8 @@ website:
             href: "HandsOn/hands-on-9.html"
           - text: "HX10: Geographically Weighted Regression"
             href: "HandsOn/hands-on-9.html"
+          - text: "HX11: Geographically Weighted Predictive Models"
+            href: "HandsOn/hands-on-11.html"
       #   - href: "HandsOn/Hands-on_Ex01/hands-on-1.qmd"
       #   - href: "HandsOn/Hands-on_Ex02/hands-on-2.qmd"
       #   # - text: "Hands-on Exercise 1"
