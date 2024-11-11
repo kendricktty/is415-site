@@ -12,8 +12,8 @@ website:
         href: "about.html"
       - text: "In-Class Exercises"
         menu:
-          - text: "CE1: Geospatial Data Science"
-            href: "InClass/ICE1/in-class-1.html"
+          # - text: "CE1: Geospatial Data Science"
+          #   href: "InClass/ICE1/in-class-1.html"
           - text: "CE2: Working with Master Plan Planning Subzone Data"
             href: "InClass/ICE2/in-class-2.html"
           - text: "CE3: Spatial Point Pattern Analysis"
@@ -30,6 +30,10 @@ website:
             href: "InClass/ICE8/in-class-8.html"
           - text: "CE10 Geographically Weighted Regression"
             href: "InClass/ICE10/ICE10.html"
+          - text: "CE11 Data Preparation for Geographically Weighted Regression"
+            href: "InClass/ICE11/ICE11.html"
+          - text: "CE12 Geographically Weighted Predictive Modelling"
+            href: "InClass/ICE12/in-class-12.html"
       #   menu:
       #   - href: "InClass/ICE1/in-class-1.qmd"
       #   - href: "InClass/ICE2/in-class-2.qmd"

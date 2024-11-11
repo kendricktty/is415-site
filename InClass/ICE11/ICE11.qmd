@@ -1,0 +1,92 @@
+---
+title: "CE11: Data Preparation for Geographically Weighted Regression"
+subtitle: "In-class Exercise 11"
+author: "Kendrick Teo"
+date: "2024-11-04"
+date-modified: "last-modified"
+
+execute: 
+  eval: true
+  echo: true
+  freeze: true
+---
+
+## CE11.1 Loading R package
+
+```{r}
+pacman::p_load(tidyverse, sf, tmap, httr, performance)
+```
+
+## CE11.2 Import data
+
+```{r}
+folder_path <- "data"
+file_list <- list.files(path = folder_path,
+                        pattern = "^realis.*\\.csv$",
+                        full.names = TRUE)
+realis_data <- file_list %>%
+  map_dfr(read_csv)
+```
+
+## CE11.3 Data wrangling
+
+```{r}
+condo_resale <- realis_data %>%
+  mutate(`Sale Date` = dmy(`Sale Date`)) %>%
+  filter(`Type of Sale` == "Resale" & `Property Type` == "Condominium")
+```
+
+## CE11.4 Geocoding
+
+```{r}
+postcode <- unique(condo_resale$`Postal Code`)
+url <- "https://onemap.gov.sg/api/common/elastic/search"
+found <- data.frame()
+not_found <- data.frame()
+
+for (postcode in postcode) {
+  query <- list('searchVal' = postcode, 'returnGeom' = 'Y',
+                'getAddrDetails' = 'Y', 'pageNum' = '1')
+  res <- GET(url, query = query)
+  if ((content(res)$found) != 0) {
+    found <- rbind(found, data.frame(content(res))[4:13])
+  } else {
+    not_found = data.frame(postcode)
+  }
+}
+```
+
+## CE11.5 Tidying field names
+
+```{r}
+found <- found %>% select(c(6:8)) %>%
+  rename(POSTAL = `results.POSTAL`,
+         XCOORD = `results.X`,
+         YCOORD = `results.Y`)
+```
+
+## CE11.6 Converting to Point Feature Data Frame
+
+```{r}
+condo_resale_geocoded = left_join(
+  condo_resale, found,
+  by = c("Postal Code" = "POSTAL")
+)
+```
+
+```{r}
+condo_resale_sf <- st_as_sf(condo_resale_geocoded, coords = c("XCOORD", "YCOORD"), crs = 3414)
+```
+
+## CE11.7 Cleaning spatial data
+
+```{r}
+# Check for any overlapping point features
+overlapping_points <- condo_resale_sf %>%
+  mutate(overlap = lengths(st_equals(., .)) > 1)
+
+# Perform spatial jittering
+overlapping_points <- condo_resale_sf %>%
+  st_jitter(amount = 1)
+```
+

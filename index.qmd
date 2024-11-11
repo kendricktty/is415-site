@@ -38,6 +38,8 @@ hello_world <- "hello world!"
 print(hello_world)
 ```
 
+Feel free to use the navbar above to navigate through my project. If you can't find anything you're looking for in the navbar, just return to the "Home" or "About" pages and try again!
+
 ## Latest Exercises
 
 :::{#latest-exercise}
