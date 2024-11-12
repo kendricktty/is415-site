@@ -215,7 +215,7 @@ ggplot(median_values, aes(x = `Property Type`, y = median)) +
   theme_minimal() +
   coord_flip()
 ```
-Most transactions in the 2-year period between 2023 and 2024 involved **2 - 2 1/2 storey terraced houses**. The highest median values 
+Most transactions in the 2-year period between 2023 and 2024 involved **2 - 2 1/2 storey terraced houses**. The categories with the highest *median* transaction prices are the cluster house and 2-2 1/2 storey semi-detached house.
 
 Before moving on, we should remove columns we do not need.
 
@@ -549,13 +549,3 @@ As for Kulai, areas with higher median property prices appear clustered towards 
 The above is a quick summary of the preprocessing and exploratory data analysis work that has been done so far, as well as a sneak peek into how these results can be displayed in the final Shiny application by means of prototyping.
 
 Going forward, other measures of spatial autocorrelation will be included, including Global Moran's I and Geary's C. Other team members will also be working on other aspects of the project, including the extraction of data on nearby amenities like shopping malls, schools, hospitals and key transport nodes, as well as the hedonic pricing model that will use these variables to predict the housing prices of various locations in Johor Bahru and Kulai.
-
-## Annex A: Local Moran's I Coefficient Matrix
-
-```{r}
-printCoefmat(data.frame(
-  localMI[fips,],
-  row.names=jb_kulai_grid$index[fips]),
-  check.names = FALSE
-)
-```
