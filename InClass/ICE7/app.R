@@ -65,7 +65,7 @@ ui <- navbarPage(
              mainPanel(
                tmapOutput("mapPlot",
                           width = "100%", 
-                          height = 580)
+                          height = large_map_size)
                )
              )
            ),

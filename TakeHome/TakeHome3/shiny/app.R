@@ -17,6 +17,10 @@ property <- read_rds("data/rds/property_preprocessed.rds")
 zoom_limits <- c(10, 25)
 default_num_classes <- 6
 
+large_map_size <- 720
+med_map_size <- 640
+adj_map_size <- 560
+
 # ========================#
 ###### Shiny UI ######
 # ========================#
@@ -30,6 +34,30 @@ ui <- navbarPage(
         "Base Map",
         sidebarLayout(
             sidebarPanel(
+                checkboxGroupInput(
+                    inputId = "types_to_keep",
+                    label = "Include: ",
+                    choiceNames = c(
+                        "1 - 1 1/2 Storey Semi-Detached",
+                        "1 - 1 1/2 Storey Terraced",
+                        "2 - 2 1/2 Storey Semi-Detached",
+                        "2 - 2 1/2 Storey Terraced",
+                        "Cluster House",
+                        "Condominium",
+                        "Detached",
+                        "Townhouse"
+                    ),
+                    choiceValues = c(
+                        "1 - 1 1/2 Storey Semi-Detached",
+                        "1 - 1 1/2 Storey Terraced",
+                        "2 - 2 1/2 Storey Semi-Detached",
+                        "2 - 2 1/2 Storey Terraced",
+                        "Cluster House",
+                        "Condominium/Apartment",
+                        "Detached",
+                        "Town House"
+                    )
+                ),
                 selectInput(
                     inputId = "currency",
                     label = "Currency",
@@ -38,22 +66,7 @@ ui <- navbarPage(
                         "SGD" = "Price_SGD",
                         "USD" = "Price_USD"
                     ),
-                    selected = "Price_USD"
-                    # ),
-                    # selectInput(
-                    #     inputId = "colour",
-                    #     label = "Colour scheme:",
-                    #     choices = list(
-                    #         "purples" = "Purples",
-                    #         "blues" = "Blues",
-                    #         "reds" = "Reds",
-                    #         "greens" = "Greens",
-                    #         "Yellow-Orange-Red" = "YlOrRd",
-                    #         "Yellow-Orange-Brown" = "YlOrBr",
-                    #         "Yellow-Green" = "YlGn",
-                    #         "Orange-Red" = "OrRd"
-                    #     ),
-                    #     selected = "Purples"
+                    selected = "Price_MYR"
                 ),
                 sliderInput(
                     inputId = "classes",
@@ -84,11 +97,11 @@ ui <- navbarPage(
             ),
             mainPanel(
                 p(
-                    "Map of all property transactions in JB and Kulai between 2023 and 2024.\nHover over a point to reveal its details."
+                    "Map of all property transactions in JB and Kulai between 2023 and 2024. Hover over a point to reveal its details."
                 ),
                 tmapOutput("base_map_plot",
                     width = "100%",
-                    height = 580
+                    height = (560 * 2)
                 )
             )
         )
@@ -97,6 +110,30 @@ ui <- navbarPage(
         "Hexagon Grid",
         sidebarLayout(
             sidebarPanel(
+                checkboxGroupInput(
+                    inputId = "types_to_keep",
+                    label = "Include: ",
+                    choiceNames = c(
+                        "1 - 1 1/2 Storey Semi-Detached",
+                        "1 - 1 1/2 Storey Terraced",
+                        "2 - 2 1/2 Storey Semi-Detached",
+                        "2 - 2 1/2 Storey Terraced",
+                        "Cluster House",
+                        "Condominium",
+                        "Detached",
+                        "Townhouse"
+                    ),
+                    choiceValues = c(
+                        "1 - 1 1/2 Storey Semi-Detached",
+                        "1 - 1 1/2 Storey Terraced",
+                        "2 - 2 1/2 Storey Semi-Detached",
+                        "2 - 2 1/2 Storey Terraced",
+                        "Cluster House",
+                        "Condominium/Apartment",
+                        "Detached",
+                        "Town House"
+                    )
+                ),
                 selectInput(
                     inputId = "variable",
                     label = "Mapping variable",
@@ -147,13 +184,15 @@ ui <- navbarPage(
                     min = 0,
                     max = 1,
                     value = c(0.5)
-                )
+                ),
+                actionButton("HexUpdate", "Update Plot"),
+                hr()
             ),
             mainPanel(
                 p("Map of the hexagonal grid plotted over JB and Kulai. You may select a price variable to plot or customise mapping parameters on the left panel."),
                 tmapOutput("hex_grid",
                     width = "100%",
-                    height = 560
+                    height = large_map_size
                 )
             )
         )
@@ -179,38 +218,11 @@ ui <- navbarPage(
                     ),
                     selected = "median_price"
                 ),
-                radioButtons(
-                    inputId = "Contiguity1",
-                    label = "Contiguity Method",
-                    choices = c(
-                        "Queen" = TRUE,
-                        "Rook" = FALSE
-                    ),
-                    selected = "TRUE",
-                    inline = TRUE
-                ),
-                selectInput("MoranWeights", "Spatial Weights Style",
-                    choices = c(
-                        "W: Row standardised" = "W",
-                        "B: Binary" = "B",
-                        "C: Globally standardised" = "C",
-                        "U: C / no of neighbours" = "U",
-                        "minmax" = "minmax",
-                        "S: Variance" = "S"
-                    ),
-                    selected = "W"
-                ),
-                sliderInput(
-                    inputId = "MoranSims",
-                    label = "Number of Simulations:",
-                    min = 99, max = 499,
-                    value = 99, step = 100
-                ),
                 actionButton("MoranUpdate", "Update Plot"),
                 hr(),
                 radioButtons(
                     inputId = "MoranConf",
-                    label = "Select Confidence level",
+                    label = "Confidence level",
                     choices = c(
                         "0.95" = 0.05,
                         "0.99" = 0.01
@@ -221,8 +233,7 @@ ui <- navbarPage(
                 selectInput("LisaClass", "Lisa Classification",
                     choices = c(
                         "mean" = "mean",
-                        "median" = "median",
-                        "pysal" = "pysal"
+                        "median" = "median"
                     ),
                     selected = "mean"
                 ),
@@ -357,6 +368,8 @@ server <- function(input, output) {
             ) + tm_basemap("OpenStreetMap")
     })
 
+
+
     hex_grid <- renderTmap({
         input_variable <- input$variable
         print(paste("Creating hex grid plot for mapping variable:", input_variable))
@@ -395,50 +408,61 @@ server <- function(input, output) {
             return(NULL)
         } # Exit if no data
 
-        # Computing Contiguity Spatial Weights
-        wm_q <- jb_kulai_grid %>%
-            mutate(
-                nb = st_contiguity(geometry,
-                    queen = !!input$Contiguity1
-                ), # !!: bang-bang: unquote variables inside evaluation expressions - tidyverse only
-                wt = st_weights(nb,
-                    style = input$MoranWeights
-                )
+
+
+        # Compute distance weights
+        # Grids with null values are removed - need to account for "islands"
+        jb_kulai_wgs <- jb_kulai_grid %>% st_transform(4326)
+        longitude <- map_dbl(jb_kulai_wgs$geometry, ~st_centroid(.x)[[1]])
+        latitude <- map_dbl(jb_kulai_wgs$geometry, ~st_centroid(.x)[[2]])
+        coords <- cbind(longitude, latitude)
+        # Determine the cutoff distance
+        k1 <- knn2nb(knearneigh(coords))
+        k1dists <- unlist(nbdists(k1, coords, longlat = TRUE))
+        print(summary(k1dists))
+
+        # Compute adaptive distance weight matrix
+        max_distance <- max(k1dists)
+        nb <- dnearneigh(coords, 0, max_distance, longlat=TRUE)
+        distances <- nbdists(nb, coords)
+        rswm_q <- nb2listw(nb, glist = distances, style = "W")
+
+        # Compute local Moran's I
+        fips <- order(jb_kulai_grid$index)
+        localMI <- localmoran(jb_kulai_grid$median_price, rswm_q)
+
+        # Merge into dataset
+        lisa <- cbind(jb_kulai_grid, localMI) %>%
+            rename(
+                "local moran(ii)" = "Ii",
+                "expectation(eii)" = "E.Ii",
+                "variance(var_ii)" = "Var.Ii",
+                "std deviation(z_ii)" = "Z.Ii",
+                "p_value" = "Pr.z....E.Ii.."
             )
-
-        # Computing Local Moran's I
-
-        input_variable <- input$variable
-        measured_variable <- jb_kulai_grid$median_price
-        if (input_variable == "avg_price") {
-            measured_variable <- jb_kulai_grid$avg_price
-        } else if (input_variable == "max_price") {
-            measured_variable <- jb_kulai_grid$max_price
+        
+        quadrant <- vector(mode = "numeric", length = nrow(localMI))
+        lisa$lag <- lag.listw(rswm_q, jb_kulai_grid$median_price)
+        DV <- lisa$lag - mean(jb_kulai_grid$median_price)
+        
+        if (input$LisaClass == "median") {
+            LM_I <- localMI[,1] - median(localMI[, 1])
+        } else {
+            LM_I <- localMI[,1] - mean(localMI[, 1])
         }
 
-        lisa <- wm_q %>%
-            mutate(
-                local_moran = local_moran(
-                    measured_variable, nb, wt,
-                    nsim = as.numeric(input$MoranSims)
-                ),
-                .before = 5
-            ) %>%
-            unnest(local_moran)
-
-        lisa <- lisa %>%
-            rename(
-                "local moran(ii)" = "ii", "expectation(eii)" = "eii",
-                "variance(var_ii)" = "var_ii", "std deviation(z_ii)" = "z_ii",
-                "p_value" = "p_ii"
-            )
-
-
-
+        signif <- input$MoranConf
+        quadrant[DV <0 & LM_I>0] <- 1
+        quadrant[DV >0 & LM_I<0] <- 2
+        quadrant[DV <0 & LM_I<0] <- 3  
+        quadrant[DV >0 & LM_I>0] <- 4
+        quadrant[localMI[,5]>signif] <- 0
+        lisa$quadrant <- quadrant
         return(lisa)
     })
 
     gi_statistics_results <- eventReactive(input$GiUpdate, {
+        print(paste("Number of rows in JB grid", nrow(jb_kulai_grid)))
         if (nrow(jb_kulai_grid) == 0) {
             return(NULL)
         } # Exit if no data
@@ -451,7 +475,7 @@ server <- function(input, output) {
         use_adaptive_bandwidth <- as.logical(input$BandwidthType)
         # if (use_adaptive_bandwidth) {
 
-        # }˜
+        # }
         knn <- knn2nb(knearneigh(coords, k = 8))
         knn_lw <- nb2listw(knn, style = input$GiWeights)
 
@@ -502,23 +526,19 @@ server <- function(input, output) {
         if (is.null(df)) {
             return()
         }
-
-
-        lisa_sig <- df %>%
-            filter(p_value < as.numeric(input$MoranConf))
-
+        print(names(df))
+        colors <- c("#ffffff", "#2c7bb6", "#fdae61", "#abd9e9", "#d7191c")
+        clusters <- c("insignificant", "low-low", "low-high", "high-low", "high-high")
         lisamap <- tm_shape(df) +
-            tm_polygons() +
-            tm_borders() +
-
-            tm_shape(lisa_sig) +
             tm_fill(
-                col = input$LisaClass,
-                palette = "-RdBu",
-                title = (paste("Significance:", input$LisaClass)),
+                col = "quadrant",
+                style = "cat", 
+                palette = colors[c(sort(unique(quadrant)))+1], 
+                labels = clusters[c(sort(unique(quadrant)))+1],
+                title = (paste("Quadrant")),
                 alpha = input$opacity
             ) +
-            tm_borders(alpha = 0.4) +
+            tm_borders() +
             tm_view(set.zoom.limits = zoom_limits) + tm_basemap("OpenStreetMap")
 
         lisamap

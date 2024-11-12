@@ -451,7 +451,7 @@ With exploratory data analysis complete, we can proceed to compute the measures 
 # rswm_q <- nb2listw(wm_q, style = "W", zero.policy = TRUE)
   
 # Compute distance weight matrix
-# Grids with null values are removed - need to account for islands
+# Grids with null values are removed - need to account for "islands"
 jb_kulai_wgs <- jb_kulai_grid %>% st_transform(4326)
 longitude <- map_dbl(jb_kulai_wgs$geometry, ~st_centroid(.x)[[1]])
 latitude <- map_dbl(jb_kulai_wgs$geometry, ~st_centroid(.x)[[2]])
