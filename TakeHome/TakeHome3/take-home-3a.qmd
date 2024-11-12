@@ -1,8 +1,8 @@
 ---
-title: "TH3a: Take-Home 3 post-feedback"
+title: "TH3a: Take-Home Exercise 3 post-feedback"
 subtitle: "Take Home Exercise 3a"
 author: "Kendrick Teo"
-date: "2024-10-14"
+date: "2024-11-11"
 date-modified: "last-modified"
 
 execute: 
@@ -13,7 +13,7 @@ execute:
 
 ## TH3.1 Introduction
 
-The objective of Take-Home Exercise 3 is to prototype a module to be built for the Geospatial Analytics project, which will serve to analyse housing prices in Johor Bahru.
+This page is a reimplementation of Take-Home Exercise 3 in response to feedback from Prof. Kam Tin Seong, in preparation for the submission of the group project. The objective of Take-Home Exercise 3 is to prototype a module to be built for the Geospatial Analytics project, which will serve to analyse housing prices in Johor Bahru.
 
 Since separating from Malaysia in 1965, [Singapore](https://en.wikipedia.org/wiki/Singapore) has seen a rapid development in its economy and quality of life the likes of which no one else has seen. So it made sense for the neighbouring city of [Johor Bahru, Malaysia](https://en.wikipedia.org/wiki/Johor_Bahru), to capitalise on the spillover effects of Singapore's prosperity by itself becoming a lifestyle hub for visiting Singaporeans, and an emerging business satellite for companies from Singapore and the region. New malls have sprouted all over the state capital, and new investments were made by the state and federal governments to boost the city's economy, such as the development areas of Iskandar Puteri and Pasir Gudang, the Johor Bahru-Singapore rapid transit link and the Iskandar Puteri stop on the since-shelved Kuala Lumpur-Singapore High Speed Rail, among many others. In particular, Johor Bahru became a place where Singaporeans could buy houses at prices cheaper than in their hometown - even more so when housing prices in the country began to fly through the roof in recent times. Even while this phenomenon led to further economic growth, there were concerns that the presence of these Singaporean buyers would put inflationary pressure on the city.
 
@@ -158,13 +158,6 @@ property <- property %>%
 write_rds(property, "shiny/data/rds/property_preprocessed.rds")
 ```
 
-The last step is to remove the columns we will not need.
-
-```{r}
-property <- property %>%
-  select(-`Property Type`, -`District`, -`Road Name`, -`Month, Year of Transaction Date`, -`Tenure`, -`Unit...9`, -`Unit...11`, -`Unit Level`, -`Address`, -`...14`)
-```
-
 To visualise the results, we can now plot our work onto a map.
 
 ```{r}
@@ -185,9 +178,55 @@ The basemap will be the first thing a user sees when they visit the project webs
 
 ![The basemap as it would appear in a Shiny UI.](basemap.png)
 
-## TH3.4 Preparing for analysis
+## TH3.4 Exploratory Data Analysis
 
-### TH3.4.1 Creating spatial grids
+Since our focus is on property types in JB that are accessible to Singaporeans, we should exclude some property types from the dataset and only leave behind types that are available on the free market. Examples are low cost houses and low cost flats, which are government-supported, price-regulated and meant for citizens only - especially Bumiputera.
+
+```{r}
+# Print unique values
+print(property %>% distinct(`Property Type`) %>% pull(`Property Type`))
+```
+The code chunk below filters away observations pertaining to flats, low-cost flats and low-cost houses.
+
+```{r}
+property <- property %>% filter(!(`Property Type` %in% c("Flat", "Low-Cost Flat", "Low-Cost House")))
+print(property %>% distinct(`Property Type`) %>% pull(`Property Type`))
+```
+
+It would also be a good idea to graph the median price for each type of house.
+
+```{r}
+# Calculate median values by category
+median_values <- property %>%
+  group_by(`Property Type`) %>%
+  summarize(median = median(Price_MYR, na.rm = TRUE))
+
+# Plot the count
+ggplot(property, aes(x = `Property Type`)) +
+  geom_bar(fill = "lightcoral") +
+  labs(title = "Distribution of Property Types", x = "Property Type", y = "Count") +
+  theme_minimal() +
+  coord_flip()  # Makes the plot horizontal
+
+# Plot the median values
+ggplot(median_values, aes(x = `Property Type`, y = median)) +
+  geom_bar(stat = "identity", fill = "skyblue") +
+  labs(title = "Median Value by Category", x = "Category", y = "Price in MYR") +
+  theme_minimal() +
+  coord_flip()
+```
+Most transactions in the 2-year period between 2023 and 2024 involved **2 - 2 1/2 storey terraced houses**. The highest median values 
+
+Before moving on, we should remove columns we do not need.
+
+```{r}
+property <- property %>%
+  select(-`Property Type`, -`District`, -`Road Name`, -`Month, Year of Transaction Date`, -`Tenure`, -`Unit...9`, -`Unit...11`, -`Unit Level`, -`Address`, -`...14`)
+```
+
+## TH3.5 Spatial Grid Analysis
+
+### TH3.5.1 Creating spatial grids
 
 Johor Bahru is a relatively less dense location than Singapore to its south, so directly performing hot/cold spot analysis on its smaller number of Mukims would not make much sense. Instead, we will create a spatial grid subdividing the area into hexagons of equal diameter, and count the price of property sales located within each zone. The result is a hexagonal grid spanning the districts of Johor Bahru and Kulai, as shown below.
 
@@ -232,7 +271,7 @@ tm_shape(jb_kulai_grid) +
 
 ```
 
-### TH3.4.2 Exploratory Data Analysis
+### TH3.5.2 Exploratory Data Analysis
 
 With our hexagonal grid, we can now perform exploratory data analysis. Using `st_intersects` allows us to map each point to a cell in the hexagonal grid. First up, we will save and plot the density of property sales in each hexagonal grid.
 
@@ -296,6 +335,9 @@ jb_kulai_grid$median_price <- median_prices
 
 max_prices <- sapply(intersections, aggregate_price, method = "max")
 jb_kulai_grid$max_price <- max_prices
+
+# Drop NA
+jb_kulai_grid <- jb_kulai_grid %>% drop_na()
 ```
 ```{r}
 #| echo: False
@@ -391,7 +433,7 @@ lat_long <- test_address %>% geocode(addr, method='osm', lat=latitude, long=long
 print(lat_long)
 ```
 
-## TH3.5 Computing Local Moran's I
+## TH3.6 Computing Local Moran's I
 
 With exploratory data analysis complete, we can proceed to compute the measures of local spatial autocorrelation. We will first derive the local Moran's I values for the **median property price values** with the following code chunk.
 
@@ -405,7 +447,7 @@ fips <- order(jb_kulai_grid$index)
 localMI <- localmoran(jb_kulai_grid$median_price, rswm_q)
 ```
 
-### TH3.5.1 Mapping Local Moran's I
+### TH3.6.1 Mapping Local Moran's I
 
 ```{r}
 jb_kulai.localMI <- cbind(jb_kulai_grid, localMI) %>%
@@ -429,7 +471,7 @@ p_values <- tm_shape(jb_kulai.localMI) +
 tmap_arrange(localMI_map, p_values, asp = 1, ncol = 2)
 ```
 
-### TH3.5.2 Creating LISA cluster map
+### TH3.6.2 Creating LISA cluster map
 
 ```{r}
 quadrant <- vector(mode = "numeric", length = nrow(localMI))
