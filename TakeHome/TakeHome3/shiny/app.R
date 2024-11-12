@@ -445,6 +445,7 @@ server <- function(input, output) {
         lisa$lag <- lag.listw(rswm_q, jb_kulai_grid$median_price)
         DV <- lisa$lag - mean(jb_kulai_grid$median_price)
         
+        print(paste("Lisa Class:", input$LisaClass))
         if (input$LisaClass == "median") {
             LM_I <- localMI[,1] - median(localMI[, 1])
         } else {
@@ -457,7 +458,7 @@ server <- function(input, output) {
         quadrant[DV <0 & LM_I<0] <- 3  
         quadrant[DV >0 & LM_I>0] <- 4
         quadrant[localMI[,5]>signif] <- 0
-        lisa$quadrant <- quadrant
+        lisa$quadrant_class <- quadrant
         return(lisa)
     })
 
@@ -531,10 +532,10 @@ server <- function(input, output) {
         clusters <- c("insignificant", "low-low", "low-high", "high-low", "high-high")
         lisamap <- tm_shape(df) +
             tm_fill(
-                col = "quadrant",
+                col = "quadrant_class",
                 style = "cat", 
-                palette = colors[c(sort(unique(quadrant)))+1], 
-                labels = clusters[c(sort(unique(quadrant)))+1],
+                palette = colors[c(sort(unique(df$quadrant_class)))+1], 
+                labels = clusters[c(sort(unique(df$quadrant_class)))+1],
                 title = (paste("Quadrant")),
                 alpha = input$opacity
             ) +
