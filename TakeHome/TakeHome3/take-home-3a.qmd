@@ -164,12 +164,17 @@ To visualise the results, we can now plot our work onto a map.
 tmap_mode('view')
 tm_shape(adm3_jb_kulai)+
   tm_polygons(alpha = 0.3) +
-tm_shape(property) +  
-  tm_dots(col = "Price_USD",
+tm_shape(property) +
+  tm_dots(col = "Price_MYR",
           alpha = 0.6,
           style="kmeans",
-          palette = "Purples",
-          n = 10) +
+          palette = "YlOrBr",
+          n = 10,
+          popup.vars = c(
+                    "Scheme Name/Area", "Road Name", "Mukim", "District",
+                    "Month, Year of Transaction Date", "Land/Parcel Area", "Main Floor Area",
+                    "Price_MYR", "Price_SGD", "Price_USD"
+                )) +
   tm_view(set.zoom.limits = c(11,14)) +
   tm_basemap('OpenStreetMap')
 ```
@@ -361,6 +366,10 @@ write_rds(jb_kulai_grid, "shiny/data/rds/jb_kulai_grid.rds")
 
 With these values calculated, we can plot them, along with our hexagonal grid, onto a map.
 
+```{r}
+tmap_mode('view')
+```
+
 ::: {.panel-tabset}
 
 ## Median Price
@@ -371,11 +380,13 @@ medians_map <- tm_shape(jb_kulai_grid) +
           palette = "YlGn",
           style = "kmeans",
           n = 10,
-          title = "Median Property Price"
+          title = "Median Property Price",
+          alpha = 0.5
           ) +
   tm_borders(col = "grey") +
   tm_legend(position = c("RIGHT", "BOTTOM"))
-medians_map
+medians_map +
+  tm_basemap('OpenStreetMap')
 ```
 
 ## Average Price
@@ -386,10 +397,11 @@ tm_shape(jb_kulai_grid) +
           palette = "Purples",
           style = "kmeans",
           n = 10,
-          title = "Average Property Price"
+          title = "Average Property Price",
+          alpha = 0.5
           ) +
   tm_borders(col = "grey") +
-  tm_legend(position = c("RIGHT", "BOTTOM"))
+  tm_legend(position = c("RIGHT", "BOTTOM")) + tm_basemap('OpenStreetMap')
 ```
 
 ## Maximum Price
@@ -400,21 +412,16 @@ tm_shape(jb_kulai_grid) +
           palette = "YlOrRd",
           style = "kmeans",
           n = 10,
-          title = "Median Property Price"
+          title = "Median Property Price",
+          alpha = 0.5
           ) +
   tm_borders(col = "grey") +
-  tm_legend(position = c("RIGHT", "BOTTOM"))
+  tm_legend(position = c("RIGHT", "BOTTOM")) + tm_basemap('OpenStreetMap')
 ```
 
 :::
 
-Here's what the median property price data looks like overlayed on OpenStreetMap.
-
 ```{r}
-# Plot the medians onto an interactive OpenStreetMap
-tmap_mode('view')
-medians_map +
-  tm_basemap('OpenStreetMap')
 tmap_mode('plot')
 ```
 
@@ -438,9 +445,31 @@ print(lat_long)
 With exploratory data analysis complete, we can proceed to compute the measures of local spatial autocorrelation. We will first derive the local Moran's I values for the **median property price values** with the following code chunk.
 
 ```{r}
-# Compute queen contiguity weights - no need to account for islands
-wm_q <- poly2nb(jb_kulai_grid, queen=TRUE)
-rswm_q <- nb2listw(wm_q, style = "W", zero.policy = TRUE)
+# OBSOLETE
+# # Compute queen contiguity weights - no need to account for islands
+# wm_q <- poly2nb(jb_kulai_grid, queen=TRUE)
+# rswm_q <- nb2listw(wm_q, style = "W", zero.policy = TRUE)
+  
+# Compute distance weight matrix
+# Grids with null values are removed - need to account for islands
+jb_kulai_wgs <- jb_kulai_grid %>% st_transform(4326)
+longitude <- map_dbl(jb_kulai_wgs$geometry, ~st_centroid(.x)[[1]])
+latitude <- map_dbl(jb_kulai_wgs$geometry, ~st_centroid(.x)[[2]])
+coords <- cbind(longitude, latitude)
+# Determine the cutoff distance
+k1 <- knn2nb(knearneigh(coords))
+k1dists <- unlist(nbdists(k1, coords, longlat = TRUE))
+summary(k1dists)
+```
+
+```{r}
+# Compute adaptive distance weight matrix
+max_distance <- max(k1dists)
+nb <- dnearneigh(coords, 0, max_distance, longlat=TRUE)
+distances <- nbdists(nb, coords)
+rswm_q <- nb2listw(nb, glist = distances, style = "W")
+  
+# Compute distance
 
 # Compute local Moran's I
 fips <- order(jb_kulai_grid$index)
@@ -511,10 +540,10 @@ The next local indicator of spatial autocorrelation to explore is hot and cold s
 
 ```{r}
 # Compute distance weight matrix
-jb_kulai_wgs <- jb_kulai_grid %>% st_transform(4326)
-longitude <- map_dbl(jb_kulai_wgs$geometry, ~st_centroid(.x)[[1]])
-latitude <- map_dbl(jb_kulai_wgs$geometry, ~st_centroid(.x)[[2]])
-coords <- cbind(longitude, latitude)
+# jb_kulai_wgs <- jb_kulai_grid %>% st_transform(4326)
+# longitude <- map_dbl(jb_kulai_wgs$geometry, ~st_centroid(.x)[[1]])
+# latitude <- map_dbl(jb_kulai_wgs$geometry, ~st_centroid(.x)[[2]])
+# coords <- cbind(longitude, latitude)
 # Compute adaptive distance weight matrix
 knn <- knn2nb(knearneigh(coords, k = 8))
 knn_lw <- nb2listw(knn, style = "B")
