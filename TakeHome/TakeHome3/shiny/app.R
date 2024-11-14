@@ -21,6 +21,28 @@ large_map_size <- 720
 med_map_size <- 640
 adj_map_size <- 560
 
+property_type_names <- c(
+                        "1 - 1 1/2 Storey Semi-Detached",
+                        "1 - 1 1/2 Storey Terraced",
+                        "2 - 2 1/2 Storey Semi-Detached",
+                        "2 - 2 1/2 Storey Terraced",
+                        "Cluster House",
+                        "Condominium",
+                        "Detached",
+                        "Townhouse"
+                    )
+
+property_types <- c(
+                        "1 - 1 1/2 Storey Semi-Detached",
+                        "1 - 1 1/2 Storey Terraced",
+                        "2 - 2 1/2 Storey Semi-Detached",
+                        "2 - 2 1/2 Storey Terraced",
+                        "Cluster House",
+                        "Condominium/Apartment",
+                        "Detached",
+                        "Town House"
+                    )
+
 # ========================#
 ###### Shiny UI ######
 # ========================#
@@ -37,26 +59,9 @@ ui <- navbarPage(
                 checkboxGroupInput(
                     inputId = "types_to_keep",
                     label = "Include: ",
-                    choiceNames = c(
-                        "1 - 1 1/2 Storey Semi-Detached",
-                        "1 - 1 1/2 Storey Terraced",
-                        "2 - 2 1/2 Storey Semi-Detached",
-                        "2 - 2 1/2 Storey Terraced",
-                        "Cluster House",
-                        "Condominium",
-                        "Detached",
-                        "Townhouse"
-                    ),
-                    choiceValues = c(
-                        "1 - 1 1/2 Storey Semi-Detached",
-                        "1 - 1 1/2 Storey Terraced",
-                        "2 - 2 1/2 Storey Semi-Detached",
-                        "2 - 2 1/2 Storey Terraced",
-                        "Cluster House",
-                        "Condominium/Apartment",
-                        "Detached",
-                        "Town House"
-                    )
+                    choiceNames = property_type_names,
+                    choiceValues = property_types,
+                    selected = property_types
                 ),
                 selectInput(
                     inputId = "currency",
@@ -87,6 +92,8 @@ ui <- navbarPage(
                     ),
                     selected = "kmeans"
                 ),
+                actionButton("BasePlotUpdate", "Update Plot"),
+                hr(),
                 sliderInput(
                     inputId = "opacity",
                     label = "Level of transparency",
@@ -337,7 +344,24 @@ ui <- navbarPage(
 # ========================#
 
 server <- function(input, output) {
+    filter_properties <- reactive({
+        # Filter data based on checkboxes
+        property %>% filter(`Property Type` %in% input$types_to_keep)
+    })
+
+
+
     output$base_map_plot <- renderTmap({
+        property_filtered <- filter_properties()
+        if (is.null(property_filtered)) {
+            tmap_options(check.and.fix =  TRUE) +
+                tm_shape(adm3_jb_kulai) +
+                tm_view(
+                    set.zoom.limits = zoom_limits # Hardcoded; reduces resource requirements
+                ) + 
+                tm_basemap("OpenStreetMap")
+            return()
+        }
         print(paste("Creating base map plot for currency variable:", input$currency))
         currency <- input$currency
         colour <- "Purples"
@@ -350,7 +374,7 @@ server <- function(input, output) {
         tmap_options(check.and.fix = TRUE) +
             tm_shape(adm3_jb_kulai) +
             tm_polygons(alpha = 0.4) +
-            tm_shape(property) +
+            tm_shape(property_filtered) +
             tm_dots(
                 col = input$currency,
                 alpha = 0.6,
