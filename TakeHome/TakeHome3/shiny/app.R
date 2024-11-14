@@ -12,7 +12,7 @@ pacman::p_load(
 )
 
 adm3_jb_kulai <- read_rds("data/rds/adm3_jb_kulai.rds")
-jb_kulai_grid <- read_rds("data/rds/jb_kulai_grid.rds")
+# jb_kulai_grid <- read_rds("data/rds/jb_kulai_grid.rds")
 property <- read_rds("data/rds/property_preprocessed.rds")
 zoom_limits <- c(10, 25)
 default_num_classes <- 6
@@ -20,6 +20,7 @@ default_num_classes <- 6
 large_map_size <- 720
 med_map_size <- 640
 adj_map_size <- 560
+default_alpha <- 0.9
 
 property_type_names <- c(
                         "1 - 1 1/2 Storey Semi-Detached",
@@ -57,7 +58,7 @@ ui <- navbarPage(
         sidebarLayout(
             sidebarPanel(
                 checkboxGroupInput(
-                    inputId = "types_to_keep",
+                    inputId = "types_to_keep_base",
                     label = "Include: ",
                     choiceNames = property_type_names,
                     choiceValues = property_types,
@@ -92,14 +93,12 @@ ui <- navbarPage(
                     ),
                     selected = "kmeans"
                 ),
-                actionButton("BasePlotUpdate", "Update Plot"),
-                hr(),
                 sliderInput(
                     inputId = "opacity",
                     label = "Level of transparency",
                     min = 0,
                     max = 1,
-                    value = c(0.5)
+                    value = c(default_alpha)
                 )
             ),
             mainPanel(
@@ -108,7 +107,7 @@ ui <- navbarPage(
                 ),
                 tmapOutput("base_map_plot",
                     width = "100%",
-                    height = (560 * 2)
+                    height = large_map_size
                 )
             )
         )
@@ -118,28 +117,11 @@ ui <- navbarPage(
         sidebarLayout(
             sidebarPanel(
                 checkboxGroupInput(
-                    inputId = "types_to_keep",
+                    inputId = "types_to_keep_hex",
                     label = "Include: ",
-                    choiceNames = c(
-                        "1 - 1 1/2 Storey Semi-Detached",
-                        "1 - 1 1/2 Storey Terraced",
-                        "2 - 2 1/2 Storey Semi-Detached",
-                        "2 - 2 1/2 Storey Terraced",
-                        "Cluster House",
-                        "Condominium",
-                        "Detached",
-                        "Townhouse"
-                    ),
-                    choiceValues = c(
-                        "1 - 1 1/2 Storey Semi-Detached",
-                        "1 - 1 1/2 Storey Terraced",
-                        "2 - 2 1/2 Storey Semi-Detached",
-                        "2 - 2 1/2 Storey Terraced",
-                        "Cluster House",
-                        "Condominium/Apartment",
-                        "Detached",
-                        "Town House"
-                    )
+                    choiceNames = property_type_names,
+                    choiceValues = property_types,
+                    selected = property_types
                 ),
                 selectInput(
                     inputId = "variable",
@@ -190,13 +172,13 @@ ui <- navbarPage(
                     label = "Level of transparency",
                     min = 0,
                     max = 1,
-                    value = c(0.5)
+                    value = c(default_alpha)
                 ),
                 actionButton("HexUpdate", "Update Plot"),
                 hr()
             ),
             mainPanel(
-                p("Map of the hexagonal grid plotted over JB and Kulai. You may select a price variable to plot or customise mapping parameters on the left panel."),
+                p("Map of the hexagonal grid plotted over JB and Kulai. Select a price variable to plot or customise mapping parameters on the left panel, then click 'Update Plot' to begin."),
                 tmapOutput("hex_grid",
                     width = "100%",
                     height = large_map_size
@@ -215,6 +197,13 @@ ui <- navbarPage(
         # tabPanel("Local Moran")
         sidebarLayout(
             sidebarPanel(
+                checkboxGroupInput(
+                    inputId = "types_to_keep_lmi",
+                    label = "Include: ",
+                    choiceNames = property_type_names,
+                    choiceValues = property_types,
+                    selected = property_types
+                ),
                 selectInput(
                     inputId = "variable",
                     label = "Subject variable",
@@ -259,7 +248,7 @@ ui <- navbarPage(
                     label = "Level of transparency",
                     min = 0,
                     max = 1,
-                    value = c(0.5)
+                    value = c(default_alpha)
                 )
             ),
             mainPanel(
@@ -278,6 +267,13 @@ ui <- navbarPage(
         "Local Gi",
         sidebarLayout(
             sidebarPanel(
+                checkboxGroupInput(
+                    inputId = "types_to_keep_lgi",
+                    label = "Include: ",
+                    choiceNames = property_type_names,
+                    choiceValues = property_types,
+                    selected = property_types
+                ),
                 selectInput(
                     inputId = "variable",
                     label = "Subject variable",
@@ -302,7 +298,7 @@ ui <- navbarPage(
                     inputId = "k",
                     label = "k-means K value (adaptive only)",
                     min = 2, max = 15,
-                    value = 2, step = 1
+                    value = 8, step = 1
                 ),
                 selectInput("GiWeights", "Spatial Weights Style",
                     choices = c(
@@ -322,14 +318,15 @@ ui <- navbarPage(
                     label = "Level of transparency",
                     min = 0,
                     max = 1,
-                    value = c(0.5)
+                    value = c(default_alpha)
                 )
             ),
             mainPanel(
                 p("The hot/cold spot map will be displayed on the left, and the price map on the right. Customise the parameters in the left panel, then click 'Update Plot' to begin."),
-                fluidRow(
-                    column(6, tmapOutput("Gi")),
-                    column(6, tmapOutput("hex_grid_2"))
+                tmapOutput(
+                    "Gi",
+                    width = "100%",
+                    height = large_map_size
                 ) # Maximum total width is 12
                 # Use 6 and 6 to define equal distance
                 # Can have a map with a statistical output
@@ -344,15 +341,29 @@ ui <- navbarPage(
 # ========================#
 
 server <- function(input, output) {
-    filter_properties <- reactive({
+    # ==========================================================
+    # Filter properties not in the keep list
+    # ==========================================================
+    filter_properties <- function(property, keep_list) {
+        print("To keep:")
+        print(keep_list)
+        return(property %>% filter(`Property Type` %in% keep_list))
+    }
+
+    # ==========================================================
+    # Create base (points) map
+    # ==========================================================
+
+    # Reactive function to perform filtering for the base map
+    base_map_filter <- reactive({
         # Filter data based on checkboxes
-        property %>% filter(`Property Type` %in% input$types_to_keep)
+        keep_list <- input$types_to_keep_base
+        return(filter_properties(property, keep_list))
     })
 
-
-
+    # Output base map
     output$base_map_plot <- renderTmap({
-        property_filtered <- filter_properties()
+        property_filtered <- base_map_filter()
         if (is.null(property_filtered)) {
             tmap_options(check.and.fix =  TRUE) +
                 tm_shape(adm3_jb_kulai) +
@@ -392,12 +403,88 @@ server <- function(input, output) {
             ) + tm_basemap("OpenStreetMap")
     })
 
+    # ==========================================================
+    # Create hex grid
+    # ==========================================================
 
+    # Function to create the hex grid
+    create_hex_grid <- function(property_filtered, cellsize) {
+        jb_kulai_hex <- st_make_grid(adm3_jb_kulai, cellsize = cellsize, what = "polygons", square = FALSE) %>%
+            st_sf() %>%
+            mutate(index = as.factor(row_number()))
+        jb_kulai_border <- adm3_jb_kulai %>% st_union()
+        jb_kulai_grid <- st_intersection(jb_kulai_hex, jb_kulai_border)
 
+        # Check if hex grid intersects any polygons using st_intersects
+        # Returns a list of intersecting hexagons
+        intersection_list = jb_kulai_hex$index[lengths(st_intersects(jb_kulai_hex, jb_kulai_grid)) > 0]
+
+        # Filter for the intersecting hexagons
+        jb_kulai_grid <- jb_kulai_hex %>%
+        filter(index %in% intersection_list)
+
+        # Associate with Mukims
+        joined <- st_join(jb_kulai_hex, adm3_jb_kulai, join = st_intersects, left = FALSE)
+        aggregated <- joined %>%
+        group_by(index) %>%
+        summarise(`Mukim` = first(`shapeName`))
+
+        jb_kulai_grid$Mukim <- aggregated$Mukim
+        jb_kulai_grid <- jb_kulai_grid %>%
+        mutate(index = as.factor(row_number()))
+
+        jb_kulai_grid <- jb_kulai_grid[, c("Mukim", setdiff(names(jb_kulai_grid), "Mukim"))]
+
+        # Save density
+        intersections <- st_intersects(jb_kulai_grid, property_filtered)
+        jb_kulai_grid$density <- lengths(intersections)
+
+        # Extract aggregated property prices
+        aggregate_price <- function(i, method = "median") {
+        if (length(i) == 0 || all(is.na(property_filtered$`Price_USD`[i]))) return(NA)
+        
+        if (method == "mean") {
+            return(mean(property_filtered$`Price_USD`[i], na.rm = TRUE))
+        } else if (method == "max") {
+            return(mean(property_filtered$`Price_USD`[i], na.rm = TRUE))
+        } else if (method == "median") {
+            return(median(property_filtered$`Price_USD`[i], na.rm = TRUE))
+        } else {
+            stop("Invalid method: Choose either 'mean' or 'max'.")
+        }
+        }
+
+        avg_prices <- sapply(intersections, aggregate_price, method = "mean")
+        jb_kulai_grid$avg_price <- avg_prices
+
+        median_prices <- sapply(intersections, aggregate_price, method = "median")
+        jb_kulai_grid$median_price <- median_prices
+
+        max_prices <- sapply(intersections, aggregate_price, method = "max")
+        jb_kulai_grid$max_price <- max_prices
+
+        # Drop NA
+        jb_kulai_grid <- jb_kulai_grid %>% drop_na()
+        return(jb_kulai_grid)
+    }
+
+    # Button reactive function to create the hex grid
+    hex_update <- eventReactive(input$HexUpdate, {
+        print("Creating hex grid plot")
+        property_filtered <- filter_properties(property, input$types_to_keep_hex)
+        return(create_hex_grid(property_filtered, c(750, 750)))
+    })
+
+    # Output hex grid
     hex_grid <- renderTmap({
-        input_variable <- input$variable
-        print(paste("Creating hex grid plot for mapping variable:", input_variable))
+        jb_kulai_grid <- hex_update()
+        if (is.null(jb_kulai_grid) || nrow(jb_kulai_grid) == 0) {
+            print("Map is empty. Stopping")
+            return()
+        }
+
         colour <- "Greens"
+        input_variable <- input$variable
         if (input_variable == "avg_price") {
             colour <- "Purples"
         } else if (input_variable == "max_price") {
@@ -406,6 +493,7 @@ server <- function(input, output) {
             colour <- "Greys"
         }
 
+        print(paste("Creating map displaying", input_variable))
         tmap_options(check.and.fix = TRUE) +
             tm_shape(jb_kulai_grid) +
             tm_fill(input$variable,
@@ -428,11 +516,19 @@ server <- function(input, output) {
     # ==========================================================
 
     localMIResults <- eventReactive(input$MoranUpdate, {
+        property_filtered <- filter_properties(property, input$types_to_keep_lmi)
+        jb_kulai_grid <- create_hex_grid(property_filtered, c(750, 750))
         if (nrow(jb_kulai_grid) == 0) {
             return(NULL)
         } # Exit if no data
 
-
+        input_variable <- input$variable
+        measured_variable <- jb_kulai_grid$median_price
+        if (input_variable == "avg_price") {
+            measured_variable <- jb_kulai_grid$avg_price
+        } else if (input_variable == "max_price") {
+            measured_variable <- jb_kulai_grid$max_price
+        }
 
         # Compute distance weights
         # Grids with null values are removed - need to account for "islands"
@@ -452,8 +548,9 @@ server <- function(input, output) {
         rswm_q <- nb2listw(nb, glist = distances, style = "W")
 
         # Compute local Moran's I
+        print(paste("Deriving local Moran's I for", input_variable))
         fips <- order(jb_kulai_grid$index)
-        localMI <- localmoran(jb_kulai_grid$median_price, rswm_q)
+        localMI <- localmoran(measured_variable, rswm_q)
 
         # Merge into dataset
         lisa <- cbind(jb_kulai_grid, localMI) %>%
@@ -466,8 +563,8 @@ server <- function(input, output) {
             )
         
         quadrant <- vector(mode = "numeric", length = nrow(localMI))
-        lisa$lag <- lag.listw(rswm_q, jb_kulai_grid$median_price)
-        DV <- lisa$lag - mean(jb_kulai_grid$median_price)
+        lisa$lag <- lag.listw(rswm_q, measured_variable)
+        DV <- lisa$lag - mean(measured_variable)
         
         print(paste("Lisa Class:", input$LisaClass))
         if (input$LisaClass == "median") {
@@ -486,43 +583,8 @@ server <- function(input, output) {
         return(lisa)
     })
 
-    gi_statistics_results <- eventReactive(input$GiUpdate, {
-        print(paste("Number of rows in JB grid", nrow(jb_kulai_grid)))
-        if (nrow(jb_kulai_grid) == 0) {
-            return(NULL)
-        } # Exit if no data
-        jb_kulai_wgs <- jb_kulai_grid %>% st_transform(4326)
-        longitude <- map_dbl(jb_kulai_wgs$geometry, ~ st_centroid(.x)[[1]])
-        latitude <- map_dbl(jb_kulai_wgs$geometry, ~ st_centroid(.x)[[2]])
-        coords <- cbind(longitude, latitude)
-        print("Successfully created coordinates")
-
-        use_adaptive_bandwidth <- as.logical(input$BandwidthType)
-        # if (use_adaptive_bandwidth) {
-
-        # }
-        knn <- knn2nb(knearneigh(coords, k = 8))
-        knn_lw <- nb2listw(knn, style = input$GiWeights)
-
-        input_variable <- input$variable
-        measured_variable <- jb_kulai_grid$median_price
-        if (input_variable == "avg_price") {
-            measured_variable <- jb_kulai_grid$avg_price
-        } else if (input_variable == "max_price") {
-            measured_variable <- jb_kulai_grid$max_price
-        }
-
-        gi <- localG(measured_variable, knn_lw)
-        return(gi)
-    })
-
-    # ==========================================================
-    # Render output maps
-    # ==========================================================
-
     # Render local Moran I statistics
     output$LocalMoranMap <- renderTmap({
-        print("Creating local Moran's I map")
         df <- localMIResults()
 
         if (is.null(df) || nrow(df) == 0) {
@@ -530,6 +592,7 @@ server <- function(input, output) {
         } # Exit if no data
 
         # Map creation using tmap
+        print("Creating local Moran's I map")
         localMI_map <- tm_shape(df) +
             tm_fill(
                 col = input$localmoranstats,
@@ -569,16 +632,59 @@ server <- function(input, output) {
         lisamap
     })
 
+    # ==========================================================
+    # Hot/Cold Spot Analysis
+    # ==========================================================
+
+    gi_statistics_results <- eventReactive(input$GiUpdate, {
+        property_filtered <- filter_properties(property, input$types_to_keep_hex)
+        jb_kulai_grid <- create_hex_grid(property_filtered, c(750, 750))
+        if (nrow(jb_kulai_grid) == 0) {
+            return(NULL)
+        } # Exit if no data
+        jb_kulai_wgs <- jb_kulai_grid %>% st_transform(4326)
+        longitude <- map_dbl(jb_kulai_wgs$geometry, ~ st_centroid(.x)[[1]])
+        latitude <- map_dbl(jb_kulai_wgs$geometry, ~ st_centroid(.x)[[2]])
+        coords <- cbind(longitude, latitude)
+        print("Successfully created coordinates")
+
+        k <- input$k
+        nb_style <-input$GiWeights
+        use_adaptive_bandwidth <- as.logical(input$BandwidthType)
+        if (use_adaptive_bandwidth) {
+            knn <- knn2nb(knearneigh(coords, k = k))
+            lw <- nb2listw(knn, style = nb_style)
+        } else {
+            # Compute fixed distance weight matrix
+            k1 <- knn2nb(knearneigh(coords))
+            k1dists <- unlist(nbdists(k1, coords, longlat = TRUE))
+            wm_d62 <- dnearneigh(coords, 0, max(k1dists), longlat = TRUE)
+            lw <- nb2listw(wm_d62, style = nb_style)
+        }
+
+        input_variable <- input$variable
+        measured_variable <- jb_kulai_grid$median_price
+        if (input_variable == "avg_price") {
+            measured_variable <- jb_kulai_grid$avg_price
+        } else if (input_variable == "max_price") {
+            measured_variable <- jb_kulai_grid$max_price
+        }
+
+        print(paste("Performing local Gi for", input_variable))
+        gi <- localG(measured_variable, lw)
+        jb_kulai_wgs <- jb_kulai_grid %>% st_transform(4326)
+        jb_kulai.gi <- cbind(jb_kulai_wgs, as.matrix(gi)) %>% rename(gstat = as.matrix.gi.)
+        return(jb_kulai.gi)
+    })
+
     # Render hot/cold spot map
     output$Gi <- renderTmap({
-        print("Creating hot/cold spot map")
         gi <- gi_statistics_results()
         if (is.null(gi)) {
             return()
         }
-        jb_kulai_wgs <- jb_kulai_grid %>% st_transform(4326)
-        jb_kulai.gi <- cbind(jb_kulai_wgs, as.matrix(gi)) %>% rename(gstat = as.matrix.gi.)
-        gi_map <- tm_shape(jb_kulai.gi) +
+        print("Creating hot/cold spot map")
+        gi_map <- tm_shape(gi) +
             tm_fill(
                 col = "gstat",
                 palette = "-RdBu",
