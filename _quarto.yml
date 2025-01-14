@@ -88,6 +88,13 @@ website:
             href: "TakeHome/TakeHome3/take-home-3.html"
           - text: "TH3a: Take-Home Exercise 3 Reimplementation"
             href: "TakeHome/TakeHome3/take-home-3a.html"
+    right:
+      - text: "Geospatial Analytics Project"
+        href: "https://is415-grp4-jb.netlify.app/"
+      - icon: linkedin
+        href: "https://www.linkedin.com/in/kendricktty"
+      - icon: github
+        href: "https://github.com/kendricktty"
   # sidebar:
   #   style: "floating"
   #   contents:
